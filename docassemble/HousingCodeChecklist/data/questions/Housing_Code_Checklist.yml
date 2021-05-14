@@ -1,0 +1,163 @@
+---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.MassAccess:massaccess.yml
+---
+metadata:
+  title: |
+    Housing code checklist
+  short title: |
+    Housing code checklist
+  tags:
+    - HO-00-00-00-00
+---
+mandatory: True
+comment: |
+  This contains metadata that will not be overwritten if this YAML file is included in another
+  file. Each file gets its own key in the interview_metadata dictionary.
+  Most keys are not currently used at runtime, other than "allowed courts".
+code: |
+  interview_metadata
+  if not defined("interview_metadata['Housing_Code_Checklist']"):
+    interview_metadata.initializeObject("Housing_Code_Checklist")
+    interview_metadata["Housing_Code_Checklist"].update({
+      "al_weaver_version": "0.82",
+      "generated on": "2021-05-14",
+      "title": "Housing code checklist",
+      "short title": "Housing code checklist",
+      "description": "Housing code checklist",
+      "original_form": "https://www.masslegalhelp.org/housing/lt1-booklet-2-housing-code-checklist.pdf",
+      "allowed courts": [
+      ],
+      "categories": [
+        "HO-00-00-00-00",
+      ],        
+      "logic block variable": "interview_order_Housing_Code_Checklist",
+      "attachment block variable": "Housing_Code_Checklist_attachment",
+      "typical role": "plaintiff",
+    })
+---
+code: |
+  interview_short_title = "Complete a Housing code checklist"
+---
+code: |
+  al_form_type = 'other'
+---
+objects:
+  - users: ALPeopleList.using(there_are_any=True)
+---
+sections:
+  - review_Housing_Code_Checklist: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_Housing_Code_Checklist
+code: |
+  # Set the allowed courts for this interview
+  allowed_courts = interview_metadata["Housing_Code_Checklist"]["allowed courts"]
+  nav.set_section('review_Housing_Code_Checklist')
+  user_role = 'plaintiff'
+  users.gather()
+  set_parts(subtitle=str(users))
+  interview_order_Housing_Code_Checklist = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  Housing_Code_Checklist_intro
+  interview_order_Housing_Code_Checklist
+  signature_date
+  # Save anonymized interview statistics (customize the saved data below)
+  store_variables_snapshot(data={'zip': users[0].address.zip})
+  Housing_Code_Checklist_preview_question
+  basic_questions_signature_flow
+  Housing_Code_Checklist_download
+---
+id: Housing_code_checklist
+continue button field: Housing_Code_Checklist_intro
+question: |
+  Housing code checklist
+subquestion: |
+  Housing code checklist
+---
+id: preview Housing_Code_Checklist
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_user_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Make changes" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_" + interview_label + "'), label='Make changes', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: Housing_Code_Checklist_preview_question    
+---
+id: Housing Code Checklist review screen
+event: review_Housing_Code_Checklist
+question: |
+  Review your answers
+review:
+  - Edit: users.revisit
+    button: |
+      **users**
+
+      % for item in users:
+        * ${ item }
+      % endfor
+---
+continue button field: users.revisit
+question: |
+  Edit users
+subquestion: |
+  ${ users.table }
+
+  ${ users.add_action() }
+---
+table: users.table
+rows: users
+columns:
+  - name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - name.first
+confirm: True
+---
+id: download Housing_Code_Checklist
+event: Housing_Code_Checklist_download
+question: |
+  Your form is ready to download.
+subquestion: |
+  
+  Thank you ${users}. Your form is ready to download and deliver.
+
+  View, download and send your form below. Click the "Make changes" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_" + interview_label + "'), label='Make changes', color='info') }
+
+  ${ al_user_bundle.download_list_html() }
+
+  ${ al_user_bundle.send_button_html() }
+  
+progress: 100
+---
+objects:
+  - Housing_Code_Checklist_attachment: ALDocument.using(title="Housing code checklist", filename="Housing_Code_Checklist.docx", enabled=True, has_addendum=False)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[Housing_Code_Checklist_attachment], filename="Housing_Code_Checklist.pdf", title="All forms to download for your records")
+  - al_court_bundle: ALDocumentBundle.using(elements=[Housing_Code_Checklist_attachment], filename="Housing_Code_Checklist.pdf", title="All forms to download for your records")
+---
+attachments:
+  - name: Housing Code Checklist attachment
+    filename: Housing_Code_Checklist     
+    variable name: Housing_Code_Checklist_attachment[i]        
+    docx template file: Housing_Code_Checklist.docx
