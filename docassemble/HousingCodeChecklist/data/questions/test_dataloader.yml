@@ -1,0 +1,167 @@
+---
+modules:
+  - .load_data
+  - docassemble.ALToolbox.misc
+---
+features:
+  css:
+    - docassemble.ALToolbox:collapse_template.css
+---
+objects:
+  - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
+  - bad_conditions: DADict.using(object_type=DAObject, complete_attribute='complete', there_are_any=True)
+---
+code: |
+  rows = dataloader.get_rows()
+---
+code: |
+  bad_conditions[i].claims
+  bad_conditions[i].complete = True
+---
+mandatory: True
+id: interview order
+code: |
+  introduction
+  bad_conditions.gather()
+  ending_status
+---
+id: intro
+question: |
+  Do you have bad housing conditions? You have options!
+subquestion: |
+  [FILE mixkit-person-reading-a-book-while-wrapped-in-warm-blankets-with-75-original.png, 100%, Person reading a book while wrapped in a blanket]
+  
+  A bad housing condition is something in your home that needs to be fixed,
+  like a leaky faucet or not having heat in the winter. Some are little and
+  some are big. But everyone has a right to a safe home--**without** any
+  bad housing conditions.
+  
+  #### Steps you can take
+  
+  ${ collapse_template(how_to_document_template) }
+  ${ collapse_template(get_inspection_template) }
+  ${ collapse_template(get_injunction_template) }
+  ${ collapse_template(sue_your_landlord_template) }  
+buttons:
+  - Start tracking problems: track_conditions
+    image: clipboard
+  - Get help now: get_help
+    image: life-ring
+  - Explore my rights: rights    
+    image: chalkboard-teacher
+#video: |
+#  [YOUTUBE DCpIr9ldSsw]
+field: introduction
+---
+template: how_to_document_template
+subject: |
+  Document the problem and let your landlord know
+content: |
+  abc
+---
+template: get_inspection_template
+subject: |
+  Call a housing inspector
+content: |
+  abc
+---
+template: get_injunction_template
+subject: |
+  Get emergency help from a judge
+content: |
+  abc
+---
+template: sue_your_landlord_template
+subject: |
+  Sue your landlord for money
+content: |
+  abc
+  
+---  
+question: |
+  What area do you want to explore?
+field: bad_conditions.new_item_name
+buttons:
+  - Emergency: emergency
+    image: first-aid
+  - Heating: Heat
+    image: thermometer-full
+  - Bathroom: Bathroom
+    image: bath
+  - Electricity/Gas: Electricity, Wiring and Gas
+    image: plug
+  - Garbage: Garbage
+    image: trash-alt
+  - General maintenance: General Maintenance   
+    image: tools
+  - Structural maintenance: Structural Maintenance    
+    image: hard-hat
+  - Kitchen: Kitchen
+    image: utensils
+  - Lead paint: Lead Paint
+    image: paint-roller
+  - Rodents and insects: Rodents and insects
+    image: bug
+  - Safety: Safety
+    image: door-open
+  - Space: Space
+    image: house-user
+  - Structural elements: Structural Elements
+    image: hammer
+  - Ventilation and light: Ventilation and Light
+    image: sun
+  - Water: Water
+    image: faucet
+---
+id: Claims
+question: |
+  % if i == 'emergency':
+  Emergency problems
+  % else:
+  Problems with ${ i }
+  % endif
+subquestion: |
+  Carefully read the checklist below.
+  
+  You may not be familiar with all of the rules. Read each rule and decide
+  if it applies to you. If it does, check the box next to it.
+fields:
+  - What problems have you had with ${ i }?: bad_conditions[i].claims
+    datatype: checkboxes
+    code: |
+      dataloader.filter(display_column='Interview description', allowed_types=[i], filter_column='Category')
+    show if:
+      code: |
+        i != "emergency"
+    default:
+      code: |
+        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
+  - What emergency problems have you had?: bad_conditions[i].claims
+    datatype: checkboxes
+    code: |
+      dataloader.filter(display_column='Description', allowed_types=["24 hours"], filter_column='Deadline')
+    show if:
+      code: |
+        i == "emergency"        
+    default:
+      code: |
+        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
+        
+---
+id: there is another condition
+question: |
+  Do you want to list problems in another room?
+yesno: bad_conditions.there_is_another
+---
+event: ending_status
+id: abc
+question: |
+  Here is what you told us so far
+subquestion: |
+  % for category in bad_conditions:
+  #### [${ category }](${ url_action('bad_conditions["' + category + '"].claims') } )
+  
+  % for claim in bad_conditions[category].claims.true_values():
+  * ${ claim }
+  % endfor
+  % endfor
