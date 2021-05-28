@@ -43,6 +43,7 @@ class DataLoader(DAObject):
     df = self._load_data()
     try:
       rows = df.loc[[int(loc) for loc in loci]]
+      return rows
     except:
       return pd.DataFrame()  
   

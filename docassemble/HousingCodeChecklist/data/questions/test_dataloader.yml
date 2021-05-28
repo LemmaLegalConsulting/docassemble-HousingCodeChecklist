@@ -1,4 +1,18 @@
 ---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.SanitaryCode:sanitary_code_template.yml
+---
+metadata:
+  title: |-
+    MADE Housing conditions app
+  authors:
+    - Quinten Steenhuis
+    - Michael Cronin
+comment: |
+  Some of the documents that this interview assembles
+  use work done as part of the Assembly Line project.
+---
 modules:
   - .load_data
   - docassemble.ALToolbox.misc
@@ -11,19 +25,34 @@ objects:
   - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
   - bad_conditions: DADict.using(object_type=DAObject, complete_attribute='complete', there_are_any=True)
 ---
+objects:
+  - bad_conditions[i].details: DADict.using(object_type=DAObject)
+---
 code: |
   rows = dataloader.get_rows()
 ---
 code: |
   bad_conditions[i].claims
+  bad_conditions[i].df
+  for condition in bad_conditions[i].claims.true_values():
+    bad_conditions[i].details[condition].condition_existed_at_start
   bad_conditions[i].complete = True
 ---
 mandatory: True
 id: interview order
 code: |
+  # debug
   introduction
   bad_conditions.gather()
   ending_status
+---
+features:
+  question back button: False
+---
+continue button field: debug
+question: |
+  
+  ${ comma_and_list(dataloader.filter(display_column='Description', allowed_types=["24 hours"], filter_column='Deadline') )}
 ---
 id: intro
 question: |
@@ -80,21 +109,34 @@ content: |
 ---  
 question: |
   What area do you want to explore?
+subquestion: |
+  % if len(bad_conditions):
+  You have already listed problems in these rooms:
+  
+  % for button in bad_conditions:
+  * [:pencil-alt: ${ button }](${ url_action('bad_conditions["' + button + '"].claims') } )
+  % endfor
+  % endif
 field: bad_conditions.new_item_name
 buttons:
-  - Emergency: emergency
+  code: |
+    [button for button in available_buttons if next(iter(button)) not in bad_conditions ]
+---
+variable name: available_buttons
+data:
+  - emergency: Emergency
     image: first-aid
-  - Heating: Heat
+  - Heat: Heating
     image: thermometer-full
   - Bathroom: Bathroom
     image: bath
-  - Electricity/Gas: Electricity, Wiring and Gas
+  - Electricity, Wiring and Gas: Electricity/Gas
     image: plug
   - Garbage: Garbage
     image: trash-alt
-  - General maintenance: General Maintenance   
+  - General Maintenance: General maintenance
     image: tools
-  - Structural maintenance: Structural Maintenance    
+  - Structural Maintenance: Structural maintenance    
     image: hard-hat
   - Kitchen: Kitchen
     image: utensils
@@ -106,20 +148,38 @@ buttons:
     image: door-open
   - Space: Space
     image: house-user
-  - Structural elements: Structural Elements
+  - Structural Elements: Structural elements
     image: hammer
-  - Ventilation and light: Ventilation and Light
+  - Ventilation and Light: Ventilation and light
     image: sun
   - Water: Water
     image: faucet
+question back button: False
 ---
+if: |
+  i == 'emergency'
 id: Claims
 question: |
-  % if i == 'emergency':
   Emergency problems
-  % else:
+subquestion: |
+  Carefully read the checklist below.
+  
+  You may not be familiar with all of the rules. Read each rule and decide
+  if it applies to you. If it does, check the box next to it.
+fields:
+  - What emergency problems have you had?: bad_conditions[i].claims
+    datatype: checkboxes
+    code: |
+      dataloader.filter(display_column='Description', allowed_types=["24 hours"], filter_column='Deadline')
+    default:
+      code: |
+        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
+---
+if:
+  i != 'emergency'
+id: Non-emergency claims
+question: |
   Problems with ${ i }
-  % endif
 subquestion: |
   Carefully read the checklist below.
   
@@ -130,28 +190,21 @@ fields:
     datatype: checkboxes
     code: |
       dataloader.filter(display_column='Interview description', allowed_types=[i], filter_column='Category')
-    show if:
-      code: |
-        i != "emergency"
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
-  - What emergency problems have you had?: bad_conditions[i].claims
-    datatype: checkboxes
-    code: |
-      dataloader.filter(display_column='Description', allowed_types=["24 hours"], filter_column='Deadline')
-    show if:
-      code: |
-        i == "emergency"        
-    default:
-      code: |
-        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
-        
 ---
 id: there is another condition
 question: |
   Do you want to list problems in another room?
+subquestion: |
+  So far you have told us about problems in ${ comma_and_list(bad_conditions.keys()) }
 yesno: bad_conditions.there_is_another
+---
+depends on:
+  - bad_conditions[i].claims
+code: |
+  bad_conditions[i].df = dataloader.load_rows(bad_conditions[i].claims.true_values())
 ---
 event: ending_status
 id: abc
@@ -161,7 +214,64 @@ subquestion: |
   % for category in bad_conditions:
   #### [${ category }](${ url_action('bad_conditions["' + category + '"].claims') } )
   
-  % for claim in bad_conditions[category].claims.true_values():
-  * ${ claim }
+  % for index, row in bad_conditions[category].df.iterrows():
+  * ${ row['Description'] }
   % endfor
   % endfor
+  
+  ${ bad_conditions.add_action() }
+
+  ${ action_button_html(url_action('download_checklist'), label='Download the checklist', icon='download') }
+  
+  ${ action_button_html(url_ask(['sanitary_code_template', 'download_petition_to_enforce_sanitary_code']), label="Download a petition to enforce the sanitary code", icon="download") }
+---
+event: download_checklist
+id: download checklist
+question: |
+  Housing Code Checklist
+subquestion: |
+  ${ checklist_attachment }
+---
+code: |
+  # TODO: we may not want this always enabled if the bundles change
+  sanitary_code_instructions_attachment.enabled = False
+  sanitary_code_template_attachment.enabled = True
+---
+event: download_petition_to_enforce_sanitary_code
+id: download sanitary code
+question: |
+  Your file is ready to download
+subquestion: |
+  ${ sanitary_code_bundle.download_list_html() }
+  
+  ${ sanitary_code_bundle.send_button_html() }
+---
+objects:
+  - sanitary_code_bundle: ALDocumentBundle.using(elements=[sanitary_code_instructions_attachment, sanitary_code_template_attachment], filename="petition_to_enforce_sanitary_code")
+---
+attachment:
+  variable name: checklist_attachment
+  docx template file: Housing_Code_Checklist.docx
+---
+id: details for this claim
+question: |
+  Details about the problem with "${ bad_conditions[i].df.loc[int(j)]['Description'].lower().lstrip() }"
+fields:
+  - This condition started when I first moved in: bad_conditions[i].details[j].condition_existed_at_start
+    datatype: yesno
+  - Date condition started: bad_conditions[i].details[j].start_date
+    datatype: date
+    help: |
+      Use the month and year if that is the best that you know.
+    hide if: bad_conditions[i].details[j].condition_existed_at_start    
+  - The problem with "${ bad_conditions[i].df.loc[int(j)]['Description'].lower().lstrip() }" is fixed: bad_conditions[i].details[j].condition_ended
+    datatype: yesno
+  - Date condition ended: bad_conditions[i].details[j].end_date
+    datatype: date
+    show if: bad_conditions[i].details[j].condition_ended
+  - Describe the problem using your own words: bad_conditions[i].details[j].description
+    datatype: area
+    required: False
+  - Upload any documents that you have that show the problem: bad_conditions[i].details[j].files
+    datatype: files
+    required: False
