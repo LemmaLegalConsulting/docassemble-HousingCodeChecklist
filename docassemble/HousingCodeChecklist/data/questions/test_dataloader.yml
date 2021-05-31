@@ -2,6 +2,9 @@
 include:
   - docassemble.AssemblyLine:al_package.yml
   - docassemble.SanitaryCode:sanitary_code_template.yml
+  - docassemble.RentalRepairLetter:Repair_Letter_Tenant.yml
+  - tenant_repair_letter_custom.yml 
+  - tenant_withholding_letter_custom.yml
 ---
 metadata:
   title: |-
@@ -9,6 +12,10 @@ metadata:
   authors:
     - Quinten Steenhuis
     - Michael Cronin
+    - Joelle Ataya
+    - Cherise Barandao
+    - Christopher Selak    
+    - Michael Carroll
 comment: |
   Some of the documents that this interview assembles
   use work done as part of the Assembly Line project.
@@ -224,6 +231,8 @@ subquestion: |
   ${ action_button_html(url_action('download_checklist'), label='Download the checklist', icon='download') }
   
   ${ action_button_html(url_ask(['sanitary_code_template', 'download_petition_to_enforce_sanitary_code']), label="Download a petition to enforce the sanitary code", icon="download") }
+  
+  ${ action_button_html(url_ask(['interview_order_tenant_repair_request', 'download_tenant_repair_letter']), label="Download a letter to your landlord", icon="download") }
 ---
 event: download_checklist
 id: download checklist
@@ -245,6 +254,7 @@ subquestion: |
   ${ sanitary_code_bundle.download_list_html() }
   
   ${ sanitary_code_bundle.send_button_html() }
+
 ---
 objects:
   - sanitary_code_bundle: ALDocumentBundle.using(elements=[sanitary_code_instructions_attachment, sanitary_code_template_attachment], filename="petition_to_enforce_sanitary_code")

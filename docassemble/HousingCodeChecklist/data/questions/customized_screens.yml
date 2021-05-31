@@ -1,0 +1,94 @@
+#########################################################
+# Screens for included templates that override default screens
+#########################################################
+---
+###############
+# Used in multiple templates
+###############
+---
+id: move in date
+question: |
+  When did you move in to ${ users[0].address.on_one_line() }?
+fields:
+  - no label: users[0].move_in_date
+    datatype: date
+---
+code: |
+  bad_conditions[i].min_date = min([c.start_date if not c.condition_existed_at_start else users[0].move_in_date for c in bad_conditions[i].details.elements.values()])
+---
+code: |
+  tenant_repair_default_date = min([c.min_date for c in bad_conditions.elements.values()])                                  
+---
+template: tenant_repair_issue_description_default
+content: |
+  % for category in bad_conditions:
+  % for index, row in bad_conditions[category].df.iterrows():
+  % if bad_conditions[category].details[index].description:
+  * ${ bad_conditions[category].details[index].description }
+  % else:
+  * ${ row['Description'] }
+  % endif
+  % endfor  
+  % endfor
+---
+###############
+# Repair request letter
+###############
+---
+code: |
+  tenant_repair_issue_date 
+---
+id: tenant_repair_issue_date
+question: |
+  When did you first experience the problems that you want to tell
+  ${ other_parties } about?
+subquestion: |
+  The default date is the earliest date of the problems that you selected.
+  
+  Make a change if you need to.
+fields:
+  - Earliest date: tenant_repair_issue_date
+    datatype: date
+    default: ${ tenant_repair_default_date }
+---
+id: issue description
+question: |
+  Describe the problems that you want your landlord to fix
+subquestion: |
+  We used the problems that you selected to start a draft.
+fields:
+  - no label: tenant_repair_issue_description
+    datatype: area
+    rows: 6
+    default: ${ tenant_repair_issue_description_default }
+---
+event: download_tenant_repair_letter
+id: download_tenant_repair_letter
+question: |
+  Your file is ready to download
+subquestion: |
+  ${ tenant_repair_letter_bundle.download_list_html() }
+  
+  ${ tenant_repair_letter_bundle.send_button_html() }
+---
+objects:
+  - tenant_repair_letter_bundle: ALDocumentBundle.using(elements=[tenant_repair_request_attachment], filename="tenant_repair_request", title="Forms to download and deliver to your landlord today")  
+---
+#################################################################
+# Withholding rent
+#################################################################
+---
+code: |
+  repairs_request_date = tenant_repair_issue_date # From 
+---
+id: Issue s Description
+question: |
+  What problems do you need your landlord to fix?
+subquestion: |
+  Use your own words to describe the problems that you told your landlord about
+  on or before ${ repairs_request_date }.
+fields:
+  - no label: rent_withholding_conditions
+    input type: area
+    rows: 5
+    default: ${ tenant_repair_issue_description_default }
