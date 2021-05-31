@@ -3,8 +3,17 @@ include:
   - docassemble.AssemblyLine:al_package.yml
   - docassemble.SanitaryCode:sanitary_code_template.yml
   - docassemble.RentalRepairLetter:Repair_Letter_Tenant.yml
-  - tenant_repair_letter_custom.yml 
-  - tenant_withholding_letter_custom.yml
+  - customized_screens.yml 
+---
+##########################################################
+comment: |
+  Functionality of this tool:
+  
+  1. Collect list of conditions, date, time
+  
+  Output:
+  1. Checklist-style document for housing inspector
+
 ---
 metadata:
   title: |-
@@ -74,7 +83,9 @@ subquestion: |
   
   #### Steps you can take
   
+  ${ collapse_template(how_to_defend_eviction_template) }
   ${ collapse_template(how_to_document_template) }
+  ${ collapse_template(how_to_notify_landlord_template) }
   ${ collapse_template(get_inspection_template) }
   ${ collapse_template(get_injunction_template) }
   ${ collapse_template(sue_your_landlord_template) }  
@@ -91,28 +102,130 @@ field: introduction
 ---
 template: how_to_document_template
 subject: |
-  Document the problem and let your landlord know
+  Document the problem
 content: |
-  abc
+  Keeping good records is important. Before you can get a problem fixed,
+  you need to be able to tell your landlord and the court where the problem
+  is.
+  
+  Use the tools that you have to take your records. You can use this website
+  to record problems and upload pictures.
+  
+  You could also:
+  
+  * Use your phone or a camera to take pictures of the problems.
+  * Use a thermometer or a photo of your thermostat and write down the
+    time and date of each recording.
+  
+  The best records come from a housing inspector. See the information below
+  about calling an inspector.
+---
+template: how_to_notify_landlord_template
+subject: |
+  Notify your landlord
+content: |
+  Your landlord is only responsible to fix problems that they know about.
+  Make sure your landlord knows about problems in your house by telling them,
+  even if you think that they should already know.
+  
+  Use a way to tell your landlord that you can track and prove.
+  
+  * Write your landlord a text message.
+  * Write a letter on paper, and keep a copy for yourself. Make sure the date
+    is on the letter.
+  * Write an email.
+  
+  You can use this website to tell your landlord about the problems in your
+  home.
 ---
 template: get_inspection_template
 subject: |
   Call a housing inspector
 content: |
-  abc
+  A housing inspector is someone who works for the city or the housing 
+  authority.
+  
+  If you live in public housing or have a Section 8 voucher, the Housing
+  Authority will inspect your home at least once a year. But you can call if 
+  you need them to come sooner.
+  
+  All tenants, including tenants who live in public housing, can call a city
+  inspector. The city inspector should come within 1 day to inspect emergency
+  problems.
+  
+  In Boston, Cambridge, Chelsea, and Worcester you can call the Inspectional
+  Services Division.
+  
+  In other cities and towns, call the Board of Health.
+  
+  Before calling the inspector, use this website to create and print a list of 
+  the problems that you have identified. This will help make sure that the
+  inspector does not miss any problems.
+
+  [Learn more](https://www.masslegalhelp.org/housing/lt1-chapter-8-getting-inspection).
 ---
 template: get_injunction_template
 subject: |
   Get emergency help from a judge
 content: |
-  abc
+  You can get emergency help from a judge in two different ways:
+  
+  1. Ask a judge to enforce an order from a housing inspector.
+  1. Get a temporary restraining order.
+  
+  [Learn more](https://www.masslegalhelp.org/housing/lt1-chapter-8-landlord-refusing-repairs).
+---
+template: how_to_defend_eviction_template
+subject: |
+  Stop your eviction
+content: |
+  Sometimes a landlord will file an eviction case against a tenant if they
+  complain about problems in their house.
+  
+  This is illegal. In Massachusetts, evicting a tenant because they complained
+  about bad housing conditions or other housing problems is called
+  "retaliation". [Law about retaliation](https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction).
+  
+  Even if your landlord is not evicting you **because** you complained about
+  problems in your house, the problems may be a defense to your eviction.
+  [239 &sect; 
+  8A](https://malegislature.gov/Laws/GeneralLaws/PartIII/TitleIII/Chapter239/Section8A) 
+  makes bad housing conditions a defense to an eviction if:
+  
+  1. The eviction is for nonpayment of rent or for no reason.
+  1. The problems threaten the health and safety of someone who lives in the
+    apartment.
+  1. The landlord knew about the problems at a time that the tenant did not
+  owe any rent.
+  1. The problems were not caused by the tenant.
+  1. The problems can be fixed without the tenant moving out permanently.
+  
+  You can defend against your eviction with MADE, Massachusetts Defense
+  Against Eviction.
+  
+  ${ action_button_html('https://interviews.gbls.org/start/eviction', label='Launch MADE') }
+  
 ---
 template: sue_your_landlord_template
 subject: |
   Sue your landlord for money
 content: |
-  abc
+  You have a right to sue your landlord for money if you have problems in
+  your home that your landlord is responsible to fix.
   
+  You may be able to sue as part of an existing eviction case. Or you can
+  file your own case against your landlord.
+  
+  It is a good idea to [talk to a lawyer](https://masslrf.org/en/triage/start/housing). You may be able to get a lawyer who will help you for free.
+  
+  You can sue for:
+  
+  * Breach of Quiet Enjoyment, which may entitle you to up to 3 months of rent,
+    at the market rent for your apartment.
+  * Breach of the Warranty of Habitability, which may entitle you to a
+    percentage of your rent for every month that the problem existed.
+    
+  [Learn more about suing your landlord](https://www.masslegalhelp.org/housing/lt1-pullout-13-taking-landlord-to-court).
 ---  
 question: |
   What area do you want to explore?
