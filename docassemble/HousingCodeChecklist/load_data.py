@@ -1,7 +1,7 @@
 from docassemble.base.util import path_and_mimetype, Address, LatitudeLongitude, DAStaticFile, markdown_to_html, prevent_dependency_satisfaction, DAObject, DAList, DADict, log, space_to_underscore, DAContext
 import pandas as pd
 import os
-from typing import List
+from typing import List, Union
 
 __all__ = ['DataLoader']
 
@@ -11,7 +11,7 @@ class DataLoader(DAObject):
   
   Built around Pandas dataframe.
   """
-  def filter(self, display_column:str='name', allowed_types: list=None, filter_column=None)->list:
+  def filter(self, display_column:Union[List[str],str]='name', allowed_types: list=None, filter_column=None)->list:
     """
     Return a subset of rows, with only the specified column and index.
     

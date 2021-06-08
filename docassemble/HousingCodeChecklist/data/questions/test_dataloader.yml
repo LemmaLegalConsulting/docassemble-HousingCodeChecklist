@@ -57,7 +57,7 @@ code: |
 mandatory: True
 id: interview order
 code: |
-  # debug
+  debug
   introduction
   bad_conditions.gather()
   ending_status
@@ -68,7 +68,7 @@ features:
 continue button field: debug
 question: |
   
-  ${ comma_and_list(dataloader.filter(display_column='Description', allowed_types=["24 hours"], filter_column='Deadline') )}
+  ${ comma_and_list(dataloader.filter(display_column=['Interview description','Description'], allowed_types=["24 hours"], filter_column='Deadline') )}
 ---
 id: intro
 question: |
@@ -282,15 +282,12 @@ id: Claims
 question: |
   Emergency problems
 subquestion: |
-  Carefully read the checklist below.
-  
-  You may not be familiar with all of the rules. Read each rule and decide
-  if it applies to you. If it does, check the box next to it.
+  What emergency problems have you had?
 fields:
-  - What emergency problems have you had?: bad_conditions[i].claims
+  - no label: bad_conditions[i].claims
     datatype: checkboxes
     code: |
-      dataloader.filter(display_column='Description', allowed_types=["24 hours"], filter_column='Deadline')
+      dataloader.filter(display_column='Interview description', allowed_types=["24 hours"], filter_column='Deadline')
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
@@ -300,13 +297,8 @@ if:
 id: Non-emergency claims
 question: |
   Problems with ${ i }
-subquestion: |
-  Carefully read the checklist below.
-  
-  You may not be familiar with all of the rules. Read each rule and decide
-  if it applies to you. If it does, check the box next to it.
 fields:
-  - What problems have you had with ${ i }?: bad_conditions[i].claims
+  - no label: bad_conditions[i].claims
     datatype: checkboxes
     code: |
       dataloader.filter(display_column='Interview description', allowed_types=[i], filter_column='Category')
