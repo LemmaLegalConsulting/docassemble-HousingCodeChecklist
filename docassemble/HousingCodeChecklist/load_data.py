@@ -1,9 +1,9 @@
 from docassemble.base.util import path_and_mimetype, Address, LatitudeLongitude, DAStaticFile, markdown_to_html, prevent_dependency_satisfaction, DAObject, DAList, DADict, log, space_to_underscore, DAContext
 import pandas as pd
 import os
-from typing import List, Union
+from typing import List, Union, Dict
 
-__all__ = ['DataLoader']
+__all__ = ['DataLoader', 'conditions_with_help']
 
 class DataLoader(DAObject):
   """
@@ -11,18 +11,24 @@ class DataLoader(DAObject):
   
   Built around Pandas dataframe.
   """
-  def filter(self, display_column:Union[List[str],str]='name', allowed_types: list=None, filter_column=None)->list:
+  def filter_items(self, display_column:Union[List[str],str]='name', allowed_types: list=None, filter_column=None)->list:
     """
     Return a subset of rows, with only the specified column and index.
     
     This is useful for showing a drop-down menu of choices.
     """
+    return self.filter(display_column=display_column, allowed_types=allowed_types, filter_column=filter_column).items()
+  
+  def filter(self, display_column:Union[List[str],str]='name', allowed_types: list=None, filter_column=None)->pd.DataFrame:
+    """
+    Return the raw dataframe filtered to the specified column(s) and matching the specified condition(s).
+    """
     df = self._load_data()
     if allowed_types and filter_column:
       # Return only the names for matching values in the specified column
-      return df[df[filter_column].isin(allowed_types)][display_column].items()
+      return df[df[filter_column].isin(allowed_types)][display_column]
     else:
-      return df[display_column].items()
+      return df[display_column]
   
   def load_row(self, index:int)->pd.DataFrame:
     """
@@ -88,3 +94,25 @@ class ConditionList(DAList):
     
   def load_from_dataframe(self, df):
     pass
+  
+
+def conditions_with_help(dataloader: DataLoader, category:str)->List[Dict]:
+  """
+  Function that simplifies grabbing the row, interview description, and full description given
+  a specific category.
+  """
+  df = dataloader._load_data()
+  filtered_df = df[df['Category'].isin([category])]
+  conditions = []
+  
+  for row in filtered_df.iterrows():
+    conditions.append(
+      {
+        row[0]: row[1]['Interview description'], 
+        "help": row[1]['Description']
+      }
+    )
+    
+  return conditions
+  
+  

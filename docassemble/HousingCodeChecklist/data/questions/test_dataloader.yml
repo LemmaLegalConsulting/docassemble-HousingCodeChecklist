@@ -65,10 +65,13 @@ code: |
 features:
   question back button: False
 ---
+code: |
+  conds = conditions_with_help(dataloader, 'Heat')
+---
 continue button field: debug
 question: |
   
-  ${ comma_and_list(dataloader.filter(display_column=['Interview description','Description'], allowed_types=["24 hours"], filter_column='Deadline') )}
+  ${ repr( conds )}
 ---
 id: intro
 question: |
@@ -301,7 +304,7 @@ fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
     code: |
-      dataloader.filter(display_column='Interview description', allowed_types=[i], filter_column='Category')
+      conditions_with_help(dataloader, i)
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
