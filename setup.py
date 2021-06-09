@@ -43,7 +43,7 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.HousingCodeChecklist',
-      version='1.2.2',
+      version='1.2.3',
       description=('Housing code checklist'),
       long_description='# docassemble.HousingCodeChecklist\r\n\r\nHousing code checklist\r\n\r\n## Author\r\n\r\nauthor@example.com\r\n\r\n',
       long_description_content_type='text/markdown',
