@@ -96,20 +96,20 @@ class ConditionList(DAList):
     pass
   
 
-def conditions_with_help(dataloader: DataLoader, category:str)->List[Dict]:
+def conditions_with_help(dataloader: DataLoader, category:str, search_column:str='Category')->List[Dict]:
   """
   Function that simplifies grabbing the row, interview description, and full description given
   a specific category.
   """
   df = dataloader._load_data()
-  filtered_df = df[df['Category'].isin([category])]
+  filtered_df = df[df[search_column].isin([category])]
   conditions = []
   
   for row in filtered_df.iterrows():
     conditions.append(
       {
         row[0]: row[1]['Interview description'], 
-        "help": row[1]['Description']
+        "help": row[1]['Help']
       }
     )
     

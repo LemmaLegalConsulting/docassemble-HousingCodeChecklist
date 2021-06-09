@@ -13,6 +13,14 @@ comment: |
   
   Output:
   1. Checklist-style document for housing inspector
+---
+mandatory: True
+id: interview order
+code: |
+  # debug
+  introduction
+  bad_conditions.gather()
+  ending_status
 
 ---
 metadata:
@@ -53,14 +61,6 @@ code: |
   for condition in bad_conditions[i].claims.true_values():
     bad_conditions[i].details[condition].condition_existed_at_start
   bad_conditions[i].complete = True
----
-mandatory: True
-id: interview order
-code: |
-  debug
-  introduction
-  bad_conditions.gather()
-  ending_status
 ---
 features:
   question back button: False
@@ -290,7 +290,7 @@ fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
     code: |
-      dataloader.filter(display_column='Interview description', allowed_types=["24 hours"], filter_column='Deadline')
+      conditions_with_help(dataloader, "24 hours", search_column="Deadline")
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
