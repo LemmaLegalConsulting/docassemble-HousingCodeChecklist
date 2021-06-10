@@ -59,8 +59,8 @@ code: |
     bad_conditions[i].details[condition].condition_existed_at_start
   bad_conditions[i].complete = True
 ---
-features:
-  question back button: False
+#features:
+#  question back button: False
 ---
 code: |
   conds = conditions_with_help(dataloader, 'Heat')
@@ -90,11 +90,12 @@ question: |
 subquestion: |  
   This tool will help you solve problems with bad conditions in your home.
   
-  First, learn about what your landlord's responsibilities are. Next,
-  track the problems that you have in your home. You can also add information
-  about when the problem started and upload photographs.
-  
-  Finally, decide what you want to do about it. You can:
+  1. Read about your landlord's responsibilities.
+  1. Track the problems you have in your home.
+  1. Upload photos or add other information about each problem.
+  1. Choose a next step to get your landlord to fix the problems.
+
+  You can:
   
   * Let your landlord know about the problem.
   * Call a housing inspector.
@@ -354,6 +355,8 @@ question: |
   Do you want to list problems in another category?
 subquestion: |
   So far you have told us about problems in "${ comma_and_list(bad_conditions.keys()) }"
+  
+  Tap "yes" if you want to list problems in another category.
 yesno: bad_conditions.there_is_another
 ---
 depends on:
