@@ -14,7 +14,10 @@ fields:
     datatype: date
 ---
 code: |
-  bad_conditions[i].min_date = min([c.start_date if not c.condition_existed_at_start else users[0].move_in_date for c in bad_conditions[i].details.elements.values()])
+  if len(bad_conditions[i].details.elements):
+    bad_conditions[i].min_date = min([c.start_date if not c.condition_existed_at_start else users[0].move_in_date for c in bad_conditions[i].details.elements.values()])
+  else:
+    bad_conditions[i].min_date = today()
 ---
 code: |
   tenant_repair_default_date = min([c.min_date for c in bad_conditions.elements.values()])                                  

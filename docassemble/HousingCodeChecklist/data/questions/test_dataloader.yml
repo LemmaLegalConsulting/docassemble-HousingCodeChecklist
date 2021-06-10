@@ -5,23 +5,20 @@ include:
   - docassemble.RentalRepairLetter:Repair_Letter_Tenant.yml
   - customized_screens.yml 
 ---
-##########################################################
-comment: |
-  Functionality of this tool:
-  
-  1. Collect list of conditions, date, time
-  
-  Output:
-  1. Checklist-style document for housing inspector
----
 mandatory: True
 id: interview order
 code: |
   # debug
-  introduction
+  intro
+  users[0].name.first
+  starting_task
+  if starting_task == 'fight_eviction':
+    response(url='https://interviews.gbls.org/start/eviction')
+  elif starting_task == 'learn_rights':
+    learn_more
   bad_conditions.gather()
-  ending_status
-
+  review_conditions
+  screen_ll_knows_problem
 ---
 metadata:
   title: |-
@@ -75,33 +72,62 @@ question: |
 ---
 id: intro
 question: |
-  Do you have bad housing conditions? You have options!
-subquestion: |
-  [FILE mixkit-person-reading-a-book-while-wrapped-in-warm-blankets-with-75-original.png, 100%, Person reading a book while wrapped in a blanket]
-  
+  You have the right to a safe and decent home
+subquestion: |  
   A bad housing condition is something in your home that needs to be fixed,
   like a leaky faucet or not having heat in the winter. Some are little and
   some are big. But everyone has a right to a safe home--**without** any
   bad housing conditions.
+    
+  #### :hand-paper: If you are being evicted
   
-  #### Steps you can take
+  You can use another free tool, [MADE](https://interviews.gbls.org/start/eviction),
+  to fight your eviction in court. It will take about 30-45 minutes. 
+continue button field: intro
+---
+question: |
+  ${ users.familiar() }, you can do this!
+subquestion: |  
+  This tool will help you solve problems with bad conditions in your home.
   
+  First, learn about what your landlord's responsibilities are. Next,
+  track the problems that you have in your home. You can also add information
+  about when the problem started and upload photographs.
+  
+  Finally, decide what you want to do about it. You can:
+  
+  * Let your landlord know about the problem.
+  * Call a housing inspector.
+  * Withhold rent.
+  * Ask a judge to order your landlord to fix the problems.
+  * Sue your landlord in court for money.  
+field: starting_task  
+buttons:
+  - Get started now: track_conditions
+    image: rocket
+  - Fight my eviction: fight_eviction
+    image: life-ring
+  - Learn more: learn_rights    
+    image: chalkboard-teacher
+---
+id: track conditions intro
+question: |
+  Track your housing problems
+subquestion: |
+  This website will help you track.
+continue button field: track_conditions_intro  
+---
+id: learn more
+question: |
+  Solve your housing problems
+subquestion: | 
   ${ collapse_template(how_to_defend_eviction_template) }
   ${ collapse_template(how_to_document_template) }
   ${ collapse_template(how_to_notify_landlord_template) }
   ${ collapse_template(get_inspection_template) }
   ${ collapse_template(get_injunction_template) }
-  ${ collapse_template(sue_your_landlord_template) }  
-buttons:
-  - Start tracking problems: track_conditions
-    image: clipboard
-  - Get help now: get_help
-    image: life-ring
-  - Explore my rights: rights    
-    image: chalkboard-teacher
-#video: |
-#  [YOUTUBE DCpIr9ldSsw]
-field: introduction
+  ${ collapse_template(sue_your_landlord_template) } 
+continue button field: learn_more
 ---
 template: how_to_document_template
 subject: |
@@ -230,8 +256,9 @@ content: |
     
   [Learn more about suing your landlord](https://www.masslegalhelp.org/housing/lt1-pullout-13-taking-landlord-to-court).
 ---  
+id: room chooser
 question: |
-  What area do you want to explore?
+  Your landlord's responsibilities
 subquestion: |
   % if len(bad_conditions):
   You have already listed problems in these rooms:
@@ -239,6 +266,10 @@ subquestion: |
   % for button in bad_conditions:
   * [:pencil-alt: ${ button }](${ url_action('bad_conditions["' + button + '"].claims') } )
   % endfor
+  % else:
+  Your home is protected by the [state sanitary 
+  code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download). 
+  Click the buttons below to learn what a safe home means in different categories.
   % endif
 field: bad_conditions.new_item_name
 buttons:
@@ -294,6 +325,15 @@ fields:
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
+help: 
+  label: |
+    Sanitary Code
+  content: |
+    The problems listed above are cited in the following sections of the
+    [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
+    
+# % for row in dataloader._load_data()
+      
 ---
 if:
   i != 'emergency'
@@ -311,9 +351,9 @@ fields:
 ---
 id: there is another condition
 question: |
-  Do you want to list problems in another room?
+  Do you want to list problems in another category?
 subquestion: |
-  So far you have told us about problems in ${ comma_and_list(bad_conditions.keys()) }
+  So far you have told us about problems in "${ comma_and_list(bad_conditions.keys()) }"
 yesno: bad_conditions.there_is_another
 ---
 depends on:
@@ -321,7 +361,7 @@ depends on:
 code: |
   bad_conditions[i].df = dataloader.load_rows(bad_conditions[i].claims.true_values())
 ---
-event: ending_status
+continue button field: review_conditions
 id: abc
 question: |
   Here is what you told us so far
@@ -335,12 +375,86 @@ subquestion: |
   % endfor
   
   ${ bad_conditions.add_action() }
-
+  
+  You can [download your checklist](url_action('download_checklist')) now,
+  or continue to other next steps.
+---
+id: triage
+question: |
+  Deciding on your next steps
+fields:
+  - Does your landlord already know about the problems in your home?: screen_ll_knows_problem
+    datatype: yesnoradio
+  - note: |
+      **Okay.** Your first step should be to tell your landlord about the
+      problem. We can help you write a letter to tell your landlord and put
+      them on legal notice.
+    show if:
+      variable: screen_ll_knows_problem
+      is: False
+  - Is your landlord refusing to fix the problems?: screen_ll_refusing_to_fix
+    datatype: yesnoradio
+    show if: screen_ll_knows_problem
+  - note: |
+      **You may want to give your landlord time.** Some serious problems
+      need to be fixed in 24 hours, and others in 5 days. Other problems
+      can be fixed in up to 30 days.
+      
+      If you have not given your landlord enough time to fix the problem yet,
+      you may want to wait before you get help from a court. But it is up
+      to you.
+    show if:
+      variable: screen_ll_refusing_to_fix
+      is: False
+  - Are other tenants in your building also having housing problems?: screen_other_tenants_with_problem
+    datatype: yesnoradio
+    show if: screen_ll_knows_problem
+  - note: |
+      **${ users.familiar() }, you are stronger together**. You have the right to **organize**
+      with your neighbors to fight the bad housing conditions.
+    show if: screen_other_tenants_with_problem
+  - Have you requested an inspection from the city about the most recent problem?: screen_contacted_housing_inspector       
+    datatype: yesnoradio
+    show if: screen_ll_knows_problem
+  - note: |
+      **You may want to get an inspection.** You are not required to get a
+      housing inspection. But it can help a judge understand the problems
+      better. You do not need to wait for the inspection to get more help.
+    show if:
+      variable: screen_contacted_housing_inspector
+      is: False
+  - note: |
+      **What would you like to do?**
+    show if: screen_ll_knows_problem      
+  - no label: document_choice
+    required: False
+    datatype: checkboxes
+    show if: screen_ll_knows_problem
+    choices:
+      - Save or print a copy of my checklist for later: get_report
+      - Organize with my neighbors or other tenants in my city: organize_tenants
+      - Let other tenants know about my bad landlord: share_with_organizer 
+      - Get a city inspection: get_inspection
+      - Withhold rent: withhold_rent
+      - Fix the problems myself and deduct money from my rent: fix_problems
+      - Ask a judge to order my landlord to fix the problem: get_injunction
+      - Sue my landlord for money: sue_landlord
+validation code: |
+  if len(document_choice.true_values()) < 1:
+    validation_error("Select at least one.", field="document_choice")
+help: |
   ${ action_button_html(url_action('download_checklist'), label='Download the checklist', icon='download') }
   
   ${ action_button_html(url_ask(['sanitary_code_template', 'download_petition_to_enforce_sanitary_code']), label="Download a petition to enforce the sanitary code", icon="download") }
   
   ${ action_button_html(url_ask(['interview_order_tenant_repair_request', 'download_tenant_repair_letter']), label="Download a letter to your landlord", icon="download") }
+---
+objects:
+  - housing_code_bundle: ALDocumentBundle.using(elements=[
+      checklist_attachment,
+      tenant_repair_request_attachment,
+      Rent_Withholding_Letter_attachment,
+      sanitary_code_template_attachment], title="Your housing conditions toolkit", filename="housing_conditions_documents")
 ---
 event: download_checklist
 id: download checklist
