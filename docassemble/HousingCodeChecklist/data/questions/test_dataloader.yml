@@ -3,7 +3,29 @@ include:
   - docassemble.AssemblyLine:al_package.yml
   - docassemble.SanitaryCode:sanitary_code_template.yml
   - docassemble.RentalRepairLetter:Repair_Letter_Tenant.yml
+  #- docassemble.RentWitholdingLetter:tenant_rent_withholding_letter.yml
   - customized_screens.yml 
+---
+metadata:
+  title: |-
+    UpToCode
+  authors:
+    - Quinten Steenhuis
+    - Michael Cronin
+    - Joelle Ataya
+    - Cherise Barandao
+    - Christopher Selak    
+    - Michael Carroll
+  logo: |
+    <i class="fas fa-house-damage"></i><div class="title"> UpToCode</div>
+comment: |
+  Some of the documents that this interview assembles
+  use work done as part of the Assembly Line project.
+
+---
+modules:
+  - .load_data
+  - docassemble.ALToolbox.misc  
 ---
 mandatory: True
 id: interview order
@@ -13,30 +35,34 @@ code: |
   users[0].name.first
   starting_task
   if starting_task == 'fight_eviction':
-    response(url='https://interviews.gbls.org/start/eviction')
+    launch_made
   elif starting_task == 'learn_rights':
     learn_more
   bad_conditions.gather()
-  review_conditions
+  if bad_conditions.count_conditions() > 0:
+    review_conditions
+  else:
+    warn_add_conditions
   screen_ll_knows_problem
+  # explain_documents
+  #if document_choice['share_with_organizer']:
+  #  explain_tenant_union
+  if screen_ll_knows_problem and document_choice['get_inspection']:
+    interview_order_request_housing_inspection
+  if screen_ll_knows_problem and document_choice['get_report']:
+    sanitary_code_template
+  download_conditions_checklist_docs
 ---
-metadata:
-  title: |-
-    MADE Housing conditions app
-  authors:
-    - Quinten Steenhuis
-    - Michael Cronin
-    - Joelle Ataya
-    - Cherise Barandao
-    - Christopher Selak    
-    - Michael Carroll
-comment: |
-  Some of the documents that this interview assembles
-  use work done as part of the Assembly Line project.
----
-modules:
-  - .load_data
-  - docassemble.ALToolbox.misc
+id: launch made
+continue button field: launch_made
+question: |
+  Stop your eviction
+subquestion: |
+  Click the link below to start using MADE, Massachusetts Defense
+  for Eviction in a new window. It will take about 20-45 minutes to finish.
+  When you are done, you can come back here.
+  
+  ${ action_button_html('https://interviews.gbls.org/start/eviction', label='Launch MADE') } 
 ---
 features:
   css:
@@ -44,14 +70,13 @@ features:
 ---
 objects:
   - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
-  - bad_conditions: DADict.using(object_type=DAObject, complete_attribute='complete', there_are_any=True)
----
-objects:
-  - bad_conditions[i].details: DADict.using(object_type=DAObject)
+  - bad_conditions: ConditionsDict.using(there_are_any=True)
 ---
 code: |
   rows = dataloader.get_rows()
 ---
+depends on:
+  - bad_conditions[i].claims
 code: |
   bad_conditions[i].claims
   bad_conditions[i].df
@@ -78,13 +103,34 @@ subquestion: |
   like a leaky faucet or not having heat in the winter. Some are little and
   some are big. But everyone has a right to a safe home--**without** any
   bad housing conditions.
+  
+  #### Who is this website for?
+  
+  You can use this website if you are a tenant, a helper for a tenant, or
+  an attorney or community organizer. If you are under 18 and helping a parent
+  or friend, the parent or friend who is over 18 needs to sign and file any
+  paperwork that you send to a court.
+  
+  #### Your right not to be retaliated against
+  
+  It is illegal for a landlord to punish you by trying to evict you, raising 
+  your rent, or making a major change in your rental agreement because you:
+  
+  1. Ask for needed repairs,
+  1. Report bad conditions in your apartment or building to the Board of Health
+  or other local officials,
+  1. Join a tenants’ organization, or
+  1. Withhold rent because of bad conditions. 
+  
+  [Read more](https://www.masslegalhelp.org/when-is-eviction-illegal).
     
   #### :hand-paper: If you are being evicted
   
   You can use another free tool, [MADE](https://interviews.gbls.org/start/eviction),
-  to fight your eviction in court. It will take about 30-45 minutes. 
+  to fight your eviction in court. It will take about 20-45 minutes. 
 continue button field: intro
 ---
+id: intro affirmation
 question: |
   ${ users.familiar() }, you can do this!
 subquestion: |  
@@ -99,7 +145,6 @@ subquestion: |
   
   * Let your landlord know about the problem.
   * Call a housing inspector.
-  * Withhold rent.
   * Ask a judge to order your landlord to fix the problems.
   * Sue your landlord in court for money.  
 field: starting_task  
@@ -108,7 +153,7 @@ buttons:
     image: rocket
   - Fight my eviction: fight_eviction
     image: life-ring
-  - Learn more: learn_rights    
+  - Learn more first: learn_rights    
     image: chalkboard-teacher
 ---
 id: track conditions intro
@@ -285,7 +330,9 @@ data:
     image: thermometer-full
   - Bathroom: Bathroom
     image: bath
-  - Electricity, Wiring and Gas: Electricity/Gas
+  - Lighting: Lighting
+    image: lightbulb
+  - Electricity and Gas: Electricity and Gas
     image: plug
   - Garbage: Garbage
     image: trash-alt
@@ -316,8 +363,6 @@ if: |
 id: Claims
 question: |
   Emergency problems
-subquestion: |
-  What emergency problems have you had?
 fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
@@ -332,9 +377,12 @@ help:
   content: |
     The problems listed above are cited in the following sections of the
     [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
-    
-# % for row in dataloader._load_data()
-      
+        
+    Problem | Sanitary Code
+    --------|------------------
+    % for row in dataloader.get_rows(allowed_types=["24 hours"], filter_column="Deadline").iterrows():
+    ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] }
+    % endfor
 ---
 if:
   i != 'emergency'
@@ -349,6 +397,18 @@ fields:
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
+help: 
+  label: |
+    Sanitary Code
+  content: |
+    The problems listed above are cited in the following sections of the
+    [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
+        
+    Problem | Sanitary Code
+    --------|------------------
+    % for row in dataloader.get_rows(allowed_types=[i], filter_column="Category").iterrows():
+    ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] }
+    % endfor        
 ---
 id: there is another condition
 question: |
@@ -368,19 +428,26 @@ continue button field: review_conditions
 id: abc
 question: |
   Here is what you told us so far
-subquestion: |
+subquestion: |  
   % for category in bad_conditions:
-  #### [${ category }](${ url_action('bad_conditions["' + category + '"].claims') } )
+  #### [${ category.title() }](${ url_action('bad_conditions["' + category + '"].claims') } )
   
   % for index, row in bad_conditions[category].df.iterrows():
-  * ${ row['Description'] }
+  * ${ row['Interview description'] }
   % endfor
   % endfor
   
   ${ bad_conditions.add_action() }
   
-  You can [download your checklist](url_action('download_checklist')) now,
-  or continue to other next steps.
+# You can [download your checklist](${ url_action('download_checklist', enabled=True) }) now, or continue to other next steps.
+---
+event: warn_add_conditions
+question: |
+  You haven't added any problems yet
+subquestion: |
+  You should add at least one problem to continue.
+  
+  ${ bad_conditions.add_action() }
 ---
 id: triage
 question: |
@@ -413,8 +480,8 @@ fields:
     datatype: yesnoradio
     show if: screen_ll_knows_problem
   - note: |
-      **${ users.familiar() }, you are stronger together**. You have the right to **organize**
-      with your neighbors to fight the bad housing conditions.
+      **${ users.familiar() }, you and your neighbors are stronger together**. You have the right to **organize**
+      with other tenants to fight the bad housing conditions.
     show if: screen_other_tenants_with_problem
   - Have you requested an inspection from the city about the most recent problem?: screen_contacted_housing_inspector       
     datatype: yesnoradio
@@ -427,7 +494,8 @@ fields:
       variable: screen_contacted_housing_inspector
       is: False
   - note: |
-      **What would you like to do?**
+      **What would you like to do?**    
+      Remember, you have the right not to be {retaliated} against.
     show if: screen_ll_knows_problem      
   - no label: document_choice
     required: False
@@ -435,41 +503,106 @@ fields:
     show if: screen_ll_knows_problem
     choices:
       - Save or print a copy of my checklist for later: get_report
+      - Tell my landlord about the problems: tell_landlord
       - Organize with my neighbors or other tenants in my city: organize_tenants
       - Let other tenants know about my bad landlord: share_with_organizer 
       - Get a city inspection: get_inspection
-      - Withhold rent: withhold_rent
+      # - Withhold rent: withhold_rent
       - Fix the problems myself and deduct money from my rent: fix_problems
       - Ask a judge to order my landlord to fix the problem: get_injunction
       - Sue my landlord for money: sue_landlord
+    default:
+      - get_report
 validation code: |
-  if len(document_choice.true_values()) < 1:
+  if screen_ll_knows_problem and len(document_choice.true_values()) < 1:
     validation_error("Select at least one.", field="document_choice")
-help: |
-  ${ action_button_html(url_action('download_checklist'), label='Download the checklist', icon='download') }
-  
-  ${ action_button_html(url_ask(['sanitary_code_template', 'download_petition_to_enforce_sanitary_code']), label="Download a petition to enforce the sanitary code", icon="download") }
-  
-  ${ action_button_html(url_ask(['interview_order_tenant_repair_request', 'download_tenant_repair_letter']), label="Download a letter to your landlord", icon="download") }
+terms:
+  retaliated: |
+    Retaliation could include evicting you or raising your rent because you
+    complained about housing problems. Retaliation is illegal and you have
+    protections in a court.
+---
+objects:
+  - organize_tenants_attachment[i]: DAStaticFile.using(filename="lt1-pullout-10-getting-organized.pdf")
+  - sue_your_landlord_attachment[i]: DAStaticFile.using(filename="lt1-pullout-13-taking-landlord-to-court.pdf")
+---  
+objects:
+  - organize_tenants_attachment: ALDocument.using(title="Organize!", filename="lt1-pullout-10-getting-organized")
+  - sue_your_landlord_attachment: ALDocument.using(title="Sue your Landlord", filename="sue_your_landlord")
+  - request_housing_inspection_attachment: ALDocument.using(title="Letter to Request Housing Inspection", filename="inspection_request")
+---
+attachment:
+  variable name: request_housing_inspection_attachment[i]
+  docx template file: letter_to_request_inspection.docx
+---
+id: interview_order_request_housing_inspection
+code: |
+  users[0].name.first
+  users[0].address.address
+  users[0].address.geocode()
+  other_parties[0].name.first
+  other_parties[0].address.address
+  interview_order_request_housing_inspection = True
+---
+#id: board 
+---
+code: |
+  organize_tenants_attachment.enabled = screen_ll_knows_problem and document_choice['organize_tenants'] 
+---
+code: |
+  checklist_attachment.enabled = action_argument('enabled') or screen_ll_knows_problem and document_choice['get_report']
+---
+code: |
+  request_housing_inspection_attachment.enabled = screen_ll_knows_problem and document_choice['get_inspection']
+---
+code: |
+  sue_your_landlord_attachment.enabled = screen_ll_knows_problem and document_choice['sue_landlord']
+---
+code: |
+  tenant_repair_request_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
+---
+#code: |
+#  Rent_Withholding_Letter_attachment.enabled = document_choice['withhold_rent']
 ---
 objects:
   - housing_code_bundle: ALDocumentBundle.using(elements=[
       checklist_attachment,
+      organize_tenants_attachment,      
       tenant_repair_request_attachment,
-      Rent_Withholding_Letter_attachment,
-      sanitary_code_template_attachment], title="Your housing conditions toolkit", filename="housing_conditions_documents")
+      request_housing_inspection_attachment,
+      sanitary_code_template_attachment,
+      sue_your_landlord_attachment],
+      title="Your housing conditions toolkit", filename="housing_conditions_documents")
+  # Rent_Withholding_Letter_attachment,    
+---
+id: download_conditions_checklist_docs
+event: download_conditions_checklist_docs
+question: |
+  Your documents are ready
+subquestion: |
+  % if screen_ll_knows_problem:
+  ${ housing_code_bundle.download_list_html(format="docx") }
+
+  ${ housing_code_bundle.send_button_html() }
+  % else: 
+  ${ tenant_repair_letter_bundle.download_list_html(format="docx") }
+  
+  ${ tenant_repair_letter_bundle.send_button_html() }
+  % endif  
 ---
 event: download_checklist
 id: download checklist
 question: |
   Housing Code Checklist
 subquestion: |
-  ${ checklist_attachment }
+  ${ checklist_bundle.download_list_html() }
+  
+  ${ checklist_bundle.send_button_html() }
 ---
 code: |
   # TODO: we may not want this always enabled if the bundles change
   sanitary_code_instructions_attachment.enabled = False
-  sanitary_code_template_attachment.enabled = True
+  sanitary_code_template_attachment.enabled = screen_ll_knows_problem and document_choice['get_injunction']
 ---
 event: download_petition_to_enforce_sanitary_code
 id: download sanitary code
@@ -483,30 +616,109 @@ subquestion: |
 ---
 objects:
   - sanitary_code_bundle: ALDocumentBundle.using(elements=[sanitary_code_instructions_attachment, sanitary_code_template_attachment], filename="petition_to_enforce_sanitary_code")
+  - checklist_bundle: ALDocumentBundle.using(elements=[checklist_attachment], title="Housing Code Checklist", filename="housing_code_checklist")
+---
+objects: 
+  - checklist_attachment: ALDocument.using(title="Housing Code Checklist", filename="housing_code_checklist")
 ---
 attachment:
-  variable name: checklist_attachment
+  variable name: checklist_attachment[i]
   docx template file: Housing_Code_Checklist.docx
 ---
 id: details for this claim
 question: |
-  Details about the problem with "${ bad_conditions[i].df.loc[int(j)]['Description'].lower().lstrip() }"
+  More information about "${ bad_conditions[i].df.loc[int(j)]['Interview description'].lower().lstrip() }"
 fields:
-  - This condition started when I first moved in: bad_conditions[i].details[j].condition_existed_at_start
+  - This problem was there when I moved in: bad_conditions[i].details[j].condition_existed_at_start
     datatype: yesno
-  - Date condition started: bad_conditions[i].details[j].start_date
+  - Date this problem started: bad_conditions[i].details[j].start_date
     datatype: date
     help: |
       Use the month and year if that is the best that you know.
     hide if: bad_conditions[i].details[j].condition_existed_at_start    
-  - The problem with "${ bad_conditions[i].df.loc[int(j)]['Description'].lower().lstrip() }" is fixed: bad_conditions[i].details[j].condition_ended
+  - The problem is fixed: bad_conditions[i].details[j].condition_ended
     datatype: yesno
-  - Date condition ended: bad_conditions[i].details[j].end_date
+  - Date problem ended: bad_conditions[i].details[j].end_date
     datatype: date
     show if: bad_conditions[i].details[j].condition_ended
   - Describe the problem using your own words: bad_conditions[i].details[j].description
     datatype: area
     required: False
-  - Upload any documents that you have that show the problem: bad_conditions[i].details[j].files
+  - Add a photo or other proof of the problem, if you have it: bad_conditions[i].details[j].files
     datatype: files
     required: False
+---    
+id: names of opposing parties
+question: |
+  What is your landlord's name?
+
+fields:
+  - I do not know my landlord's name: ll_name_unknown
+    datatype: yesno
+  - note: |
+      **Okay**. You can still fill in this form, but you will need
+      to write in your landlord's name on every form before you deliver
+      it. You may be able to find their name by visiting the Registry of
+      Deeds for your city or town.
+    show if: ll_name_unknown
+  - Are they a person, or a business?: other_parties[0].person_type
+    input type: radio
+    choices:
+      - Business or organization: business
+      - Person: individual
+    hide if: ll_name_unknown      
+  - First name: other_parties[0].name.first
+    show if:
+      variable: other_parties[0].person_type
+      is: "individual"
+  - Last name: other_parties[0].name.last
+    show if:
+      variable: other_parties[0].person_type      
+      is: "individual"
+  - Suffix: other_parties[0].name.suffix
+    code: |
+      name_suffix()
+    show if:
+      variable: other_parties[0].person_type      
+      is: "individual"
+    required: False      
+  - Name of organization or business: other_parties[0].name.first
+    show if:
+      variable: other_parties[0].person_type
+      is: business
+validation code: |
+  if ll_name_unknown:
+    other_parties[0].name.first = "[ Landlord's Name ]"
+---
+---
+id: your address
+question: |
+  What is your landlord's address?
+fields:
+  - I do not know my landlord's address: ll_address_unknown
+    datatype: yesno
+  - note: |
+      **Okay**. You need your landlord's address for many of the forms on
+      this website. You can still finish this form but you will need to add
+      your landlord's address before you deliver the form.
+    show if: ll_address_unknown       
+  - Street address: other_parties[0].address.address
+    address autocomplete: True
+    hide if: ll_address_unknown
+  - Unit: other_parties[0].address.unit
+    required: False
+    hide if: ll_address_unknown    
+  - City: other_parties[0].address.city
+    hide if: ll_address_unknown  
+  - State: other_parties[0].address.state
+    hide if: ll_address_unknown  
+    code: |
+      states_list()
+    default: MA      
+  - Zip: other_parties[0].address.zip
+    required: False
+    hide if: ll_address_unknown
+validation code: |
+  if ll_address_unknown:
+    other_parties[0].address.address = "[ Landlord's address ]"
+    other_parties[0].address.city = "[ Landlord's city ]"

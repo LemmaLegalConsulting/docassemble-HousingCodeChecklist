@@ -27,9 +27,9 @@ content: |
   % for category in bad_conditions:
   % for index, row in bad_conditions[category].df.iterrows():
   % if bad_conditions[category].details[index].description:
-  * ${ bad_conditions[category].details[index].description }
+  * ${ bad_conditions[category].details[index].description }; C.M.R. ${ row['Sanitary Code Section'] }
   % else:
-  * ${ row['Description'] }
+  * ${ row['Interview description'] }; C.M.R. ${ row['Sanitary Code Section'] }
   % endif
   % endfor  
   % endfor
@@ -59,6 +59,8 @@ question: |
   Describe the problems that you want your landlord to fix
 subquestion: |
   We used the problems that you selected to start a draft.
+  
+  We also included a link to the sanitary code section that applies.
 fields:
   - no label: tenant_repair_issue_description
     datatype: area

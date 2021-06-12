@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from typing import List, Union, Dict
 
-__all__ = ['DataLoader', 'conditions_with_help']
+__all__ = ['DataLoader', 'conditions_with_help', 'ConditionsDict']
 
 class DataLoader(DAObject):
   """
@@ -60,7 +60,7 @@ class DataLoader(DAObject):
     df = self._load_data()
     if allowed_types and filter_column:
       # Return only the names for matching values in the specified column
-      return df[df[column].isin(allowed_types)]
+      return df[df[filter_column].isin(allowed_types)]
     else:
       return df
   
@@ -84,17 +84,26 @@ class DataLoader(DAObject):
       raise Exception('The datafile must be a CSV, XLSX, or JSON file. Unknown file type: ' + to_load)
     return df
   
-class Condition(DAContext):
-  pass
+class Condition(DAObject):
+  def init(self, *pargs, **kwargs):
+    super().init(*pargs, **kwargs)
+    self.initializeAttribute('details', DADict)
+    self.details.object_type = DAObject
 
-class ConditionList(DAList):
+class ConditionsDict(DADict):
   def init(self, *pargs, **kwargs):
     super().init(*pargs, **kwargs)
     self.object_type = Condition
+    self.complete_attribute = 'complete'
     
-  def load_from_dataframe(self, df):
-    pass
-  
+  def count_conditions(self):
+    """Return the total number of selected conditions"""
+    total = 0
+    if not len(self):
+      return 0
+    for category in self:
+      total += len(self[category].df)
+    return total      
 
 def conditions_with_help(dataloader: DataLoader, category:str, search_column:str='Category')->List[Dict]:
   """
