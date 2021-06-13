@@ -5,7 +5,7 @@ from typing import List, Union, Dict
 
 __all__ = ['DataLoader', 'conditions_with_help', 'ConditionsDict']
 
-class DataLoader(DAObject):
+class BaseDataLoader(DAObject):
   """
   Object to hold some methods surrounding loading/filtering data.
   
@@ -30,25 +30,25 @@ class DataLoader(DAObject):
     else:
       return df[display_column]
   
-  def load_row(self, index:int)->pd.DataFrame:
+  def load_row(self, index:Union[int,str])->pd.DataFrame:
     """
     Retrieve all of the data in a single row of the DataFrame
     """
     df = self._load_data()
     try:
-      row = df.loc[int(index)]
+      row = df.loc[index]
     except:
       return pd.DataFrame()
     return df
     
-  def load_rows(self, loci:List[int])->pd.DataFrame:
+  def load_rows(self, loci:List[Union[int,str]])->pd.DataFrame:
     """
     Retrieve a slice of the dataframe, using the provided loci (indexes) as the basis for 
     retrieval.
     """
     df = self._load_data()
     try:
-      rows = df.loc[[int(loc) for loc in loci]]
+      rows = df.loc[loci]
       return rows
     except:
       return pd.DataFrame()  
@@ -61,6 +61,7 @@ class DataLoader(DAObject):
     if allowed_types and filter_column:
       # Return only the names for matching values in the specified column
       return df[df[filter_column].isin(allowed_types)]
+      # return df[df[search_column].isin([category])]
     else:
       return df
   
@@ -84,6 +85,12 @@ class DataLoader(DAObject):
       raise Exception('The datafile must be a CSV, XLSX, or JSON file. Unknown file type: ' + to_load)
     return df
   
+class DataLoader(BaseDataLoader):
+  def _load_data(self)->pd.DataFrame:
+    df = super()._load_data()
+    df.set_index('ID', inplace=True) # Our XLSX file has a column 'ID' with a text invariant identifier
+    return df
+  
 class Condition(DAObject):
   def init(self, *pargs, **kwargs):
     super().init(*pargs, **kwargs)
@@ -105,6 +112,10 @@ class ConditionsDict(DADict):
       total += len(self[category].df)
     return total      
 
+  def as_merged_list(self):
+    """Merge condition details with original DF row"""
+    results = pd.concat([self[c].df for c in self])
+
 def conditions_with_help(dataloader: DataLoader, category:str, search_column:str='Category')->List[Dict]:
   """
   Function that simplifies grabbing the row, interview description, and full description given
@@ -123,5 +134,3 @@ def conditions_with_help(dataloader: DataLoader, category:str, search_column:str
     )
     
   return conditions
-  
-  

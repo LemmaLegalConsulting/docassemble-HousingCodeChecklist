@@ -49,8 +49,8 @@ code: |
   #  explain_tenant_union
   if screen_ll_knows_problem and document_choice['get_inspection']:
     interview_order_request_housing_inspection
-  if screen_ll_knows_problem and document_choice['get_report']:
-    sanitary_code_template
+  #if screen_ll_knows_problem and document_choice['get_report']:
+  #  sanitary_code_template
   download_conditions_checklist_docs
 ---
 id: launch made
@@ -67,6 +67,8 @@ subquestion: |
 features:
   css:
     - docassemble.ALToolbox:collapse_template.css
+  javascript:
+    - back_button.js
 ---
 objects:
   - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
@@ -155,6 +157,8 @@ buttons:
     image: life-ring
   - Learn more first: learn_rights    
     image: chalkboard-teacher
+back button label: |
+  Back
 ---
 id: track conditions intro
 question: |
@@ -321,6 +325,8 @@ field: bad_conditions.new_item_name
 buttons:
   code: |
     [button for button in available_buttons if next(iter(button)) not in bad_conditions ]
+back button label: |
+  Back
 ---
 variable name: available_buttons
 data:
@@ -363,6 +369,9 @@ if: |
 id: Claims
 question: |
   Emergency problems
+subquestion: |
+  Your landlord should start fixing any problem listed below within 24 hours
+  of learning about the problem.
 fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
@@ -627,7 +636,7 @@ attachment:
 ---
 id: details for this claim
 question: |
-  More information about "${ bad_conditions[i].df.loc[int(j)]['Interview description'].lower().lstrip() }"
+  More information about "${ bad_conditions[i].df.loc[j]['Interview description'].lower().lstrip() }"
 fields:
   - This problem was there when I moved in: bad_conditions[i].details[j].condition_existed_at_start
     datatype: yesno
