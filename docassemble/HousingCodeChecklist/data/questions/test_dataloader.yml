@@ -8,7 +8,7 @@ include:
 ---
 metadata:
   title: |-
-    UpToCode
+    MADE: UpToCode
   authors:
     - Quinten Steenhuis
     - Michael Cronin
@@ -17,7 +17,7 @@ metadata:
     - Christopher Selak    
     - Michael Carroll
   logo: |
-    <i class="fas fa-house-damage"></i><div class="title"> UpToCode</div>
+    <i class="fas fa-house-damage"></i><div class="title"> MADE: UpToCode</div>
 comment: |
   Some of the documents that this interview assembles
   use work done as part of the Assembly Line project.
@@ -44,9 +44,16 @@ code: |
   else:
     warn_add_conditions
   screen_ll_knows_problem
-  # explain_documents
-  #if document_choice['share_with_organizer']:
-  #  explain_tenant_union
+  if not screen_ll_knows_problem:
+    users[0].address.address
+    users[0].address.geocode()
+    organizing_interstitial
+  else:
+    explain_documents
+  if screen_ll_knows_problem and document_choice['share_with_organizer'] or document_choice['organize_tenants']:
+    users[0].address.address
+    users[0].address.geocode()
+    organizing_interstitial
   if screen_ll_knows_problem and document_choice['get_inspection']:
     interview_order_request_housing_inspection
   #if screen_ll_knows_problem and document_choice['get_report']:
@@ -699,7 +706,6 @@ validation code: |
   if ll_name_unknown:
     other_parties[0].name.first = "[ Landlord's Name ]"
 ---
----
 id: your address
 question: |
   What is your landlord's address?
@@ -731,3 +737,82 @@ validation code: |
   if ll_address_unknown:
     other_parties[0].address.address = "[ Landlord's address ]"
     other_parties[0].address.city = "[ Landlord's city ]"
+---
+# variable name: tenant_unions
+# data:
+#   City Life/Vida Urbana:
+#     latitude:
+#     longitude:
+#     phone_number:
+#     address:
+#    
+---
+continue button field: explain_documents
+question: |
+  We may have a few more questions
+subquestion: |
+  On the next screens, we will ask whatever questions are needed to finish
+  creating the documents that you asked for. 
+  
+  At the end, you will have a chance to download and email the documents for
+  yourself or send them to someone else.
+---
+continue button field: organizing_interstitial
+id: organizing
+question: |
+  Work together with your neighbors
+subquestion: |
+  You can solve your problem better together!
+  A tenant's union is a group of tenants working together. Your local tenant's
+  union may have:
+  
+  1. Regular meetings to talk about problems with neighbors.
+  1. Organizers who will negotiate with your landlord.
+  1. Protests to help defend tenant's rights.
+    
+  % if hasattr(users[0].address, 'norm_long'):
+  % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham', 'Lynn', 'East Boston', 'Springfield']:
+  Here are some tenant unions that cover the city you live in:
+  
+  % endif
+  % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham']:
+  #### [City Life/Vida Urbana](https://www.clvu.org/)
+  
+  284 Amory Street, First Floor, Jamaica Plain, MA 02130
+  
+  ${ tel("(617) 524-3541") }
+  
+  % endif
+  % if users[0].address.norm_long.city in ['Chelsea','Revere','Everett','Lynn','East Boston']:
+  #### [La Colaborativa / Chelsea Collaborative](https://www.la-colaborativa.org/)
+  
+  318 Broadway, Chelsea, MA 02150
+  
+  ${ tel("(617) 889-6080") }
+  % endif
+  % if users[0].address.norm_long.city  == 'Lynn':  
+  
+  #### [Lynn United for Change](http://www.lynnunited.org/housing)
+  112 Exchange St, Lynn, MA 01901
+  
+  ${ tel("(781) 346-9199") }
+  % endif
+  % if users[0].address.norm_long.city == 'Boston':
+  #### Boston Tenant's Union
+  ${ tel("617-209-9263") }
+  % endif
+  % if users[0].address.norm_long.city  == 'Springfield':
+  #### [Springfield No one Leaves](http://www.springfieldnooneleaves.org/)
+  
+  ${ tel("413-342-1804") }
+  % endif
+  % endif
+  
+  Tenant groups in Massachusetts:
+  
+  * [City Life/Vida Urbana](https://clvu.org) (metro Boston)
+  * [La Colaborativa](https://www.la-colaborativa.org/) (Chelsea and neighboring cities)
+  * [Lynn United](http://www.lynnunited.org/housing) (Greater Lynn)
+  * [Springfield No One Leaves](http://www.springfieldnooneleaves.org/) (Greater Springfield)
+  * [Boston Tenant's Union](https://bostontenantsunion.org/)
+  
