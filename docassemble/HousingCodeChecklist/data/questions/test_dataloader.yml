@@ -584,6 +584,9 @@ code: |
   checklist_attachment.enabled = action_argument('enabled') or screen_ll_knows_problem and document_choice['get_report']
 ---
 code: |
+  conditions_report_attachment.enabled = action_argument('enabled') or screen_ll_knows_problem and document_choice['get_report']
+---
+code: |
   request_housing_inspection_attachment.enabled = screen_ll_knows_problem and document_choice['get_inspection']
 ---
 code: |
@@ -598,6 +601,7 @@ code: |
 objects:
   - housing_code_bundle: ALDocumentBundle.using(elements=[
       checklist_attachment,
+      conditions_report_attachment,
       organize_tenants_attachment,      
       tenant_repair_request_attachment,
       request_housing_inspection_attachment,
@@ -651,10 +655,15 @@ objects:
 ---
 objects: 
   - checklist_attachment: ALDocument.using(title="Housing Code Checklist", filename="housing_code_checklist")
+  - conditions_report_attachment: ALDocument.using(title="Housing Conditions Report", filename="housing_conditions_report")
 ---
 attachment:
   variable name: checklist_attachment[i]
   docx template file: Housing_Code_Checklist.docx
+---
+attachment:
+  variable name: conditions_report_attachment[i]
+  docx template file: Evidence_packet.docx
 ---
 id: details for this claim
 question: |
