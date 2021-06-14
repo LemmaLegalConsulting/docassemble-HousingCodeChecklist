@@ -845,3 +845,8 @@ question: |
   Thank you for sharing your information
 subquestion: |
   Your name and apartment number will stay private.
+---
+code: |
+  package_name = "docassemble-HousingCodeChecklist"
+  github_user = "nonprofittechy"
+  feedback_form = user_info().package + ":feedback.yml"
