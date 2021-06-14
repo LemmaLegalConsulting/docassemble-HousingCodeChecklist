@@ -30,7 +30,6 @@ modules:
 mandatory: True
 id: interview order
 code: |
-  # debug
   intro
   users[0].name.first
   starting_task
@@ -50,7 +49,10 @@ code: |
     organizing_interstitial
   else:
     explain_documents
-  if screen_ll_knows_problem and document_choice['share_with_organizer'] or document_choice['organize_tenants']:
+  if screen_ll_knows_problem and document_choice['share_with_tenants']:
+    explain_sharing
+    store_for_tenant_sharing
+  if screen_ll_knows_problem and document_choice['organize_tenants']:
     users[0].address.address
     users[0].address.geocode()
     organizing_interstitial
@@ -59,6 +61,16 @@ code: |
   #if screen_ll_knows_problem and document_choice['get_report']:
   #  sanitary_code_template
   download_conditions_checklist_docs
+---
+code: |
+  store_variables_snapshot(
+    {'landlord': other_parties.name.full, 
+     'address_street': users[0].address.address,
+     'address_city': users[0].address.city,
+     'address_zip': users[0].address.zip,
+     'bad_conditions': bad_conditions}
+     )
+  store_for_tenant_sharing = True
 ---
 id: launch made
 continue button field: launch_made
@@ -81,9 +93,6 @@ objects:
   - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
   - bad_conditions: ConditionsDict.using(there_are_any=True)
 ---
-code: |
-  rows = dataloader.get_rows()
----
 depends on:
   - bad_conditions[i].claims
 code: |
@@ -93,16 +102,12 @@ code: |
     bad_conditions[i].details[condition].condition_existed_at_start
   bad_conditions[i].complete = True
 ---
+code: |  
+  bad_conditions[i].details[j].condition_existed_at_start
+  bad_conditions[i].details[j].complete = True
+---
 #features:
 #  question back button: False
----
-code: |
-  conds = conditions_with_help(dataloader, 'Heat')
----
-continue button field: debug
-question: |
-  
-  ${ repr( conds )}
 ---
 id: intro
 question: |
@@ -290,7 +295,6 @@ content: |
   Against Eviction.
   
   ${ action_button_html('https://interviews.gbls.org/start/eviction', label='Launch MADE') }
-  
 ---
 template: sue_your_landlord_template
 subject: |
@@ -373,6 +377,9 @@ question back button: False
 ---
 if: |
   i == 'emergency'
+undefine:
+  - bad_conditions[i].df  
+  - bad_conditions[i].complete
 id: Claims
 question: |
   Emergency problems
@@ -402,6 +409,9 @@ help:
 ---
 if:
   i != 'emergency'
+undefine:
+  - bad_conditions[i].df
+  - bad_conditions[i].complete  
 id: Non-emergency claims
 question: |
   Problems with ${ i }
@@ -441,12 +451,12 @@ code: |
   bad_conditions[i].df = dataloader.load_rows(bad_conditions[i].claims.true_values())
 ---
 continue button field: review_conditions
-id: abc
+id: review conditions
 question: |
   Here is what you told us so far
 subquestion: |  
   % for category in bad_conditions:
-  #### [${ category.title() }](${ url_action('bad_conditions["' + category + '"].claims') } )
+  #### [${ category.title() }](${ url_action('bad_conditions["' + category + '"].claims') })
   
   % for index, row in bad_conditions[category].df.iterrows():
   * ${ row['Interview description'] }
@@ -454,8 +464,6 @@ subquestion: |
   % endfor
   
   ${ bad_conditions.add_action() }
-  
-# You can [download your checklist](${ url_action('download_checklist', enabled=True) }) now, or continue to other next steps.
 ---
 event: warn_add_conditions
 question: |
@@ -521,7 +529,10 @@ fields:
       - Save or print a copy of my checklist for later: get_report
       - Tell my landlord about the problems: tell_landlord
       - Organize with my neighbors or other tenants in my city: organize_tenants
-      - Let other tenants know about my bad landlord: share_with_organizer 
+      - Let other tenants know about my bad landlord: share_with_tenants
+        help: |
+          This will share your address and landlord's name, but not your name
+          or apartment number.
       - Get a city inspection: get_inspection
       # - Withhold rent: withhold_rent
       - Fix the problems myself and deduct money from my rent: fix_problems
@@ -815,4 +826,9 @@ subquestion: |
   * [Lynn United](http://www.lynnunited.org/housing) (Greater Lynn)
   * [Springfield No One Leaves](http://www.springfieldnooneleaves.org/) (Greater Springfield)
   * [Boston Tenant's Union](https://bostontenantsunion.org/)
-  
+---
+continue button field: explain_sharing
+question: |
+  Thank you for sharing your information
+subquestion: |
+  Your name and apartment number will stay private.
