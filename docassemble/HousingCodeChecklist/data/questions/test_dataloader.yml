@@ -39,6 +39,10 @@ code: |
     learn_more
   bad_conditions.gather()
   if bad_conditions.count_conditions() > 0:
+    # This is a bit of a workaround
+    for room in bad_conditions:
+      for condition in bad_conditions[room].claims.true_values():
+        bad_conditions[room].details[condition].condition_existed_at_start  
     review_conditions
   else:
     warn_add_conditions

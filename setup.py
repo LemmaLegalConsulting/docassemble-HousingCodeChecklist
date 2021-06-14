@@ -43,12 +43,12 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.HousingCodeChecklist',
-      version='1.4.2',
+      version='1.4.3',
       description=('Housing code checklist'),
       long_description='# docassemble.HousingCodeChecklist\r\n\r\nHousing code checklist\r\n\r\n## Author\r\n\r\nQuinten Steenhuis, with draft work completed as part of the Assembly Line project\r\nby students and volunteers.\r\n',
       long_description_content_type='text/markdown',
-      author='System Administrator',
-      author_email='admin@lemmalegal.com',
+      author='Quinten Steenhuis',
+      author_email='quinten@nonprofittechy.com',
       license='The MIT License',
       url='https://courtformsonline.org',
       packages=find_packages(),
