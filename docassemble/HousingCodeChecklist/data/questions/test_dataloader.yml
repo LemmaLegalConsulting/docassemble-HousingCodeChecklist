@@ -12,15 +12,33 @@ comment: |
   questions
 variable name: sub_documents
 data:
-  enforce_inspection: a
-  fix_problems: a
-  get_injunction: a
-  get_inspection: a
-  get_report: a
-  organize_tenants: a
-  share_with_tenants: a
-  sue_landlord: a
-  tell_landlord: a 
+  get_report:
+    section_link: b
+    section_label: b
+  tell_landlord: 
+    section_link: b
+    section_label:     b
+  get_inspection: 
+    section_link: b
+    section_label:     b
+  organize_tenants:
+    section_link: b
+    section_label: b
+  share_with_tenants:
+    section_link: b
+    section_label:     b
+  enforce_inspection: 
+    section_link: b
+    section_label: b
+  fix_problems:
+    section_link: b
+    section_label: b
+  get_injunction:
+    section_link: b
+    section_label: b
+  sue_landlord:
+    section_link: b
+    section_label: b
 ---
 sections:
   - section_getting_started: Getting started
