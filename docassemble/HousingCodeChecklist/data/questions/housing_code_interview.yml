@@ -407,6 +407,10 @@ subquestion: |
   Tap "yes" if you want to list problems in another category.
 yesno: bad_conditions.there_is_another
 ---
+code: |
+  if len(bad_conditions.complete_elements()) >= len(available_buttons): 
+    bad_conditions.there_is_another = False
+---
 depends on:
   - bad_conditions[i].claims
 code: |
@@ -417,21 +421,38 @@ id: review conditions
 question: |
   Here is what you told us so far
 subquestion: |  
+  % if len(bad_conditions.complete_elements()): 
+  Click a category below to revisit your choices.
+  
   % for category in bad_conditions:
-  #### [${ category.title() }](${ url_action('bad_conditions["' + category + '"].claims') })
+  #### [${ category.title() if not category is None else 'None' }](${ url_action('bad_conditions["' + category + '"].claims') })
   
   % for index, row in bad_conditions[category].df.iterrows():
   * ${ row['Interview description'] }
   % endfor
   % endfor
+  % endif
   
+  % if len(bad_conditions) < len(available_buttons):
   ${ bad_conditions.add_action() }
+  % endif
 ---
 event: warn_add_conditions
 question: |
   You haven't added any problems yet
 subquestion: |
   You should add at least one problem to continue.
+  % if len(bad_conditions): 
+  
+  Click a category below to revisit your selections.  
+  % endif  
+  % for category in bad_conditions:
+  #### [${ category.title() if not category is None else 'None' }](${ url_action('bad_conditions["' + category + '"].claims') })
+  
+  % for index, row in bad_conditions[category].df.iterrows():
+  * ${ row['Interview description'] }
+  % endfor
+  % endfor  
   
   ${ bad_conditions.add_action() }
 ---
