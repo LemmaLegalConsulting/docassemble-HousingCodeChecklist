@@ -29,7 +29,7 @@ id: patch pre-1.4.8 bug
 mandatory: True
 code: |
   if task_not_yet_performed('erase_none'):
-    if defined('bad_conditios') and None in bad_conditions:
+    if defined('bad_conditions') and None in bad_conditions:
       del bad_conditions[None]
     mark_task_as_performed('erase_none')
 ---
@@ -455,7 +455,7 @@ subquestion: |
   Click a category below to revisit your selections.  
   % endif  
   % for category in bad_conditions:
-  #### [${ category.title() if not category is None else 'None' }](${ url_action('bad_conditions["' + category + '"].claims') })
+  #### [${ category.title() if not category is None else 'None' }](${ url_action('bad_conditions["' + str(category) + '"].claims') })
   
   % for index, row in bad_conditions[category].df.iterrows():
   * ${ row['Interview description'] }
