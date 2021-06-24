@@ -71,6 +71,7 @@ sections:
   - review_conditions: List problems
   - document_choice: Choose a solution
   - provide_details: Answer questions
+  - preview_and_sign: Preview and sign
   - download_conditions_checklist_docs: Download
 ---
 modules:
@@ -83,21 +84,21 @@ code: |
   intro
   users[0].name.first
   starting_task
+  nav.set_section('review_conditions')        
   bad_conditions.gather()
   if bad_conditions.count_conditions() > 0:
     # This is a bit of a workaround
     for room in bad_conditions:
       for condition in bad_conditions[room].claims.true_values():
         bad_conditions[room].details[condition].condition_existed_at_start  
-    nav.set_section('review_conditions')        
     review_conditions
   else:
     warn_add_conditions
   nav.set_section('document_choice')
   screen_ll_knows_problem
-  nav.set_section('provide_details')
-  update_sections_with_selected_documents
+  nav.set_section('provide_details')  
   if not screen_ll_knows_problem:
+    update_sections_with_selected_documents
     nav.set_section(sub_documents['tell_landlord'].get('section_link'))
     users[0].address.address
     users[0].address.geocode()
@@ -105,6 +106,15 @@ code: |
     organizing_interstitial
   else:
     explain_documents
+    update_sections_with_selected_documents  
+  if screen_ll_knows_problem and document_choice['get_report']:
+    nav.set_section(sub_documents['get_report'].get('section_link'))
+    users[0].address.address
+    other_parties.gather()
+    other_parties[0].address.address
+  if screen_ll_knows_problem and document_choice['tell_landlord']:
+    nav.set_section(sub_documents['tell_landlord'].get('section_link'))
+    interview_order_tenant_repair_request
   if screen_ll_knows_problem and document_choice['share_with_tenants']:
     nav.set_section(sub_documents['share_with_tenants'].get('section_link'))
     explain_sharing
@@ -123,13 +133,18 @@ code: |
   if screen_ll_knows_problem and document_choice['get_injunction']:
     nav.set_section(sub_documents['get_injunction'].get('section_link'))
     interview_order_Housing_Temporary_Restraining_Order0002
+  if screen_ll_knows_problem and document_choice['sue_landlord']:
+    nav.set_section(sub_documents['sue_landlord'].get('section_link'))
+  nav.set_section('preview_and_sign')
+  preview_conditions_checklist_docs
+  basic_questions_signature_flow
   nav.set_section('download_conditions_checklist_docs')
   download_conditions_checklist_docs
 ---
 code: |
   new_sections = []
   if screen_ll_knows_problem:
-    for document in document_choice:
+    for document in document_choice.true_values():
       if document in sub_documents:
         new_sections.append({
           sub_documents[document].get('section_link'):  sub_documents[document].get('section_label')
@@ -174,9 +189,12 @@ subquestion: |
 features:
   css:
     - docassemble.ALToolbox:collapse_template.css
+    - styles.css
   javascript:
     - back_button.js
-  # navigation: horizontal    
+  #navigation: horizontal    
+  small screen navigation: dropdown
+  progress bar: False
 ---
 objects:
   - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
@@ -200,35 +218,27 @@ code: |
 ---
 id: intro
 question: |
-  You have the right to a safe and decent home
+  You deserve a safe and decent home
 subquestion: |  
-  A bad housing condition is something in your home that needs to be fixed,
-  like a leaky faucet or not having heat in the winter. Some are little and
-  some are big. But everyone has a right to a safe home--**without** any
-  bad housing conditions.
+  Everyone has a right to a safe home--**without** any
+  bad housing conditions. This website will help you find out if your
+  home is safe according to the [state sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
   
-  #### Who is this website for?
+  If it is not, we can help you solve the problem! Most tenants take about
+  20 minutes to use this tool.
+    
+  #### This website is safe to use
   
-  You can use this website to help yourself or to help someone else. If you are
-  helping a parent, friend, or client, the parent, friend, or client who is over
-  18 needs to sign and file any paperwork that you send to a court.
+  It is illegal for your landlord to do anything to harm you because you
+  ask for repairs. Your landlord cannot raise your rent or try to evict
+  you because you tell them about things that need to be repaired.
   
-  #### Your right not to be retaliated against
-  
-  It is illegal for a landlord to punish you by trying to evict you, raising 
-  your rent, or making a major change in your rental agreement because you:
-  
-  1. Ask for needed repairs,
-  1. Report bad conditions in your apartment or building to the Board of Health
-  or other local officials,
-  1. Join a tenants’ organization, or
-  1. Withhold rent because of bad conditions. 
-  
-  [Read more](https://www.masslegalhelp.org/when-is-eviction-illegal).
+  [Learn about your protection against 
+  retaliation](https://www.masslegalhelp.org/when-is-eviction-illegal).
     
   #### :hand-paper: If you are being evicted
   
-  You can use another free tool, [MADE](https://interviews.gbls.org/start/eviction),
+  You can use another free website, [MADE](https://interviews.gbls.org/start/eviction),
   to fight your eviction in court. It will take about 20-45 minutes. 
   
   ${ action_button_html(url_ask('launch_made'), label="I am being evicted") }
@@ -239,7 +249,9 @@ id: intro affirmation
 question: |
   ${ users.familiar() }, you can do this!
 subquestion: |  
-  This tool will help you solve problems with bad conditions in your home.
+  #### How this works
+  
+  This website will help you solve problems with bad conditions in your home.
   
   1. Read about your landlord's responsibilities.
   1. Track the problems you have in your home.
@@ -572,6 +584,26 @@ code: |
   other_parties[0].address.address
   interview_order_request_housing_inspection = True
 ---
+id: preview_conditions_checklist_docs
+continue button field: preview_conditions_checklist_docs
+question: |
+  Review your documents before you sign
+subquestion: |
+  Tap to open the document below in a new window.
+  
+  If you need to make any changes, tap the navigation labels
+  to revisit the section you want to change.
+  
+  When you are ready, click "next" to add your signature.
+  
+  % if screen_ll_knows_problem:
+  ${ housing_code_bundle.as_pdf(key='preview') }
+
+  % else:
+  ${ tenant_repair_letter_bundle.as_pdf(key='preview') }
+  
+  % endif
+---
 id: download_conditions_checklist_docs
 event: download_conditions_checklist_docs
 question: |
@@ -684,6 +716,7 @@ validation code: |
     other_parties[0].address.address = "[ Landlord's address ]"
     other_parties[0].address.city = "[ Landlord's city ]"
 ---
+id: explain_documents
 continue button field: explain_documents
 question: |
   We may have a few more questions
@@ -717,6 +750,9 @@ code: |
 code: |
   request_housing_inspection_attachment.enabled = screen_ll_knows_problem and document_choice['get_inspection']
 ---
+depends on:
+  - sue_your_landlord_attachment
+  - document_choice['sue_landlord']
 code: |
   sue_your_landlord_attachment.enabled = screen_ll_knows_problem and document_choice['sue_landlord']
 ---
