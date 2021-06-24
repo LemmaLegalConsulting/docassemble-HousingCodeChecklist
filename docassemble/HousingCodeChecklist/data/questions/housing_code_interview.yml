@@ -135,9 +135,10 @@ code: |
     interview_order_Housing_Temporary_Restraining_Order0002
   if screen_ll_knows_problem and document_choice['sue_landlord']:
     nav.set_section(sub_documents['sue_landlord'].get('section_link'))
-  nav.set_section('preview_and_sign')
-  preview_conditions_checklist_docs
-  basic_questions_signature_flow
+  if screen_ll_knows_problem and {'enforce_inspection','get_inspection','get_injunction', 'tell_landlord'}.intersection(document_choice.true_values()):
+    nav.set_section('preview_and_sign')
+    preview_conditions_checklist_docs
+    basic_questions_signature_flow
   nav.set_section('download_conditions_checklist_docs')
   download_conditions_checklist_docs
 ---
@@ -474,7 +475,9 @@ subquestion: |
   % endfor
   % endfor  
   
+  % if len(bad_conditions) < len(available_buttons):
   ${ bad_conditions.add_action() }
+  % endif
 ---
 id: triage
 question: |
