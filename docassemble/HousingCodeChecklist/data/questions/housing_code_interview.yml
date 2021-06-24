@@ -422,9 +422,9 @@ id: there is another condition
 question: |
   Do you want to list problems in another category?
 subquestion: |
-  So far you have told us about problems in "${ comma_and_list(bad_conditions.keys()) }"
+  So far you have reviewed problems in "${ comma_and_list(bad_conditions.keys()) }"
   
-  Tap "yes" if you want to list problems in another category.
+  Tap "yes" if you want to look at problems in another category.
 yesno: bad_conditions.there_is_another
 ---
 code: |
@@ -563,6 +563,7 @@ fields:
       - Fix the problems myself and deduct money from my rent: fix_problems
       - Ask a judge to order my landlord to fix the problem: get_injunction
       - Sue my landlord for money: sue_landlord
+    none of the above: False
     default:
       - get_report
 
@@ -626,6 +627,7 @@ fields:
   - This problem was there when I moved in: bad_conditions[i].details[j].condition_existed_at_start
     datatype: yesno
   - Date this problem started: bad_conditions[i].details[j].start_date
+    max: ${ today().format("yyyy-MM-dd") }
     datatype: date
     help: |
       Use the month and year if that is the best that you know.
@@ -633,6 +635,7 @@ fields:
   - The problem is fixed: bad_conditions[i].details[j].condition_ended
     datatype: yesno
   - Date problem ended: bad_conditions[i].details[j].end_date
+    max: ${ today().format("yyyy-MM-dd") }  
     datatype: date
     show if: bad_conditions[i].details[j].condition_ended
   - Describe the problem using your own words: bad_conditions[i].details[j].description
