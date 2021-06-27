@@ -36,35 +36,37 @@ code: |
 comment: |
   Section labels for child interviews that have follow-up
   questions
-variable name: sub_documents
-data:
-  get_report:
-    section_link: review_checklist
-    section_label: My checklist
-  tell_landlord: 
-    section_link: review_tenant_repair_request
-    section_label: Tell my landlord
-  share_with_tenants:
-    section_link: review_share_with_tenants
-    section_label: Tell other tenants
-  organize_tenants:
-    section_link: organizing_interstitial
-    section_label: Organize    
-  get_inspection: 
-    section_link: review_request_housing_inspection
-    section_label: Get an inspection
-  enforce_inspection: 
-    section_link: review_sanitary_code_template
-    section_label: Enforce an inspection    
-  fix_problems:
-    section_link: review_repair_and_deduct
-    section_label: Fix the problems myself
-  get_injunction:
-    section_link: review_housing_tro
-    section_label: Get a judge's order
-  sue_landlord:
-    section_link: review_sue_landlord
-    section_label: Sue my landlord
+code: |
+  sub_documents = DAOrderedDict('sub_documents')
+  sub_documents['get_report'] = {
+    'section_link': 'review_checklist',
+    'section_label': 'My checklist' }
+  sub_documents['tell_landlord'] = {
+    'section_link': 'review_tenant_repair_request',
+    'section_label': 'Tell my landlord' }
+  sub_documents['share_with_tenants'] = {
+    'section_link': 'review_share_with_tenants',
+    'section_label': 'Tell other tenants' }
+  sub_documents['organize_tenants'] = {
+    'section_link': 'organizing_interstitial',
+    'section_label': 'Organize' }
+  sub_documents['get_inspection'] = {
+    'section_link': 'review_request_housing_inspection',
+    'section_label': 'Get an inspection' }
+  sub_documents['enforce_inspection'] = {
+    'section_link': 'review_sanitary_code_template',
+    'section_label': 'Enforce an inspection' }
+  sub_documents['fix_problems'] = {
+    'section_link': 'review_repair_and_deduct',
+    'section_label': 'Fix the problems myself'}
+  sub_documents['get_injunction'] = {
+    "section_link": "review_housing_tro",
+    "section_label": "Get a judge's order" }
+  sub_documents['sue_landlord'] = {
+    'section_link': 'review_sue_landlord',
+    'section_label': 'Sue my landlord'}
+  sub_documents.auto_gather=False
+  sub_documents.gathered = True
 ---
 sections:
   - section_getting_started: Getting started
@@ -145,8 +147,8 @@ code: |
 code: |
   new_sections = []
   if screen_ll_knows_problem:
-    for document in document_choice.true_values():
-      if document in sub_documents:
+    for document in sub_documents:
+      if document in document_choice.true_values():
         new_sections.append({
           sub_documents[document].get('section_link'):  sub_documents[document].get('section_label')
         })
