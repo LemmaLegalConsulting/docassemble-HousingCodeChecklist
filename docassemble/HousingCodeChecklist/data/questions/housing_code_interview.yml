@@ -6,6 +6,7 @@ include:
   - docassemble.RentalRepairLetter:Repair_Letter_Tenant.yml
   #- docassemble.RentWitholdingLetter:tenant_rent_withholding_letter.yml
   - customized_screens.yml 
+  - language.yml 
 ---
 metadata:
   title: |-
@@ -33,6 +34,7 @@ code: |
       del bad_conditions[None]
     mark_task_as_performed('erase_none')
 ---
+language: en
 comment: |
   Section labels for child interviews that have follow-up
   questions
@@ -68,6 +70,7 @@ code: |
   sub_documents.auto_gather=False
   sub_documents.gathered = True
 ---
+language: en
 sections:
   - section_getting_started: Getting started
   - review_conditions: List problems
@@ -808,4 +811,3 @@ objects:
   - tenant_repair_letter_bundle: ALDocumentBundle.using(elements=[tenant_repair_request_attachment],
       title="Your repair request letter",
       filename="repair_request_letter")
-
