@@ -18,6 +18,9 @@ metadata:
     - Cherise Barandao
     - Christopher Selak    
     - Michael Carroll
+    - Maeve MacGlinchey
+    - Caroline Robinson
+    - Plocket
   logo: |
     <i class="fas fa-house-damage"></i><div class="title"> MADE: UpToCode</div>
   tags:
@@ -772,7 +775,7 @@ code: |
   tenant_repair_request_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
 ---
 code: |
-  sanitary_code_template_attachment.enabled = screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection')
+  sanitary_code_template_attachment.enabled = screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection') and inspection
 ---
 code: |
   Housing_Temporary_Restraining_Order0002_attachment.enabled = screen_ll_knows_problem and document_choice['get_injunction']
