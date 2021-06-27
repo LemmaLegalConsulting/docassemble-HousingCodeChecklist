@@ -547,7 +547,8 @@ fields:
           or apartment number.
       - Get a city inspection: get_inspection
       # - Withhold rent: withhold_rent
-      - Fix the problems myself and deduct money from my rent: fix_problems
+      #- Fix the problems myself and deduct money from my rent: fix_problems
+      # TODO(41): low priority
       - Ask a judge to enforce an order from a housing inspector: enforce_inspection
       - Ask a judge to order my landlord to fix the problem: get_injunction
       - Sue my landlord for money: sue_landlord
@@ -788,14 +789,17 @@ objects:
 attachment:
   variable name: checklist_attachment[i]
   docx template file: Housing_Code_Checklist.docx
+  language: en
 ---
 attachment:
   variable name: conditions_report_attachment[i]
   docx template file: Evidence_packet.docx
+  language: en
 ---
 attachment:
   variable name: request_housing_inspection_attachment[i]
   docx template file: letter_to_request_inspection.docx
+  language: en
 ---
 objects:
   - housing_code_bundle: ALDocumentBundle.using(elements=[
