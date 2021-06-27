@@ -1,0 +1,81 @@
+---
+############################################
+# Language support
+############################################
+---
+modules:
+  - docassemble.LanguagePack.language
+---
+initial: True
+code: |
+  process_action()
+---
+initial: True
+code: |
+  set_language(user_language)
+---
+code: |
+  if url_args.get('lang'):
+    user_language = url_args.get('lang')
+  else:
+    user_language= 'en'
+---
+event: change_language
+code: |
+  if 'lang' in action_arguments():
+    user_language = action_argument('lang')
+    set_language(user_language)
+---
+default screen parts:
+  pre: |
+    % if get_config('debug'):
+    `id: ${ user_info().question_id }`  
+    `Package: ${ user_info().package } ${ package_version_number }; ${ al_version }`
+    <div data-variable="${ encode_name(str( user_info().variable )) }" id="sought_variable" aria-hidden="true" style="display: none;"></div>
+    % endif  
+    ${get_language_list(get_tuples(['en','es']),current=user_language)}
+---
+language: es
+comment: |
+  Section labels for child interviews that have follow-up
+  questions
+code: |
+  sub_documents = DAOrderedDict('sub_documents')
+  sub_documents['get_report'] = {
+    'section_link': 'review_checklist',
+    'section_label': 'Mi lista de problemas' }
+  sub_documents['tell_landlord'] = {
+    'section_link': 'review_tenant_repair_request',
+    'section_label': 'Dile a mi dueño de casa' }
+  sub_documents['share_with_tenants'] = {
+    'section_link': 'review_share_with_tenants',
+    'section_label': 'Dile a otros inquilinos' }
+  sub_documents['organize_tenants'] = {
+    'section_link': 'organizing_interstitial',
+    'section_label': 'Organizar' }
+  sub_documents['get_inspection'] = {
+    'section_link': 'review_request_housing_inspection',
+    'section_label': 'Obtenga una inspección' }
+  sub_documents['enforce_inspection'] = {
+    'section_link': 'review_sanitary_code_template',
+    'section_label': 'Hacer cumplir una inspección' }
+  sub_documents['fix_problems'] = {
+    'section_link': 'review_repair_and_deduct',
+    'section_label': 'Repararlo yo mismo'}
+  sub_documents['get_injunction'] = {
+    "section_link": "review_housing_tro",
+    "section_label": "Obtenga la orden de un juez" }
+  sub_documents['sue_landlord'] = {
+    'section_link': 'review_sue_landlord',
+    'section_label': 'Demandar a mi dueño de casa'}
+  sub_documents.auto_gather=False
+  sub_documents.gathered = True
+---
+language: es
+sections:
+  - section_getting_started: Empezando
+  - review_conditions: Enumere sus problemas 
+  - document_choice: Elige tu solución
+  - provide_details: Responder a las preguntas
+  - preview_and_sign: Firmar
+  - download_conditions_checklist_docs: Descargar  
