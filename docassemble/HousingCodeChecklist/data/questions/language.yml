@@ -46,7 +46,7 @@ code: |
     'section_label': 'Mi lista de problemas' }
   sub_documents['tell_landlord'] = {
     'section_link': 'review_tenant_repair_request',
-    'section_label': 'Dile a mi dueño de casa' }
+    'section_label': 'Dile a mi dueño' }
   sub_documents['share_with_tenants'] = {
     'section_link': 'review_share_with_tenants',
     'section_label': 'Dile a otros inquilinos' }
@@ -67,7 +67,7 @@ code: |
     "section_label": "Obtenga la orden de un juez" }
   sub_documents['sue_landlord'] = {
     'section_link': 'review_sue_landlord',
-    'section_label': 'Demandar a mi dueño de casa'}
+    'section_label': 'Demandar a mi dueño'}
   sub_documents.auto_gather=False
   sub_documents.gathered = True
 ---
