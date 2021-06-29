@@ -366,7 +366,7 @@ data:
     image: trash-alt
   - General Maintenance: General maintenance
     image: tools
-  - Structural Maintenance: Structural maintenance    
+  - Building Structure: Building Structure
     image: hard-hat
   - Kitchen: Kitchen
     image: utensils
