@@ -251,30 +251,51 @@ id: intro
 question: |
   You deserve a safe and decent home
 subquestion: |  
-  Everyone has a right to a safe home--**without** any
-  bad housing conditions. This website will help you find out if your
-  home is safe according to the [state sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
-  
-  If it is not, we can help you solve the problem! Most tenants take about
-  20 minutes to use this tool.
-    
+  Everyone has a right to a safe home--**without** any bad housing conditions.
+  This website will help you find out if your home is safe according to the
+  [state sanitary
+  code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
+  It will help you get the repairs that you need.
+
+  ${ collapse_template(what_problems_can_be_solved) }
+      
   #### This website is safe to use
   
-  It is illegal for your landlord to do anything to harm you because you
-  ask for repairs. Your landlord cannot raise your rent or try to evict
-  you because you tell them about things that need to be repaired.
-  
-  [Learn about your protection against 
-  retaliation](https://www.masslegalhelp.org/when-is-eviction-illegal).
+  It is illegal for your landlord to do anything to harm you because you ask for
+  repairs. Your landlord cannot raise your rent or try to evict you because you
+  tell them about things that need to be repaired. [Read
+  more](https://www.masslegalhelp.org/when-is-eviction-illegal).
     
+  :clock: Most tenants take about 20 minutes to use this website.
+continue button field: intro
+right: |-
   #### :hand-paper: If you are being evicted
   
   You can use another free website, [MADE](https://interviews.gbls.org/start/eviction),
   to fight your eviction in court. It will take about 20-45 minutes. 
   
   ${ action_button_html(url_ask('launch_made'), label="I am being evicted") }
+fields:
+  - To continue, you must accept the [terms of use](https://www.gbls.org/self-help/eviction/terms-of-use): acknowledged_information_use
+    datatype: checkboxes
+    none of the above: False    
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.        
+---
+template: what_problems_can_be_solved
+subject: |-
+  What can I do?
+content: |-
+  You can choose what to do. We can help you:
 
-continue button field: intro
+  * Let your landlord know about the problem.
+  * Call a housing inspector.
+  * Ask a judge to order your landlord to fix the problems.
+  * Sue your landlord in court.
 ---
 id: intro affirmation
 question: |
@@ -283,23 +304,46 @@ subquestion: |
   #### How this works
   
   This website will help you solve problems with bad conditions in your home.
+  <div class="custom-counter">
+  <ol class="custom-counter">
+  <li>Read about your landlord's responsibilities.</li>
+  <li>Track the problems you have in your home.</li>
+  <li>Upload photos or add other information about each problem.</li>
+  <li>Choose a next step to get your landlord to fix the problems.</li>
+  </ol>
+  </div>
   
-  1. Read about your landlord's responsibilities.
-  1. Track the problems you have in your home.
-  1. Upload photos or add other information about each problem.
-  1. Choose a next step to get your landlord to fix the problems.
-
-  You can:
-  
-  * Let your landlord know about the problem.
-  * Call a housing inspector.
-  * Ask a judge to order your landlord to fix the problems.
-  * Sue your landlord in court for money.  
+  ${ collapse_template(what_problems_can_be_solved) }
     
   ${ action_button_html(url_action('learn_more'), label="Read more first") }
   
 continue button field: starting_task  
 continue button label: Get started
+css: |
+  <style>
+    .custom-counter ol {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    }
+
+    .custom-counter li {
+    counter-increment: step-counter;
+    margin-bottom: 10px;
+    }
+
+    .custom-counter li::before {
+    content: counter(step-counter);
+    margin-right: 5px;
+    font-size: 80%;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 50%;
+    }
+  </style>  
+
 ---
 id: track conditions intro
 question: |
@@ -354,36 +398,36 @@ variable name: available_buttons
 data:
   - emergency: Emergency
     image: first-aid
+  - Safety: Safety
+    image: unlock-alt    
+  - Exits: Exits
+    image: door-open
   - Heat: Heating
     image: thermometer-full
   - Bathroom: Bathroom
     image: bath
+  - Kitchen: Kitchen
+    image: utensils    
   - Lighting: Lighting
-    image: lightbulb
+    image: lightbulb    
   - Electricity and Gas: Electricity and Gas
     image: plug
+  - Water: Water
+    image: faucet    
   - Garbage: Garbage
     image: trash-alt
-  - General Maintenance: General maintenance
-    image: tools
-  - Building Structure: Building Structure
-    image: hard-hat
-  - Kitchen: Kitchen
-    image: utensils
   - Lead paint: Lead Paint
     image: paint-roller
   - Rodents and insects: Rodents and insects
     image: bug
-  - Safety: Safety
-    image: door-open
   - Space: Space
     image: house-user
-  - Structural Elements: Structural elements
-    image: hammer
   - Ventilation and Light: Ventilation and light
     image: sun
-  - Water: Water
-    image: faucet
+  - Building Structure: Building Structure
+    image: hard-hat        
+  - General Maintenance: General maintenance
+    image: tools
 question back button: False
 ---
 if: |
