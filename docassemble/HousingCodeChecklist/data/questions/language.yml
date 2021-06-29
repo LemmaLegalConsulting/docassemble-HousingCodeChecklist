@@ -6,6 +6,9 @@
 modules:
   - docassemble.LanguagePack.language
 ---
+code: |
+  metadata_title = "MADE: UpToCode"
+---
 initial: True
 code: |
   process_action()
