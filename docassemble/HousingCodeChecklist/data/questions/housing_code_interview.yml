@@ -297,6 +297,8 @@ content: |-
   * Call a housing inspector.
   * Ask a judge to order your landlord to fix the problems.
   * Sue your landlord in court.
+  
+  ${ action_button_html(url_action('learn_more'), label="Read more first") }  
 ---
 id: intro affirmation
 question: |
@@ -308,15 +310,13 @@ subquestion: |
   <div class="custom-counter">
   <ol class="custom-counter">
   <li>Read about your landlord's responsibilities.</li>
-  <li>Track the problems you have in your home.</li>
+  <li>Track the problems you have in each room of your home.</li>
   <li>Upload photos or add other information about each problem.</li>
   <li>Choose a next step to get your landlord to fix the problems.</li>
   </ol>
   </div>
   
   ${ collapse_template(what_problems_can_be_solved) }
-    
-  ${ action_button_html(url_action('learn_more'), label="Read more first") }
   
 continue button field: starting_task  
 continue button label: Get started
@@ -447,6 +447,7 @@ subquestion: |
 fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
+    required: False
     code: |
       conditions_with_help(dataloader, "24 hours", search_column="Deadline")
     default:
@@ -476,6 +477,7 @@ question: |
 fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
+    required: False
     code: |
       conditions_with_help(dataloader, i)
     default:
@@ -521,12 +523,12 @@ subquestion: |
 ---
 template: review_conditions_template
 content: |
-  % if len(bad_conditions.complete_elements()): 
+  % if len(bad_conditions.elements): 
   Click a category below to revisit your choices.
   Click a problem to edit the time the problem started, upload evidence,
   and make other changes.
   
-  % for category in bad_conditions:
+  % for category in bad_conditions.elements:
   #### [:pencil-alt: ${ category.title() if not category is None else 'None' }](${ url_action('bad_conditions["' + str(category) + '"].claims') })
   
   % for index, row in bad_conditions[category].df.iterrows():
@@ -695,6 +697,16 @@ event: download_conditions_checklist_docs
 question: |
   Your documents are ready
 subquestion: |
+  
+  1. Download and print your documents below. You can also send yourself
+  or someone else a copy of the documents in an email.
+  1. Read the instructions to learn how to file and deliver your
+  documents.
+  % if defined('trial_court'):
+  1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call for instructions at ${ tel(trial_court.phone_number) }.
+  % endif
+  1. You can come back to this website later to take additional steps.
+
   % if screen_ll_knows_problem:
   ${ housing_code_bundle.download_list_html(format="docx") }
 

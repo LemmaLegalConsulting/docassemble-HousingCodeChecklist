@@ -5,6 +5,19 @@
 ###############
 # Used in multiple templates
 ###############
+# ---
+# id: your name
+# question:  |
+#   Your name
+# fields:
+#   - First Name: users[0].name.first
+#   - Middle Name: users[0].name.middle
+#     required: False
+#   - Last Name: users[0].name.last
+#   - Suffix: users[0].name.suffix
+#     code: |
+#       name_suffix()
+#     required: False
 ---
 id: move in date
 question: |
@@ -46,7 +59,7 @@ question: |
   When did you first experience the problems that you want to tell
   ${ other_parties } about?
 subquestion: |
-  The default date is the earliest date of the problems that you selected.
+  The date below will be the date of any problems in your apartment when you first moved in.
   
   Make a change if you need to.
 fields:
@@ -143,7 +156,7 @@ subquestion: |
   
   Tenant groups in Massachusetts:
   
-  * [City Life/Vida Urbana](https://clvu.org) (metro Boston)
+  * [City Life/Vida Urbana](https://www.clvu.org) (metro Boston)
   * [La Colaborativa](https://www.la-colaborativa.org/) (Chelsea and neighboring cities)
   * [Lynn United](http://www.lynnunited.org/housing) (Greater Lynn)
   * [Springfield No One Leaves](http://www.springfieldnooneleaves.org/) (Greater Springfield)
