@@ -212,8 +212,9 @@ question: |
   Stop your eviction
 subquestion: |
   Click the link below to start using MADE, Massachusetts Defense
-  for Eviction in a new window. It will take about 20-45 minutes to finish.
-  When you are done, you can come back here.
+  for Eviction in a new window.
+  
+  When you are finished, you can come back here.
   
   ${ action_button_html('https://interviews.gbls.org/start/eviction', label='Launch MADE') } 
 ---
@@ -272,7 +273,7 @@ right: |-
   #### :hand-paper: If you are being evicted
   
   You can use another free website, [MADE](https://interviews.gbls.org/start/eviction),
-  to fight your eviction in court. It will take about 20-45 minutes. 
+  to fight your eviction in court.
   
   ${ action_button_html(url_ask('launch_made'), label="I am being evicted") }
 fields:
@@ -372,7 +373,7 @@ subquestion: |
   You have already listed problems in these rooms:
   
   % for button in bad_conditions:
-  * [:pencil-alt: ${ button }](${ url_action('bad_conditions["' + button + '"].claims') } )
+  * [:pencil-alt: ${ str(button).capitalize() }](${ url_action('bad_conditions["' + button + '"].claims') } )
   % endfor
   % else:
   Your home is protected by the [state sanitary 
@@ -497,7 +498,7 @@ id: there is another condition
 question: |
   Do you want to list problems in another category?
 subquestion: |
-  So far you have reviewed problems in "${ comma_and_list(bad_conditions.keys()) }"
+  So far you have reviewed problems in ${ comma_and_list([f'"{str(key).capitalize()}"' for key in bad_conditions.keys()]) }.
   
   Tap "yes" if you want to look at problems in another category.
 yesno: bad_conditions.there_is_another
