@@ -116,7 +116,7 @@ class ConditionsDict(DADict):
     """Merge condition details with original DF row"""
     results = pd.concat([self[c].df for c in self])
 
-def conditions_with_help(dataloader: DataLoader, category:str, search_column:str='Category')->List[Dict]:
+def conditions_with_help(dataloader: DataLoader, category:str, search_column:str='Category', language="en")->List[Dict]:
   """
   Function that simplifies grabbing the row, interview description, and full description given
   a specific category.
@@ -126,11 +126,17 @@ def conditions_with_help(dataloader: DataLoader, category:str, search_column:str
   conditions = []
   
   for row in filtered_df.iterrows():
-    conditions.append(
-      {
-        row[0]: row[1]['Interview description'], 
-        "help": row[1]['Help']
-      }
-    )
+    if language == "es":
+      conditions.append(
+        {
+          row[0]: row[1]['Description_ES'], 
+          "help": row[1]['Help_ES']
+        })
+    else:
+      conditions.append(
+        {
+          row[0]: row[1]['Interview description'], 
+          "help": row[1]['Help']
+        })        
     
   return conditions

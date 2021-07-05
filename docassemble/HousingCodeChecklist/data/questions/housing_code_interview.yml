@@ -275,9 +275,9 @@ subquestion: |
   :clock: Most tenants take about 20 minutes to use this website.
 continue button field: intro
 right: |-
-  **If you are being evicted:**[BR]  
-  You can use another free website, [MADE](https://interviews.gbls.org/start/eviction),
-  to fight your eviction in court.
+  **If you are being evicted**[BR]  
+  Use the free [MADE](https://interviews.gbls.org/start/eviction)
+  website to fight your eviction.
   
   ${ action_button_html(url_ask('launch_made'), label="I am being evicted") }
 fields:
@@ -399,6 +399,7 @@ code: |
   bad_conditions.gathered = True
   set_gathered = True
 ---
+language: en
 variable name: available_buttons
 data:
   - emergency: Emergency
@@ -433,7 +434,6 @@ data:
     image: hard-hat        
   - General Maintenance: General maintenance
     image: tools
-question back button: False
 ---
 if: |
   i == 'emergency'
@@ -453,7 +453,7 @@ fields:
     datatype: checkboxes
     required: False
     code: |
-      conditions_with_help(dataloader, "24 hours", search_column="Deadline")
+      conditions_with_help(dataloader, "24 hours", search_column="Deadline", language=user_language)
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
@@ -483,7 +483,7 @@ fields:
     datatype: checkboxes
     required: False
     code: |
-      conditions_with_help(dataloader, i)
+      conditions_with_help(dataloader, i, language=user_language)
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
@@ -916,9 +916,9 @@ attachment:
   docx template file: letter_to_request_inspection.docx
   language: en
 ---
+#      checklist_attachment,
 objects:
   - housing_code_bundle: ALDocumentBundle.using(elements=[
-      checklist_attachment,
       conditions_report_attachment,
       organize_tenants_attachment,      
       tenant_repair_request_attachment,

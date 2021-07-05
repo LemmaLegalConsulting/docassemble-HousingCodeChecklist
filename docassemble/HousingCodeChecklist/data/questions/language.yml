@@ -39,6 +39,43 @@ default screen parts:
     ${get_language_list(get_tuples(['en','es']),current=user_language)}
 ---
 language: es
+variable name: available_buttons
+data:
+  - emergency: Emergencia
+    image: first-aid
+  - Safety: Seguridad
+    image: unlock-alt    
+  - Exits: Salidas
+    image: door-open
+  - Heat: Calefacción
+    image: thermometer-full
+  - Bathroom: Baño
+    image: bath
+  - Kitchen: Cocina
+    image: utensils    
+  - Lighting: La iluminación
+    image: lightbulb    
+  - Electricity and Gas: Electricidad y Gas
+    image: plug
+  - Water: Agua
+    image: faucet    
+  - Garbage: Basura
+    image: trash-alt
+  - Lead paint: Pintura con plomo
+    image: paint-roller
+  - Rodents and insects: Roedores e insectos
+    image: bug
+  - Space: Espacio vital
+    image: house-user
+  - Ventilation and Light: Ventilación
+    image: sun
+  - Building Structure: Estructura de construcción
+    image: hard-hat        
+  - General Maintenance: Mantenimiento
+    image: tools
+
+---
+language: es
 comment: |
   Section labels for child interviews that have follow-up
   questions
