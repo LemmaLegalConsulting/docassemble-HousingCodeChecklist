@@ -358,3 +358,23 @@ subquestion: |
   
   We will leave this form out of your final packet.
 continue button field: kick_out
+---
+event: review_request_housing_inspection
+question: |
+  Review your request for a housing inspection
+review:
+  - Edit: users[0].name.first
+    button: |
+      Your name: ${ users[0] }
+  - Edit: review_conditions
+    button: |
+      ${ review_conditions_template }
+  - Edit: users[0].address.address
+    button: |
+      Your address: ${ users[0].address_block() }      
+  - Edit: other_parties[0].name.first
+    button: |
+      Your landlord's name: ${ other_parties[0] }
+  - Edit: other_parties[0].address.address
+    button: |
+      Your landlord's address: ${ other_parties[0].address.address }      
