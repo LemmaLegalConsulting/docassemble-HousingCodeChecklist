@@ -82,3 +82,4 @@ sections:
   - provide_details: Responder a las preguntas
   - preview_and_sign: Firmar
   - download_conditions_checklist_docs: Descargar  
+auto open: True

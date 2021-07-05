@@ -103,6 +103,7 @@ sections:
   - provide_details: Answer questions
   - preview_and_sign: Preview and sign
   - download_conditions_checklist_docs: Download
+auto open: True  
 ---
 modules:
   - .load_data
@@ -172,6 +173,8 @@ code: |
   nav.set_section('download_conditions_checklist_docs')
   download_conditions_checklist_docs
 ---
+depends on:
+  - user_language
 code: |
   new_sections = []
   if screen_ll_knows_problem:
@@ -270,8 +273,7 @@ subquestion: |
   :clock: Most tenants take about 20 minutes to use this website.
 continue button field: intro
 right: |-
-  #### :hand-paper: If you are being evicted
-  
+  **If you are being evicted:**[BR]  
   You can use another free website, [MADE](https://interviews.gbls.org/start/eviction),
   to fight your eviction in court.
   
@@ -647,7 +649,7 @@ fields:
           or apartment number.
       - Get a city inspection: get_inspection
       # - Withhold rent: withhold_rent
-      - Fix the problems myself and deduct money from my rent: fix_problems
+      #- Fix the problems myself and deduct money from my rent: fix_problems
       - Ask a judge to order my landlord to fix the problem: get_injunction
       - Sue my landlord for money: sue_landlord
     none of the above: False
@@ -741,6 +743,9 @@ fields:
   - Add a photo or other proof of the problem, if you have it: bad_conditions[i].details[j].files
     datatype: files
     required: False
+    image upload type: jpeg        
+    accept: |
+      "image/*,image/png,image/jpeg,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"       
 ---    
 id: names of opposing parties
 question: |
