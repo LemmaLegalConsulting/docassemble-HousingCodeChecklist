@@ -175,6 +175,8 @@ code: |
 ---
 depends on:
   - user_language
+  - screen_ll_knows_problem
+  - document_choice
 code: |
   new_sections = []
   if screen_ll_knows_problem:
