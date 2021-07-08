@@ -1,4 +1,7 @@
 ---
+translations:
+  - housing_code_interview_es.xlsx
+---
 include:
   - docassemble.AssemblyLine:al_package.yml
   - docassemble.MAHousingTRO:housing_tro_to_include.yml   
@@ -7,9 +10,6 @@ include:
   #- docassemble.RentWitholdingLetter:tenant_rent_withholding_letter.yml
   - customized_screens.yml 
   - language.yml 
----
-translations:
-  - housing_code_interview_es.xlsx
 ---
 metadata:
   title: |-
