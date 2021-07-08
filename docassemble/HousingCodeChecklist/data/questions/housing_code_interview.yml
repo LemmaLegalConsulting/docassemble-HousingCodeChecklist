@@ -8,6 +8,9 @@ include:
   - customized_screens.yml 
   - language.yml 
 ---
+translations:
+  - housing_code_interview_es.xlsx
+---
 metadata:
   title: |-
     MADE: UpToCode
