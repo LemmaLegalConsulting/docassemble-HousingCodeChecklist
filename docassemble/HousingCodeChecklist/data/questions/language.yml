@@ -38,6 +38,8 @@ default screen parts:
     % endif  
     ${get_language_list(get_tuples(['en','es']),current=user_language)}
 ---
+depends on:
+  - user_language
 language: es
 variable name: available_buttons
 data:

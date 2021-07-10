@@ -402,6 +402,8 @@ code: |
   bad_conditions.gathered = True
   set_gathered = True
 ---
+depends on:
+  - user_language
 language: en
 variable name: available_buttons
 data:
