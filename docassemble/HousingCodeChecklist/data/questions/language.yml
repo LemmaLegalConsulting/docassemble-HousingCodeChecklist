@@ -43,37 +43,53 @@ depends on:
 language: es
 variable name: available_buttons
 data:
-  - emergency: Emergencia
+  - value: emergency
+    label: Emergencia
     image: first-aid
-  - Safety: Seguridad
+  - value: Safety
+    label: Seguridad
     image: unlock-alt    
-  - Exits: Salidas
+  - value: Exits
+    label: Salidas
     image: door-open
-  - Heat: Calefacción
+  - value: Heat
+    label: Calefacción
     image: thermometer-full
-  - Bathroom: Baño
+  - value: Bathroom
+    label: Baño
     image: bath
-  - Kitchen: Cocina
+  - value: Kitchen
+    label: Cocina
     image: utensils    
-  - Lighting: La iluminación
+  - value: Lighting
+    label: La iluminación
     image: lightbulb    
-  - Electricity and Gas: Electricidad y Gas
+  - value: Electricity and Gas
+    label: Electricidad y Gas
     image: plug
-  - Water: Agua
+  - value: Water
+    label: Agua
     image: faucet    
-  - Garbage: Basura
+  - value: Garbage
+    label: Basura
     image: trash-alt
-  - Lead paint: Pintura con plomo
+  - value: Lead paint
+    label: Pintura con plomo
     image: paint-roller
-  - Rodents and insects: Roedores e insectos
+  - value: Rodents and insects
+    label: Roedores e insectos
     image: bug
-  - Space: Espacio vital
+  - value: Space
+    label: Espacio vital
     image: house-user
-  - Ventilation and Light: Ventilación
+  - value: Ventilation and Light
+    label: Ventilación
     image: sun
-  - Building Structure: Estructura de construcción
+  - value: Building Structure
+    label: Estructura de construcción
     image: hard-hat        
-  - General Maintenance: Mantenimiento
+  - value: General Maintenance
+    label: Mantenimiento
     image: tools
 
 ---

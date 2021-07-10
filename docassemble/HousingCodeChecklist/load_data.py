@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from typing import List, Union, Dict
 
-__all__ = ['DataLoader', 'conditions_with_help', 'ConditionsDict']
+__all__ = ['DataLoader', 'conditions_with_help', 'ConditionsDict', 'tr_category']
 
 class BaseDataLoader(DAObject):
   """
@@ -140,3 +140,10 @@ def conditions_with_help(dataloader: DataLoader, category:str, search_column:str
         })        
     
   return conditions
+
+def tr_category(category, available_buttons):
+  for cat in available_buttons:
+    if category == cat.get('value'):
+      return cat.get('label')
+  return category    
+      
