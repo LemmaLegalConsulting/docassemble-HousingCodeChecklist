@@ -49,6 +49,59 @@ code: |
       del bad_conditions[None]
     mark_task_as_performed('erase_none')
 ---
+objects:
+  - house_image: DAStaticFile.using(filename="house_background.png")
+---
+id: intro
+question: |
+  You deserve a safe and decent home
+subquestion: |  
+  Everyone has a right to a safe home--**without** any bad housing conditions.
+  This website will help you find out if your home is safe according to the
+  [state sanitary
+  code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
+  It will help you get the repairs that you need.
+
+  ${ collapse_template(what_problems_can_be_solved) }
+      
+  #### This website is safe to use
+  
+  It is illegal for your landlord to do anything to harm you because you ask for
+  repairs. Your landlord cannot raise your rent or try to evict you because you
+  tell them about things that need to be repaired. [Read
+  more](https://www.masslegalhelp.org/when-is-eviction-illegal).
+    
+  :clock: Most tenants take about 20 minutes to use this website.
+continue button field: intro
+right: |-
+  **If you are being evicted**[BR]  
+  Use the free [MADE](https://interviews.gbls.org/start/eviction)
+  website to fight your eviction.
+  
+  ${ action_button_html(url_ask('launch_made'), label="I am being evicted") }
+fields:
+  - To continue, you must accept the [terms of use](https://www.gbls.org/self-help/eviction/terms-of-use): acknowledged_information_use
+    datatype: checkboxes
+    none of the above: False    
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.   
+css: |
+  <style>
+    body.question-intro {
+      background-image: url('${ house_image.url_for() }');
+      background-repeat: no-repeat;
+      background-size: 600px 200px;      
+      background-position: right;
+    }
+    #daquestion .question-intro {
+      background-color: rgba(255,255,255,.8);
+    }
+  </style>
+---
 language: en
 comment: |
   Section labels for child interviews that have follow-up
@@ -260,44 +313,6 @@ code: |
 #features:
 #  question back button: False
 ---
-id: intro
-question: |
-  You deserve a safe and decent home
-subquestion: |  
-  Everyone has a right to a safe home--**without** any bad housing conditions.
-  This website will help you find out if your home is safe according to the
-  [state sanitary
-  code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
-  It will help you get the repairs that you need.
-
-  ${ collapse_template(what_problems_can_be_solved) }
-      
-  #### This website is safe to use
-  
-  It is illegal for your landlord to do anything to harm you because you ask for
-  repairs. Your landlord cannot raise your rent or try to evict you because you
-  tell them about things that need to be repaired. [Read
-  more](https://www.masslegalhelp.org/when-is-eviction-illegal).
-    
-  :clock: Most tenants take about 20 minutes to use this website.
-continue button field: intro
-right: |-
-  **If you are being evicted**[BR]  
-  Use the free [MADE](https://interviews.gbls.org/start/eviction)
-  website to fight your eviction.
-  
-  ${ action_button_html(url_ask('launch_made'), label="I am being evicted") }
-fields:
-  - To continue, you must accept the [terms of use](https://www.gbls.org/self-help/eviction/terms-of-use): acknowledged_information_use
-    datatype: checkboxes
-    none of the above: False    
-    minlength: 1
-    choices:
-      - I accept the terms of use.
-    validation messages:
-      minlength: |
-        You cannot continue unless you agree to the terms of use.        
----
 template: what_problems_can_be_solved
 subject: |-
   What can I do?
@@ -413,32 +428,36 @@ variable name: available_buttons
 data:
   - emergency: Emergency
     image: first-aid
-  - Safety: Safety
-    image: unlock-alt    
-  - Exits: Exits
-    image: door-open
-  - Heat: Heating
-    image: thermometer-full
+  - Living area: Living area  
+    image: couch
   - Bathroom: Bathroom
     image: bath
   - Kitchen: Kitchen
-    image: utensils    
+    image: utensils        
+  - Bedroom: Bedroom    
+    image: bed    
+  - Porch and balcony: Porch and balcony
+    image: store    
+  - Exits: Exits
+    image: door-open
+  - Lead paint: Lead Paint
+    image: paint-roller    
+  - Safety: Safety
+    image: unlock-alt        
+  - Heat: Heating
+    image: thermometer-full
   - Lighting: Lighting
     image: lightbulb    
+  - Ventilation and Light: Ventilation and light
+    image: sun    
   - Electricity and Gas: Electricity and Gas
     image: plug
   - Water: Water
     image: faucet    
   - Garbage: Garbage
     image: trash-alt
-  - Lead paint: Lead Paint
-    image: paint-roller
   - Rodents and insects: Rodents and insects
     image: bug
-  - Space: Space
-    image: house-user
-  - Ventilation and Light: Ventilation and light
-    image: sun
   - Building Structure: Building Structure
     image: hard-hat        
   - General Maintenance: General maintenance
