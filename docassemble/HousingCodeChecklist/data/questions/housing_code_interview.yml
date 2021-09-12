@@ -34,7 +34,7 @@ metadata:
     - Kendall Garner
     - David Colarusso    
   logo: |
-    <i class="fas fa-house-damage"></i><div class="title"> MADE: UpToCode</div>
+    <img src="/packagestatic/docassemble.HousingCodeChecklist/uptocode_logo_light.svg"><div class="title"></div>
   tags:
     - HO-00-00-00-00
 comment: |
