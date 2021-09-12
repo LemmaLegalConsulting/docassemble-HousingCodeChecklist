@@ -46,24 +46,39 @@ data:
   - value: emergency
     label: Emergencia
     image: first-aid
-  - value: Safety
-    label: Seguridad
-    image: unlock-alt    
-  - value: Exits
-    label: Salidas
-    image: door-open
-  - value: Heat
-    label: Calefacción
-    image: thermometer-full
+  - value: Living area
+    label: Espacio vital
+    image: couch
+  - value: Bedroom
+    label: Dormitorio    
+    image: bed    
   - value: Bathroom
     label: Baño
     image: bath
   - value: Kitchen
     label: Cocina
-    image: utensils    
+    image: utensils  
+  - value: Porch and balcony
+    label: Porche y balcón
+    image: store    
+  - value: Exits
+    label: Salidas
+    image: door-open
+  - value: Lead paint
+    label: Pintura con plomo
+    image: paint-roller
+  - value: Safety
+    label: Seguridad
+    image: unlock-alt    
+  - value: Heat
+    label: Calefacción
+    image: thermometer-full
   - value: Lighting
     label: La iluminación
     image: lightbulb    
+  - value: Ventilation and Light
+    label: Ventilación
+    image: sun
   - value: Electricity and Gas
     label: Electricidad y Gas
     image: plug
@@ -73,25 +88,15 @@ data:
   - value: Garbage
     label: Basura
     image: trash-alt
-  - value: Lead paint
-    label: Pintura con plomo
-    image: paint-roller
   - value: Rodents and insects
     label: Roedores e insectos
     image: bug
-  - value: Space
-    label: Espacio vital
-    image: house-user
-  - value: Ventilation and Light
-    label: Ventilación
-    image: sun
   - value: Building Structure
     label: Estructura de construcción
     image: hard-hat        
   - value: General Maintenance
     label: Mantenimiento
     image: tools
-
 ---
 language: es
 comment: |
