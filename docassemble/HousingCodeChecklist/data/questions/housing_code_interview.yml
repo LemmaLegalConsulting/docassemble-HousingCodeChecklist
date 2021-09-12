@@ -11,6 +11,9 @@ include:
   - customized_screens.yml 
   - language.yml 
 ---
+features:
+  bootstrap theme: bootstrap.min.css
+---
 metadata:
   title: |-
     MADE: UpToCode
