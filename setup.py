@@ -53,7 +53,7 @@ setup(name='docassemble.HousingCodeChecklist',
       url='https://courtformsonline.org',
       packages=find_packages(),
       namespace_packages=['docassemble'],
-      install_requires=['docassemble.ALMassachusetts>=0.0.7', 'docassemble.AssemblyLine>=2.3.3', 'docassemble.MAHousingTRO', 'docassemble.MassAccess>=0.0.3.1', 'docassemble.RentalRepairLetter', 'docassemble.SanitaryCode'],
+      install_requires=['docassemble.ALMassachusetts>=0.0.7', 'docassemble.AssemblyLine>=2.3.5', 'docassemble.MAHousingTRO', 'docassemble.MassAccess>=0.0.3.1', 'docassemble.RentalRepairLetter', 'docassemble.SanitaryCode'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/HousingCodeChecklist/', package='docassemble.HousingCodeChecklist'),
      )
