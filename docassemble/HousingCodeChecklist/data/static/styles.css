@@ -6,6 +6,12 @@
   min-width: 8em;
 }
 
+/* Playback button sizes to match look of height of left-hand nav menu items */
+/* Font is left alone and thus remains a bit smaller. */
+.media-action.btn {
+  padding: 0.2em 0.75em;
+}
+
 /* ========= Nav for interview sections ========= */
 
 /* === Nav item containers === */
