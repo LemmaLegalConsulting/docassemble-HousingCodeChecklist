@@ -10,6 +10,8 @@
 /* Font is left alone and thus remains a bit smaller. */
 .media-action.btn {
   padding: 0.2em 0.75em;
+  color: #6C757D;
+  border-color: #6C757D;
 }
 
 /* ========= Nav for interview sections ========= */
