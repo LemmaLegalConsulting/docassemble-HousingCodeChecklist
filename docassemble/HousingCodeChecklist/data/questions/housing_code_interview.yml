@@ -369,6 +369,11 @@ css: |
     padding: 3px 8px;
     border-radius: 50%;
     }
+    
+    /* List number counter sizes to match circles in nav items (in styles.css). If one is adjusted, the other will have to be adjusted also. */
+    .custom-counter li::before {
+      padding: 0.5px 6.5px;
+    }
   </style>  
 
 ---
