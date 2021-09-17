@@ -6,8 +6,8 @@
   min-width: 8em;
 }
 
-/* Button sizes to match look of height of left-hand nav menu items */
-/* Font is left alone, which makes it a bit smaller. It's left alone because making the font bigger requires either a second linen for some buttons or making the horizontal padding smaller, which may look less polished */
+/* Playback button sizes to match look of height of left-hand nav menu items */
+/* Font is left alone and thus remains a bit smaller. */
 .media-action.btn {
   padding: 0.2em 0.75em;
 }
