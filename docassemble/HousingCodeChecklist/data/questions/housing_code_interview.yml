@@ -89,18 +89,18 @@ fields:
     validation messages:
       minlength: |
         You cannot continue unless you agree to the terms of use.   
-css: |
-  <style>
-    body.question-intro {
-      background-image: url('${ house_image.url_for() }');
-      background-repeat: no-repeat;
-      background-size: 600px 200px;      
-      background-position: right;
-    }
-    #daquestion .question-intro {
-      background-color: rgba(255,255,255,.8);
-    }
-  </style>
+# css: |
+#   <style>
+#     body.question-intro {
+#       background-image: url('${ house_image.url_for() }');
+#       background-repeat: no-repeat;
+#       background-size: 600px 200px;      
+#       background-position: right;
+#     }
+#     #daquestion .question-intro {
+#       background-color: rgba(255,255,255,.8);
+#     }
+#   </style>
 ---
 language: en
 comment: |
