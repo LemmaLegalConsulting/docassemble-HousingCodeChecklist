@@ -8,7 +8,7 @@
 
 /* Button sizes to match look of height of left-hand nav menu items */
 /* Font is left alone, which makes it a bit smaller. It's left alone because making the font bigger requires either a second linen for some buttons or making the horizontal padding smaller, which may look less polished */
-.btn-group-sm>.btn, .btn-sm {
+.media-action.btn {
   padding: 0.2em 0.75em;
 }
 
