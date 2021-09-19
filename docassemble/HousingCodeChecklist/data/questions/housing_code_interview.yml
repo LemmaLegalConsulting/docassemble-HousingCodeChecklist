@@ -396,6 +396,8 @@ subquestion: |
 #  ${ collapse_template(sue_your_landlord_template) } 
 continue button field: learn_more
 ---  
+# WARNING: This page id needs to stay the same or the selectors for
+# the button styles in styles.css will need to be updated to match
 id: room chooser
 question: |
   Your landlord's responsibilities
