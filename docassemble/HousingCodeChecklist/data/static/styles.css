@@ -110,6 +110,13 @@
 /* ==================================== */
 /* ===== Problem category buttons ===== */
 /* WARNING: These styles are dependant on the page id being "room chooser" */
+
+/* To make up for the margin on the right that every element has
+* because the n-th child psuedo selector is not supported enough. */
+.question-room-chooser .da-field-buttons {
+  margin-right: -1em;
+}
+
 .question-room-chooser .btn-da-custom {
   /* The button style guide gives 15 extra pixels or so to the width
   * of the center column. These styles currently choose to make the
@@ -118,11 +125,13 @@
   /* position relative to anchor the position absolute angle bracket
   * on the right-hand side */
   position: relative;
-  width: 46%;
+  width: 47%;
   height: auto;
   margin-right: 0.7em;
   text-align: left;
   padding: 0.75rem 0.8em;
+  /* Maintain room for the right-hand side angle bracket */
+  padding-right: 1.8em;
   margin-bottom: 0.5em;
   border-radius: 3px;
   color: #6c757d;
@@ -137,20 +146,7 @@
   transform: translate(0, -50%);
 }
 
-/* Hide overflow text so buttons can stay one line high. The text
-* cannot be revealed. The user should never see this. It is meant
-* to be a hint to the developer that they need to shorten the text. */
-/* To work, this element must have an explicit width. */
-.question-room-chooser .btn-da-custom span {
-  width: 16em;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: inline-block;
-  /* To show arrow and have space for ellipsis */
-  padding-right: 1.2em;
-}
-
+/*  */
 .question-room-chooser .btn-da-custom span div {
   display: inline-block;
   margin-right: 0.6em;
