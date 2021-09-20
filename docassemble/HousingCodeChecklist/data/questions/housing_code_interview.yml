@@ -284,6 +284,7 @@ subquestion: |
   ${ action_button_html('https://interviews.gbls.org/start/eviction', label='Launch MADE') } 
 ---
 features:
+  navigation back button: False
   css:
     - docassemble.ALToolbox:collapse_template.css
     - styles.css

@@ -29,13 +29,14 @@ code: |
     user_language = action_argument('lang')
     set_language(user_language)
 ---
+#comment: |
+#    % if get_config('debug'):
+#    `id: ${ user_info().question_id }`  
+#    `Package: ${ user_info().package } ${ package_version_number }; ${ al_version }`
+#    <div data-variable="${ encode_name(str( user_info().variable )) }" id="sought_variable" aria-hidden="true" style="display: none;"></div>
+#    % endif  
 default screen parts:
-  pre: |
-    % if get_config('debug'):
-    `id: ${ user_info().question_id }`  
-    `Package: ${ user_info().package } ${ package_version_number }; ${ al_version }`
-    <div data-variable="${ encode_name(str( user_info().variable )) }" id="sought_variable" aria-hidden="true" style="display: none;"></div>
-    % endif  
+  pre: |    
     ${get_language_list(get_tuples(['en','es']),current=user_language)}
 ---
 depends on:
