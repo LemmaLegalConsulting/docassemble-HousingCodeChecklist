@@ -142,7 +142,9 @@
   padding-right: 1.8em;
   margin-bottom: 0.5em;
   border-radius: 3px;
-  color: #6c757d;
+  color: #343a40; 
+  font-weight: 600;
+  /* color: black; */
 }
 
 .question-room-chooser .btn-da-custom:after {

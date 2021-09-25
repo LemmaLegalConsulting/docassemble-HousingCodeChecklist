@@ -118,11 +118,11 @@ data: !!omap
       section_label: Tell my landlord
       name: Letter to landlord to report bad conditions
       count: 2
-  - share_with_tenants:
-      section_link: review_share_with_tenants
-      section_label: Tell other tenants
-      name: Share your information with other tenants
-      count: 0
+  #- share_with_tenants:
+  #    section_link: review_share_with_tenants
+  #    section_label: Tell other tenants
+  #    name: Share your information with other tenants
+  #    count: 0
   - organize_tenants:
       section_link: organizing_interstitial
       section_label: Organize    
@@ -205,10 +205,10 @@ code: |
   if screen_ll_knows_problem and document_choice['tell_landlord']:
     nav.set_section(sub_documents['tell_landlord'].get('section_link'))
     interview_order_tenant_repair_request
-  if screen_ll_knows_problem and document_choice['share_with_tenants']:
-    nav.set_section(sub_documents['share_with_tenants'].get('section_link'))
-    explain_sharing
-    store_for_tenant_sharing
+  #if screen_ll_knows_problem and document_choice['share_with_tenants']:
+  #  nav.set_section(sub_documents['share_with_tenants'].get('section_link'))
+  #  explain_sharing
+  #  store_for_tenant_sharing
   if screen_ll_knows_problem and document_choice['organize_tenants']:
     nav.set_section(sub_documents['organize_tenants'].get('section_link'))
     users[0].address.address
@@ -659,10 +659,10 @@ fields:
       - Save or print a copy of my checklist for later: get_report
       - Tell my landlord about the problems: tell_landlord
       - Organize with my neighbors or other tenants in my city: organize_tenants
-      - Let other tenants know about my bad landlord: share_with_tenants
-        help: |
-          This will share your address and landlord's name, but not your name
-          or apartment number.
+      #- Let other tenants know about my bad landlord: share_with_tenants
+      #  help: |
+      #    This will share your address and landlord's name, but not your name
+      #    or apartment number.
       - Get a city inspection: get_inspection
       # - Withhold rent: withhold_rent
       #- Fix the problems myself and deduct money from my rent: fix_problems
@@ -681,10 +681,10 @@ fields:
       - Save or print a copy of my checklist for later: get_report
       - Tell my landlord about the problems: tell_landlord
       - Organize with my neighbors or other tenants in my city: organize_tenants
-      - Let other tenants know about my bad landlord: share_with_tenants
-        help: |
-          This will share your address and landlord's name, but not your name
-          or apartment number.
+      #- Let other tenants know about my bad landlord: share_with_tenants
+      #  help: |
+      #    This will share your address and landlord's name, but not your name
+      #    or apartment number.
       - Get a city inspection: get_inspection
       # - Withhold rent: withhold_rent
       #- Fix the problems myself and deduct money from my rent: fix_problems
