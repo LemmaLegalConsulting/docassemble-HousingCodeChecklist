@@ -759,7 +759,7 @@ subquestion: |
 ---
 id: details for this claim
 question: |
-  More information about "${ bad_conditions[i].df.loc[j]['Interview description'].lower().lstrip() }"
+  More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).lower().lstrip() }"
 fields:
   - This problem was there when I moved in: bad_conditions[i].details[j].condition_existed_at_start
     datatype: yesno
