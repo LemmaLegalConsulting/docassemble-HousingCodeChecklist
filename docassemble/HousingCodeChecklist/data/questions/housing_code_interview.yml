@@ -970,8 +970,17 @@ objects:
       title="Your repair request letter",
       filename="repair_request_letter")
 ---
+objects:
+  - celhp_logo: DAStaticFile.using(filename="CELHPlogoFL3x-2-300x171.png")
+---
 template: about_this_interview_version_info
 content: |
+  MADE: UpToCode was funded by the [Covid Eviction Legal Help 
+  Project](https://evictionlegalhelp.org/).
+  
+  [CENTER]
+  ${ celhp_logo }
+
   "${all_variables(special='metadata').get('title','').rstrip()}" version 
   `${ package_version_number }`; AssemblyLine version `${ al_version }`.
   
@@ -988,4 +997,4 @@ content: |
   "${all_variables(special='metadata').get('title','').rstrip()}" includes code 
   from the [Document Assembly Line project](https://suffolklitlab.org/docassemble-AssemblyLine-documentation/docs/). 
   
-  &copy; 2021 Quinten Steenhuis and open source contributors.
+  &copy; 2021 Quinten Steenhuis and open source contributors under an [MIT license](https://opensource.org/licenses/MIT).
