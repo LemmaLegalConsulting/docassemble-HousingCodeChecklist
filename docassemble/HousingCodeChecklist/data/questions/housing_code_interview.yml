@@ -975,12 +975,14 @@ objects:
 ---
 template: about_this_interview_version_info
 content: |
-  MADE: UpToCode was funded by the [Covid Eviction Legal Help 
-  Project](https://evictionlegalhelp.org/).
+  MADE: UpToCode was authored by Quinten Steenhuis in partnership with the
+  Massachusetts Law Reform Institute as part of the COVID Eviction Legal
+  Help Project legal services component.
   
-  [CENTER]
-  ${ celhp_logo }
-
+  Special thanks to La Colaborativa, Northeast Legal Aid, and the community
+  that created and maintained the Housing Code Checklist on which we based
+  this interview.
+  
   "${all_variables(special='metadata').get('title','').rstrip()}" version 
   `${ package_version_number }`; AssemblyLine version `${ al_version }`.
   
@@ -991,7 +993,7 @@ content: |
   [Submit feedback](${ interview_url(i=feedback_form, github_repo=github_repo_name, github_user=github_user, variable=user_info().variable, question_id=user_info().question_id, package_version=package_version_number, local=False,reset=1) } ){:target="_blank"}.
 
   % if all_variables(special='metadata').get('authors'):
-  This form was authored by ${ comma_and_list(all_variables(special='metadata').get('authors')) }.
+  Addititional authors of work incorporated within UpToCode include: ${ comma_and_list(all_variables(special='metadata').get('authors')) }.
   % endif
   
   "${all_variables(special='metadata').get('title','').rstrip()}" includes code 
