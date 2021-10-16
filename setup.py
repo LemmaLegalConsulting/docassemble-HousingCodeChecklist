@@ -43,17 +43,17 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.HousingCodeChecklist',
-      version='1.10.1',
+      version='1.10.2',
       description=('Housing code checklist'),
       long_description='# docassemble.HousingCodeChecklist\r\n\r\nHousing code checklist\r\n\r\n## Author\r\n\r\nQuinten Steenhuis, with draft work completed as part of the Assembly Line project\r\nby students and volunteers.\r\n',
       long_description_content_type='text/markdown',
       author='Quinten Steenhuis',
       author_email='quinten@nonprofittechy.com',
       license='The MIT License',
-      url='https://courtformsonline.org',
+      url='https://madeuptcocode.org',
       packages=find_packages(),
       namespace_packages=['docassemble'],
-      install_requires=['docassemble.ALMassachusetts>=0.0.7', 'docassemble.AssemblyLine>=2.4.0', 'docassemble.MAHousingTRO', 'docassemble.MassAccess>=0.0.3.1', 'docassemble.RentalRepairLetter', 'docassemble.SanitaryCode'],
+      install_requires=['docassemble.ALMassachusetts>=0.0.7', 'docassemble.AssemblyLine>=2.4.1', 'docassemble.MAHousingTRO', 'docassemble.MassAccess>=0.0.3.1', 'docassemble.RentalRepairLetter', 'docassemble.SanitaryCode'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/HousingCodeChecklist/', package='docassemble.HousingCodeChecklist'),
      )

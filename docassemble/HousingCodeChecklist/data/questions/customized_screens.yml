@@ -152,11 +152,18 @@ subquestion: |
   
   ${ tel("413-342-1804") }
   % endif
+  % if users[0].address.norm_long.city == 'Somerville':
+  #### [Community Action Agency of Somerville (CAAS)](https://www.caasomerville.org/community-organizing)
+  66-70 Union Square, Suite 204, Somerville, MA 02143
+  
+  ${ tel("617-539-6282") }
   % endif
+  % endif  
   
   Tenant groups in Massachusetts:
   
   * [City Life/Vida Urbana](https://www.clvu.org) (metro Boston)
+  * [Community Action Agency of Somerville (CAAS)](https://www.caasomerville.org/community-organizing) (Somerville)
   * [La Colaborativa](https://www.la-colaborativa.org/) (Chelsea and neighboring cities)
   * [Lynn United](http://www.lynnunited.org/housing) (Greater Lynn)
   * [Springfield No One Leaves](http://www.springfieldnooneleaves.org/) (Greater Springfield)
