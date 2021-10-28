@@ -4,7 +4,7 @@
 ############################################
 ---
 modules:
-  - docassemble.LanguagePack.language
+  - docassemble.AssemblyLine.language
 ---
 code: |
   metadata_title = "MADE: UpToCode"
