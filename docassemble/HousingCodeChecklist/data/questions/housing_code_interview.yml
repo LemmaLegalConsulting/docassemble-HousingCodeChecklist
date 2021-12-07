@@ -43,13 +43,13 @@ comment: |
   Some of the documents that this interview assembles
   use work done as part of the Assembly Line project.
 ---
-id: patch pre-1.4.8 bug
-mandatory: True
+id: patch interview stats pre 1.11.0
+event: cron_daily
 code: |
-  if task_not_yet_performed('erase_none'):
-    if defined('bad_conditions') and None in bad_conditions:
-      del bad_conditions[None]
-    mark_task_as_performed('erase_none')
+  if task_not_yet_performed('save_statistics'):
+    reconsider('snapshot_interview_state')
+    mark_task_as_performed('save_statistics')
+  # Consider removing after 1/15/2022    
 ---
 objects:
   - house_image: DAStaticFile.using(filename="house_background.png")
@@ -176,6 +176,7 @@ code: |
   intro
   users[0].name.first
   starting_task
+  store_variables_snapshot({'start_time': start_time()})
   nav.set_section('review_conditions')        
   bad_conditions.gather()
   if bad_conditions.count_conditions() > 0:
@@ -188,6 +189,7 @@ code: |
     warn_add_conditions
   nav.set_section('document_choice')
   screen_ll_knows_problem
+  snapshot_interview_state
   nav.set_section('provide_details')  
   if not screen_ll_knows_problem:
     update_sections_with_selected_documents
@@ -231,7 +233,9 @@ code: |
   if screen_ll_knows_problem and {'enforce_inspection','get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
      nav.set_section('preview_and_sign')
      preview_conditions_checklist_docs
-     basic_questions_signature_flow
+     basic_questions_signature_flow     
+  reached_download_screen = True
+  reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
   download_conditions_checklist_docs
 ---
@@ -264,14 +268,30 @@ code: |
   update_sections_with_selected_documents = True
 ---
 code: |
+  stuff_to_snapshot = {
+     'start_time': str(start_time()),
+     'address_city': showifdef('users[0].address.city'),
+     'address_zip': showifdef('users[0].address.zip'),
+     'language': user_language,
+     }
+  
+  if defined('document_choice'):
+    stuff_to_snapshot['reached_document_choice_screen'] = True
+    stuff_to_snapshot['document_choice'] = comma_list(document_choice.true_values())
+  
+  flattened_conditions = []
+  if defined('bad_conditions'):
+    for category in bad_conditions: 
+      flattened_conditions.extend(bad_conditions[category].claims.true_values())
+
+  stuff_to_snapshot['bad_conditions'] = comma_list(flattened_conditions)
+  if defined('reached_download_screen'):
+    stuff_to_snapshot['reached_download_screen'] = True
+  
   store_variables_snapshot(
-    {'landlord': other_parties[0].name.full(), 
-     'address_street': users[0].address.address,
-     'address_city': users[0].address.city,
-     'address_zip': users[0].address.zip,
-     'bad_conditions': bad_conditions}
+      stuff_to_snapshot
      )
-  store_for_tenant_sharing = True
+  snapshot_interview_state = True
 ---
 id: launch made
 continue button field: launch_made
