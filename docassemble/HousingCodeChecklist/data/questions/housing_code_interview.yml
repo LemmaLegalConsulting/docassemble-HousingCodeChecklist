@@ -43,20 +43,13 @@ comment: |
   Some of the documents that this interview assembles
   use work done as part of the Assembly Line project.
 ---
-id: patch pre-1.4.8 bug
-mandatory: True
+id: patch interview stats pre 1.11.0
+event: cron_daily
 code: |
-  if task_not_yet_performed('erase_none'):
-    if defined('bad_conditions') and None in bad_conditions:
-      del bad_conditions[None]
-    mark_task_as_performed('erase_none')
----
-#id: patch interview stats pre 1.11.0
-#mandatory: True
-#code: |
-#  if task_not_yet_performed('save_statistics'):
-#    reconsider('snapshot_interview_state')
-#    mark_task_ask_performed('save_statistics')
+  if task_not_yet_performed('save_statistics'):
+    reconsider('snapshot_interview_state')
+    mark_task_as_performed('save_statistics')
+  # Consider removing after 1/15/2022    
 ---
 objects:
   - house_image: DAStaticFile.using(filename="house_background.png")
