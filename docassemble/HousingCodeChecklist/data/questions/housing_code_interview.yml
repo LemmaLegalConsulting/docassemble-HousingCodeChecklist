@@ -49,9 +49,9 @@ default screen parts:
 id: patch interview stats pre 1.11.0
 event: cron_daily
 code: |
-  if task_not_yet_performed('save_statistics'):
+  if task_not_yet_performed('update_saved_statistics'):
     reconsider('snapshot_interview_state')
-    mark_task_as_performed('save_statistics')
+    mark_task_as_performed('update_saved_statistics')
   # Consider removing after 1/15/2022    
 ---
 objects:
@@ -179,7 +179,7 @@ code: |
   intro
   users[0].name.first
   starting_task
-  store_variables_snapshot({'start_time': start_time()})
+  snapshot_interview_state
   nav.set_section('review_conditions')        
   bad_conditions.gather()
   if bad_conditions.count_conditions() > 0:
@@ -192,13 +192,16 @@ code: |
     warn_add_conditions
   nav.set_section('document_choice')
   screen_ll_knows_problem
-  snapshot_interview_state
+  reconsider('snapshot_interview_state')
   nav.set_section('provide_details')  
   if not screen_ll_knows_problem:
     update_sections_with_selected_documents
     nav.set_section(sub_documents['tell_landlord'].get('section_link'))
     users[0].address.address
-    users[0].address.geocode()
+    try:
+      users[0].address.geocode()
+    except:
+      pass
     nav.set_section(sub_documents['organize_tenants'].get('section_link'))
     organizing_interstitial
   else:
@@ -219,7 +222,10 @@ code: |
   if screen_ll_knows_problem and document_choice['organize_tenants']:
     nav.set_section(sub_documents['organize_tenants'].get('section_link'))
     users[0].address.address
-    users[0].address.geocode()
+    try:
+      users[0].address.geocode()
+    except:
+      pass
     organizing_interstitial
   if screen_ll_knows_problem and document_choice['get_inspection']:
     nav.set_section(sub_documents['get_inspection'].get('section_link'))
@@ -272,29 +278,30 @@ code: |
 ---
 code: |
   stuff_to_snapshot = {
-     'start_time': str(start_time()),
+     'start_time': str(start_time().format('yyyy-MM-dd')),
      'address_city': showifdef('users[0].address.city'),
-     'address_zip': showifdef('users[0].address.zip'),
+     'zip': showifdef('users[0].address.zip'),
      'language': user_language,
-     }
-  
-  if defined('document_choice'):
-    stuff_to_snapshot['reached_document_choice_screen'] = True
+     }    
+  try:  
     stuff_to_snapshot['document_choice'] = comma_list(document_choice.true_values())
-  
+    stuff_to_snapshot['reached_document_choice_screen'] = True
+  except:
+    pass  
   flattened_conditions = []
-  if defined('bad_conditions'):
-    for category in bad_conditions: 
-      flattened_conditions.extend(bad_conditions[category].claims.true_values())
+  for category in bad_conditions.complete_elements():
+    flattened_conditions.extend(bad_conditions[category].claims.true_values())
 
   stuff_to_snapshot['bad_conditions'] = comma_list(flattened_conditions)
   if defined('reached_download_screen'):
     stuff_to_snapshot['reached_download_screen'] = True
   
+  log(stuff_to_snapshot)
   store_variables_snapshot(
-      stuff_to_snapshot
+      data=stuff_to_snapshot, persistent=True
      )
   snapshot_interview_state = True
+  log('saved the snapshot')
 ---
 id: launch made
 continue button field: launch_made
@@ -732,7 +739,10 @@ id: interview_order_request_housing_inspection
 code: |
   users[0].name.first
   users[0].address.address
-  users[0].address.geocode()
+  try:
+    users[0].address.geocode()
+  except:
+    pass
   other_parties[0].name.first
   other_parties[0].address.address
   interview_order_request_housing_inspection = True
