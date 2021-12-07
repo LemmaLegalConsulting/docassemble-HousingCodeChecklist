@@ -33,8 +33,7 @@ metadata:
     - Lance Godard
     - Kendall Garner
     - David Colarusso    
-  logo: |
-    <img src="/packagestatic/docassemble.HousingCodeChecklist/horiztonal-white1.5x_blue.svg"><div class="title"></div>
+
   title url: |
     https://madeuptocode.org
   tags:
@@ -42,6 +41,10 @@ metadata:
 comment: |
   Some of the documents that this interview assembles
   use work done as part of the Assembly Line project.
+---
+default screen parts:
+  logo: |
+    <img src="/packagestatic/docassemble.HousingCodeChecklist/horiztonal-white1.5x_blue.svg"><div class="title"></div>  
 ---
 id: patch interview stats pre 1.11.0
 event: cron_daily
