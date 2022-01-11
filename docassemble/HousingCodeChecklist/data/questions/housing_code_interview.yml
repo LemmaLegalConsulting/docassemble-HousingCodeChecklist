@@ -1,6 +1,8 @@
 ---
 translations:
   - housing_code_interview_es.xlsx
+  - housing_code_interview_pt.xlsx
+  - housing_code_interview_ht.xlsx
 ---
 include:
   - docassemble.AssemblyLine:al_package.yml

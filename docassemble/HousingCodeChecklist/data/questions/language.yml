@@ -37,7 +37,7 @@ code: |
 #    % endif  
 default screen parts:
   pre: |    
-    ${get_language_list(get_tuples(['en','es']),current=user_language)}
+    ${get_language_list(get_tuples(['en','es','pt','ht']),current=user_language)}
 ---
 depends on:
   - user_language
@@ -144,3 +144,248 @@ sections:
   - preview_and_sign: Firmar
   - download_conditions_checklist_docs: Descargar  
 auto open: True
+---
+depends on:
+  - user_language
+language: ht
+variable name: available_buttons
+data:
+  - value: emergency
+    label: Ijans
+    image: first-aid
+  - value: Living area
+    label: Zòn k ap viv  
+    image: couch
+  - value: Bathroom
+    label: Twalèt
+    image: bath
+  - value: Kitchen
+    label: Kizin
+    image: utensils        
+  - value: Bedroom
+    label: Chanm
+    image: bed  
+  - value: Porch and balcony
+    label: Porch ak balkon
+    image: store    
+  - value: Exits
+    label: Sòti
+    image: door-open
+  - value: Lead paint
+    label: Penti plon
+    image: paint-roller    
+  - value: Safety
+    label: Sekirite
+    image: unlock-alt        
+  - value: Heat
+    label: Chalè
+    image: thermometer-full
+  - value: Lighting
+    label: Ekleraj
+    image: lightbulb    
+  - value: Ventilation and Light
+    label: Vantilasyon ak limyè
+    image: sun    
+  - value: Electricity and Gas
+    label: Elektrisite ak gaz
+    image: plug
+  - label: Water
+    value: Dlo
+    image: faucet    
+  - value: Garbage
+    label: Fatra
+    image: trash-alt
+  - value: Rodents and insects
+    label: Rat ak ensèk 
+    image: bug
+  - value: Building Structure
+    label: Estrikti bilding
+    image: hard-hat        
+  - value: General Maintenance
+    label: Antretyen jeneral
+    image: tools
+---
+depends on:
+  - user_language
+language: pt
+variable name: available_buttons
+data:
+  - value: emergency
+    label: Emergência
+    image: first-aid
+  - value: Living area
+    label: Sala-de-estar 
+    image: couch
+  - value: Bathroom
+    label: Banheiro
+    image: bath
+  - value: Kitchen
+    label: Cozinha
+    image: utensils        
+  - value: Bedroom
+    label: Quarto 
+    image: bed    
+  - value: Porch and balcony
+    label: Varanda e sacada 
+    image: store    
+  - value: Exits
+    label: Saídas 
+    image: door-open
+  - value: Lead paint
+    label: Tinta de Chumbo
+    image: paint-roller    
+  - value: Safety
+    label: Segurança 
+    image: unlock-alt        
+  - value: Heat
+    label: Aquecimento
+    image: thermometer-full
+  - value: Lighting
+    label: Iluminação
+    image: lightbulb    
+  - value: Ventilation and Light
+    label: Ventilação e luz
+    image: sun    
+  - value: Electricity and Gas
+    label: Eletricidade e Gás
+    image: plug
+  - value: Water
+    label: Água
+    image: faucet    
+  - value: Garbage
+    label: Lixo
+    image: trash-alt
+  - value: Rodents and insects
+    label: Roedores e insetos
+    image: bug
+  - value: Building Structure
+    label: Estrutura do edifício
+    image: hard-hat        
+  - value: General Maintenance
+    label: Manutenção geral
+    image: tools
+---
+language: pt
+sections:
+  - section_getting_started: Começando
+  - review_conditions: Listar problemas 
+  - document_choice: Escolha uma solução
+  - provide_details: Responder a perguntas 
+  - preview_and_sign: Visualizar e assinar 
+  - download_conditions_checklist_docs: Download
+auto open: True  
+---
+language: ht
+sections:
+  - section_getting_started: Kòmanse
+  - review_conditions: Lis pwoblèm
+  - document_choice: Chwazi yon solisyon
+  - provide_details: Reponn kesyon yo
+  - preview_and_sign: Preview epi siyen
+  - download_conditions_checklist_docs: Telechaje
+auto open: True  
+---
+---
+language: ht
+comment: |
+  Section labels for child interviews that have follow-up
+  questions
+variable name: sub_documents
+data: !!omap
+  - get_report:
+      section_link: review_checklist
+      section_label: Lis verifikasyon mwen an
+      name: Lis Verifikasyon Kòd Lojman ak Rapò Kondisyon
+      count: 2
+  - tell_landlord: 
+      section_link: review_tenant_repair_request
+      section_label: Di mèt kay mwen an 
+      name: Lèt bay mèt kay pou rapòte move kondisyon
+      count: 2
+  #- share_with_tenants:
+  #    section_link: review_share_with_tenants
+  #    section_label: Tell other tenants
+  #    name: Share your information with other tenants
+  #    count: 0
+  - organize_tenants:
+      section_link: organizing_interstitial
+      section_label: Òganize
+      name: Òganize ak lòt lokatè
+      count: 0
+  - get_inspection: 
+      section_link: review_request_housing_inspection
+      section_label: Jwenn yon enspeksyon 
+      name: Mande yon enspeksyon vil la 
+      count: 2
+  #- enforce_inspection: 
+  #    section_link: review_sanitary_code_template
+  #    section_label: Enforce an inspection
+  #    name: Ask a judge to enforce a city inspection
+  #    count: 2
+  - fix_problems:
+      section_link: review_repair_and_deduct
+      section_label: Ranje pwoblèm yo tèt mwen
+      name: Fè reparasyon epi dedwi pri a nan lwaye mwen an
+      count: 0
+  #- get_injunction:
+  #    section_link: review_housing_tro
+  #    section_label: Get a judge's order
+  #    name: Ask a judge for an injunction (order)
+  #    count: 8
+  #- sue_landlord:
+  #    section_link: review_sue_landlord
+  #    section_label: Sue my landlord
+  #    name: Sue my landlord in court
+  #    count: 0
+---
+language: pt
+comment: |
+  Section labels for child interviews that have follow-up
+  questions
+variable name: sub_documents
+data: !!omap
+  - get_report:
+      section_link: review_checklist
+      section_label: Minha lista de verificação 
+      name: Lista de Verificação do Código de Habitação e Relatório de Condição
+      count: 2
+  - tell_landlord: 
+      section_link: review_tenant_repair_request
+      section_label: Diga ao meu senhorio
+      name: Carta ao proprietário para relatar más condições
+      count: 2
+  #- share_with_tenants:
+  #    section_link: review_share_with_tenants
+  #    section_label: Tell other tenants
+  #    name: Share your information with other tenants
+  #    count: 0
+  - organize_tenants:
+      section_link: organizing_interstitial
+      section_label: Organizar
+      name: Organize-se com outros inquilinos 
+      count: 0
+  - get_inspection: 
+      section_link: review_request_housing_inspection
+      section_label: Faça uma inspeção
+      name: Solicite uma vistoria municipal 
+      count: 2
+  #- enforce_inspection: 
+  #    section_link: review_sanitary_code_template
+  #    section_label: Enforce an inspection
+  #    name: Ask a judge to enforce a city inspection
+  #    count: 2
+  - fix_problems:
+      section_link: review_repair_and_deduct
+      section_label: Corrigir os problemas sozinho 
+      name: Fazer reparos e deduzir o custo do meu aluguel 
+      count: 0
+  #- get_injunction:
+  #    section_link: review_housing_tro
+  #    section_label: Get a judge's order
+  #    name: Ask a judge for an injunction (order)
+  #    count: 8
+  #- sue_landlord:
+  #    section_link: review_sue_landlord
+  #    section_label: Sue my landlord
+  #    name: Sue my landlord in court
+  #    count: 0
