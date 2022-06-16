@@ -1,0 +1,294 @@
+---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.ALMassachusetts:al_massachusetts.yml
+---
+mandatory: True
+comment: |
+  This contains metadata that will not be overwritten if this YAML file is included in another
+  file. Each file gets its own key in the interview_metadata dictionary.
+  Most keys are not currently used at runtime, other than "allowed courts".
+code: |
+  interview_metadata
+  if not defined("interview_metadata['Repair_Demand_Letter']"):
+    interview_metadata.initializeObject("Repair_Demand_Letter")
+    interview_metadata["Repair_Demand_Letter"].update({
+      "al_weaver_version": "1.6.2",
+      "generated on": "2022-03-31",
+      "title": "Repair Demand Letter",
+      "short title": "Repair Demand Letter",
+      "description": "A letter of demand for relief under the Consumer Protection Act, Chapter 93A",
+      "original_form": "https://www.masslegalhelp.org/housing/lt1-form-10-repair-demand.pdf",
+      "allowed courts": [
+      ],
+      "categories": [
+      ],        
+      "logic block variable": "interview_order_Repair_Demand_Letter",
+      "attachment block variable": "Repair_Demand_Letter_attachment",
+      "typical role": "na",
+    })
+---
+objects:
+  - other_parties: ALPeopleList.using(ask_number=True,target_number=1)
+  - users: ALPeopleList.using(ask_number=True,target_number=1)
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_Repair_Demand_Letter
+code: |
+  # Set the allowed courts for this interview
+  allowed_courts = interview_metadata["Repair_Demand_Letter"]["allowed courts"]
+  nav.set_section('review_Repair_Demand_Letter')
+  user_role = 'na'
+  users.gather()
+  set_parts(subtitle=str(users))
+  users[0].address.address
+  other_parties.gather()
+  set_progress(20)
+  other_parties[0].address.address
+  time_frame
+  notification_date
+  set_progress(40)
+  if written_notification == True:
+     letter_date
+  tenant_repair_issue_description
+  effect_of_conditions
+  set_progress(60)
+  amount
+  interview_order_Repair_Demand_Letter = True
+---
+comment: |
+  This question is used to introduce your interview. Please customize
+id: Repair_Demand_Letter
+continue button field: Repair_Demand_Letter_intro
+question: |
+  Repair Demand Letter
+subquestion: |
+  This interview will help you write a letter to your landlord asking them to pay you 
+  because they did not fix a problem in your home, such as:
+  
+  - lack of heat,
+  - mice or insects, 
+  - or any other bad housing condition that is your landlord's responsibility.
+  
+  Your landlord has 30 days to answer your letter with an amount that is fair.
+
+  ${ collapse_template(help_93a_damages_explanation) }
+
+  At the end of this interview you will get a letter that you need to deliver to your
+  landlord.
+---
+template: help_93a_damages_explanation
+subject: |
+  What happens if my landlord ignores me?
+content: |
+  If your landlord: 
+  
+  - does not answer the letter, or
+  - answers but does not offer to pay you a fair amount
+  
+  Then a court may decide that you have a right to be paid triple damages.
+  Triple damages means that a judge or jury calculates the amount that the law says 
+  would repay you for the harm caused by your landlord. 
+  Then they multiply it by 3. For example:
+  
+  If | then the amount you would get is
+  ---|-----------------------------------
+  The jury decides that $500 would repay you | $1,500 instead
+
+---
+sets:
+  - other_parties[i].name.first
+  - other_parties[i].name.last
+  - other_parties[i].name.middle
+  - other_parties[i].name.suffix
+id: names of opposing parties
+question: |
+  What is your landlord's name?
+fields:
+  - code: |
+      other_parties[i].name_fields(person_or_business='unsure')
+---
+sets: 
+  - other_parties[0].address.address
+  - other_parties[0].address.city
+id: What is the landlord s address
+question: |
+  What is your landlord's address?
+fields:
+  - code: |
+      other_parties[0].address_fields(default_state="MA")
+---
+id: How long have you lived at the address
+question: |
+  When did you move in to ${ users[0].address.on_one_line() }?
+subquestion: |
+  State the best date that you know. You can say an exact date or an estimate, like
+  "June of 2020".
+fields:
+  - Date you moved in: time_frame
+---
+id: When did you first notify the landlord of the bad conditions
+question: |
+  What is the first time that you told the landlord about the problem?
+subquestion: |
+  State the best date that you know. You can say an exact date or an estimate, like
+  "June of 2020".
+fields:
+  - Date notified landlord: notification_date
+  - Did you notify your landlord about the problem in writing?: written_notification
+    datatype: yesnoradio
+  - When?: letter_date
+    show if: written_notification
+---
+id: Describe the repairs
+question: |
+  What needs to be repaired right now?
+fields:
+  -  Tell the landlord what needs to be fixed: tenant_repair_issue_description
+     label above field: True
+     input type: area
+     rows: 4
+---
+id: How have the conditions affected you and your property
+question: |
+  How have the conditions affected you and your property?
+subquestion: |
+  ${ collapse_template(help_effect_of_conditions) }
+fields:
+  - Explain the effect on you: effect_of_conditions
+    label above field: True
+    input type: area
+    rows: 3
+---
+template: help_effect_of_conditions
+subject: |
+  What can I say?
+content: |
+    Tell your landlord how the problems have hurt you. Use your own words.
+    Include facts about:
+    
+    1. whether you were physically injured or uncomfortable
+    1. any money you had to spend because of the problem
+    1. how having the problems makes you feel (such as disgust, fear, lack of safety)
+    
+    Example: Last week my 4 year old son tripped over the hole in the floor.
+    He scraped his knee and cried for 20 minutes. We don't feel safe in our home.
+---
+id: How much compensation would you like to claim from the landlord?
+question: |
+  What amount of money would be fair for your landlord to pay you?
+subquestion: |
+  The amount that you list here will be your "settlement offer".
+fields:
+  - Settlement offer amount: amount
+    datatype: currency
+    min: 0
+---
+code: |
+  signature_fields = ['users[0].signature']
+---
+id: Repair Demand Letter review screen
+event: review_Repair_Demand_Letter
+question: |
+  Review your answers
+review:
+  - Edit: other_parties.revisit
+    button: |
+      **Other parties**
+
+      % for item in other_parties:
+        * ${ item }
+      % endfor
+  - Edit: effect_of_conditions
+    button: |
+      **Effect of Conditions**:
+      ${ effect_of_conditions }
+  - Edit: notification_date
+    button: |
+      **Date of Notification**:
+      ${ notification_date }
+  - Edit: tenant_repair_issue_description
+    button: |
+      **Tenant repair issue description**:
+      ${ tenant_repair_issue_description }
+  - Edit: amount
+    button: |
+      **Amount**:
+      ${ currency(amount) }
+  - Edit: time_frame
+    button: |
+      **Time frame**:
+      ${ time_frame }
+  - Edit: letter_date
+    button: |
+      **Date of Letter**:
+      ${ letter_date }
+  - Edit: users.revisit
+    button: |
+      **Users**
+
+      % for item in users:
+        * ${ item }
+      % endfor
+---
+continue button field: other_parties.revisit
+question: |
+  Edit other_parties
+subquestion: |
+  ${ other_parties.table }
+
+  ${ other_parties.add_action() }
+---
+table: other_parties.table
+rows: other_parties
+columns:
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - address.address
+  - name.first
+confirm: True
+
+---
+continue button field: users.revisit
+question: |
+  Edit users
+subquestion: |
+  ${ users.table }
+
+  ${ users.add_action() }
+---
+table: users.table
+rows: users
+columns:
+  - Signature: |
+      row_item.signature if defined("row_item.signature") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - signature
+  - address.address
+  - name.first
+confirm: True
+---
+objects:
+  - Repair_Demand_Letter_post_interview_instructions: ALDocument.using(title="Instructions", filename="Repair_Demand_Letter_next_steps.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - Repair_Demand_Letter_attachment: ALDocument.using(title="Repair Demand Letter", filename="Repair_Demand_Letter.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+attachments:
+  - name: Repair Demand Letter post interview instructions
+    filename: Post-interview-instructions     
+    variable name: Repair_Demand_Letter_post_interview_instructions[i]        
+    skip undefined: True
+    docx template file: Repair_Demand_Letter_next_steps.docx
+  - name: Repair Demand Letter attachment
+    filename: Repair_Demand_Letter.docx     
+    variable name: Repair_Demand_Letter_attachment[i]
+    skip undefined: True
+    docx template file: Repair_Demand_Letter.docx
