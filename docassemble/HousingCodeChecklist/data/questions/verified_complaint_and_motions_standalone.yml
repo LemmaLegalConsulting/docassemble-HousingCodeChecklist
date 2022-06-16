@@ -1,0 +1,122 @@
+---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.ALMassachusetts:al_massachusetts.yml
+  - docassemble.MassAccess:massaccess.yml
+  - verified_complaint_and_motions_to_include.yml
+---
+metadata:
+  title: |
+    Verified complaint and motions for temporary restraining order and preliminary injunction
+  short title: |
+    Verified complaint and motions for TRO and PI
+  tags:
+    - HO-00-00-00-00
+  authors:
+    - Sofija Belajcic
+---
+code: |
+  interview_metadata['main_interview_key'] =  'verified_complaint_and_motions'
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "MA"
+---
+code: |
+  github_repo_name =  'docassemble-VerifiedComplaintAndMotions'
+---
+code: |
+  interview_short_title = "File a Verified Complaint Form"
+---
+code: |
+  al_form_type = 'starts_case'
+---
+objects:
+  - other_parties: ALPeopleList.using(there_are_any=True)
+  - users: ALPeopleList.using(there_are_any=True)
+---
+sections:
+  - review_verified_complaint_and_motions: Review your answers
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  verified_complaint_and_motions_intro
+  interview_order_verified_complaint_and_motions
+  signature_date
+  # Save anonymized interview statistics (customize the saved data below)
+  store_variables_snapshot(data={'zip': users[0].address.zip})
+  verified_complaint_and_motions_preview_question
+  basic_questions_signature_flow
+  verified_complaint_and_motions_download
+---
+comment: |
+  This question is used to introduce your interview. Please customize
+id: Verified_complaint_and_motions_for_temporary_restraining_order_and_preliminary_injunction
+continue button field: verified_complaint_and_motions_intro
+question: |
+  Verified complaint and motions for temporary restraining order and preliminary injunction
+subquestion: |
+  This form helps you to tell the judge what the landlord has done and to ask the court to order the landlord to stop the illegal activity.
+---
+id: File a Verified Complaint Form
+question: |
+  File a Verified Complaint Form
+subquestion: |
+  This form help tenants to tell the judge what the landlord has done and ask the court to order the landlord to stop the illegal activity.
+  
+    Step 1. Answer the questions that will fill out your letter
+    Step 2. Review and sign the form
+    Step 3. Download or email the final form. You will need to deliver it on your own.
+continue button field: File_a_Verified_Complaint_Form
+---
+id: preview verified_complaint_and_motions
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_court_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Edit answers" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_verified_complaint_and_motions'), label='Edit answers', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: verified_complaint_and_motions_preview_question    
+---
+code: |
+  signature_fields = ["users[0].signature"]
+
+---
+id: download verified_complaint_and_motions
+event: verified_complaint_and_motions_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_verified_complaint_and_motions'), label='Edit answers', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=True) }
+
+progress: 100
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[verified_complaint_and_motions_post_interview_instructions,verified_complaint_and_motions_attachment], filename="verified_complaint_and_motions.docx_package.pdf", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[verified_complaint_and_motions_attachment], filename="verified_complaint_and_motions.docx_package.pdf", title="All forms to download for your records", enabled=True)

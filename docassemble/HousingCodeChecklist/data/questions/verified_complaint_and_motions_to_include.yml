@@ -1,0 +1,354 @@
+---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+---
+mandatory: True
+comment: |
+  Global interview metadata
+variable name: interview_metadata["verified_complaint_and_motions"]
+data:
+  al_weaver_version: "1.6.3"
+  generated on: "2022-05-10"
+  title: >-
+    Verified complaint and motions for temporary restraining order and preliminary injunction
+  short title: >-
+    Verified complaint and motions for TRO and PI
+  description: |-
+    You may use this form to ask the court to order the landlord to stop behaving illegally
+  original_form: >-
+    https://www.masslegalhelp.org/housing/lt1-form-15-tro.pdf
+  allowed courts: 
+    - "Boston Municipal Court"
+    - "District Court"
+    - "Housing Court"
+    - "Superior Court"
+  categories:
+    - "HO-00-00-00-00"
+  typical role: "plaintiff"
+---
+objects:
+  - verified_complaint_claims: DADict.using(object_type=DAObject, complete_element=["has_claim", "date"], auto_gather=False)
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_verified_complaint_and_motions
+code: |
+  # Set the allowed courts for this interview
+  allowed_courts = interview_metadata["verified_complaint_and_motions"]["allowed courts"]
+  nav.set_section('review_verified_complaint_and_motions')
+  user_role = 'plaintiff'
+  File_a_Verified_Complaint_Form
+  users.gather()
+  other_parties.gather()
+  commercial_landlord_factors
+  verified_complaint_claims.gathered
+  rent_subsidy
+  rent_amount
+  demand_letter_sent
+  trial_court
+  other_parties[0].phone_number
+  users[0].email
+  users[0].address.address
+  users[0].phone_number
+  trial_court.address.address
+  other_parties[0].address.address
+  signature_date
+  interview_order_verified_complaint_and_motions = True
+---
+code: |
+  for claim in verified_complaint_claims_terms:
+    if verified_complaint_claims[claim].has_claim:
+      verified_complaint_claims[claim].date
+      verified_complaint_claims[claim].details
+  verified_complaint_claims.gathered = True
+---
+comment: |
+  This question is used to introduce your interview. Please customize
+id: Verified_complaint_and_motions_for_temporary_restraining_order_and_preliminary_injunction
+continue button field: verified_complaint_and_motions_intro
+question: |
+  Verified complaint and motions for temporary restraining order and preliminary injunction
+subquestion: |
+  This form helps you to tell the judge what the landlord has done and to ask the court to order the landlord to stop the illegal activity.
+---
+id: File a Verified Complaint Form
+question: |
+  File a Verified Complaint Form
+subquestion: |
+  The next set of forms will help you file a complaint against your landlord in court.
+  
+  A judge can order your landlord to:
+  
+  1. Fix problems in your apartment
+  1. Let you back in to the apartment if they illegally locked you out
+  1. Turn back on utility services or start paying for utility services
+  1. Pay you money (damages) based on your rights under Massachusetts law
+  
+continue button field: File_a_Verified_Complaint_Form
+---
+id: 93a screening
+question: |
+  Do you have a commercial landlord?
+subquestion: |
+  
+  ${ collapse_template(explain_93a) }
+
+fields:
+  - "select from the following": commercial_landlord_factors
+    datatype: checkboxes
+    choices:
+      - The building has more than 4 units: more_than_4_units
+      - The landlord is an LLC, company or corporation: is_company
+      - The landlord does not live in the building: landlord_lives_elsewhere
+      - The landlord owns multiple buildings: landlord_owns_multiple_buildings
+---
+template: explain_93a
+subject: |
+  Why does this matter?
+content: |  
+  Massachusetts has special protections for tenants when their landlord is a business.
+  The protections might mean that your landlord has to pay for your attorney if they lose. They
+  also can double or triple the amount of money you can win in a lawsuit.
+  
+  These questions help a judge decide if your landlord is a business or someone just renting an 
+  apartment in their home to reduce their own housing cost.
+---
+code: |
+  landlord_subject_to_consumer_protection_law = commercial_landlord_factors.any_true()
+---
+sets:
+  - other_parties[i].name.first
+  - other_parties[i].name.last
+  - other_parties[i].name.middle
+  - other_parties[i].name.suffix
+id: names of opposing parties
+question: |
+  What is the name of your ${ ordinal(i) } landlord?
+subquestion: |
+  In some cases, you may want to name more than one person.
+fields:
+  - code: |
+      other_parties[i].name_fields(person_or_business='unsure')
+---
+variable name: verified_complaint_claims_terms
+use objects: True
+data:
+  entered without permission: 
+    question: entered your home without permission
+    document: entered my home without permission
+  illegal lockout: 
+    question: locked you out of your home or removed your belongings
+    document: locked me out of my home or removed my belongings without lawful authority
+  utility shutoff: 
+    question: turned off or failed to restore a utility service
+    document: turned off or failed to restore a utility service
+  insufficient notice: 
+    question: did not give you reasonable notice to make repairs
+    document: did not give me reasonable notice to make repairs
+  other:
+    question: other
+    document: other
+---
+id: What did the landlord do
+question: |
+  Is there anything else that your landlord did?
+subquestion: |
+  You have already told us about the housing problems that your landlord did not repair.
+  Is there anything else you would like to tell the court about?
+  
+  My landlord:
+fields:
+  - Entered my home without permission: verified_complaint_claims["entered without permission"].has_claim
+    datatype: yesno
+  - Locked me out of my home or removed my belongings: verified_complaint_claims["illegal lockout"].has_claim
+    datatype: yesno
+  - Turned off or failed to restore a utility service: verified_complaint_claims["utility shutoff"].has_claim
+    datatype: yesno
+  - Did not give me reasonable notice to make repairs: verified_complaint_claims["insufficient notice"].has_claim
+    datatype: yesno
+  - Did something else that violates Massachusetts landlord-tenant law: verified_complaint_claims["other"].has_claim
+    datatype: yesno
+---
+id: claim i details
+question: |
+  % if i == "other":
+  More information about your landlord's violation of landlord-tenant law
+  % else:
+  More information about when your landlord ${ verified_complaint_claims_terms[i] }.
+  % endif
+subquestion: |
+  % if i == "other":
+  Tell us more about what happened with the other violation of landlord-tenant law.
+  % else:
+  Tell us a little more about what happened when your landlord ${ verified_complaint_claims_terms[i] }.
+  % endif
+  
+  About 1-2 sentences is helpful for the judge to know in this document. You can explain more details
+  later.
+fields:  
+  - label above field: True
+    label: |
+      % if i == "other":
+      Complete the sentence
+      **"My landlord also violated the law when they"**
+      % else:
+      Complete the sentence
+      **"My landlord ${ verified_complaint_claims_terms[i]["document"] }. Specifically, "**
+      % endif
+    field: verified_complaint_claims[i].details
+    datatype: area
+    rows: 2
+  - When did this happen? State an exact date or the best date you can remember, such as "last summer": verified_complaint_claims[i].date
+    label above field: True
+---
+id: Do you receive a subsidy for rent?
+question: |
+  Do you receive a subsidy for rent?
+yesno: rent_subsidy
+---
+id: What is your monthly rent
+question: |
+  % if rent_subsidy == True:
+  What is the market rent?
+  % else:
+  What is your monthly rent?
+  % endif
+fields:
+  - "rent amount": rent_amount
+    datatype: currency
+    min: 0
+---
+id: Did you send the landlord a demand letter?
+question: |
+  Did you send the landlord a demand letter?
+subquestion: |
+  This is sometimes called a 93A demand letter, a 30 day demand letter, or a request for settlement.
+fields: 
+  - I sent my landlord a demand letter: demand_letter_sent
+    datatype: yesnoradio
+  - When did you send it?: date_of_93A_notice
+    datatype: date
+    show if: demand_letter_sent
+  - Did you get a reaonable settlement offer within 30 days?: got_93a_settlement_offer
+    datatype: yesnoradio
+    show if: demand_letter_sent
+    help: |
+      Answer "no" if you did not get an offer, or if you believe that the offer was not a reasonable
+      offer to settle your demand.
+---
+code: |
+  addresses_to_search = [user.address for user in users]
+---
+id: verified complaint and motions review screen
+event: review_verified_complaint_and_motions
+question: |
+  Review your answers
+review:
+  - Edit: rent_amount
+    button: |
+      **monthly rent**:
+      ${ currency(rent_amount) }
+  - Edit: date_of_93A_notice
+    button: |
+      **When did you first send the landlord a demand letter?**:
+      ${ date_of_93A_notice }
+  - Edit: other_parties.revisit
+    button: |
+      **Landlords**
+
+      % for item in other_parties:
+        * ${ item }
+      % endfor
+  - Edit: trial_court
+    button: |
+      **trial_court**
+
+      % if defined("trial_court.name.first"):
+      * name: ${ trial_court.name.full() }
+      % endif
+      % if defined("trial_court.address.county"):
+      * address: ${ trial_court.address.block() }
+      % endif
+  - Edit: users.revisit
+    button: |
+      **Users**
+
+      % for item in users:
+        * ${ item }
+      % endfor
+  - Edit: signature_date
+    button: |
+      **signature_date**:
+      ${ signature_date }
+---
+continue button field: other_parties.revisit
+question: |
+  Edit landlords
+subquestion: |
+  ${ other_parties.table }
+
+  ${ other_parties.add_action() }
+---
+table: other_parties.table
+rows: other_parties
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+edit:
+  - name.first
+  - phone_number
+  - address.address
+confirm: True
+
+---
+continue button field: users.revisit
+question: |
+  Edit tenant information
+subquestion: |
+  ${ users.table }
+
+  ${ users.add_action() }
+---
+table: users.table
+rows: users
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Email: |
+      row_item.email if defined("row_item.email") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+edit:
+  - name.first
+  - email
+  - address.address
+  - phone_number
+confirm: True
+---
+objects:
+  - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions", filename="verified_complaint_and_motions_next_steps.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - verified_complaint_and_motions_attachment: ALDocument.using(title="Verified complaint and motions for temporary restraining order and preliminary injunction", filename="verified_complaint_and_motions.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+
+---
+attachments:
+  - name: verified complaint and motions post interview instructions
+    filename: Post-interview-instructions     
+    variable name: verified_complaint_and_motions_post_interview_instructions[i]        
+    skip undefined: True
+    docx template file: verified_complaint_and_motions_next_steps.docx
+  - name: verified complaint and motions attachment
+    filename: verified_complaint_and_motions.docx     
+    variable name: verified_complaint_and_motions_attachment[i]        
+    skip undefined: True
+    docx template file: verified_complaint_and_motions.docx
+---
+code: |
+  # This gets overridden inside UpToCode interview
+  tenant_repair_default_date = next(item.date for item in sorted(verified_complaint_claims.items(), key=lambda y: y.date) if item.has_claim)
