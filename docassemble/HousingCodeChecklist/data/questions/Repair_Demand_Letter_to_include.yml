@@ -55,6 +55,7 @@ code: |
   tenant_repair_issue_description
   effect_of_conditions
   set_progress(60)
+  tenant_rent_amount
   amount
   interview_order_Repair_Demand_Letter = True
 ---
@@ -176,15 +177,212 @@ content: |
     Example: Last week my 4 year old son tripped over the hole in the floor.
     He scraped his knee and cried for 20 minutes. We don't feel safe in our home.
 ---
+id: rent amount
+question: |
+  How much is your rent?
+fields:
+  - How much is the monthly rent for your apartment?: tenant_rent_amount
+    datatype: currency
+  - Do you get a rent subsidy?: tenant_gets_rent_subsidy
+    datatype: yesnoradio
+  - How much is the **market** rent for your apartment?: tenant_market_rent
+    datatype: currency
+    show if: tenant_gets_rent_subsidy
+    help: |
+      Write down the best number you know. If you have a voucher, for example,
+      write down the total market rent: the amount you pay plus the amount your
+      housing authority pays.
+---
 id: How much compensation would you like to claim from the landlord?
 question: |
   What amount of money would be fair for your landlord to pay you?
 subquestion: |
-  The amount that you list here will be your "settlement offer".
+  ${ collapse_template(settlement_offer_93a_explanation) }
+  
+  The amount that you list here will be your "settlement offer".  
+  
 fields:
-  - Settlement offer amount: amount
+  - How do you want to decide the amount to ask for?: damage_calculation_method
+    datatype: radio
+    choices:
+      - Let me do my own math: tenant_calculation
+      - Help me with the math: uptocode_calculation
+  - How serious was the problem?: damage_tenant_severity_estimate
+    datatype: radio
+    choices:
+      - The apartment was unlivable: bqe_total
+        help: |
+          You can choose this answer even if you did not move out.
+      - The problem was serious but not unlivable: bqe_partial
+    show if:      
+      variable: damage_calculation_method
+      is: uptocode_calculation
+  - How long did you have the problem? (Write a number and say if it happened over days, weeks, months or years): tenant_time_estimate
+    datatype: number
+    show if:      
+      variable: damage_calculation_method
+      is: uptocode_calculation
+  - Time period: tenant_time_estimate_denominator
+    choices:
+      - Days: 365
+      - Weeks: 52
+      - Months: 12
+      - Years: 1
+    help: |
+      Choose the **time period** that goes with the **number** you wrote above so that it makes
+      a complete sentence.
+    datatype: integer
+    show if:      
+      variable: damage_calculation_method
+      is: uptocode_calculation
+  - What **percentage** do you think is fair to get off of the rent for each month that you had the problem?: tenant_percentage_estimate
+    datatype: range
+    min: 0
+    max: 100
+    step: 5
+    default: 0
+    show if:
+      variable: damage_calculation_method
+      is: uptocode_calculation
+    help: |
+      It is up to you to ask for a perecentage you think is fair. A less serious problem might 
+      be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
+      The percentage will be multiplied by the number of days, weeks or months you had the problem.
+    validate: |
+      lambda y: y > 0 or validation_error("Select a number greater than 0.")
+  - Settlement offer amount: tenant_self_estimated_damages_amount
     datatype: currency
     min: 0
+    show if:
+      variable: damage_calculation_method
+      is: tenant_calculation
+validation code: |
+  if damage_calculation_method == "uptocode_calculation":
+    if tenant_percentage_estimate < 5:
+      validation_error("Select a percentage that is greater than 0", field="tenant_percentage_estimate")
+---
+depends on:
+  - damage_calculation_method
+  - tenant_confirmed_uptocode_damages_estimate
+  - tenant_self_estimated_damages_amount
+code: |
+  if damage_calculation_method == "uptocode_calculation":
+    amount = tenant_confirmed_uptocode_damages_estimate
+  else:
+    amount = tenant_self_estimated_damages_amount
+---
+id: preview damages calculation
+question: |
+  Your settlement offer estimate
+subquestion: |
+  You told us the following information:
+  
+  * The market rent for your home is ${ bold(currency(tenant_rent_amount if not tenant_gets_rent_subsidy else tenant_market_rent)) }
+  % if damage_tenant_severity_estimate == "bqe_total":
+  * Your home was not livable
+  % else:
+  * Your home was livable despite the serious problems
+  % endif
+  * You had the problem for about ${ tenant_time_estimate } 
+  % if tenant_time_estimate_denominator == 365:
+  days
+  % elif tenant_time_estimate_denominator == 52:
+  weeks
+  % elif tenant_time_estimate_denominator == 12:
+  months
+  % else:
+  years
+  % endif  
+  % if tenant_time_estimate / tenant_time_estimate_denominator >= 6:
+  
+  **Note**: you can usually only ask your landlord to pay you back for a problem that happened in the 
+  last **6** years. Our estimate will assume you had the problem for exactly 6 years.
+  % endif
+  
+  Based on the information that you told us, 
+  % if damage_tenant_severity_estimate == "bqe_total":
+  you could get up to 3 times the monthly rent, or ${ bold(currency(three_times_rent_amount)) }.
+  
+  Or, 
+  % endif  
+  you could get ${ bold(currency(tenant_warranty_estimate)) } based on getting a 
+  ${ tenant_percentage_estimate }% reduction in your rent.  
+fields:
+  - Confirm your settlement offer amount: tenant_confirmed_uptocode_damages_estimate
+    datatype: currency
+    default: |
+      ${ max(three_times_rent_amount, tenant_warranty_estimate) if damage_tenant_severity_estimate == "bqe_total" else tenant_warranty_estimate }
+    help: |
+      % if tenant_time_estimate / tenant_time_estimate_denominator >= 6:
+      **We limited the time period for your rent reduction because it was more than 6 years.**
+      % endif
+      This estimate depends on the information that you gave us. Remember, you should only ask for 
+      the amount that you could get by going to court.      
+---
+depends on:
+  - tenant_rent_amount
+  - tenant_gets_rent_subsidy
+  - tenant_market_rent
+code: |
+  three_times_rent_amount = 3 * (
+      tenant_rent_amount if not tenant_gets_rent_subsidy else tenant_market_rent
+  )
+---
+depends on:
+  - tenant_rent_amount
+  - tenant_gets_rent_subsidy
+  - tenant_market_rent
+  - tenant_time_estimate
+  - tenant_time_estimate_denominator
+  - tenant_percentage_estimate  
+code: |
+  tenant_warranty_estimate = (
+    (tenant_rent_amount if not tenant_gets_rent_subsidy else tenant_market_rent) * 12 * (
+      min(tenant_time_estimate / tenant_time_estimate_denominator, 6)
+    ) * tenant_percentage_estimate / 100
+  )
+---
+template: settlement_offer_93a_explanation
+subject: |
+  What amount can I ask for?
+content: |
+  You can ask for an amount that you can get if you won a case against your landlord in court.
+  Usually, the largest amount you can get in court is 3 times your rent, but tenants who had very serious
+  problems or who had problems over a long period of time may get more.
+  
+  The most common reasons that your landlord may owe you money are:
+  
+  If | Then the amount your landlord might owe you is
+  ---|-----------------------------------------------
+  You had a serious problem that made the apartment practically unlivable | **3 times the market rent** for your apartment, assuming it was in good repair
+  You had **any** problem that your landlord was required to fix | **A fair percentage off of your rent** for each month that you had the problem
+  You had to pay an actual amount out of pocket because of the problem, such as replacing food or personal belongings that were damaged | The **actual amount** you had to pay out of pocket
+  
+  If multiple rules apply, your landlord only owes you the **highest** number to compensate you. You can
+  only collect once for the same problem.
+  
+  Examples of very serious problems that might mean you can get 3 times the market rent include:
+  
+  * Having no heat or hot water during a very cold part of the winter
+  * Having a serious structural problem, like a ceiling collapse
+  * Having a very bad environmental problem, like bed bugs, mold, or a smell that you cannot live
+    with
+
+  But it is up to a judge or jury to decide how serious the problem is.
+
+  For most tenants, the second rule applies. You can ask for a fair amount off of your rent for each 
+  month or part of a month that you had the problem.
+  
+  For example, if you had a problem for a whole month and your rent was $2,000/month, and:
+  
+  If | And a fair percentage to take off of the rent was | Then the amount you can ask for would be
+  ---|---------------------------|-----------------------------------
+  You had a minor problem with mice | 10% | $200
+  You had no heat during a mild part of the winter | 50% | $1000
+  You could not lock your doors | 25% | $500
+
+  The amount that is a fair percentage to ask for depends on your individual circumstances. It is up
+  to a judge or jury to decide what amount is fair.
 ---
 code: |
   signature_fields = ['users[0].signature']
