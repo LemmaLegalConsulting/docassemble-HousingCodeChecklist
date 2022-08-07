@@ -47,7 +47,9 @@ comment: |
 ---
 default screen parts:
   logo: |
-    <img src="/packagestatic/docassemble.HousingCodeChecklist/horiztonal-white1.5x_blue.svg"><div class="title"></div>  
+    <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
+  short logo: |
+    <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
 ---
 id: patch interview stats pre 1.11.0
 event: cron_daily
@@ -55,39 +57,83 @@ code: |
   if task_not_yet_performed('update_saved_statistics'):
     reconsider('snapshot_interview_state')
     mark_task_as_performed('update_saved_statistics')
-  # Consider removing after 1/15/2022    
+  # Consider removing after 1/15/2022
 ---
 objects:
-  - house_image: DAStaticFile.using(filename="house_background.png")
+  - document_problems_image: DAStaticFile.using(filename="dripping_faucet.jpg")
+  - notify_image: DAStaticFile.using(filename="typewriter_luca-onniboni-4v9Kk01mEbY-unsplash1.jpg")
+  - help_in_court_image: DAStaticFile.using(filename="gavel_wesley-tingey-9z9fxr_7Z-k-unsplash_Cropped.jpg")
+  - eviction_image: DAStaticFile.using(filename="apartments_anders-holm-jensen-urYCLa2G4Lg-unsplash_Cropped.jpg")
+  - uptocode_logo: DAStaticFile.using(filename="horiztonal-white1.5x_blue.svg")
 ---
-id: intro
+event: initial_action_display_cards
+id: landing-page
 question: |
   You deserve a safe and decent home
-subquestion: |  
-  Everyone has a right to a safe home--**without** any bad housing conditions.
-  This website will help you find out if your home is safe according to the
-  [state sanitary
-  code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
-  It will help you get the repairs that you need.
+subquestion: |
+  Need help getting repairs in Massachusetts? Choose a task below to get started.
+  
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    <div class="col">
+      <div class="card h-100">
+        <img src="${ document_problems_image.url_for() }" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title" >Document problems</h5>
+          <p class="card-text">Use our checklist to document problems room by room.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Explore room by room</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="${ notify_image.url_for() }" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Tell your landlord or city</h5>
+          <p class="card-text">Answer simple questions to give your landlord or the city legal notice of the problems.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="give_notice") }" role="button">Write a letter</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="${ help_in_court_image.url_for() }" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Get help in court</h5>
+          <p class="card-text">Sue your landlord or ask a judge to order an emergency repair.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="help_in_court") }" role="button">Get help from a judge</a>
+        </div>      
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="${ eviction_image.url_for() }" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Defend against an eviction</h5>
+          <p class="card-text">Getting evicted? Stop the eviction before you do anything else.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="https://interviews.gbls.org/start/eviction/" role="button">Defend against an eviction</a>
+        </div>
+      </div>
+    </div>
+  </div>
+---
+continue button field: intro_and_terms_of_use
+question: |
+  How this site works
+subquestion: |
+  1. List your housing problems.
+  1. Choose a solution, like sending a letter or going to court.
+  1. Answer short questions.
+  1. Print and deliver your documents.
 
-  ${ collapse_template(what_problems_can_be_solved) }
-      
-  #### This website is safe to use
-  
-  It is illegal for your landlord to do anything to harm you because you ask for
-  repairs. Your landlord cannot raise your rent or try to evict you because you
-  tell them about things that need to be repaired. [Read
-  more](https://www.masslegalhelp.org/when-is-eviction-illegal).
-    
-  :clock: Most tenants take about 20 minutes to use this website.
-continue button field: intro
-right: |-
-  **If you are being evicted**[BR]  
-  Use the free [MADE](https://interviews.gbls.org/start/eviction)
-  website to fight your eviction.
-  
-  ${ action_button_html(url_ask('launch_made'), label="I am being evicted") }
-fields:
+  <div class="alert alert-primary" role="alert">
+    <h5 class="alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h5>
+    <p>
+    It is against the law for your landlord to "retaliate" against you. For example,
+    your landlord cannot evict you or raise your rent because you complain
+    about problems in your house. <a href="https://www.masslegalhelp.org/when-is-eviction-illegal">Read more</a>.
+    </p>
+  </div>
+fields:  
   - To continue, you must accept the [terms of use](https://www.gbls.org/self-help/eviction/terms-of-use): acknowledged_information_use
     datatype: checkboxes
     none of the above: False    
@@ -96,19 +142,12 @@ fields:
       - I accept the terms of use.
     validation messages:
       minlength: |
-        You cannot continue unless you agree to the terms of use.   
-# css: |
-#   <style>
-#     body.question-intro {
-#       background-image: url('${ house_image.url_for() }');
-#       background-repeat: no-repeat;
-#       background-size: 600px 200px;      
-#       background-position: right;
-#     }
-#     #daquestion .question-intro {
-#       background-color: rgba(255,255,255,.8);
-#     }
-#   </style>
+        You cannot continue unless you agree to the terms of use.
+---
+event: initial_action
+code: |
+  initial_action_selection = action_argument("selection")
+  initial_action_display_cards = True
 ---
 language: en
 comment: |
@@ -184,7 +223,8 @@ modules:
 mandatory: True
 id: interview order
 code: |
-  intro
+  initial_action_display_cards
+  intro_and_terms_of_use
   users[0].name.first
   starting_task
   snapshot_interview_state
