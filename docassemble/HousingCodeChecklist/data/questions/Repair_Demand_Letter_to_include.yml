@@ -181,10 +181,34 @@ id: rent amount
 question: |
   How much is your rent?
 fields:
-  - How much is the monthly rent for your apartment?: tenant_rent_amount
-    datatype: currency
-  - Do you get a rent subsidy?: tenant_gets_rent_subsidy
+  - What kind of housing do you have?: tenant_housing_type
+    input type: radio
+    choices:      
+      - Public housing authority: public_housing
+      - Section 8 voucher or MRVP: tenant_voucher
+      - Subsidized housing (any other housing where your rent share is based on your income): subsidized_housing
+      - Private housing (all other kinds of housing): private
+  - Do you live in public or subsidized housing?: tenant_has_subsidy
     datatype: yesnoradio
+  - Do you live in public housing, or do you get a rent subsidy like Section 8?: tenant_gets_rent_subsidy
+    datatype: yesnoradio
+    help: |
+      Answer yes if you:
+      
+      - Live in public housing
+      - Live in subsidized housing
+      - Have a rental voucher, like Section 8 or MRVP
+  - What is your share of the rent?: tenant_rent_share
+    datatype: currency
+    show if: tenant_gets_rent_subsidy
+  - What is the total rent the landlord gets (sometimes called the unit rent)?: tenant_market_rent
+    datatype: currency
+    show if: tenant_gets_rent_subsidy
+  - What is the monthly rent for your home?: tenant_market_rent
+    datatype: currency
+    show if: 
+      variable: tenant_gets_rent_subsidy
+      is: False
   - How much is the **market** rent for your apartment?: tenant_market_rent
     datatype: currency
     show if: tenant_gets_rent_subsidy
@@ -192,6 +216,7 @@ fields:
       Write down the best number you know. If you have a voucher, for example,
       write down the total market rent: the amount you pay plus the amount your
       housing authority pays.
+continue button field: tenant_rent_amount      
 ---
 id: How much compensation would you like to claim from the landlord?
 question: |
