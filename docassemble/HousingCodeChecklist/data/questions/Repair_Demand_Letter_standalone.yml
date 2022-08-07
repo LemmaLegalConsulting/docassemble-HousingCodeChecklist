@@ -1,0 +1,141 @@
+---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.ALMassachusetts:al_massachusetts.yml
+  - Repair_Demand_Letter_to_include.yml
+---
+metadata:
+  title: |
+    Repair Demand Letter
+  short title: |
+    Repair Demand Letter
+  authors:
+    - Sofija Belajcic
+---
+code: |
+  interview_metadata['main_interview_key'] =  'Repair_Demand_Letter'
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "MA"
+---
+code: |
+  github_repo_name =  'docassemble-RepairDemandLetter'
+---
+code: |
+  interview_short_title = "Write a repair demand letter to your landlord"
+---
+code: |
+  al_form_type = 'letter'
+---
+objects:
+  - other_parties: ALPeopleList.using(ask_number=True,target_number=1)
+  - users: ALPeopleList.using(ask_number=True,target_number=1)
+---
+sections:
+  - review_Repair_Demand_Letter: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_Repair_Demand_Letter
+code: |
+  nav.set_section('review_Repair_Demand_Letter')
+  user_role = 'na'
+  users.gather()
+  set_parts(subtitle=str(users))
+  users[0].address.address
+  other_parties.gather()
+  set_progress(20)
+  other_parties[0].address.address
+  tenant_movein_date
+  notification_date
+  set_progress(40)
+  if written_notification == True:
+     letter_date
+  tenant_repair_issue_description
+  effect_of_conditions
+  set_progress(60)
+  if damage_calculation_method in ["tenant_calculation", "uptocode_calculation"]:
+    tenant_unit_rent
+    tenant_93a_demand_amount
+  interview_order_Repair_Demand_Letter = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  Repair_Demand_Letter_intro
+  if not is_landlord_subject_to_93a:
+    landlord_is_not_subject_to_93a
+  interview_order_Repair_Demand_Letter
+  signature_date
+  # Save anonymized interview statistics (customize the saved data below)
+  store_variables_snapshot(data={'zip': users[0].address.zip})
+  Repair_Demand_Letter_preview_question
+  basic_questions_signature_flow
+  users[0].signature
+  Repair_Demand_Letter_download
+---
+event: landlord_is_not_subject_to_93a
+decoration: hand
+question: |
+  Your landlord is not **in the business** of being a landlord
+subquestion: |
+  Based on your answers, your landlord is **not** a business.
+
+  You still have rights. But you cannot sue them or ask for money using the
+  [Consumer Protection Law
+  (M.G.L. c. 93A)](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law).
+---
+id: preview Repair_Demand_Letter
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_recipient_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Make changes" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_Repair_Demand_Letter'), label='Make changes', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: Repair_Demand_Letter_preview_question    
+
+---
+id: download Repair_Demand_Letter
+event: Repair_Demand_Letter_download
+question: |
+  Your form is ready to download.
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Make changes" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_Repair_Demand_Letter'), label='Make changes', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=True) }
+
+progress: 100
+
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[Repair_Demand_Letter_post_interview_instructions,Repair_Demand_Letter_attachment], filename="Repair_Demand_Letter.docx_package.pdf", title="All forms to download for your records", enabled=True)
+  - al_recipient_bundle: ALDocumentBundle.using(elements=[Repair_Demand_Letter_attachment], filename="Repair_Demand_Letter.docx_package.pdf", title="All forms to download for your records", enabled=True)
+---
+code: |
+  Repair_Demand_Letter_post_interview_instructions.enabled = True
+  Repair_Demand_Letter_attachment.enabled = True
