@@ -44,8 +44,6 @@ comment: |
   Controls order and branching logic for questions specific to this form
 id: interview_order_Repair_Demand_Letter
 code: |
-  # Set the allowed courts for this interview
-  allowed_courts = interview_metadata["Repair_Demand_Letter"]["allowed courts"]
   nav.set_section('review_Repair_Demand_Letter')
   user_role = 'na'
   users.gather()
@@ -54,7 +52,7 @@ code: |
   other_parties.gather()
   set_progress(20)
   other_parties[0].address.address
-  time_frame
+  tenant_movein_date
   notification_date
   set_progress(40)
   if written_notification == True:
@@ -62,8 +60,9 @@ code: |
   tenant_repair_issue_description
   effect_of_conditions
   set_progress(60)
-  tenant_rent_amount
-  amount
+  if damage_calculation_method in ["tenant_calculation", "uptocode_calculation"]:
+    tenant_unit_rent
+    tenant_93a_demand_amount
   interview_order_Repair_Demand_Letter = True
 ---
 ###################### Main order ######################
@@ -74,6 +73,8 @@ mandatory: True
 code: |
   al_intro_screen
   Repair_Demand_Letter_intro
+  if not is_landlord_subject_to_93a:
+    landlord_is_not_subject_to_93a
   interview_order_Repair_Demand_Letter
   signature_date
   # Save anonymized interview statistics (customize the saved data below)
@@ -82,6 +83,17 @@ code: |
   basic_questions_signature_flow
   users[0].signature
   Repair_Demand_Letter_download
+---
+event: landlord_is_not_subject_to_93a
+decoration: hand
+question: |
+  Your landlord is not **in the business** of being a landlord
+subquestion: |
+  Based on your answers, your landlord is **not** a business.
+
+  You still have rights. But you cannot sue them or ask for money using the
+  [Consumer Protection Law
+  (M.G.L. c. 93A)](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law).
 ---
 id: preview Repair_Demand_Letter
 question: |

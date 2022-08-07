@@ -25,7 +25,7 @@ code: |
       ],        
       "logic block variable": "interview_order_Repair_Demand_Letter",
       "attachment block variable": "Repair_Demand_Letter_attachment",
-      "typical role": "na",
+      "typical role": "plaintiff",
     })
 ---
 objects:
@@ -37,26 +37,22 @@ comment: |
   Controls order and branching logic for questions specific to this form
 id: interview_order_Repair_Demand_Letter
 code: |
-  # Set the allowed courts for this interview
-  allowed_courts = interview_metadata["Repair_Demand_Letter"]["allowed courts"]
   nav.set_section('review_Repair_Demand_Letter')
-  user_role = 'na'
+  user_role = 'plaintiff'
   users.gather()
   set_parts(subtitle=str(users))
   users[0].address.address
   other_parties.gather()
-  set_progress(20)
   other_parties[0].address.address
-  time_frame
+  tenant_movein_date
   notification_date
-  set_progress(40)
   if written_notification == True:
      letter_date
   tenant_repair_issue_description
   effect_of_conditions
-  set_progress(60)
-  tenant_rent_amount
-  amount
+  if damage_calculation_method in ["tenant_calculation", "uptocode_calculation"]:
+    tenant_unit_rent
+    tenant_93a_demand_amount
   interview_order_Repair_Demand_Letter = True
 ---
 comment: |
@@ -111,6 +107,61 @@ fields:
   - code: |
       other_parties[i].name_fields(person_or_business='unsure')
 ---
+id: is_landlord_subject_to_93a
+question: |
+  Is your landlord a business?
+subquestion: |
+  The [consumer protection
+  law](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law)
+  only protects tenants from landlords acting as a **business**.
+fields:
+  - Is your **landlord** a housing authority?: landlord_is_housing_authority
+    datatype: yesnoradio
+    help: |
+      For example, the Boston Housing Authority. Answer "no" if you have a mobile
+      voucher, like a Section 8 or MRVP. Your landlord is the person that you pay
+      rent to, not the agency that administers your voucher.
+  - Is your landlord the city or state?: landlord_is_government
+    datatype: yesnoradio
+    help: |
+      For example, the City of Boston. Answer "no" if you have a mobile
+      voucher, like a Section 8 or MRVP.
+    show if:
+      variable: landlord_is_housing_authority
+      is: False          
+  - Does your landlord live in an apartment or room in your building?: landlord_lives_in_building
+    datatype: yesnoradio
+    show if:
+      variable: landlord_is_government
+      is: False
+  - Does the building your landlord owns have at least 5 apartments?: building_larger_than_4_units
+    datatype: yesnoradio
+    show if: landlord_lives_in_building
+  - Does your landlord own any other rental property?: landlord_rents_other_property
+    datatype: yesnoradio
+    show if: 
+      variable: building_larger_than_4_units
+      is: False
+  - note: |
+      **Good news**. It looks like your landlord is **in the business** of being
+      a landlord. That means that they need to follow the consumer protection law.
+    js show if: |
+      val("landlord_is_housing_authority") === false && val("landlord_is_government") === false && (val("landlord_lives_in_building") === false || (val("building_larger_than_4_units") || val("landlord_rents_other_property")) )
+---
+code: |
+  is_landlord_subject_to_93a = not landlord_is_housing_authority and not landlord_is_government and (not landlord_lives_in_building or (building_larger_than_4_units or landlord_rents_other_property))
+---
+continue button field: landlord_is_not_subject_to_93a
+decoration: hand
+question: |
+  Your landlord is not **in the business** of being a landlord
+subquestion: |
+  Based on your answers, your landlord is **not** a business.
+
+  You still have rights. But you cannot sue them or ask for money using the
+  [Consumer Protection Law
+  (M.G.L. c. 93A)](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law).
+---
 sets: 
   - other_parties[0].address.address
   - other_parties[0].address.city
@@ -128,7 +179,9 @@ subquestion: |
   State the best date that you know. You can say an exact date or an estimate, like
   "June of 2020".
 fields:
-  - Date you moved in: time_frame
+  - I have been a tenant at this address since: tenant_movein_date
+    validate: |
+      lambda y: re.search(r"\d\d\d\d", y) or validation_error("Include a year, like \"June of 2020\"")
 ---
 id: When did you first notify the landlord of the bad conditions
 question: |
@@ -138,9 +191,13 @@ subquestion: |
   "June of 2020".
 fields:
   - Date notified landlord: notification_date
+    validate: |
+      lambda y: re.search(r"\d\d\d\d", y) or validation_error("Include a year, like \"June of 2020\"")
   - Did you notify your landlord about the problem in writing?: written_notification
     datatype: yesnoradio
   - When?: letter_date
+    validate: |
+      lambda y: re.search(r"\d\d\d\d", y) or validation_error("Include a year, like \"June of 2020\"")
     show if: written_notification
 ---
 id: Describe the repairs
@@ -180,43 +237,42 @@ content: |
 id: rent amount
 question: |
   How much is your rent?
+subquestion: |
+  ${ collapse_template(why_do_you_need_my_rent_amount_template) }
 fields:
-  - What kind of housing do you have?: tenant_housing_type
-    input type: radio
-    choices:      
-      - Public housing authority: public_housing
-      - Section 8 voucher or MRVP: tenant_voucher
-      - Subsidized housing (any other housing where your rent share is based on your income): subsidized_housing
-      - Private housing (all other kinds of housing): private
-  - Do you live in public or subsidized housing?: tenant_has_subsidy
-    datatype: yesnoradio
-  - Do you live in public housing, or do you get a rent subsidy like Section 8?: tenant_gets_rent_subsidy
+  - Do you get a rent subsidy like Section 8?: tenant_gets_rent_subsidy
     datatype: yesnoradio
     help: |
-      Answer yes if you:
+      Answer "yes" if you:
       
-      - Live in public housing
       - Live in subsidized housing
       - Have a rental voucher, like Section 8 or MRVP
   - What is your share of the rent?: tenant_rent_share
     datatype: currency
     show if: tenant_gets_rent_subsidy
-  - What is the total rent the landlord gets (sometimes called the unit rent)?: tenant_market_rent
+  - What is the total rent the landlord gets (sometimes called the unit rent)?: tenant_unit_rent
     datatype: currency
     show if: tenant_gets_rent_subsidy
-  - What is the monthly rent for your home?: tenant_market_rent
+    help: |
+      Write the total rent your landlord gets for your apartment. This is
+      normally the amount that the landlord advertised the apartment for.
+      
+      It may include a portion paid by you and a portion paid by your housing
+      authority. It is okay to write the best number that you know.
+  - What is the monthly rent for your home?: tenant_unit_rent
     datatype: currency
     show if: 
       variable: tenant_gets_rent_subsidy
       is: False
-  - How much is the **market** rent for your apartment?: tenant_market_rent
-    datatype: currency
-    show if: tenant_gets_rent_subsidy
-    help: |
-      Write down the best number you know. If you have a voucher, for example,
-      write down the total market rent: the amount you pay plus the amount your
-      housing authority pays.
-continue button field: tenant_rent_amount      
+---
+template: why_do_you_need_my_rent_amount_template
+subject: |
+  Why do you need my rent amount?
+content: |
+  Your landlord may owe you money to repay you for the lost value of your home.
+
+  The lost value of your home depends on the rent amount that your landlord can 
+  get for the apartment.
 ---
 id: How much compensation would you like to claim from the landlord?
 question: |
@@ -224,25 +280,27 @@ question: |
 subquestion: |
   ${ collapse_template(settlement_offer_93a_explanation) }
   
-  The amount that you list here will be your "settlement offer".  
-  
+  ${ collapse_template(what_if_problem_over_multiple_periods) }
+
+  The amount that you list here will be your "settlement offer".    
 fields:
   - How do you want to decide the amount to ask for?: damage_calculation_method
     datatype: radio
     choices:
       - Let me do my own math: tenant_calculation
       - Help me with the math: uptocode_calculation
-  - How serious was the problem?: damage_tenant_severity_estimate
+      - Do not ask for a specific settlement amount: skip_amount
+  - How serious were the problems?: damage_tenant_severity_estimate
     datatype: radio
     choices:
       - The apartment was unlivable: bqe_total
         help: |
           You can choose this answer even if you did not move out.
-      - The problem was serious but not unlivable: bqe_partial
+      - The problems were serious but not unlivable: bqe_partial
     show if:      
       variable: damage_calculation_method
       is: uptocode_calculation
-  - How long did you have the problem? (Write a number and say if it happened over days, weeks, months or years): tenant_time_estimate
+  - How long did you have the problems? (Write a number and say if it happened over days, weeks, months or years): tenant_time_estimate
     datatype: number
     show if:      
       variable: damage_calculation_method
@@ -260,7 +318,7 @@ fields:
     show if:      
       variable: damage_calculation_method
       is: uptocode_calculation
-  - What **percentage** do you think is fair to get off of the rent for each month that you had the problem?: tenant_percentage_estimate
+  - What **percentage** do you think is fair to get off of the rent for each month that you had the problems?: tenant_percentage_estimate
     datatype: range
     min: 0
     max: 100
@@ -270,7 +328,7 @@ fields:
       variable: damage_calculation_method
       is: uptocode_calculation
     help: |
-      It is up to you to ask for a perecentage you think is fair. A less serious problem might 
+      It is up to you to ask for a percentage you think is fair. A less serious problem might 
       be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
       The percentage will be multiplied by the number of days, weeks or months you had the problem.
     validate: |
@@ -286,29 +344,59 @@ validation code: |
     if tenant_percentage_estimate < 5:
       validation_error("Select a percentage that is greater than 0", field="tenant_percentage_estimate")
 ---
+template: what_if_problem_over_multiple_periods
+subject: |
+  What if the problems happened at different times?
+content: |
+  Use this tool to come up with your best estimate of the
+  amount to ask for. It does not need to be exact.
+---
 depends on:
   - damage_calculation_method
   - tenant_confirmed_uptocode_damages_estimate
   - tenant_self_estimated_damages_amount
 code: |
   if damage_calculation_method == "uptocode_calculation":
-    amount = tenant_confirmed_uptocode_damages_estimate
+    tenant_93a_demand_amount = tenant_confirmed_uptocode_damages_estimate
   else:
-    amount = tenant_self_estimated_damages_amount
+    tenant_93a_demand_amount = tenant_self_estimated_damages_amount
 ---
 id: preview damages calculation
 question: |
-  Your settlement offer estimate
+  Your settlement request calculation
 subquestion: |
+  Based on the information you gave us, you can ask for
+  ${ bold(currency(max(three_times_rent_amount, tenant_warranty_estimate) if damage_tenant_severity_estimate == "bqe_total" else tenant_warranty_estimate)) }.
+
+  ${ collapse_template(damage_calculation_template) }
+
+  Look at the calculation below. Make any changes that you need to the amount you
+  want to ask your landlord to pay you.
+fields:
+  - Confirm your settlement request amount: tenant_confirmed_uptocode_damages_estimate
+    datatype: currency
+    default: |
+      ${ max(three_times_rent_amount, tenant_warranty_estimate) if damage_tenant_severity_estimate == "bqe_total" else tenant_warranty_estimate }
+    help: |
+      % if tenant_time_estimate / tenant_time_estimate_denominator >= 6:
+      **We limited the time period for your rent reduction because it was more than 6 years.**
+      % endif
+      This estimate depends on the information that you gave us. Remember, you should only ask for 
+      the amount that you could get by going to court.      
+---
+template: damage_calculation_template
+subject: |
+  Show me the math
+content: |
   You told us the following information:
   
-  * The market rent for your home is ${ bold(currency(tenant_rent_amount if not tenant_gets_rent_subsidy else tenant_market_rent)) }
+  * The total rent for your home is ${ currency(tenant_unit_rent) }
   % if damage_tenant_severity_estimate == "bqe_total":
   * Your home was not livable
   % else:
   * Your home was livable despite the serious problems
   % endif
-  * You had the problem for about ${ tenant_time_estimate } 
+  * You had the problem for about ${ f"{tenant_time_estimate:g}" }
   % if tenant_time_estimate_denominator == 365:
   days
   % elif tenant_time_estimate_denominator == 52:
@@ -325,44 +413,30 @@ subquestion: |
   % endif
   
   Based on the information that you told us, 
-  % if damage_tenant_severity_estimate == "bqe_total":
-  you could get up to 3 times the monthly rent, or ${ bold(currency(three_times_rent_amount)) }.
   
-  Or, 
+  % if damage_tenant_severity_estimate == "bqe_total":
+  the "[breach of quiet enjoyment](https://www.masslegalhelp.org/housing/problems/deciding-to-go-to-court/civil-lawsuit#breach)" number is 3 times the monthly rent, or ${ bold(currency(three_times_rent_amount)) }.
+  
+  and 
   % endif  
-  you could get ${ bold(currency(tenant_warranty_estimate)) } based on getting a 
-  ${ tenant_percentage_estimate }% reduction in your rent.  
-fields:
-  - Confirm your settlement offer amount: tenant_confirmed_uptocode_damages_estimate
-    datatype: currency
-    default: |
-      ${ max(three_times_rent_amount, tenant_warranty_estimate) if damage_tenant_severity_estimate == "bqe_total" else tenant_warranty_estimate }
-    help: |
-      % if tenant_time_estimate / tenant_time_estimate_denominator >= 6:
-      **We limited the time period for your rent reduction because it was more than 6 years.**
-      % endif
-      This estimate depends on the information that you gave us. Remember, you should only ask for 
-      the amount that you could get by going to court.      
+  the "[warranty of habitability](https://www.masslegalhelp.org/housing/problems/deciding-to-go-to-court/civil-lawsuit#bad_conditions)" number is  ${ bold(currency(tenant_warranty_estimate)) } based on getting a 
+  ${ tenant_percentage_estimate }% reduction in your rent.
 ---
 depends on:
-  - tenant_rent_amount
+  - tenant_unit_rent
   - tenant_gets_rent_subsidy
-  - tenant_market_rent
 code: |
-  three_times_rent_amount = 3 * (
-      tenant_rent_amount if not tenant_gets_rent_subsidy else tenant_market_rent
-  )
+  three_times_rent_amount = 3 * tenant_unit_rent
 ---
 depends on:
-  - tenant_rent_amount
+  - tenant_unit_rent
   - tenant_gets_rent_subsidy
-  - tenant_market_rent
   - tenant_time_estimate
   - tenant_time_estimate_denominator
   - tenant_percentage_estimate  
 code: |
   tenant_warranty_estimate = (
-    (tenant_rent_amount if not tenant_gets_rent_subsidy else tenant_market_rent) * 12 * (
+    tenant_unit_rent * 12 * (
       min(tenant_time_estimate / tenant_time_estimate_denominator, 6)
     ) * tenant_percentage_estimate / 100
   )
@@ -371,33 +445,13 @@ template: settlement_offer_93a_explanation
 subject: |
   What amount can I ask for?
 content: |
-  You can ask for an amount that you can get if you won a case against your landlord in court.
-  Usually, the largest amount you can get in court is 3 times your rent, but tenants who had very serious
-  problems or who had problems over a long period of time may get more.
-  
-  The most common reasons that your landlord may owe you money are:
-  
-  If | Then the amount your landlord might owe you is
-  ---|-----------------------------------------------
-  You had a serious problem that made the apartment practically unlivable | **3 times the market rent** for your apartment, assuming it was in good repair
-  You had **any** problem that your landlord was required to fix | **A fair percentage off of your rent** for each month that you had the problem
-  You had to pay an actual amount out of pocket because of the problem, such as replacing food or personal belongings that were damaged | The **actual amount** you had to pay out of pocket
-  
-  If multiple rules apply, your landlord only owes you the **highest** number to compensate you. You can
-  only collect once for the same problem.
-  
-  Examples of very serious problems that might mean you can get 3 times the market rent include:
-  
-  * Having no heat or hot water during a very cold part of the winter
-  * Having a serious structural problem, like a ceiling collapse
-  * Having a very bad environmental problem, like bed bugs, mold, or a smell that you cannot live
-    with
+  Most tenants can ask for:
 
-  But it is up to a judge or jury to decide how serious the problem is.
+  1. Three times the amount of their rent for a very serious problem, or
+  1. A fair percentage off of their rent for each month that they had the problems.
 
-  For most tenants, the second rule applies. You can ask for a fair amount off of your rent for each 
-  month or part of a month that you had the problem.
-  
+  Pick the number that is higher. You cannot get both.
+    
   For example, if you had a problem for a whole month and your rent was $2,000/month, and:
   
   If | And a fair percentage to take off of the rent was | Then the amount you can ask for would be
@@ -406,8 +460,8 @@ content: |
   You had no heat during a mild part of the winter | 50% | $1000
   You could not lock your doors | 25% | $500
 
-  The amount that is a fair percentage to ask for depends on your individual circumstances. It is up
-  to a judge or jury to decide what amount is fair.
+  The amount that is a fair percentage to ask for depends on the facts of your
+  case. It is up to a judge or jury to decide what amount is fair.
 ---
 code: |
   signature_fields = ['users[0].signature']
@@ -436,14 +490,14 @@ review:
     button: |
       **Tenant repair issue description**:
       ${ tenant_repair_issue_description }
-  - Edit: amount
+  - Edit: tenant_unit_rent
     button: |
       **Amount**:
-      ${ currency(amount) }
-  - Edit: time_frame
+      ${ currency(tenant_unit_rent) }
+  - Edit: tenant_movein_date
     button: |
-      **Time frame**:
-      ${ time_frame }
+      **Date of move in**:
+      ${ tenant_movein_date }
   - Edit: letter_date
     button: |
       **Date of Letter**:
