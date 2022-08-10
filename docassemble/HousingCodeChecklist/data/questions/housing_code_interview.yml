@@ -856,6 +856,58 @@ subquestion: |
   
   % endif
 ---
+template: housing_code_bundle.send_email_template
+subject: |
+  ${ users.familiar() }, 
+  % if len(housing_code_bundle.enabled_documents()) > 1:
+  your documents from UpToCode are ready
+  % else:
+  your document from UpToCode is ready
+  % endif
+content: |
+  Thank you for using UpToCode!
+
+  We are attaching a copy of the documents that you worked on. Keep this for
+  your records.
+
+  Learn more at [madeuptocode.org](https://madeuptocode.org)
+---
+template: tenant_repair_letter_bundle.send_email_template
+subject: |
+  ${ users.familiar() }, 
+  % if len(tenant_repair_letter_bundle.enabled_documents()) > 1:
+  your documents from UpToCode are ready
+  % else:
+  your document from UpToCode is ready
+  % endif
+content: |
+  Thank you for using UpToCode!
+
+  We are attaching a copy of the documents that you worked on. Keep this for
+  your records.
+
+  Learn more at [madeuptocode.org](https://madeuptocode.org)
+---
+template: affirmative_complaint_bundle.send_email_template
+subject: |
+  ${ users.familiar() }, 
+  % if len(tenant_repair_letter_bundle.enabled_documents()) > 1:
+  your documents from UpToCode are ready
+  % else:
+  your document from UpToCode is ready
+  % endif
+content: |
+  Thank you for using UpToCode!
+
+  We are attaching a copy of the documents that you worked on. Keep this for
+  your records.
+
+  To get help from a judge, you also need to file a copy with ${ trial_court }
+  and deliver a copy to your landlord. Read the attached documents for more
+  instructions.
+
+  Learn more at [madeuptocode.org](https://madeuptocode.org)
+---
 id: details for this claim
 question: |
   More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).lower().lstrip() }"
@@ -1078,31 +1130,49 @@ objects:
 ---
 objects:
   - celhp_logo: DAStaticFile.using(filename="CELHPlogoFL3x-2-300x171.png")
+  - lsc_logo: DAStaticFile.using(filename="lsc_logo_horizontal.jpg")
+---
+event: about_this_interview
+id: about made uptocode
+question: |
+  About MADE: UpToCode
+subquestion: |
+  ${ about_this_interview_version_info }
+back button label: |
+  Back to questions
 ---
 template: about_this_interview_version_info
 content: |
-  MADE: UpToCode was authored by Quinten Steenhuis in partnership with the
-  Massachusetts Law Reform Institute as part of the COVID Eviction Legal
-  Help Project legal services component.
+  <a href="https://www.lsc.gov/"><img src="${ lsc_logo.url_for() }" style="max-width: 80%" alt="Legal Services Corporation logo"/></a>
+
+  MADE: UpToCode was originally authored by Quinten Steenhuis in 2021 in
+  partnership with [Massachusetts Law Reform Institute](https://mlri.org) as
+  part of the COVID Eviction Legal Help Project legal services component.
+
+  In 2022, the [Legal Services Corporation](https://lsc.gov) and [Northeast
+  Legal Aid](https://northeastlegalaid.org) funded a major revision with new
+  features, including the ability to file a complaint in court.
   
-  Special thanks to La Colaborativa, Northeast Legal Aid, and the community
-  that created and maintained the Housing Code Checklist on which we based
-  this interview.
+  Community organizations [La Colaborativa](https://la-colaborativa.org) and
+  [Lynn United for Change](https://lynnunited.org) played a special role in
+  co-design of this website.
+
+  &copy; 2022 Northeast Legal Aid, Quinten Steenhuis and open source
+  contributors under an [MIT license](https://opensource.org/licenses/MIT).  
+
+  % if all_variables(special='metadata').get('authors'):
+  Additional authors of work incorporated within UpToCode include: ${
+  comma_and_list(all_variables(special='metadata').get('authors')) }.
+  % endif
   
+  "${all_variables(special='metadata').get('title','').rstrip()}" includes code
+  from the [Document Assembly Line
+  project](https://suffolklitlab.org/docassemble-AssemblyLine-documentation/docs/).
+
   "${all_variables(special='metadata').get('title','').rstrip()}" version 
   `${ package_version_number }`; AssemblyLine version `${ al_version }`.
   
   % if package_updated_on:
-  Last updated on ${ package_updated_on }. [:fab-fa-github: View code on GitHub](${ github_url }).  
+  Last updated on ${ package_updated_on }. [:fab-fa-github: View code on
+  GitHub](${ github_url }).
   % endif
-
-  [Submit feedback](${ interview_url(i=feedback_form, github_repo=github_repo_name, github_user=github_user, variable=user_info().variable, question_id=user_info().question_id, package_version=package_version_number, local=False,reset=1) } ){:target="_blank"}.
-
-  % if all_variables(special='metadata').get('authors'):
-  Addititional authors of work incorporated within UpToCode include: ${ comma_and_list(all_variables(special='metadata').get('authors')) }.
-  % endif
-  
-  "${all_variables(special='metadata').get('title','').rstrip()}" includes code 
-  from the [Document Assembly Line project](https://suffolklitlab.org/docassemble-AssemblyLine-documentation/docs/). 
-  
-  &copy; 2021 Quinten Steenhuis and open source contributors under an [MIT license](https://opensource.org/licenses/MIT).
