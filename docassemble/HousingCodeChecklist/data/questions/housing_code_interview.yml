@@ -912,30 +912,89 @@ id: details for this claim
 question: |
   More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).lower().lstrip() }"
 fields:
-  - This problem was there when I moved in: bad_conditions[i].details[j].condition_existed_at_start
-    datatype: yesno
-  - Date this problem started: bad_conditions[i].details[j].start_date
-    max: ${ today().format("yyyy-MM-dd") }
-    datatype: date
+  - Describe the problem using your own words: bad_conditions[i].details[j].description
+    datatype: area
+    required: False    
+  - Was the problem there when you moved in?: bad_conditions[i].details[j].condition_existed_at_start
+    datatype: yesnoradio
+  - note: |
+      **When did the problem start?**
+
+      Enter as much of the date as you know.
+    show if: 
+      variable: bad_conditions[i].details[j].condition_existed_at_start
+      is: False
+  - Year: bad_conditions[i].details[j].start_year
+    datatype: integer
+    code: |
+      list(range(today().year, today().year - 20 - 1, -1))
     help: |
-      Use the month and year if that is the best that you know.
-    hide if: bad_conditions[i].details[j].condition_existed_at_start    
+      Problems that started in the last **6** years are the most important to
+      report, but use the closest year that you know even if it was older than 6
+      years ago.
+    show if: 
+      variable: bad_conditions[i].details[j].condition_existed_at_start
+      is: False
+  - Month: bad_conditions[i].details[j].start_month
+    datatype: integer
+    required: False
+    choices:
+      - January: 1
+      - February: 2
+      - March: 3
+      - April: 4
+      - May: 5
+      - June: 6
+      - July: 7
+      - August: 8
+      - September: 9
+      - October: 10
+      - November: 11
+      - December: 12
+    show if: 
+      variable: bad_conditions[i].details[j].condition_existed_at_start
+      is: False
+  - Day: bad_conditions[i].details[j].start_day
+    datatype: integer
+    code: |
+      range(1,31+1)
+    required: False
+    show if: 
+      variable: bad_conditions[i].details[j].condition_existed_at_start
+      is: False
   - The problem is fixed: bad_conditions[i].details[j].condition_ended
     datatype: yesno
   - Date problem ended: bad_conditions[i].details[j].end_date
     max: ${ today().format("yyyy-MM-dd") }  
     datatype: date
     show if: bad_conditions[i].details[j].condition_ended
-  - Describe the problem using your own words: bad_conditions[i].details[j].description
-    datatype: area
-    required: False
+  - Take or upload a photo: bad_conditions[i].details[j].has_file_to_upload
+    datatype: yesno
   - Add a photo or other proof of the problem, if you have it: bad_conditions[i].details[j].files
     datatype: files
     required: False
-    image upload type: jpeg        
+    image upload type: jpeg
     accept: |
       "image/*,image/png,image/jpeg,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,.pdf"       
----    
+    show if: bad_conditions[i].details[j].has_file_to_upload
+validation code: |
+  # Transform the approximate date into a real DADateTime object
+  if not bad_conditions[i].details[j].condition_existed_at_start:
+    bad_conditions[i].details[j].start_date = today()
+    try:
+      if bad_conditions[i].details[j].start_year:
+        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(year=bad_conditions[i].details[j].start_year)
+      if bad_conditions[i].details[j].start_month:
+        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(month=bad_conditions[i].details[j].start_month)
+      else:
+        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(month=1)
+      if bad_conditions[i].details[j].start_day:
+        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(day=bad_conditions[i].details[j].start_day)
+      else:
+        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(day=1)
+    except ValueError:
+      validation_error(f"The date {bad_conditions[i].details[j].start_month or 1}/{bad_conditions[i].details[j].start_day or 1}/{bad_conditions[i].details[j].start_year} is not a valid date. Check the day of the month or leave it blank.", field="bad_conditions[i].details[j].start_day")
+---
 id: names of opposing parties
 question: |
   What is your landlord's name?
