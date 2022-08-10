@@ -19,6 +19,16 @@
 #       name_suffix()
 #     required: False
 ---
+id: persons signature
+generic object: ALIndividual
+question: |
+  ${x}, please sign below or tap "next" to sign later
+signature: x.signature
+required: False
+under: |
+  ${x}
+progress: 99
+---
 id: move in date
 question: |
   When did you move in to ${ users[0].address.on_one_line() }?
