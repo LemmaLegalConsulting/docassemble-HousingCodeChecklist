@@ -856,6 +856,58 @@ subquestion: |
   
   % endif
 ---
+template: housing_code_bundle.send_email_template
+subject: |
+  ${ users.familiar() }, 
+  % if len(housing_code_bundle.enabled_documents()) > 1:
+  your documents from UpToCode are ready
+  % else:
+  your document from UpToCode is ready
+  % endif
+content: |
+  Thank you for using UpToCode!
+
+  We are attaching a copy of the documents that you worked on. Keep this for
+  your records.
+
+  Learn more at [madeuptocode.org](https://madeuptocode.org)
+---
+template: tenant_repair_letter_bundle.send_email_template
+subject: |
+  ${ users.familiar() }, 
+  % if len(tenant_repair_letter_bundle.enabled_documents()) > 1:
+  your documents from UpToCode are ready
+  % else:
+  your document from UpToCode is ready
+  % endif
+content: |
+  Thank you for using UpToCode!
+
+  We are attaching a copy of the documents that you worked on. Keep this for
+  your records.
+
+  Learn more at [madeuptocode.org](https://madeuptocode.org)
+---
+template: affirmative_complaint_bundle.send_email_template
+subject: |
+  ${ users.familiar() }, 
+  % if len(tenant_repair_letter_bundle.enabled_documents()) > 1:
+  your documents from UpToCode are ready
+  % else:
+  your document from UpToCode is ready
+  % endif
+content: |
+  Thank you for using UpToCode!
+
+  We are attaching a copy of the documents that you worked on. Keep this for
+  your records.
+
+  To get help from a judge, you also need to file a copy with ${ trial_court }
+  and deliver a copy to your landlord. Read the attached documents for more
+  instructions.
+
+  Learn more at [madeuptocode.org](https://madeuptocode.org)
+---
 id: details for this claim
 question: |
   More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).lower().lstrip() }"
