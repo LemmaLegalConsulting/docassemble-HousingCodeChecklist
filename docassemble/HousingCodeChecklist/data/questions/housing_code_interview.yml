@@ -225,6 +225,7 @@ id: interview order
 code: |
   initial_action_display_cards
   intro_and_terms_of_use
+  person_answering
   users[0].name.first
   starting_task
   snapshot_interview_state
@@ -416,7 +417,11 @@ content: |-
 ---
 id: intro affirmation
 question: |
+  % if person_answering == "tenant":
   ${ users.familiar() }, you can do this!
+  % else:
+  Let's get started helping ${ users.familiar() }!
+  % endif
 subquestion: |  
   #### How this works
   
