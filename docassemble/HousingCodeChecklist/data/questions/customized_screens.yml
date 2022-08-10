@@ -5,19 +5,33 @@
 ###############
 # Used in multiple templates
 ###############
-# ---
-# id: your name
-# question:  |
-#   Your name
-# fields:
-#   - First Name: users[0].name.first
-#   - Middle Name: users[0].name.middle
-#     required: False
-#   - Last Name: users[0].name.last
-#   - Suffix: users[0].name.suffix
-#     code: |
-#       name_suffix()
-#     required: False
+---
+question: |
+  Who is using this website?
+fields:
+  - I am: person_answering
+    datatype: radio
+    choices:
+      - The tenant: tenant
+      - An attorney: attorney
+      - Someone **else** helping a tenant: tenant_helper
+---
+id: your name
+question:  |
+  % if person_answering == "tenant":
+  Your name
+  % else:
+  Tenant's name
+  % endif
+fields:
+  - First Name: users[0].name.first
+  - Middle Name: users[0].name.middle
+    required: False
+  - Last Name: users[0].name.last
+  - Suffix: users[0].name.suffix
+    code: |
+      name_suffix()
+    required: False
 ---
 id: persons signature
 generic object: ALIndividual
