@@ -753,6 +753,22 @@ id: triage
 question: |
   Deciding on your next steps
 fields:
+  - Do you have an active eviction case in court?: screen_tenant_facing_eviction
+    datatype: yesnoradio
+    help: |
+      Answer "yes" if:
+      
+      - you have a case that is already in court, or
+      - you have a "Summons and Complaint" from your landlord with a court date coming up
+      
+      Answer "no" if:
+      
+      - the eviction case is already over, or
+      - you only have a "Notice to Quit" or "Notice to Terminate Tenancy"
+  - note: |
+      **Make sure you respond to the eviction.** You can use [MADE](https://gbls.org/MADE) to 
+      stop the eviction case. You shouldn't start a new court case with UpToCode.
+    show if: screen_tenant_facing_eviction
   - Does your landlord already know about at least one of the problems in your home?: screen_ll_knows_problem
     datatype: yesnoradio
   - note: |
