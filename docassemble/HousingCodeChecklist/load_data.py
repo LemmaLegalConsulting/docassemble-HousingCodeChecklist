@@ -2,8 +2,9 @@ from docassemble.base.util import path_and_mimetype, Address, LatitudeLongitude,
 import pandas as pd
 import os
 from typing import List, Union, Dict
+from collections import OrderedDict
 
-__all__ = ['DataLoader', 'conditions_with_help', 'ConditionsDict', 'tr_category']
+__all__ = ['DataLoader', 'conditions_with_help', 'ConditionsDict', 'tr_category', "conditions_from_list"]
 
 class BaseDataLoader(DAObject):
   """
@@ -115,6 +116,12 @@ class ConditionsDict(DADict):
   def as_merged_list(self):
     """Merge condition details with original DF row"""
     results = pd.concat([self[c].df for c in self])
+
+def conditions_from_list(dataloader: DataLoader, loci: List[Union[int,str]], language:str = "en") -> List[Dict[str,str]]:
+  df = dataloader.load_rows(loci=loci)
+  if language == "es":
+    return df["Description_ES"].to_dict(OrderedDict)
+  return df["Interview description"].to_dict(OrderedDict)
 
 def conditions_with_help(dataloader: DataLoader, category:str, search_column:str='Category', language="en")->List[Dict]:
   """

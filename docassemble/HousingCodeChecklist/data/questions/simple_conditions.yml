@@ -1,0 +1,17 @@
+---
+variable name: simple_conditions_list
+data:
+  - other_insects
+  - bedbug_insects
+  - roach_insects
+  - mouse_rats
+  - dampness_water
+  - electric_general_maintenance
+  - lead_paint_child
+  - window_structural
+  - ceiling_living_room
+  - floor_living_room
+  - heat_not_working
+  - no_hot_water
+  - locks_missing_unit
+  - outside_windows_not_lockable

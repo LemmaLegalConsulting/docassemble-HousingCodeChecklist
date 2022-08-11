@@ -12,6 +12,7 @@ include:
   - docassemble.RentalRepairLetter:Repair_Letter_Tenant.yml
   - customized_screens.yml 
   - language.yml 
+  - simple_conditions.yml
 ---
 features:
   bootstrap theme: bootstrap.min.css
@@ -229,16 +230,20 @@ code: |
   users[0].name.first
   starting_task
   snapshot_interview_state
-  nav.set_section('review_conditions')        
-  bad_conditions.gather()
-  if bad_conditions.count_conditions() > 0:
-    # This is a bit of a workaround
-    for room in bad_conditions:
-      for condition in bad_conditions[room].claims.true_values():
-        bad_conditions[room].details[condition].condition_existed_at_start  
-    review_conditions
+  nav.set_section('review_conditions')
+  bad_conditions["simple list"].claims
+  if wants_detailed_conditions:
+    bad_conditions.gather()
+    if bad_conditions.count_conditions() > 0:
+      # This is a bit of a workaround
+      for room in bad_conditions:
+        for condition in bad_conditions[room].claims.true_values():
+          bad_conditions[room].details[condition].condition_existed_at_start  
+      review_conditions
+    else:
+      warn_add_conditions
   else:
-    warn_add_conditions
+    bad_conditions.gathered = True
   nav.set_section('document_choice')
   screen_ll_knows_problem
   reconsider('snapshot_interview_state')
@@ -488,6 +493,56 @@ subquestion: |
   ${ collapse_template(sue_your_landlord_template) } 
 #  ${ collapse_template(get_injunction_template) }
 continue button field: learn_more
+---
+id: simple conditions
+question: |
+  Do you have any of the problems listed below?
+subquestion: |
+  This is a list of common problems that tenants have.
+fields:
+  - What problems do you have?: bad_conditions["simple list"].claims
+    datatype: checkboxes
+    code: |
+      conditions_from_list(dataloader, simple_conditions_list, language=user_language)
+  - note: |
+      Don't see your problem on this list? There are more problems
+      to pick from if you keep going.
+---
+id: review simple conditions
+question: |
+  Do you want to keep exploring problems?
+subquestion: |
+  % if bad_conditions["simple list"].claims.any_true():
+  % if len(bad_conditions["simple list"].claims.true_values()) > 1:
+  You have picked ${ len(bad_conditions["simple list"].claims.true_values()) } problems
+  so far.
+  % else:
+  You have picked 1 problem so far.
+  % endif
+  % endif  
+  You can keep exploring problems room by room, or skip ahead
+  to start working on a solution.
+
+  ${ collapse_template(how_many_problems_are_there_template)}
+
+fields:
+  - Keep exploring problems?: wants_detailed_conditions
+    datatype: radio
+    choices:
+      - Yes, explore problems I may have in each room: True
+      - No, go straight to a solution: False
+---
+template: how_many_problems_are_there_template
+subject: |
+  How many problems can you help me with?
+content: |
+  If you explore room by room, you can pick from a list of about
+  150 problems. Some may be problems you did not know your
+  landlord needs to fix.
+
+  The list comes from the Massachusetts sanitary code. We have
+  translated the sanitary code into easier to understand sentences
+  with short explanations.
 ---  
 # WARNING: This page id needs to stay the same or the selectors for
 # the button styles in styles.css will need to be updated to match
@@ -584,7 +639,7 @@ fields:
       conditions_with_help(dataloader, "24 hours", search_column="Deadline", language=user_language)
     default:
       code: |
-        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
+        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else [] + bad_conditions["simple list"].claims.true_values()
 help: 
   label: |
     Sanitary Code
@@ -614,7 +669,7 @@ fields:
       conditions_with_help(dataloader, i, language=user_language)
     default:
       code: |
-        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []
+        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []  + bad_conditions["simple list"].claims.true_values()
 help: 
   label: |
     Sanitary Code
