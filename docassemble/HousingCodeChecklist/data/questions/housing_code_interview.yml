@@ -231,7 +231,7 @@ code: |
   starting_task
   snapshot_interview_state
   nav.set_section('review_conditions')
-  bad_conditions["simple list"].claims
+  bad_conditions["common problems"].claims
   if wants_detailed_conditions:
     bad_conditions.gather()
     if bad_conditions.count_conditions() > 0:
@@ -500,7 +500,7 @@ question: |
 subquestion: |
   This is a list of common problems that tenants have.
 fields:
-  - What problems do you have?: bad_conditions["simple list"].claims
+  - What problems do you have?: bad_conditions["common problems"].claims
     datatype: checkboxes
     code: |
       conditions_from_list(dataloader, simple_conditions_list, language=user_language)
@@ -512,9 +512,9 @@ id: review simple conditions
 question: |
   Do you want to keep exploring problems?
 subquestion: |
-  % if bad_conditions["simple list"].claims.any_true():
-  % if len(bad_conditions["simple list"].claims.true_values()) > 1:
-  You have picked ${ len(bad_conditions["simple list"].claims.true_values()) } problems
+  % if bad_conditions["common problems"].claims.any_true():
+  % if len(bad_conditions["common problems"].claims.true_values()) > 1:
+  You have picked ${ len(bad_conditions["common problems"].claims.true_values()) } problems
   so far.
   % else:
   You have picked 1 problem so far.
@@ -639,7 +639,7 @@ fields:
       conditions_with_help(dataloader, "24 hours", search_column="Deadline", language=user_language)
     default:
       code: |
-        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else [] + bad_conditions["simple list"].claims.true_values()
+        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else [] + bad_conditions["common problems"].claims.true_values()
 help: 
   label: |
     Sanitary Code
@@ -669,7 +669,7 @@ fields:
       conditions_with_help(dataloader, i, language=user_language)
     default:
       code: |
-        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []  + bad_conditions["simple list"].claims.true_values()
+        bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []  + bad_conditions["common problems"].claims.true_values()
 help: 
   label: |
     Sanitary Code
