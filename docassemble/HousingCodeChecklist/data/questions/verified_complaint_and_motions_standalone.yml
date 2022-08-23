@@ -4,6 +4,7 @@ include:
   - docassemble.ALMassachusetts:al_massachusetts.yml
   - docassemble.MassAccess:massaccess.yml
   - verified_complaint_and_motions_to_include.yml
+  - Repair_Demand_Letter_to_include.yml
 ---
 metadata:
   title: |
