@@ -1,8 +1,9 @@
----
+  ---
 include:
   - docassemble.AssemblyLine:al_package.yml
   - docassemble.ALMassachusetts:al_massachusetts.yml
   - docassemble.MassAccess:massaccess.yml
+  - customized_screens.yml
   - verified_complaint_and_motions_to_include.yml
   - Repair_Demand_Letter_to_include.yml
 ---
@@ -121,3 +122,6 @@ progress: 100
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[verified_complaint_and_motions_post_interview_instructions,verified_complaint_and_motions_attachment], filename="verified_complaint_and_motions.docx_package.pdf", title="All forms to download for your records", enabled=True)
   - al_court_bundle: ALDocumentBundle.using(elements=[verified_complaint_and_motions_attachment], filename="verified_complaint_and_motions.docx_package.pdf", title="All forms to download for your records", enabled=True)
+---
+code: |
+  verified_complaint_and_motions_attachment.enabled = True

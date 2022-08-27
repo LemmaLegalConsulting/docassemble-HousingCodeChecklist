@@ -43,7 +43,7 @@ code: |
   users.gather()
   other_parties.gather()
   complaint_ask_for_damages
-  commercial_landlord_factors
+  is_landlord_subject_to_93a
   verified_complaint_claims.gathered
   tenant_gets_rent_subsidy # from Repair_Demand_letter_to_include.yml
   tenant_unit_rent
@@ -113,8 +113,11 @@ fields:
       urgent. If you don't have special circumstances, it's okay to leave this
       section blank.
     field: verified_complaint_other_emergency_basis
+    datatype: area
+    rows: 2
     label above field: True
     show if: complaint_ask_for_tro
+    required: False
 ---
 id: getting money
 question: |
@@ -164,35 +167,35 @@ content: |
 
   If you are not sure, you may want to try to [talk to a lawyer](https://masslrf.org).
 ---
-id: 93a screening
-question: |
-  Do you have a commercial landlord?
-subquestion: |
-  
-  ${ collapse_template(explain_93a) }
-
-fields:
-  - "select from the following": commercial_landlord_factors
-    datatype: checkboxes
-    choices:
-      - The building has more than 4 units: more_than_4_units
-      - The landlord is an LLC, company or corporation: is_company
-      - The landlord does not live in the building: landlord_lives_elsewhere
-      - The landlord owns multiple buildings: landlord_owns_multiple_buildings
----
-template: explain_93a
-subject: |
-  Why does this matter?
-content: |  
-  Massachusetts has special protections for tenants when their landlord is a business.
-  The protections might mean that your landlord has to pay for your attorney if they lose. They
-  also can double or triple the amount of money you can win in a lawsuit.
-  
-  These questions help a judge decide if your landlord is a business or someone just renting an 
-  apartment in their home to reduce their own housing cost.
+#id: 93a screening
+#question: |
+#  Do you have a commercial landlord?
+#subquestion: |
+#  
+#  ${ collapse_template(explain_93a) }
+#
+#fields:
+#  - "select from the following": commercial_landlord_factors
+#    datatype: checkboxes
+#    choices:
+#      - The building has more than 4 units: more_than_4_units
+#      - The landlord is an LLC, company or corporation: is_company
+#      - The landlord does not live in the building: landlord_lives_elsewhere
+#      - The landlord owns multiple buildings: landlord_owns_multiple_buildings
+#---
+#template: explain_93a
+#subject: |
+#  Why does this matter?
+#content: |  
+#  Massachusetts has special protections for tenants when their landlord is a business.
+#  The protections might mean that your landlord has to pay for your attorney if they lose. They
+#  also can double or triple the amount of money you can win in a lawsuit.
+#  
+#  These questions help a judge decide if your landlord is a business or someone just renting an 
+#  apartment in their home to reduce their own housing cost.
 ---
 code: |
-  landlord_subject_to_consumer_protection_law = commercial_landlord_factors.any_true()
+  landlord_subject_to_consumer_protection_law = is_landlord_subject_to_93a
 ---
 sets:
   - other_parties[i].name.first
@@ -223,9 +226,6 @@ data:
   utility no agreement:
     question: required you to pay for utilities without a written agreement
     document: required me to pay for utilities without a written agreement
-  utility shutoff: 
-    question: turned off or failed to restore a utility service
-    document: turned off or failed to restore a utility service
   insufficient notice: 
     question: did not give you reasonable notice to make repairs
     document: did not give me reasonable notice to make repairs
@@ -335,7 +335,8 @@ fields:
   - Do you have a mobile voucher (Section 8 or MRVP)?: tenant_subsidy_is_voucher
     datatype: yesnoradio
   - Are you at risk of being forced to move by your housing authority?: verified_complaint_tenant_voucher_at_risk
-    datatype: yesnoradio
+    datatype: yesnomaybe
+    show if: tenant_subsidy_is_voucher
 ---
 id: Did you send the landlord a demand letter?
 question: |
@@ -452,7 +453,7 @@ confirm: True
 ---
 objects:
   - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions", filename="verified_complaint_and_motions_next_steps.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - verified_complaint_and_motions_attachment: ALDocument.using(title="Verified complaint and motions for temporary restraining order and preliminary injunction", filename="verified_complaint_and_motions.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - verified_complaint_and_motions_attachment: ALDocument.using(title="Tenant complaint for emergency repairs", filename="verified_complaint_and_motions.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 
 ---
 attachments:

@@ -1,3 +1,7 @@
+---
+include:
+  - docassemble.ALToolbox:phone-number-validation.yml
+---
 #########################################################
 # Screens for included templates that override default screens
 #########################################################
@@ -15,6 +19,42 @@ fields:
       - The tenant: tenant
       - An attorney: attorney
       - Someone **else** helping a tenant: tenant_helper
+---
+id: tenant contact information
+question: |
+  What is your contact information?
+subquestion: |
+  Include at least **one** way to reach you other than by mail.
+fields:  
+  - Mobile number: users[0].mobile_number
+    required: False
+    datatype: al_international_phone
+  - Other phone number: users[0].phone_number
+    required: False
+    datatype: al_international_phone
+  - Email address: users[0].email    
+    datatype: email
+    required: False
+validation code: |
+  if (not showifdef('users[0].phone_number') and \
+      (not showifdef('users[0].mobile_number')) and \
+      (not showifdef('users[0].email')) 
+  ):
+    validation_error(word("You need to provide at least one contact method."), field="users[0].other_contact_method")
+---
+id: landlord's contact information
+generic object: ALIndividual
+question: |
+  How can ${ other_parties } be contacted?
+subquestion: |
+  If you do not know, you can leave this screen blank.  
+fields:
+  - ${ other_parties.familiar() }'s phone number: other_parties[0].phone_number
+    datatype: al_international_phone
+    required: False
+  - ${ other_parties.familiar() }'s email address: other_parties[0].email
+    datatype: email
+    required: False
 ---
 id: your name
 question:  |
