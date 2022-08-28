@@ -102,7 +102,7 @@ validation code: |
       (not showifdef('users[0].mobile_number')) and \
       (not showifdef('users[0].email')) 
   ):
-    validation_error(word("You need to provide at least one contact method."), field="users[0].other_contact_method")
+    validation_error(word("You need to provide at least one contact method."), field="users[0].mobile_number")
 ---
 id: landlord's contact information
 generic object: ALIndividual
