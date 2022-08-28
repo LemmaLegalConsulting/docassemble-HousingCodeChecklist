@@ -129,7 +129,7 @@ subquestion: |
   <li>Upload photos or add other information about each problem.</li>
   <li>Choose a next step to get your landlord to fix the problems.</li>
   </ol>
-  </div>  
+  </div>
 fields:  
   - To continue, you must accept the [terms of use](https://www.gbls.org/self-help/eviction/terms-of-use): acknowledged_information_use
     datatype: checkboxes
@@ -456,7 +456,6 @@ question: |
   Let's get started helping ${ users.familiar() }!
   % endif
 subquestion: |  
-  
   We will start by asking you about the repairs that you need.
 
   <div class="alert alert-primary h-100" role="alert">
@@ -468,7 +467,6 @@ subquestion: |
     <a class="alert-link" href="https://www.masslegalhelp.org/when-is-eviction-illegal">Read more</a>.
     </p>
   </div>
-  
 continue button field: starting_task  
 continue button label: Get started
 ---
