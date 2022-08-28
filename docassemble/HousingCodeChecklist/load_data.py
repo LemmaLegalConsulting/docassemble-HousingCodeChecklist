@@ -117,6 +117,22 @@ class ConditionsDict(DADict):
     """Merge condition details with original DF row"""
     results = pd.concat([self[c].df for c in self])
 
+  def as_list(self, language="en"):
+    flattened = []
+    for category in self:
+      for index, row in self[category].df.iterrows():
+        the_condition = self[category].details[index]
+        the_condition.original_description = row.get('Interview description')
+        the_condition.code = row.get("Sanitary Code Section'")
+        flattened.append(the_condition)
+    return flattened
+
+  def active_conditions(self, language="en"):
+    return [condition for condition in self.as_list(language=language) if not (hasattr(condition, "condition_ended") and condition.condition_ended)]
+
+  def resolved_conditions(self, language="en"):
+    return [condition for condition in self.as_list(language=language) if (hasattr(condition, "condition_ended") and condition.condition_ended)]
+
 def conditions_from_list(dataloader: DataLoader, loci: List[Union[int,str]], language:str = "en") -> List[Dict[str,str]]:
   df = dataloader.load_rows(loci=loci)
   if language == "es":

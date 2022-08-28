@@ -1,3 +1,4 @@
+# DEPENDS ON Repair_Demand_Letter_to_include.yml but doesn't separately include it
 ---
 include:
   - docassemble.AssemblyLine:al_package.yml
@@ -41,10 +42,14 @@ code: |
   File_a_Verified_Complaint_Form
   users.gather()
   other_parties.gather()
-  commercial_landlord_factors
+  complaint_ask_for_damages
+  is_landlord_subject_to_93a
   verified_complaint_claims.gathered
-  rent_subsidy
-  rent_amount
+  tenant_gets_rent_subsidy # from Repair_Demand_letter_to_include.yml
+  tenant_unit_rent
+  if tenant_gets_rent_subsidy and tenant_subsidy_is_voucher:
+    verified_complaint_tenant_voucher_at_risk
+  complaint_ask_for_tro
   demand_letter_sent
   trial_court
   other_parties[0].phone_number
@@ -86,36 +91,112 @@ subquestion: |
   1. Pay you money (damages) based on your rights under Massachusetts law
   
 continue button field: File_a_Verified_Complaint_Form
----
-id: 93a screening
-question: |
-  Do you have a commercial landlord?
-subquestion: |
-  
-  ${ collapse_template(explain_93a) }
 
-fields:
-  - "select from the following": commercial_landlord_factors
-    datatype: checkboxes
-    choices:
-      - The building has more than 4 units: more_than_4_units
-      - The landlord is an LLC, company or corporation: is_company
-      - The landlord does not live in the building: landlord_lives_elsewhere
-      - The landlord owns multiple buildings: landlord_owns_multiple_buildings
 ---
-template: explain_93a
+id: relief sought
+question: |
+  Getting help right away
+subquestion: |
+  If you need help right away, a judge can give you an emergency order.
+  The emergency order is supposed to last for 10 days.
+
+  Later, the judge can make the order permanent if the landlord doesn't
+  fix the problem right away.
+fields:
+  - Do you need an emergency order?: complaint_ask_for_tro
+    datatype: yesnoradio
+  - label: |
+      Is there anything you want to say about why you need an emergency order?
+      Your complaint will include the facts of the problems you mentioned. So
+      you don't need to repeat that here. 
+
+      Include information about special circumstances that make your situation
+      urgent. If you don't have special circumstances, it's okay to leave this
+      section blank.
+    field: verified_complaint_other_emergency_basis
+    datatype: area
+    rows: 2
+    label above field: True
+    show if: complaint_ask_for_tro
+    required: False
+---
+id: getting money
+question: |
+  Getting money from your landlord
+subquestion: |
+  ${ collapse_template(complaint_right_to_get_money_template) }
+
+  ${ collapse_template(complaint_right_to_get_money_should_i) }
+fields:
+  - Do you want to ask for money in this lawsuit?: complaint_ask_for_damages
+    datatype: yesnoradio
+---
+template: complaint_right_to_get_money_template
 subject: |
-  Why does this matter?
-content: |  
-  Massachusetts has special protections for tenants when their landlord is a business.
-  The protections might mean that your landlord has to pay for your attorney if they lose. They
-  also can double or triple the amount of money you can win in a lawsuit.
-  
-  These questions help a judge decide if your landlord is a business or someone just renting an 
-  apartment in their home to reduce their own housing cost.
+  What money can I get?
+content: |
+  You have a right to ask for money from your landlord because of the problems
+  that your landlord did not fix.
+
+  In most cases, the money can either be:
+
+  1. A percentage off of your rent for each month you had the problem, or
+  1. A flat 3 times your monthly rent for a **serious** problem.
+
+  [Read more](https://www.masslegalhelp.org/housing/problems/deciding-to-go-to-court/civil-lawsuit).
+---
+template: complaint_right_to_get_money_should_i
+subject: |
+  Should I ask for money from my landlord?
+content: |
+  Deciding to sue for money can be complicated.
+
+  You may **not** want to ask for money from your landlord in this lawsuit if:
+
+  1. You think your landlord may file an eviction case against you.
+  1. You think you may be able to hire a lawyer later.
+
+  If your landlord files an eviction case against you, you may want to "save" your claim
+  for money as part of the eviction case. Your claim may be able to stop the eviction if
+  the eviction is for "no fault" or for not paying rent.
+
+  [Read more](https://www.masslegalhelp.org/housing/lt1-chapter-12-legal-defenses-counterclaims-article).
+
+  But if your landlord evicts you for a "fault" reason (something other than being behind
+  in the rent), you cannot use your other claims to stop the eviction. You may be better 
+  off asking for money in this lawsuit.
+
+  If you are not sure, you may want to try to [talk to a lawyer](https://masslrf.org).
+---
+#id: 93a screening
+#question: |
+#  Do you have a commercial landlord?
+#subquestion: |
+#  
+#  ${ collapse_template(explain_93a) }
+#
+#fields:
+#  - "select from the following": commercial_landlord_factors
+#    datatype: checkboxes
+#    choices:
+#      - The building has more than 4 units: more_than_4_units
+#      - The landlord is an LLC, company or corporation: is_company
+#      - The landlord does not live in the building: landlord_lives_elsewhere
+#      - The landlord owns multiple buildings: landlord_owns_multiple_buildings
+#---
+#template: explain_93a
+#subject: |
+#  Why does this matter?
+#content: |  
+#  Massachusetts has special protections for tenants when their landlord is a business.
+#  The protections might mean that your landlord has to pay for your attorney if they lose. They
+#  also can double or triple the amount of money you can win in a lawsuit.
+#  
+#  These questions help a judge decide if your landlord is a business or someone just renting an 
+#  apartment in their home to reduce their own housing cost.
 ---
 code: |
-  landlord_subject_to_consumer_protection_law = commercial_landlord_factors.any_true()
+  landlord_subject_to_consumer_protection_law = is_landlord_subject_to_93a
 ---
 sets:
   - other_parties[i].name.first
@@ -125,8 +206,6 @@ sets:
 id: names of opposing parties
 question: |
   What is the name of your ${ ordinal(i) } landlord?
-subquestion: |
-  In some cases, you may want to name more than one person.
 fields:
   - code: |
       other_parties[i].name_fields(person_or_business='unsure')
@@ -143,6 +222,9 @@ data:
   utility shutoff: 
     question: turned off or failed to restore a utility service
     document: turned off or failed to restore a utility service
+  utility no agreement:
+    question: required you to pay for utilities without a written agreement
+    document: required me to pay for utilities without a written agreement
   insufficient notice: 
     question: did not give you reasonable notice to make repairs
     document: did not give me reasonable notice to make repairs
@@ -163,12 +245,37 @@ fields:
     datatype: yesno
   - Locked me out of my home or removed my belongings: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
+  - Required me to pay for utilities without a written agreement: verified_complaint_claims["utility no agreement"].has_claim
+    datatype: yesno
+    help: |
+      The landlord must pay for utilities like electricity and gas unless there is a written agreement. A spoken agreement
+      is not enough.
+  - Utility: complaint_utility_not_paid
+    datatype: checkboxes
+    choices:
+      - Gas: gas
+      - Fuel oil: fuel oil
+      - Electricity: electricity
+    none of the above: False
+    minlength: 1
+    show if: verified_complaint_claims["utility no agreement"].has_claim
   - Turned off or failed to restore a utility service: verified_complaint_claims["utility shutoff"].has_claim
     datatype: yesno
+  - Utility: complaint_utility_shutoff
+    datatype: checkboxes
+    choices:
+      - Gas: gas
+      - Fuel oil: fuel oil
+      - Electricity: electricity
+    none of the above: False
+    minlength: 1
+    show if: verified_complaint_claims["utility shutoff"].has_claim
   - Did not give me reasonable notice to make repairs: verified_complaint_claims["insufficient notice"].has_claim
     datatype: yesno
   - Did something else that violates Massachusetts landlord-tenant law: verified_complaint_claims["other"].has_claim
     datatype: yesno
+    help: |
+      Not sure what to say here? This choice is less common. You can add details on the next page.
 ---
 id: claim i details
 question: |
@@ -180,6 +287,17 @@ question: |
 subquestion: |
   % if i == "other":
   Tell us more about what happened with the other violation of landlord-tenant law.
+  % elif i == "utility no agreement":
+  Tell us a little more about what happened when your landlord required you to pay for
+  ${ complaint_utility_not_paid.true_values() } without a written agreement.
+  % elif i == "utility shutoff":
+  % if len(complaint_utility_shutoff.true_values()) > 1: 
+  Tell us a little more about what happened when your ${ complaint_utility_shutoff.true_values() }
+  were turned off. 
+  % else:
+  Tell us a little more about what happened when your ${ complaint_utility_shutoff.true_values() }
+  was turned off. 
+  % endif
   % else:
   Tell us a little more about what happened when your landlord ${ verified_complaint_claims_terms[i] }.
   % endif
@@ -190,7 +308,7 @@ fields:
   - label above field: True
     label: |
       % if i == "other":
-      Complete the sentence
+      Complete the sentence:
       **"My landlord also violated the law when they"**
       % else:
       Complete the sentence
@@ -202,22 +320,37 @@ fields:
   - When did this happen? State an exact date or the best date you can remember, such as "last summer": verified_complaint_claims[i].date
     label above field: True
 ---
-id: Do you receive a subsidy for rent?
-question: |
-  Do you receive a subsidy for rent?
-yesno: rent_subsidy
+# similar question in Repair_Demand_Letter
+# id: Do you receive a subsidy for rent?
+# question: |
+#   Do you receive a subsidy for rent?
+# yesno: rent_subsidy
+# ---
+# id: What is your monthly rent
+# question: |
+#   % if rent_subsidy == True:
+#   What is the market rent?
+#   % else:
+#   What is your monthly rent?
+#   % endif
+# fields:
+#   - "rent amount": rent_amount
+#     datatype: currency
+#     min: 0
 ---
-id: What is your monthly rent
+id: is tenant voucher at risk?
 question: |
-  % if rent_subsidy == True:
-  What is the market rent?
-  % else:
-  What is your monthly rent?
-  % endif
+  Is your housing subsidy at risk?
+subquestion: |
+  If you have a mobile voucher, like a Section 8, your housing authority
+  might put you on a "clock" to move to a new apartment when your landlord
+  refuses to fix serious housing problems.
 fields:
-  - "rent amount": rent_amount
-    datatype: currency
-    min: 0
+  - Do you have a mobile voucher (Section 8 or MRVP)?: tenant_subsidy_is_voucher
+    datatype: yesnoradio
+  - Are you at risk of being forced to move by your housing authority?: verified_complaint_tenant_voucher_at_risk
+    datatype: yesnomaybe
+    show if: tenant_subsidy_is_voucher
 ---
 id: Did you send the landlord a demand letter?
 question: |
@@ -334,7 +467,7 @@ confirm: True
 ---
 objects:
   - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions", filename="verified_complaint_and_motions_next_steps.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - verified_complaint_and_motions_attachment: ALDocument.using(title="Verified complaint and motions for temporary restraining order and preliminary injunction", filename="verified_complaint_and_motions.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - verified_complaint_and_motions_attachment: ALDocument.using(title="Tenant complaint for emergency repairs", filename="verified_complaint_and_motions.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 
 ---
 attachments:
