@@ -257,6 +257,8 @@ fields:
       - Gas: gas
       - Fuel oil: fuel oil
       - Electricity: electricity
+    none of the above: False
+    minlength: 1
     show if: verified_complaint_claims["utility no agreement"].has_claim
   - Turned off or failed to restore a utility service: verified_complaint_claims["utility shutoff"].has_claim
     datatype: yesno
@@ -266,6 +268,8 @@ fields:
       - Gas: gas
       - Fuel oil: fuel oil
       - Electricity: electricity
+    none of the above: False
+    minlength: 1
     show if: verified_complaint_claims["utility shutoff"].has_claim
   - Did not give me reasonable notice to make repairs: verified_complaint_claims["insufficient notice"].has_claim
     datatype: yesno
@@ -284,6 +288,17 @@ question: |
 subquestion: |
   % if i == "other":
   Tell us more about what happened with the other violation of landlord-tenant law.
+  % elif i == "utility no agreement":
+  Tell us a little more about what happened when your landlord required you to pay for
+  ${ complaint_utility_not_paid.true_values() } without a written agreement.
+  % elif i == "utility shutoff":
+  % if len(complaint_utility_shutoff.true_values()) > 1: 
+  Tell us a little more about what happened when your ${ complaint_utility_shutoff.true_values() }
+  were turned off. 
+  % else:
+  Tell us a little more about what happened when your ${ complaint_utility_shutoff.true_values() }
+  was turned off. 
+  % endif
   % else:
   Tell us a little more about what happened when your landlord ${ verified_complaint_claims_terms[i] }.
   % endif
