@@ -135,9 +135,22 @@ class ConditionsDict(DADict):
 
 def conditions_from_list(dataloader: DataLoader, loci: List[Union[int,str]], language:str = "en") -> List[Dict[str,str]]:
   df = dataloader.load_rows(loci=loci)
-  if language == "es":
-    return df["Description_ES"].to_dict(OrderedDict)
-  return df["Interview description"].to_dict(OrderedDict)
+  conditions = []
+  for row in df.iterrows():
+    if language == "es":
+      conditions.append(
+        {
+          row[0]: row[1]['Description_ES'], 
+          "help": row[1]['Help_ES']
+        })
+    else:
+      conditions.append(
+        {
+          row[0]: row[1]['Interview description'], 
+          "help": row[1]['Help']
+        })
+  return conditions
+  
 
 def conditions_with_help(dataloader: DataLoader, category:str, search_column:str='Category', language="en")->List[Dict]:
   """
