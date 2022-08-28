@@ -119,21 +119,17 @@ subquestion: |
 ---
 continue button field: intro_and_terms_of_use
 question: |
-  How this site works
-subquestion: |
-  1. List your housing problems.
-  1. Choose a solution, like sending a letter or going to court.
-  1. Answer short questions.
-  1. Print and deliver your documents.
-
-  <div class="alert alert-primary" role="alert">
-    <h5 class="alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h5>
-    <p>
-    It is against the law for your landlord to "retaliate" against you. For example,
-    your landlord cannot evict you or raise your rent because you complain
-    about problems in your house. <a href="https://www.masslegalhelp.org/when-is-eviction-illegal">Read more</a>.
-    </p>
-  </div>
+  How this works
+subquestion: | 
+  This website will help you solve problems with bad conditions in your home.
+  <div class="custom-counter">
+  <ol class="custom-counter">
+  <li>Read about your landlord's responsibilities.</li>
+  <li>Track the problems you have in each room of your home.</li>
+  <li>Upload photos or add other information about each problem.</li>
+  <li>Choose a next step to get your landlord to fix the problems.</li>
+  </ol>
+  </div>  
 fields:  
   - To continue, you must accept the [terms of use](https://www.gbls.org/self-help/eviction/terms-of-use): acknowledged_information_use
     datatype: checkboxes
@@ -144,6 +140,35 @@ fields:
     validation messages:
       minlength: |
         You cannot continue unless you agree to the terms of use.
+css: |
+  <style>
+    .custom-counter ol {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    }
+
+    .custom-counter li {
+    counter-increment: step-counter;
+    margin-bottom: 10px;
+    }
+
+    .custom-counter li::before {
+    content: counter(step-counter);
+    margin-right: 5px;
+    font-size: 80%;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 50%;
+    }
+    
+    /* List number counter sizes to match circles in nav items (in styles.css). If one is adjusted, the other will have to be adjusted also. */
+    .custom-counter li::before {
+      padding: 0.5px 6.5px;
+    }
+  </style>
 ---
 event: initial_action
 code: |
@@ -431,52 +456,21 @@ question: |
   Let's get started helping ${ users.familiar() }!
   % endif
 subquestion: |  
-  #### How this works
   
-  This website will help you solve problems with bad conditions in your home.
-  <div class="custom-counter">
-  <ol class="custom-counter">
-  <li>Read about your landlord's responsibilities.</li>
-  <li>Track the problems you have in each room of your home.</li>
-  <li>Upload photos or add other information about each problem.</li>
-  <li>Choose a next step to get your landlord to fix the problems.</li>
-  </ol>
+  We will start by asking you about the repairs that you need.
+
+  <div class="alert alert-primary h-100" role="alert">
+    <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
+    <p class="h-100 overflow-visible mb-0">
+    "Retaliation" is illegal. 
+    Your landlord cannot evict you or raise your rent because you complain
+    about problems in your home. 
+    <a class="alert-link" href="https://www.masslegalhelp.org/when-is-eviction-illegal">Read more</a>.
+    </p>
   </div>
-  
-  ${ collapse_template(what_problems_can_be_solved) }
   
 continue button field: starting_task  
 continue button label: Get started
-css: |
-  <style>
-    .custom-counter ol {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    }
-
-    .custom-counter li {
-    counter-increment: step-counter;
-    margin-bottom: 10px;
-    }
-
-    .custom-counter li::before {
-    content: counter(step-counter);
-    margin-right: 5px;
-    font-size: 80%;
-    background-color: black;
-    color: white;
-    font-weight: bold;
-    padding: 3px 8px;
-    border-radius: 50%;
-    }
-    
-    /* List number counter sizes to match circles in nav items (in styles.css). If one is adjusted, the other will have to be adjusted also. */
-    .custom-counter li::before {
-      padding: 0.5px 6.5px;
-    }
-  </style>  
-
 ---
 id: track conditions intro
 question: |
