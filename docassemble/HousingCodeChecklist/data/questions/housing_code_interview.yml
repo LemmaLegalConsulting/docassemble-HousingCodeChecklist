@@ -1063,12 +1063,16 @@ validation code: |
         bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(year=bad_conditions[i].details[j].start_year)
       if bad_conditions[i].details[j].start_month:
         bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(month=bad_conditions[i].details[j].start_month)
+        bad_conditions[i].details[j].approximate_month = False
       else:
         bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(month=1)
+        bad_conditions[i].details[j].approximate_month = True
       if bad_conditions[i].details[j].start_day:
         bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(day=bad_conditions[i].details[j].start_day)
+        bad_conditions[i].details[j].approximate_day = False
       else:
         bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(day=1)
+        bad_conditions[i].details[j].approximate_day = True
     except ValueError:
       validation_error(f"The date {bad_conditions[i].details[j].start_month or 1}/{bad_conditions[i].details[j].start_day or 1}/{bad_conditions[i].details[j].start_year} is not a valid date. Check the day of the month or leave it blank.", field="bad_conditions[i].details[j].start_day")
 ---
