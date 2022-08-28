@@ -232,7 +232,10 @@ code: |
   snapshot_interview_state
   nav.set_section('review_conditions')
   bad_conditions["common problems"].claims
+  for claim in bad_conditions["common problems"].claims.true_values():
+    bad_conditions["common problems"].details[claim].condition_existed_at_start
   if wants_detailed_conditions:
+    # go to the opening screen first, instead of asking "is there another" question
     bad_conditions.gather()
     if bad_conditions.count_conditions() > 0:
       # This is a bit of a workaround
@@ -498,7 +501,9 @@ id: simple conditions
 question: |
   Do you have any of the problems listed below?
 subquestion: |
-  This is a list of common problems that tenants have.
+  This is a list of common problems that tenants have. Tap the 
+  question mark icon to get more information about each
+  problem.
 fields:
   - What problems do you have?: bad_conditions["common problems"].claims
     datatype: checkboxes
@@ -693,8 +698,13 @@ subquestion: |
 yesno: bad_conditions.there_is_another
 ---
 code: |
-  if len(bad_conditions.complete_elements()) >= len(available_buttons): 
+  # available buttons doesn't include the "short" list
+  if len(bad_conditions.complete_elements()) >= len(available_buttons) + 1: 
     bad_conditions.there_is_another = False
+---
+code: |
+  if wants_detailed_conditions and len(bad_conditions.complete_elements()) == 1:
+    bad_conditions.there_is_another = True
 ---
 depends on:
   - bad_conditions[i].claims
@@ -988,7 +998,7 @@ id: details for this claim
 question: |
   More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).lower().lstrip() }"
 fields:
-  - Describe the problem using your own words: bad_conditions[i].details[j].description
+  - Describe the problem using your own words (optional): bad_conditions[i].details[j].description
     datatype: area
     required: False    
   - Was the problem there when you moved in?: bad_conditions[i].details[j].condition_existed_at_start
