@@ -23,8 +23,9 @@ fields:
 depends on:
   - document_choice["sue_landlord"]
 code: |
-  landlord_name_is_optional = not document_choice.get("sue_landlord")
-  ll_name_unknown = False
+  landlord_name_is_optional = not screen_ll_knows_problem or not document_choice.get("sue_landlord")
+  if landlord_name_is_optional:
+    ll_name_unknown = False
 ---
 if: |
   not landlord_name_is_optional
@@ -101,7 +102,7 @@ validation code: |
       (not showifdef('users[0].mobile_number')) and \
       (not showifdef('users[0].email')) 
   ):
-    validation_error(word("You need to provide at least one contact method."), field="users[0].other_contact_method")
+    validation_error(word("You need to provide at least one contact method."), field="users[0].mobile_number")
 ---
 id: landlord's contact information
 generic object: ALIndividual
@@ -160,14 +161,37 @@ code: |
 code: |
   tenant_repair_default_date = min([c.min_date for c in bad_conditions.elements.values()])                                  
 ---
+id: include citations?
+question: |
+  Do you want to include a citation to the sanitary code?
+subquestion: |
+  If you want, you can include a citation to the specific sanitary code that 
+  relates to each problem you are having when you list the problems in your
+  letter.
+
+  Example:
+  
+  > Floor has holes or cracks; C.M.R. 410.500
+fields:
+  - Citation style: sanitary_code_citation_style
+    datatype: radio
+    choices:
+      - Include the specific sanitary code citation: detailed_cites
+      - Just say what the problem is: no_detailed_cites
+---
 template: tenant_repair_issue_description_default
 content: |
   % for category in bad_conditions:
   % for index, row in bad_conditions[category].df.iterrows():
   % if bad_conditions[category].details[index].description:
-  * ${ bad_conditions[category].details[index].description }; C.M.R. ${ row['Sanitary Code Section'] }
+  * ${ bad_conditions[category].details[index].description.capitalize() }; \
   % else:
-  * ${ row['Interview description'] }; C.M.R. ${ row['Sanitary Code Section'] }
+  * ${ row['Interview description'] }; \
+  % endif
+  % if sanitary_code_citation_style == "detailed_cites":
+  C.M.R. ${ row['Sanitary Code Section'] }
+  % else:
+
   % endif
   % endfor  
   % endfor
@@ -198,7 +222,9 @@ question: |
 subquestion: |
   We used the problems that you selected to start a draft.
   
+  % if sanitary_code_citation_style == "detailed_cites":
   We also included a link to the sanitary code section that applies.
+  % endif
 fields:
   - no label: tenant_repair_issue_description
     datatype: area

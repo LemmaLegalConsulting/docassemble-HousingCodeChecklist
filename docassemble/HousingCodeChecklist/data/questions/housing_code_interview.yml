@@ -773,6 +773,7 @@ fields:
       
       Answer "no" if:
       
+      - there is no eviction case
       - the eviction case is already over, or
       - you only have a "Notice to Quit" or "Notice to Terminate Tenancy"
   - note: |
@@ -788,7 +789,7 @@ fields:
     show if:
       variable: screen_ll_knows_problem
       is: False
-  - Is your landlord refusing to fix the problems?: screen_ll_refusing_to_fix
+  - Is your landlord already fixing all of the problems?: screen_ll_already_fixing
     datatype: yesnoradio
     show if: screen_ll_knows_problem
   - note: |
@@ -799,17 +800,15 @@ fields:
       If you have not given your landlord enough time to fix the problem yet,
       you may want to wait before you get help from a court. But it is up
       to you.
-    show if:
-      variable: screen_ll_refusing_to_fix
-      is: False
+    show if: screen_ll_already_fixing
   - Are other tenants in your building also having housing problems?: screen_other_tenants_with_problem
-    datatype: yesnoradio
+    datatype: yesnomaybe
     show if: screen_ll_knows_problem
   - note: |
       **${ users.familiar() }, you and your neighbors are stronger together**. You have the right to **organize**
       with other tenants to fight the bad housing conditions.
     show if: screen_other_tenants_with_problem
-  - Have you requested an inspection from the city about the most recent problem?: screen_contacted_housing_inspector       
+  - Have you reported all of the problems to a city housing inspector?: screen_contacted_housing_inspector       
     datatype: yesnoradio
     show if: screen_ll_knows_problem
   - note: |
