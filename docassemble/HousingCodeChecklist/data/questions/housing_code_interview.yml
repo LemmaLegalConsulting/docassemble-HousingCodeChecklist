@@ -773,6 +773,7 @@ fields:
       
       Answer "no" if:
       
+      - there is no eviction case
       - the eviction case is already over, or
       - you only have a "Notice to Quit" or "Notice to Terminate Tenancy"
   - note: |
@@ -803,7 +804,7 @@ fields:
       variable: screen_ll_refusing_to_fix
       is: False
   - Are other tenants in your building also having housing problems?: screen_other_tenants_with_problem
-    datatype: yesnoradio
+    datatype: yesnomaybe
     show if: screen_ll_knows_problem
   - note: |
       **${ users.familiar() }, you and your neighbors are stronger together**. You have the right to **organize**
