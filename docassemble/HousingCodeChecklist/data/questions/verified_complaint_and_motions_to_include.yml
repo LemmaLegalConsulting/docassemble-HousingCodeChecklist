@@ -91,6 +91,7 @@ subquestion: |
   1. Pay you money (damages) based on your rights under Massachusetts law
   
 continue button field: File_a_Verified_Complaint_Form
+
 ---
 id: relief sought
 question: |
@@ -205,8 +206,6 @@ sets:
 id: names of opposing parties
 question: |
   What is the name of your ${ ordinal(i) } landlord?
-subquestion: |
-  In some cases, you may want to name more than one person.
 fields:
   - code: |
       other_parties[i].name_fields(person_or_business='unsure')

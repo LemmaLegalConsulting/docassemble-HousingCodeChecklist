@@ -20,6 +20,67 @@ fields:
       - An attorney: attorney
       - Someone **else** helping a tenant: tenant_helper
 ---
+depends on:
+  - document_choice["sue_landlord"]
+code: |
+  landlord_name_is_optional = not document_choice.get("sue_landlord")
+  ll_name_unknown = False
+---
+if: |
+  not landlord_name_is_optional
+id: names of opposing parties
+question: |
+  What is your landlord's name?
+fields:
+  - code: |
+      other_parties[0].name_fields(person_or_business="unsure")
+validation code: |
+  ll_name_unknown = False
+---
+if: |
+  landlord_name_is_optional
+id: names of opposing parties
+question: |
+  What is your landlord's name?
+fields:
+  - I do not know my landlord's name: ll_name_unknown
+    datatype: yesno
+  - note: |
+      **Okay**. You can still fill in this form, but you will need
+      to write in your landlord's name on every form before you deliver
+      it. You may be able to find their name by visiting the Registry of
+      Deeds for your city or town.
+    show if: ll_name_unknown
+  - Are they a person, or a business?: other_parties[0].person_type
+    input type: radio
+    choices:
+      - Business or organization: business
+      - Person: individual
+    hide if: ll_name_unknown      
+  - First name: other_parties[0].name.first
+    show if:
+      variable: other_parties[0].person_type
+      is: "individual"
+  - Last name: other_parties[0].name.last
+    show if:
+      variable: other_parties[0].person_type      
+      is: "individual"
+  - Suffix: other_parties[0].name.suffix
+    code: |
+      name_suffix()
+    show if:
+      variable: other_parties[0].person_type      
+      is: "individual"
+    required: False      
+  - Name of organization or business: other_parties[0].name.first
+    show if:
+      variable: other_parties[0].person_type
+      is: business
+validation code: |
+  if ll_name_unknown:
+    other_parties[0].name.first = "[ Landlord's Name ]"
+
+---
 id: tenant contact information
 question: |
   What is your contact information?
