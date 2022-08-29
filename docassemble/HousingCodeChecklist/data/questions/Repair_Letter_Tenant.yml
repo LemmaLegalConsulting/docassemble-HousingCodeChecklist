@@ -1,0 +1,330 @@
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.MassAccess:massaccess.yml
+---
+code: |
+  interview_short_title = "Ask your landlord to fix bad housing conditions"
+---
+comment: |
+  This section is used by MAVirtualCourts to control how some of the questions work.
+mandatory: True
+code: |
+  interview_metadata # make sure we initialize the object
+  if not defined("interview_metadata['tenant_repair_request']"):
+    interview_metadata.initializeObject('tenant_repair_request')
+  interview_metadata['tenant_repair_request'].update({
+    'title': 'Tenant Repair Request Letter',
+    'short title': 'Tenant Repair Request Letter',
+    'description': 'Tenant Repair Request Letter',
+    'original_form': '',
+    'allowed courts': [
+      'Boston Municipal Court',
+      'District Court',
+      'Housing Court',
+      'Superior Court',
+    ],
+    'categories': [
+      'Housing',
+    ],
+    'logic block variable': 'tenant_repair_request',
+    'attachment block variable': 'tenant_repair_request',
+    'typical role': 'plaintiff',
+  })
+---
+features:
+  navigation: True
+---
+sections:
+  - review_tenant_repair_request: Review your answers
+---
+id: interview_order_tenant_repair_request
+code: |
+  user_role = 'plaintiff'
+  # mailing_method  
+  set_parts(subtitle=str(users))
+  set_progress(12.5)
+  users[0].name.first
+  users[0].address
+  users[0].address.zip
+  users[0].phone_number
+  set_progress(25.0)
+  other_parties[0].name.first
+  other_parties[0].address.address
+  tenant_repair_issue_date
+  tenant_repair_issue_description
+  tenant_repair_introduction
+  set_progress(37.5)
+  # Save (anonymized) interview statistics.
+  store_variables_snapshot(data={'zip': users[0].address.zip})
+  interview_order_tenant_repair_request = True
+---
+id: custom intro screen
+decoration: form-lineal
+question: |
+  Send a Repair Request Letter to Your Landlord: Mass Access Project
+subquestion: |
+  
+  The MassAccess Project can help Massachusetts tenants write and send letters in 3 steps:
+  
+  Step 1. Answer the questions that will fill out your letter.  
+  Step 2. Review and sign the form.  
+  Step 3. Step 3. Download or email the final form. You will need to deliver it on your own.
+ 
+  
+    *This site is not a lawyer. If you would like a lawyer, find [your local
+  legal aid provider](https://masslrf.org).*
+  
+  Tap the {green words} in any screen for a definition or more information.
+  
+
+  % if chat_partners_available().help:
+  Live help is currently available in this interview. Click the speech bubble
+  (:comment-alt:) in the navigation bar to connect to a live advocate for help.
+  % endif
+
+fields:
+  - To continue, you must accept the [terms of use](https://massaccess.suffolklitlab.org/privacy/): acknowledged_information_use
+    datatype: checkboxes
+    none of the above: False    
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.        
+continue button field: custom_intro
+terms:
+  green words: |
+    Green words are legal terms or a short way of referring to something that needs more explanation. The definition or explanation pops up when you tap the green words.
+right: |
+  % if user_has_saved_answers:
+  ${fa_icon("bell", color="primary", size="sm")}
+  Saved answers available!  
+  
+  ${action_button_html(url_action('load_answer'), icon="folder-open", label=word("View answers"), size="sm" )}
+  % endif    
+  
+  
+  Tap the {green words} in any screen for a definition or more information.
+
+  % if chat_partners_available().help:
+  Live help is currently available in this interview. Click the speech bubble
+  (:comment-alt:) in the navigation bar to connect to a live advocate for help.
+  % endif
+---
+id: Tenant Repair Letter
+continue button field: tenant_repair_request_intro
+question: |
+  Tenant Repair Letter
+subquestion: |
+
+  This form will help you draft a notice letter to send to your landlord if they need to repair something in your apartment. If your landlord does not comply with this request, you may send them [Form 10 Repair Demand Letter](https://www.masslegalhelp.org/housing/lt1-form-10-repair-demand.pdf).  
+  
+  Before you start, you will need information about your landlord and their address.
+  
+  *The [Court Forms Online](https://courtformsonline.org/housing/) project may be able to help with other housing problems.* 
+  
+help:
+  label: |
+    More information
+  content: |
+    Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/housing/forms/evictions-shortcut) 
+---
+id: Letter information
+question: |
+  Information about mailing
+fields:
+  - How do you plan to mail this letter?: mailing_method
+    datatype: radio
+    choices:
+      - Certified mail: certified_mail
+      - Regular mail only: regular_mail
+  - note: |
+      **Great choice.**
+      Certified mail is a good choice to make sure your landlord gets
+      your letter. Bring this letter to the post office. Before you close
+      the envelope, write the certified mail number on your letter. Keep
+      a copy for your own records, too.
+    show if:
+      variable: mailing_method
+      is: certified_mail
+  - 'When are you sending this letter?': sent_date
+    datatype: date
+    default: ${ today().format("YYYY-MM-dd") }
+---
+id: Date Issues arose
+question: |
+  When did the problem start?
+subquestion: |
+  Give the best date you know. It is OK if it is not the exact date.
+fields:
+  - Date problem started: tenant_repair_issue_date
+    datatype: date
+---
+id: Issues
+question: |
+  Describe the problem
+subquestion: |
+  Tell the landlord the problem that needs to be fixed. Be specific.
+fields:
+  - no label: tenant_repair_issue_description
+    input type: area
+---
+id: tenant_repair_introduction
+question: |
+  Introduce your letter
+subquestion: |
+  Add a few words to introduce your letter to ${ other_parties.familiar() }.
+  
+  For example, you may remind your landlord how long you have been a tenant.
+  
+  If you are not sure what to say, it is okay to leave this blank.
+fields:
+  - no label: tenant_repair_introduction
+    datatype: area
+    required: False
+---
+objects:
+  - users: ALPeopleList.using(ask_number=True, target_number=1)
+  - other_parties: ALPeopleList.using(ask_number=True, target_number=1)  
+---
+objects:
+  - tenant_repair_request_attachment: ALDocument.using(title="Tenant Repair Letter", filename="tenant_repair_letter")
+---
+code: |
+  tenant_repair_request_attachment.enabled = True
+---
+attachment:
+    variable name: tenant_repair_request_attachment[i]
+    name: Letter to request a grievance hearing
+    filename: tenant_repair_request
+    docx template file: tenant_repair_letter.docx
+---
+id: tenant_repair_request review screen
+event: review_tenant_repair_request
+question: |
+  Review repair letter
+subquestion: |
+  Edit your answers below
+review: 
+  - Edit: users[0].name.first
+    button: |
+      Your name: ${ users[0] }
+  - Edit: review_conditions
+    button: |
+      ${ review_conditions_template }
+  - Edit: users[0].address.address
+    button: |
+      Your address: ${ users[0].address_block() }      
+  - Edit: other_parties[0].name.first
+    button: |
+      Your landlord's name: ${ other_parties[0] }
+  - Edit: other_parties[0].address.address
+    button: |
+      Your landlord's address: ${ other_parties[0].address.address }      
+  - Edit: users[0].number
+    button: |
+      Number:
+      ${ users[0].number }
+  - Edit: tenant_repair_introduction
+    button: |
+      Introduction to your letter: 
+      > ${ tenant_repair_introduction } 
+  - Edit: tenant_repair_issue_date
+    button: |
+      Date of first problem: 
+      ${ tenant_repair_issue_date }
+  - Edit: tenant_repair_issue_description
+    button: |
+      Description of problem:
+      > ${ tenant_repair_issue_description }
+---
+id: your name
+question:  |
+  What is your name?
+fields:
+  - First Name: users[0].name.first
+  - Middle Name: users[0].name.middle
+    required: False
+  - Last Name: users[0].name.last
+  - Suffix: users[0].name.suffix
+    code: |
+      name_suffix()
+    required: False
+---
+id: persons address
+generic object: Individual
+question: |
+  What is your address
+fields:
+  - Street Address: users[0].address.address
+    address autocomplete: True
+  - Unit: users[0].address.unit
+    required: False
+  - City: users[0].address.city
+  - State: users[0].address.state
+    default: MA   
+    code: |
+      states_list()   
+  - Zip Code: users[0].address.zip
+    required: False
+---
+id: your contact information
+question: |
+  Contact information
+subquestion: |
+  What is the best way for your landlord to reach you? 
+fields:  
+  - Mobile number: users[0].mobile_number
+    required: False
+  - Other phone number: users[0].phone_number
+    required: False
+  - Email address: users[0].email    
+    datatype: email
+    required: False
+  - Other ways to reach you: users[0].other_contact_method
+    input type: area
+    required: False
+    help: |
+      Be Specific 
+validation code: |
+  if (not showifdef('users[0].phone_number') and \
+      (not showifdef('users[0].mobile_number')) and \
+      (not showifdef('users[0].email')) and \
+      (not showifdef('users[0].other_contact_method'))):
+    validation_error(word("You need to provide at least one contact method."), field="users[0].other_contact_method")
+help: |
+  Provide at least one way to reach you
+---
+code: signature_date = today()
+---
+id: signature choice
+decoration: file-signature
+question: |
+  Sign your Letter 
+subquestion: |
+  Your letter is almost ready. You need to sign it first.
+  
+  Use the mouse or touchpad on your computer or
+  sign with your finger on your phone.
+field: signature_choice
+buttons:  
+  - Sign on my phone: phone
+    image: mobile-alt
+  - Sign on this computer: this device
+    image: desktop
+continue button field: saw_signature_choice
+script: |
+  <script>
+    $(".da-field-buttons > div > .btn-da-custom").last().after("<br>")
+    $(".da-field-buttons > div > .btn-da-custom").first().before("<br>")
+  </script>
+---
+sets:
+  - other_parties[0].name.first
+id: names of opposing parties
+question: |
+  What is your landlord's name?
+fields:
+  - code: |
+      other_parties[0].name_fields(person_or_business='unsure')

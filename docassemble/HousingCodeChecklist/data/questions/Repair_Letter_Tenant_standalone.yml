@@ -1,0 +1,67 @@
+---
+include: 
+  - Repair_Letter_Tenant.yml
+---
+metadata:
+  title: |
+    Tenant Repair Letter
+  short title: |
+    Repair Letter
+  authors:
+    - Christopher Selak
+    - Michael Carroll
+    - Quinten Steenhuis
+---
+id: main_order_repair_letter_tenant
+mandatory: True
+code: |
+  custom_intro
+  tenant_repair_request_intro
+  interview_order_tenant_repair_request
+  preview_screen
+  users[0].signature
+  download_tenant_repair_request  
+---
+code: |
+  al_form_type = "letter"
+---
+code: |
+  user_started_case = True
+---
+code: |
+  user_role = "plaintiff"
+---
+id: Review your form before you sign it
+continue button field: preview_screen
+question: |
+  Review your form before you sign it
+subquestion: |
+
+  Here is a preview of the form you'll sign on the next page.
+  
+  ${ al_recipient_bundle.as_pdf(key='preview') }
+
+---
+progress: 100
+event: download_tenant_repair_request
+id: download_tenant_repair_request
+question: |
+  Your lettter is ready to download
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+   1. Look over the letter below. Click the "[Review your answers](${ url_action('review_tenant_repair_request')})" button
+  if you need to make any changes.
+  2. Download and print 2 copies of your letter. Keep one for your records.
+  Send the other copy to your housing authority.
+  3. If you choose to send it by certified mail, bring your letter
+  unsealed to the post office. Write the certified mail number on the letter
+  before you place it in the mail.
+  
+  ${al_user_bundle.download_list_html() }
+  
+  ${ al_recipient_bundle.send_button_html() }
+---  
+objects:
+  - al_recipient_bundle: ALDocumentBundle.using(elements=[tenant_repair_request_attachment], filename="tenant_repair_request", title="Forms to download and deliver to your landlord today")
+  - al_user_bundle: ALDocumentBundle.using(elements=[tenant_repair_request_attachment], filename="tenant_repair_request", title="Forms to download and deliver to your landlord today")
