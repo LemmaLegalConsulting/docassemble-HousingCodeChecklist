@@ -9,7 +9,7 @@ include:
   - Repair_Demand_Letter_to_include.yml
   - verified_complaint_and_motions_to_include.yml
   - docassemble.SanitaryCode:sanitary_code_template.yml
-  - docassemble.RentalRepairLetter:Repair_Letter_Tenant.yml
+  - Repair_Letter_Tenant.yml
   - customized_screens.yml 
   - language.yml 
   - simple_conditions.yml
@@ -52,13 +52,101 @@ default screen parts:
   short logo: |
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
 ---
-id: patch interview stats pre 1.11.0
-event: cron_daily
+mandatory: True
+id: interview order
 code: |
-  if task_not_yet_performed('update_saved_statistics'):
-    reconsider('snapshot_interview_state')
-    mark_task_as_performed('update_saved_statistics')
-  # Consider removing after 1/15/2022
+  initial_action_display_cards
+  intro_and_terms_of_use
+  person_answering
+  users[0].name.first
+  if person_answering == "attorney" and representation_type == "entering_appearance":
+    attorneys[0].name.first
+  starting_task
+  snapshot_interview_state
+  nav.set_section('review_conditions')
+  bad_conditions["common problems"].claims
+  for claim in bad_conditions["common problems"].claims.true_values():
+    bad_conditions["common problems"].details[claim].condition_existed_at_start
+  if wants_detailed_conditions:
+    # go to the opening screen first, instead of asking "is there another" question
+    bad_conditions.gather()
+    if bad_conditions.count_conditions() > 0:
+      # This is a bit of a workaround
+      for room in bad_conditions:
+        for condition in bad_conditions[room].claims.true_values():
+          bad_conditions[room].details[condition].condition_existed_at_start  
+      review_conditions
+    else:
+      warn_add_conditions
+  else:
+    bad_conditions.gathered = True
+  nav.set_section('document_choice')
+  screen_ll_knows_problem
+  reconsider('snapshot_interview_state')
+  nav.set_section('provide_details')  
+  if not screen_ll_knows_problem:
+    update_sections_with_selected_documents
+    nav.set_section(sub_documents['tell_landlord'].get('section_link'))
+    users[0].address.address
+    try:
+      users[0].address.geocode()
+    except:
+      pass
+    nav.set_section(sub_documents['organize_tenants'].get('section_link'))
+    organizing_interstitial
+  else:
+    explain_documents
+    update_sections_with_selected_documents  
+  if screen_ll_knows_problem and document_choice['get_report']:
+    nav.set_section(sub_documents['get_report'].get('section_link'))
+    users[0].address.address
+    other_parties.gather()
+    other_parties[0].address.address
+  if screen_ll_knows_problem and document_choice['tell_landlord']:
+    nav.set_section(sub_documents['tell_landlord'].get('section_link'))
+    interview_order_tenant_repair_request
+  #if screen_ll_knows_problem and document_choice['share_with_tenants']:
+  #  nav.set_section(sub_documents['share_with_tenants'].get('section_link'))
+  #  explain_sharing
+  #  store_for_tenant_sharing
+  if screen_ll_knows_problem and document_choice['organize_tenants']:
+    nav.set_section(sub_documents['organize_tenants'].get('section_link'))
+    users[0].address.address
+    try:
+      users[0].address.geocode()
+    except:
+      pass
+    organizing_interstitial
+  if screen_ll_knows_problem and document_choice['get_inspection']:
+    nav.set_section(sub_documents['get_inspection'].get('section_link'))
+    interview_order_request_housing_inspection
+  if screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection'):
+    nav.set_section(sub_documents['enforce_inspection'].get('section_link'))
+    sanitary_code_template
+  # if screen_ll_knows_problem and document_choice['get_injunction']:
+  #   nav.set_section(sub_documents['get_injunction'].get('section_link'))
+  #   interview_order_Housing_Temporary_Restraining_Order0002
+  if screen_ll_knows_problem and document_choice['demand_letter_93a']:
+    nav.set_section(sub_documents['demand_letter_93a'].get('section_link'))
+    if is_landlord_subject_to_93a:
+      interview_order_Repair_Demand_Letter
+    else:
+      landlord_is_not_subject_to_93a
+  if screen_ll_knows_problem and document_choice['sue_landlord']:
+    nav.set_section(sub_documents['sue_landlord'].get('section_link'))
+    if person_answering == "attorney" and representation_type == "entering_appearance":
+      attorneys[0].address.address
+      attorneys[0].email
+    interview_order_verified_complaint_and_motions
+  # if screen_ll_knows_problem and {'enforce_inspection','get_inspection','get_injunction', 'tell_landlord'}.intersection(document_choice.true_values()):
+  if screen_ll_knows_problem and {'enforce_inspection','get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
+     nav.set_section('preview_and_sign')
+     preview_conditions_checklist_docs
+     basic_questions_signature_flow     
+  reached_download_screen = True
+  reconsider('snapshot_interview_state')
+  nav.set_section('download_conditions_checklist_docs')
+  download_conditions_checklist_docs
 ---
 objects:
   - document_problems_image: DAStaticFile.using(filename="dripping_faucet.jpg")
@@ -244,98 +332,7 @@ auto open: True
 ---
 modules:
   - .load_data
-  - docassemble.ALToolbox.misc  
----
-mandatory: True
-id: interview order
-code: |
-  initial_action_display_cards
-  intro_and_terms_of_use
-  person_answering
-  users[0].name.first
-  starting_task
-  snapshot_interview_state
-  nav.set_section('review_conditions')
-  bad_conditions["common problems"].claims
-  for claim in bad_conditions["common problems"].claims.true_values():
-    bad_conditions["common problems"].details[claim].condition_existed_at_start
-  if wants_detailed_conditions:
-    # go to the opening screen first, instead of asking "is there another" question
-    bad_conditions.gather()
-    if bad_conditions.count_conditions() > 0:
-      # This is a bit of a workaround
-      for room in bad_conditions:
-        for condition in bad_conditions[room].claims.true_values():
-          bad_conditions[room].details[condition].condition_existed_at_start  
-      review_conditions
-    else:
-      warn_add_conditions
-  else:
-    bad_conditions.gathered = True
-  nav.set_section('document_choice')
-  screen_ll_knows_problem
-  reconsider('snapshot_interview_state')
-  nav.set_section('provide_details')  
-  if not screen_ll_knows_problem:
-    update_sections_with_selected_documents
-    nav.set_section(sub_documents['tell_landlord'].get('section_link'))
-    users[0].address.address
-    try:
-      users[0].address.geocode()
-    except:
-      pass
-    nav.set_section(sub_documents['organize_tenants'].get('section_link'))
-    organizing_interstitial
-  else:
-    explain_documents
-    update_sections_with_selected_documents  
-  if screen_ll_knows_problem and document_choice['get_report']:
-    nav.set_section(sub_documents['get_report'].get('section_link'))
-    users[0].address.address
-    other_parties.gather()
-    other_parties[0].address.address
-  if screen_ll_knows_problem and document_choice['tell_landlord']:
-    nav.set_section(sub_documents['tell_landlord'].get('section_link'))
-    interview_order_tenant_repair_request
-  #if screen_ll_knows_problem and document_choice['share_with_tenants']:
-  #  nav.set_section(sub_documents['share_with_tenants'].get('section_link'))
-  #  explain_sharing
-  #  store_for_tenant_sharing
-  if screen_ll_knows_problem and document_choice['organize_tenants']:
-    nav.set_section(sub_documents['organize_tenants'].get('section_link'))
-    users[0].address.address
-    try:
-      users[0].address.geocode()
-    except:
-      pass
-    organizing_interstitial
-  if screen_ll_knows_problem and document_choice['get_inspection']:
-    nav.set_section(sub_documents['get_inspection'].get('section_link'))
-    interview_order_request_housing_inspection
-  if screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection'):
-    nav.set_section(sub_documents['enforce_inspection'].get('section_link'))
-    sanitary_code_template
-  # if screen_ll_knows_problem and document_choice['get_injunction']:
-  #   nav.set_section(sub_documents['get_injunction'].get('section_link'))
-  #   interview_order_Housing_Temporary_Restraining_Order0002
-  if screen_ll_knows_problem and document_choice['demand_letter_93a']:
-    nav.set_section(sub_documents['demand_letter_93a'].get('section_link'))
-    if is_landlord_subject_to_93a:
-      interview_order_Repair_Demand_Letter
-    else:
-      landlord_is_not_subject_to_93a
-  if screen_ll_knows_problem and document_choice['sue_landlord']:
-    nav.set_section(sub_documents['sue_landlord'].get('section_link'))
-    interview_order_verified_complaint_and_motions
-  # if screen_ll_knows_problem and {'enforce_inspection','get_inspection','get_injunction', 'tell_landlord'}.intersection(document_choice.true_values()):
-  if screen_ll_knows_problem and {'enforce_inspection','get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
-     nav.set_section('preview_and_sign')
-     preview_conditions_checklist_docs
-     basic_questions_signature_flow     
-  reached_download_screen = True
-  reconsider('snapshot_interview_state')
-  nav.set_section('download_conditions_checklist_docs')
-  download_conditions_checklist_docs
+  - docassemble.ALToolbox.misc
 ---
 depends on:
   - user_language
@@ -491,13 +488,23 @@ continue button field: learn_more
 ---
 id: simple conditions
 question: |
+  % if person_answering == "tenant":
   Do you have any of the problems listed below?
+  % else:
+  Does ${ users.familiar() } have any of the problems listed below?
+  % endif
 subquestion: |
   This is a list of common problems that tenants have. Tap the 
   question mark icon to get more information about each
   problem.
 fields:
-  - What problems do you have?: bad_conditions["common problems"].claims
+  - label: |
+      % if person_answering == "tenant":
+      What problems do you have?
+      % else:
+      What problems does ${ users.familiar() } have?
+      % endif
+    field: bad_conditions["common problems"].claims
     datatype: checkboxes
     code: |
       conditions_from_list(dataloader, simple_conditions_list, language=user_language)
@@ -917,6 +924,7 @@ subquestion: |
   1. You can come back to this website later to take additional steps.
 
   % if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
+  <h2 class="h4">Documents for you to print and deliver</h2>
   ${ housing_code_bundle.download_list_html(format="docx") }
 
   ${ housing_code_bundle.send_button_html() }
@@ -926,7 +934,8 @@ subquestion: |
   ${ tenant_repair_letter_bundle.send_button_html() }
   % endif  
   % if screen_ll_knows_problem and document_choice['sue_landlord']:
-  
+  [BR]
+  <h2 class="h4">Documents for you to print and file in court</h2>
   ${ affirmative_complaint_bundle.download_list_html(format="docx") }
   
   ${ affirmative_complaint_bundle.send_button_html() }
@@ -1057,18 +1066,22 @@ fields:
 validation code: |
   # Transform the approximate date into a real DADateTime object
   if not bad_conditions[i].details[j].condition_existed_at_start:
-    bad_conditions[i].details[j].start_date = today()
+    bad_conditions[i].details[j].start_date = today().replace(day=1, month=1) # otherwise if the current day is past 28 might get a value error
     try:
       if bad_conditions[i].details[j].start_year:
-        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(year=bad_conditions[i].details[j].start_year)
-      if bad_conditions[i].details[j].start_month:
-        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(month=bad_conditions[i].details[j].start_month)
+        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(year=int(bad_conditions[i].details[j].start_year))
+      if int(bad_conditions[i].details[j].start_month) in range(1,12):
+        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(month=int(bad_conditions[i].details[j].start_month))
+        bad_conditions[i].details[j].approximate_month = False
       else:
         bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(month=1)
-      if bad_conditions[i].details[j].start_day:
-        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(day=bad_conditions[i].details[j].start_day)
+        bad_conditions[i].details[j].approximate_month = True
+      if int(bad_conditions[i].details[j].start_day) in range(1,31):
+        bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(day=int(bad_conditions[i].details[j].start_day))
+        bad_conditions[i].details[j].approximate_day = False
       else:
         bad_conditions[i].details[j].start_date = bad_conditions[i].details[j].start_date.replace(day=1)
+        bad_conditions[i].details[j].approximate_day = True
     except ValueError:
       validation_error(f"The date {bad_conditions[i].details[j].start_month or 1}/{bad_conditions[i].details[j].start_day or 1}/{bad_conditions[i].details[j].start_year} is not a valid date. Check the day of the month or leave it blank.", field="bad_conditions[i].details[j].start_day")
 ---
