@@ -214,19 +214,19 @@ variable name: verified_complaint_claims_terms
 use objects: True
 data:
   entered without permission: 
-    question: entered your home without permission
+    question: Went into my home without permission
     document: entered my home without permission
   illegal lockout: 
-    question: locked you out of your home or removed your belongings
+    question: Locked me out of my home or took my belongings out of my home
     document: locked me out of my home or removed my belongings without lawful authority
   utility shutoff: 
-    question: turned off or failed to restore a utility service
+    question: Turned off the gas, electricity or oil service or did not turn it back on
     document: turned off or failed to restore a utility service
   utility no agreement:
-    question: required you to pay for utilities without a written agreement
+    question: Made me pay for utilities without a written agreement
     document: required me to pay for utilities without a written agreement
   insufficient notice: 
-    question: did not give you reasonable notice to make repairs
+    question: Made repairs without giving me reasonable warning of the time and day they would come
     document: did not give me reasonable notice to make repairs
   other:
     question: other
@@ -238,14 +238,16 @@ question: |
 subquestion: |
   You have already told us about the housing problems that your landlord did not repair.
   Is there anything else you would like to tell the court about?
+
+  ${ collapse_template(verified_complaint_statute_of_limitations_template) }
   
   My landlord:
 fields:
-  - Entered my home without permission: verified_complaint_claims["entered without permission"].has_claim
+  - ${ verified_complaint_claims_terms["entered without permission"] }: verified_complaint_claims["entered without permission"].has_claim
     datatype: yesno
-  - Locked me out of my home or removed my belongings: verified_complaint_claims["illegal lockout"].has_claim
+  - ${ verified_complaint_claims_terms["illegal lockout"] }: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
-  - Required me to pay for utilities without a written agreement: verified_complaint_claims["utility no agreement"].has_claim
+  - ${ verified_complaint_claims_terms["utility no agreement"]}: verified_complaint_claims["utility no agreement"].has_claim
     datatype: yesno
     help: |
       The landlord must pay for utilities like electricity and gas unless there is a written agreement. A spoken agreement
@@ -259,7 +261,7 @@ fields:
     none of the above: False
     minlength: 1
     show if: verified_complaint_claims["utility no agreement"].has_claim
-  - Turned off or failed to restore a utility service: verified_complaint_claims["utility shutoff"].has_claim
+  - ${ verified_complaint_claims_terms["utility shutoff"] }: verified_complaint_claims["utility shutoff"].has_claim
     datatype: yesno
   - Utility: complaint_utility_shutoff
     datatype: checkboxes
@@ -270,12 +272,36 @@ fields:
     none of the above: False
     minlength: 1
     show if: verified_complaint_claims["utility shutoff"].has_claim
-  - Did not give me reasonable notice to make repairs: verified_complaint_claims["insufficient notice"].has_claim
+  - ${ verified_complaint_claims_terms["insufficient notice"] }: verified_complaint_claims["insufficient notice"].has_claim
     datatype: yesno
-  - Did something else that violates Massachusetts landlord-tenant law: verified_complaint_claims["other"].has_claim
+  - Did something else that breaks Massachusetts landlord-tenant law: verified_complaint_claims["other"].has_claim
     datatype: yesno
     help: |
       Not sure what to say here? This choice is less common. You can add details on the next page.
+  - None of the above: verified_complaint_nota
+    datatype: yesno
+    uncheck others: True      
+---
+template: verified_complaint_statute_of_limitations_template
+subject: |
+  How far back can I go?
+content: |
+  You cannot sue your landlord for very old problems.
+
+  The time limit is:
+
+  * **4 years** for some problems
+  * **6 years** for some other problems
+
+  The rules depend on the kind of problem and whether the problem is still
+  happening or not.
+
+  But there may be exceptions. If you are not sure, it is okay to list every
+  problem for now.
+
+  Adding a problem that you do not know about will not hurt
+  your case. The judge may tell you to take some of the problems 
+  out of your complaint later.
 ---
 id: claim i details
 question: |
@@ -317,8 +343,10 @@ fields:
     field: verified_complaint_claims[i].details
     datatype: area
     rows: 2
-  - When did this happen? State an exact date or the best date you can remember, such as "last summer": verified_complaint_claims[i].date
+  - When did this happen? State an exact date or the best date you can remember, such as "last summer". Include a year.: verified_complaint_claims[i].date
     label above field: True
+    validate: |
+      lambda y: re.search(r"\d\d\d\d", y) or validation_error(f"Include a year with your answer, like \"{today().year}\"")
 ---
 # similar question in Repair_Demand_Letter
 # id: Do you receive a subsidy for rent?

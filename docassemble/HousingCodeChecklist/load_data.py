@@ -160,7 +160,7 @@ class ConditionsDict(DADict):
         """Merge condition details with original DF row"""
         results = pd.concat([self[c].df for c in self])
 
-    def as_list(self, language="en"):
+    def as_list(self, language:str="en"):
         flattened = DAList(auto_gather=False, gathered=True)
         for category in self:
             for index, row in self[category].df.iterrows():
@@ -172,7 +172,7 @@ class ConditionsDict(DADict):
                 flattened.append(the_condition)
         return flattened
 
-    def active_conditions(self, language="en"):
+    def active_conditions(self, language:str="en"):
         return DAList(
             auto_gather=False,
             gathered=True,
@@ -185,7 +185,7 @@ class ConditionsDict(DADict):
             ],
         )
 
-    def resolved_conditions(self, language="en"):
+    def resolved_conditions(self, language:str="en"):
         return DAList(
             auto_gather=False,
             gathered=True,
@@ -193,6 +193,17 @@ class ConditionsDict(DADict):
                 condition
                 for condition in self.as_list(language=language)
                 if (hasattr(condition, "condition_ended") and condition.condition_ended)
+            ],
+        )
+
+    def emergency_conditions(self, condition_ended:bool=False, language:str="en"):
+        return DAList(
+            auto_gather=False,
+            gathered=True,
+            elements=[
+                condition
+                for condition in self.as_list(language=language)
+                if condition.deadline == "24 hours" and condition.condition_ended == condition_ended
             ],
         )
 

@@ -10,6 +10,7 @@ include:
 # Used in multiple templates
 ###############
 ---
+id: who is using this interview
 question: |
   Who is using this website?
 fields:
@@ -19,6 +20,19 @@ fields:
       - The tenant: tenant
       - An attorney: attorney
       - Someone **else** helping a tenant: tenant_helper
+  - Will you file an appearance?: representation_type
+    input type: radio
+    choices:
+      - Yes. I am entering an appearance.: entering_appearance
+      - No. I am only helping "ghostwrite" this document.: ghostwriting
+    show if:
+      variable: person_answering
+      is: attorney
+  - note: |
+      **Okay. The court documents will state "Prepared with assistance of counsel" in the footer.**
+    show if:
+      variable: representation_type
+      is: ghostwriting
 ---
 depends on:
   - document_choice["sue_landlord"]
@@ -29,7 +43,7 @@ code: |
 ---
 if: |
   not landlord_name_is_optional
-id: names of opposing parties
+id: names of opposing parties name required
 question: |
   What is your landlord's name?
 fields:
@@ -40,7 +54,7 @@ validation code: |
 ---
 if: |
   landlord_name_is_optional
-id: names of opposing parties
+id: names of opposing parties name not required
 question: |
   What is your landlord's name?
 fields:
@@ -134,6 +148,68 @@ fields:
     code: |
       name_suffix()
     required: False
+---
+id: attorneys name
+question: |
+  % if person_answering == "attorney":
+  **Your** name
+  % else:
+  Attorney's name
+  % endif
+fields:
+  - Law firm or organization name: attorneys[0].organization
+  - First Name: attorneys[0].name.first
+    default: |
+      % if user_logged_in():
+      ${ user_info().first_name }
+      % endif
+  - Middle Name: attorneys[0].name.middle
+    required: False
+    default: |
+      % if user_logged_in():
+      % endif    
+  - Last Name: attorneys[0].name.last
+    default: |
+      % if user_logged_in():
+      ${ user_info().last_name }
+      % endif
+  - Suffix: attorneys[0].name.suffix
+    code: |
+      sorted(name_suffix() + ["Esq."])
+    required: False
+    default: |
+      % if user_logged_in():
+      % endif
+  #- Save my information for later: save_attorney_name
+  #  datatype: yesno
+---
+id: attorneys address and contact information
+question: |
+  % if person_answering == "attorney":
+  **Your** address and contact information
+  % else:
+  Attorney's address and contact information
+  % endif
+fields:
+  - Attorney number (BBO): attorneys[0].bbo_number
+    required: False
+  - Law firm street address: attorneys[0].address.address
+    address autocomplete: True
+  - Suite: attorneys[0].address.unit
+    required: False
+  - City: attorneys[0].address.city
+  - State: attorneys[0].address.state
+    code: |
+      states_list()
+    default: MA      
+  - Zip: attorneys[0].address.zip
+    required: False
+  - Email: attorneys[0].email
+    datatype: email
+    required: False
+  - Phone: attorneys[0].phone_number
+    datatype: al_international_phone
+    required: False    
 ---
 id: persons signature
 generic object: ALIndividual
