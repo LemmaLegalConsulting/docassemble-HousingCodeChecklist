@@ -128,10 +128,7 @@ code: |
   #   interview_order_Housing_Temporary_Restraining_Order0002
   if screen_ll_knows_problem and document_choice['demand_letter_93a']:
     nav.set_section(sub_documents['demand_letter_93a'].get('section_link'))
-    if is_landlord_subject_to_93a:
-      interview_order_Repair_Demand_Letter
-    else:
-      landlord_is_not_subject_to_93a
+    interview_order_Repair_Demand_Letter
   if screen_ll_knows_problem and document_choice['sue_landlord']:
     nav.set_section(sub_documents['sue_landlord'].get('section_link'))
     if person_answering == "attorney" and representation_type == "entering_appearance":
@@ -840,7 +837,7 @@ fields:
       # TODO(41): low priority
       - Ask a judge to enforce an order from a housing inspector: enforce_inspection
       #- Ask a judge to order my landlord to fix the problem: get_injunction
-      - Ask for a fair settlement (consumer protection demand letter): demand_letter_93a
+      - Ask for a fair settlement (consumer protection demand letter or settlement letter): demand_letter_93a
       - Sue my landlord for money or to get an emergency order: sue_landlord
     default:
       - get_report
@@ -1184,7 +1181,7 @@ code: |
   verified_complaint_and_motions_attachment.enabled = screen_ll_knows_problem and document_choice["sue_landlord"]
 ---
 code: |
-  Repair_Demand_Letter_attachment.enabled = screen_ll_knows_problem and document_choice["demand_letter_93a"] and is_landlord_subject_to_93a
+  Repair_Demand_Letter_attachment.enabled = screen_ll_knows_problem and document_choice["demand_letter_93a"]
 ---
 objects:
   - organize_tenants_attachment: ALStaticDocument.using(title="Organize tenants", filename="lt1-pullout-10-getting-organized.pdf")

@@ -158,9 +158,14 @@ question: |
 subquestion: |
   Based on your answers, your landlord is **not** a business.
 
-  You still have rights. But you cannot sue them or ask for money using the
+  You cannot sue them or ask for money using the
   [Consumer Protection Law
   (M.G.L. c. 93A)](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law).
+
+  You cannot ask for treble damages.
+
+  We will still make a settlement request letter for you based on the rights that you have under
+  other Massachusetts laws.
 ---
 sets: 
   - other_parties[0].address.address
