@@ -1160,9 +1160,6 @@ code: |
   organize_tenants_attachment.enabled = screen_ll_knows_problem and document_choice['organize_tenants'] 
 ---
 code: |
-  checklist_attachment.enabled = action_argument('enabled') or screen_ll_knows_problem and document_choice['get_report']
----
-code: |
   conditions_report_attachment.enabled = action_argument('enabled') or screen_ll_knows_problem and document_choice['get_report']
 ---
 code: |
@@ -1189,13 +1186,7 @@ objects:
   - organize_tenants_attachment: ALDocument.using(title="Organize!", filename="lt1-pullout-10-getting-organized")
   - sue_your_landlord_attachment: ALDocument.using(title="Sue your Landlord", filename="sue_your_landlord")
   - request_housing_inspection_attachment: ALDocument.using(title="Letter to Request Housing Inspection", filename="inspection_request")
-  - checklist_attachment: ALDocument.using(title="Housing Code Checklist", filename="housing_code_checklist")
   - conditions_report_attachment: ALDocument.using(title="Housing Conditions Report", filename="housing_conditions_report")
----
-attachment:
-  variable name: checklist_attachment[i]
-  docx template file: Housing_Code_Checklist.docx
-  language: en
 ---
 attachment:
   variable name: conditions_report_attachment[i]
@@ -1207,10 +1198,6 @@ attachment:
   docx template file: letter_to_request_inspection.docx
   language: en
 ---
-#      checklist_attachment,
-# sue_your_landlord_attachment,
-#       sanitary_code_template_attachment,
-# Housing_Temporary_Restraining_Order0002_attachment
 objects:
   - housing_code_bundle: ALDocumentBundle.using(elements=[
       conditions_report_attachment,
