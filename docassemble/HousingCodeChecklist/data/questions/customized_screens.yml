@@ -149,6 +149,27 @@ fields:
       name_suffix()
     required: False
 ---
+id: persons address
+generic object: Individual
+question: |
+  % if person_answering == "tenant":
+  What is your address?
+  % else:
+  What is ${ users.familiar() }'s address?
+  % endif
+fields:
+  - Street Address: users[0].address.address
+    address autocomplete: True
+  - Unit: users[0].address.unit
+    required: False
+  - City: users[0].address.city
+  - State: users[0].address.state
+    default: MA   
+    code: |
+      states_list()   
+  - Zip Code: users[0].address.zip
+    required: False    
+---
 id: attorneys name
 question: |
   % if person_answering == "attorney":
