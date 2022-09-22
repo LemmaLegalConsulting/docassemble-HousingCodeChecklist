@@ -44,13 +44,18 @@ code: |
   other_parties.gather()
   complaint_ask_for_damages
   is_landlord_subject_to_93a
+  if is_landlord_subject_to_93a:
+    demand_letter_sent
+    if complaint_ask_for_damages and not demand_letter_sent:
+      confirm_ask_for_damages
+      update_ask_for_damages
   verified_complaint_claims.gathered
   tenant_gets_rent_subsidy # from Repair_Demand_letter_to_include.yml
-  tenant_unit_rent
+  if complaint_ask_for_damages:
+    tenant_unit_rent
   if tenant_gets_rent_subsidy and tenant_subsidy_is_voucher:
     verified_complaint_tenant_voucher_at_risk
   complaint_ask_for_tro
-  demand_letter_sent
   trial_court
   other_parties[0].phone_number
   users[0].email
@@ -239,7 +244,8 @@ subquestion: |
   You have already told us about the housing problems that your landlord did not repair.
   Is there anything else you would like to tell the court about?
 
-  ${ collapse_template(verified_complaint_statute_of_limitations_template) }
+  Think about problems that have happened in the last 6 years, even if they
+  are fixed now.
   
   My landlord:
 fields:
@@ -281,27 +287,6 @@ fields:
   - None of the above: verified_complaint_nota
     datatype: yesno
     uncheck others: True      
----
-template: verified_complaint_statute_of_limitations_template
-subject: |
-  How far back can I go?
-content: |
-  You cannot sue your landlord for very old problems.
-
-  The time limit is:
-
-  * **4 years** for some problems
-  * **6 years** for some other problems
-
-  The rules depend on the kind of problem and whether the problem is still
-  happening or not.
-
-  But there may be exceptions. If you are not sure, it is okay to list every
-  problem for now.
-
-  Adding a problem that you do not know about will not hurt
-  your case. The judge may tell you to take some of the problems 
-  out of your complaint later.
 ---
 id: claim i details
 question: |
@@ -391,12 +376,44 @@ fields:
   - When did you send it?: date_of_93A_notice
     datatype: date
     show if: demand_letter_sent
-  - Did you get a reaonable settlement offer within 30 days?: got_93a_settlement_offer
+  - Did you get a reasonable settlement offer within 30 days?: got_93a_settlement_offer
     datatype: yesnoradio
     show if: demand_letter_sent
     help: |
       Answer "no" if you did not get an offer, or if you believe that the offer was not a reasonable
       offer to settle your demand.
+---
+id: confirm ask for damages
+question: |
+  You said you did not send a demand letter yet
+subquestion: |
+  Most tenants send their landlord a demand letter
+  before they sue their landlord for money.
+
+  Sending your landlord a demand letter means:
+
+  - Your landlord may need to pay for your attorney if you win
+  - You may get up to 3 times the total amount of money
+fields:
+  - What do you want to do?: confirm_ask_for_damages
+    datatype: radio
+    choices:
+      - Ask only for emergency repairs now. I will sue my landlord for money later, after I send a demand letter: postpone_damages
+      - Ask for both repairs and money now. I understand I may get less total money.: keep_on_suing
+  - note: |
+      **Okay**. After you finish this complaint, we will help you complete a
+      demand letter. We can also remind you to come back and ask for money in
+      about 30 days.
+    show if:
+      variable:  confirm_ask_for_damages
+      is: postpone_damages
+---
+only sets:
+  - update_ask_for_damages
+code: |
+  if confirm_ask_for_damages == "postpone_damages":
+    complaint_ask_for_damages = False
+  update_ask_for_damages = True      
 ---
 code: |
   addresses_to_search = [user.address for user in users]

@@ -239,11 +239,9 @@ content: |
     Example: Last week my 4 year old son tripped over the hole in the floor.
     He scraped his knee and cried for 20 minutes. We don't feel safe in our home.
 ---
-id: rent amount
+id: rent subsidy
 question: |
-  How much is your rent?
-subquestion: |
-  ${ collapse_template(why_do_you_need_my_rent_amount_template) }
+  Do you get a rent subsidy?
 fields:
   - Do you get a rent subsidy like Section 8?: tenant_gets_rent_subsidy
     datatype: yesnoradio
@@ -252,12 +250,23 @@ fields:
       
       - Live in subsidized housing
       - Have a rental voucher, like Section 8 or MRVP
+---
+id: rent amount
+question: |
+  How much is your rent?
+subquestion: |
+  ${ collapse_template(why_do_you_need_my_rent_amount_template) }
+fields:
   - What is your share of the rent?: tenant_rent_share
     datatype: currency
-    show if: tenant_gets_rent_subsidy
+    show if: 
+      code: |
+        tenant_gets_rent_subsidy
   - What is the total rent the landlord gets (sometimes called the unit rent)?: tenant_unit_rent
     datatype: currency
-    show if: tenant_gets_rent_subsidy
+    show if: 
+      code: |
+        tenant_gets_rent_subsidy
     help: |
       Write the total rent your landlord gets for your apartment. This is
       normally the amount that the landlord advertised the apartment for.
@@ -266,9 +275,9 @@ fields:
       authority. It is okay to write the best number that you know.
   - What is the monthly rent for your home?: tenant_unit_rent
     datatype: currency
-    show if: 
-      variable: tenant_gets_rent_subsidy
-      is: False
+    show if:
+      code: |
+        not tenant_gets_rent_subsidy
 ---
 template: why_do_you_need_my_rent_amount_template
 subject: |
