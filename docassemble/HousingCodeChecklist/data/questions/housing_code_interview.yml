@@ -927,7 +927,7 @@ subquestion: |
   1. You can come back to this website later to take additional steps.
 
   % if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
-  <h2 class="h4">Documents for you to print and deliver</h2>
+  <h2 class="h4">Documents for you to print and deliver or keep for your records</h2>
   ${ housing_code_bundle.download_list_html(format="docx") }
 
   % elif len(tenant_repair_letter_bundle.enabled_documents()) > 0: 
