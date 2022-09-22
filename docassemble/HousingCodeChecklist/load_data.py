@@ -166,7 +166,7 @@ class ConditionsDict(DADict):
             for index, row in self[category].df.iterrows():
                 the_condition = self[category].details[index]
                 the_condition.original_description = row.get("Interview description")
-                the_condition.code = row.get("Sanitary Code Section'")
+                the_condition.code = row["Sanitary Code Section"] or "410.00"
                 the_condition.category = category
                 the_condition.deadline = row.get("Deadline")
                 flattened.append(the_condition)
