@@ -100,7 +100,11 @@ id: tenant contact information
 question: |
   What is your contact information?
 subquestion: |
-  Include at least **one** way to reach you other than by mail.
+  % if screen_ll_knows_problem and document_choice['sue_landlord']:
+  The court may need to call you to set up a hearing. If you
+  do not have your own phone number or email, consider using
+  a phone number that belongs to a trusted friend or family member.
+  % endif
 fields:  
   - Mobile number: users[0].mobile_number
     required: False
@@ -111,12 +115,18 @@ fields:
   - Email address: users[0].email    
     datatype: email
     required: False
+  - I do not have any of these: users[0].no_contact_method
+    datatype: checkbox
+    disable others: True
 validation code: |
+  if users[0].no_contact_method:
+    users[0].phone_number = users[0].mobile_number = users[0].email = ""    
   if (not showifdef('users[0].phone_number') and \
       (not showifdef('users[0].mobile_number')) and \
-      (not showifdef('users[0].email')) 
+      (not showifdef('users[0].email')) and \
+      (not users[0].no_contact_method)
   ):
-    validation_error(word("You need to provide at least one contact method."), field="users[0].mobile_number")
+    validation_error(word("You need to provide at least one contact method, or state that you do not have any."), field="users[0].mobile_number")
 ---
 id: landlord's contact information
 generic object: ALIndividual
@@ -178,59 +188,32 @@ question: |
   Attorney's name
   % endif
 fields:
-  - Law firm or organization name: attorneys[0].organization
-  - First Name: attorneys[0].name.first
+  - Law firm or organization name: users[0].attorney.organization
+  - First Name: users[0].attorney.name.first
     default: |
       % if user_logged_in():
       ${ user_info().first_name }
       % endif
-  - Middle Name: attorneys[0].name.middle
+  - Middle Name: users[0].attorney.middle
     required: False
     default: |
       % if user_logged_in():
       % endif    
-  - Last Name: attorneys[0].name.last
+  - Last Name: users[0].attorney.name.last
     default: |
       % if user_logged_in():
       ${ user_info().last_name }
       % endif
-  - Suffix: attorneys[0].name.suffix
+  - Suffix: users[0].attorney.name.suffix
     code: |
       sorted(name_suffix() + ["Esq."])
     required: False
     default: |
       % if user_logged_in():
+      Esq.
       % endif
   #- Save my information for later: save_attorney_name
   #  datatype: yesno
----
-id: attorneys address and contact information
-question: |
-  % if person_answering == "attorney":
-  **Your** address and contact information
-  % else:
-  Attorney's address and contact information
-  % endif
-fields:
-  - Attorney number (BBO): attorneys[0].bbo_number
-    required: False
-  - Law firm street address: attorneys[0].address.address
-    address autocomplete: True
-  - Suite: attorneys[0].address.unit
-    required: False
-  - City: attorneys[0].address.city
-  - State: attorneys[0].address.state
-    code: |
-      states_list()
-    default: MA      
-  - Zip: attorneys[0].address.zip
-    required: False
-  - Email: attorneys[0].email
-    datatype: email
-    required: False
-  - Phone: attorneys[0].phone_number
-    datatype: al_international_phone
-    required: False    
 ---
 id: persons signature
 generic object: ALIndividual
@@ -641,7 +624,7 @@ question: |
   What court do you want to file in?
 subquestion: |
   Most tenants file in the Housing Court.
-  
+
   ${ collapse_template(housing_how_to_pick_court_help_template) }
 
   % if len(all_matches) > 0:
@@ -716,3 +699,24 @@ content: |
   Only you know the right choice.
   
   You can also view the court selection guidance at [mass.gov](https://www.mass.gov/courthouse-locator).
+---
+sets:
+  - users[0].attorney.address.address
+id: attorney information
+question: |
+  % if person_answering == "attorney":
+  Information for your appearance as attorney for ${ users.familiar() }
+  % else:
+  Your attorney's contact information
+  % endif
+fields:
+  - BBO number: users[0].attorney.bbo_number
+    required: False
+  - code: |
+      users[0].attorney.address_fields(default_state="MA")
+  - Phone: users[0].attorney.phone_number
+    datatype: al_international_phone
+    required: False
+  - Email: users[0].attorney.email
+    datatype: email
+    required: False

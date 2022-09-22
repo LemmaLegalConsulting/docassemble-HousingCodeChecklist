@@ -60,7 +60,7 @@ code: |
   person_answering
   users[0].name.first
   if person_answering == "attorney" and representation_type == "entering_appearance":
-    attorneys[0].name.first
+    users[0].attorney.name.first
   starting_task
   snapshot_interview_state
   nav.set_section('review_conditions')
@@ -132,8 +132,7 @@ code: |
   if screen_ll_knows_problem and document_choice['sue_landlord']:
     nav.set_section(sub_documents['sue_landlord'].get('section_link'))
     if person_answering == "attorney" and representation_type == "entering_appearance":
-      attorneys[0].address.address
-      attorneys[0].email
+      users[0].attorney.address.address
     interview_order_verified_complaint_and_motions
   # if screen_ll_knows_problem and {'enforce_inspection','get_inspection','get_injunction', 'tell_landlord'}.intersection(document_choice.true_values()):
   if screen_ll_knows_problem and {'enforce_inspection','get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
@@ -144,6 +143,9 @@ code: |
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
   download_conditions_checklist_docs
+---
+objects:
+  - users[0].attorney: ALIndividual
 ---
 objects:
   - document_problems_image: DAStaticFile.using(filename="dripping_faucet.jpg")
