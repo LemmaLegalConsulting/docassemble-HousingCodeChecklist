@@ -116,7 +116,7 @@ fields:
     datatype: email
     required: False
   - I do not have any of these: users[0].no_contact_method
-    datatype: checkbox
+    datatype: yesno
     disable others: True
 validation code: |
   if users[0].no_contact_method:
