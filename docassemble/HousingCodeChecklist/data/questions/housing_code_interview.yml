@@ -61,7 +61,16 @@ code: |
   users[0].name.first
   if person_answering == "attorney" and representation_type == "entering_appearance":
     users[0].attorney.name.first
-  starting_task
+  intro_terms_of_use
+  if initial_action_selection == "help_in_court":
+    kind_of_lawsuit
+    if initial_screen_tenant_facing_eviction:
+      warn_eviction
+    if kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+      if not tenant_sent_ll_notice:
+        confirm_suing_choice
+      if not tenant_called_inspector:
+        add_inspection_letter
   snapshot_interview_state
   nav.set_section('review_conditions')
   bad_conditions["common problems"].claims
@@ -400,6 +409,104 @@ subquestion: |
   
   ${ action_button_html('https://interviews.gbls.org/start/eviction', label='Launch MADE') } 
 ---
+id: choose a sue your landlord action
+question: |
+  What problem do you want to sue for?
+fields:
+  - Choose any that apply: kind_of_lawsuit
+    datatype: checkboxes
+    choices:
+      - I want the court to enforce a repair order from a city inspector: enforce_inspection
+      - I need repairs to my home: get_emergency_repairs
+      - My landlord did not fix problems in my home in the past: past_repair_needs
+        help: |
+          You can choose this even if some or all of the problems are fixed now.
+      - My landlord entered my home without permission: entered_without_permission
+      - My landlord has locked me out of my home: illegal_lockout
+      - My landlord is making me pay for utilities but we do not have a written agreement: utilities_no_agreement
+      - My utilities have been shutoff: utility_shutoff
+      - I need help with another landlord-tenant law: other_landlord_tenant
+      - My landlord is ignoring a court order: file_contempt_complaint
+---
+id: confirm notice
+question: |
+  Before you sue your landlord
+fields:
+  - Do you have an active eviction case in court?: initial_screen_tenant_facing_eviction
+    datatype: yesnoradio
+    help: |
+      Answer "yes" if:
+      
+      - you have a case that is already in court, or
+      - you have a "Summons and Complaint" from your landlord with a court date coming up
+      
+      Answer "no" if:
+      
+      - there is no eviction case
+      - the eviction case is already over, or
+      - you only have a "Notice to Quit" or "Notice to Terminate Tenancy"
+  - Does your landlord know about the problems that you need them to fix?: tenant_sent_ll_notice
+    datatype: yesnoradio
+    show if:
+      code: |
+        kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs")
+  - Have you called a town or city inspector about the problem?: tenant_called_inspector
+    datatype: yesnoradio
+    show if:
+      code: |
+        kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs")
+---
+id: eviction warning
+question: |
+  If you are being evicted
+subquestion: |
+  Make sure you respond to the eviction in court.
+
+  You may not want to use this website to start a new lawsuit against your landlord 
+  until the eviction case is over.
+
+  In some cases, the same problems that you can sue your landlord for can stop your 
+  eviction. You can use [MADE](https://gbls.org/MADE) to respond to your eviction
+  case.
+continue button label: |
+  Continue anyway
+continue button field: warn_eviction
+---
+id: warn against suing
+question: |
+  You may want to wait to sue
+subquestion: |
+  Before you sue your landlord, you should make sure that they know about the problem.
+
+  Even if you did not tell your landlord about the problem, there may be another way
+  that they know. For example:
+
+  - If the problem is in a public part of your building, or
+  - The problem existed before you moved in, or
+  - Your landlord came to your apartment for another reason and had a chance to see the problem
+fields:
+  - What do you want to do?: confirm_suing_choice
+    datatype: radio
+    choices:
+      - Sue my landlord now anyway: sue_now
+      - Give my landlord notice first: give_notice_first
+---
+id: add inspection letter to suit
+question: |
+  Calling an inspector
+subquestion: |
+  It is usually a good idea to call a housing inspector if you sue your
+  landlord. The court will pay attention to the problems that the inspector
+  found. The report that the inspector writes may be evidence in your case.
+
+  You do not have to call an inspector before you use this website but you may want to
+  get the inspection before you deliver the papers to court.
+
+  If it is an emergency you do not have to wait.
+fields:
+  - Do you want to include a letter to your city or town inspector?: add_inspection_letter
+    datatype: yesnoradio
+---
 features:
   navigation back button: False
   css:
@@ -463,7 +570,7 @@ subquestion: |
     <a class="alert-link" href="https://www.masslegalhelp.org/when-is-eviction-illegal">Read more</a>.
     </p>
   </div>
-continue button field: starting_task  
+continue button field: intro_terms_of_use  
 continue button label: Get started
 ---
 id: track conditions intro
