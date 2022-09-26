@@ -13,6 +13,7 @@ include:
   - customized_screens.yml 
   - language.yml 
   - simple_conditions.yml
+  - orders_and_contempt_complaint.yml
 ---
 features:
   bootstrap theme: bootstrap.min.css
@@ -139,6 +140,8 @@ code: |
      nav.set_section('preview_and_sign')
      preview_conditions_checklist_docs
      basic_questions_signature_flow     
+  if document_choice['sue_landlord']:
+    wants_further_documents
   reached_download_screen = True
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
@@ -942,6 +945,10 @@ subquestion: |
   ${ affirmative_complaint_bundle.download_list_html(format="docx") }
     
   % endif
+  
+  % if wants_further_documents:
+  ${ further_documents_bundle.download_list_html(format="docx") }
+  % endif  
 
   ${ everything_for_emailing_bundle.send_button_html() }
 ---
@@ -1181,10 +1188,16 @@ code: |
   Housing_Temporary_Restraining_Order0002_attachment.enabled = screen_ll_knows_problem and document_choice['get_injunction']
 ---
 code: |
-  verified_complaint_and_motions_attachment.enabled = screen_ll_knows_problem and document_choice["sue_landlord"]
+  verified_complaint_and_motions_attachment.enabled = document_choice["sue_landlord"]
 ---
 code: |
-  Repair_Demand_Letter_attachment.enabled = screen_ll_knows_problem and document_choice["demand_letter_93a"]
+  verified_complaint_and_motions_post_interview_instructions.enabled = document_choice['sue_landlord']
+---
+code: |
+  verified_complaint_and_motions_attachment.enabled = screen_ll_knows_problem and document_choice['sue_landlord']
+---
+code: |  
+  temporary_order.enabled = wants_further_documents
 ---
 objects:
   - organize_tenants_attachment: ALStaticDocument.using(title="Organize tenants", filename="lt1-pullout-10-getting-organized.pdf")
@@ -1235,6 +1248,11 @@ objects:
         sanitary_code_template_attachment,
         Repair_Demand_Letter_attachment,
       ], title="All documents for your records", filename="tenant_copy")
+  - further_documents_bundle: ALDocumentBundle.using(elements=[
+        temporary_order
+      ], title="Documents for future case use",
+      filename="further_documents",
+      )
 ---
 objects:
   - celhp_logo: DAStaticFile.using(filename="CELHPlogoFL3x-2-300x171.png")
