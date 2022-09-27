@@ -241,7 +241,10 @@ id: What did the landlord do
 question: |
   Is there anything else that your landlord did?
 subquestion: |
+  % if include_conditions_in_complaint:
   You have already told us about the housing problems that your landlord did not repair.
+  % endif
+
   Is there anything else you would like to tell the court about?
 
   Think about problems that have happened in the last 6 years, even if they
@@ -251,13 +254,19 @@ subquestion: |
 fields:
   - ${ verified_complaint_claims_terms["entered without permission"] }: verified_complaint_claims["entered without permission"].has_claim
     datatype: yesno
+    default: |
+      ${ kind_of_lawsuit["entered_without_permission"] if initial_action_selection == "help_in_court" else False}
   - ${ verified_complaint_claims_terms["illegal lockout"] }: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
+    default: |
+      ${ kind_of_lawsuit["entered_without_permission"] if initial_action_selection == "help_in_court" else False}
   - ${ verified_complaint_claims_terms["utility no agreement"]}: verified_complaint_claims["utility no agreement"].has_claim
     datatype: yesno
     help: |
       The landlord must pay for utilities like electricity and gas unless there is a written agreement. A spoken agreement
       is not enough.
+    default: |
+      ${ kind_of_lawsuit["utilities_no_agreement"] if initial_action_selection == "help_in_court" else False}
   - Utility: complaint_utility_not_paid
     datatype: checkboxes
     choices:
@@ -269,6 +278,8 @@ fields:
     show if: verified_complaint_claims["utility no agreement"].has_claim
   - ${ verified_complaint_claims_terms["utility shutoff"] }: verified_complaint_claims["utility shutoff"].has_claim
     datatype: yesno
+    default: |
+      ${ kind_of_lawsuit["utility_shutoff"] if initial_action_selection == "help_in_court" else False}
   - Utility: complaint_utility_shutoff
     datatype: checkboxes
     choices:
@@ -280,10 +291,14 @@ fields:
     show if: verified_complaint_claims["utility shutoff"].has_claim
   - ${ verified_complaint_claims_terms["insufficient notice"] }: verified_complaint_claims["insufficient notice"].has_claim
     datatype: yesno
+    default: |
+      ${ kind_of_lawsuit["insufficient_notice"] if initial_action_selection == "help_in_court" else False}
   - Did something else that breaks Massachusetts landlord-tenant law: verified_complaint_claims["other"].has_claim
     datatype: yesno
     help: |
       Not sure what to say here? This choice is less common. You can add details on the next page.
+    default: |
+      ${ kind_of_lawsuit["other_landlord_tenant"] if initial_action_selection == "help_in_court" else False}
   - None of the above: verified_complaint_nota
     datatype: yesno
     uncheck others: True      

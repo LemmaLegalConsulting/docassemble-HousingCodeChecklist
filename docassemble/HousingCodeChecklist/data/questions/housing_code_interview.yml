@@ -64,6 +64,7 @@ code: |
   intro_terms_of_use
   if initial_action_selection == "help_in_court":
     kind_of_lawsuit
+    set_document_choice_by_lawsuit_kind
     if initial_screen_tenant_facing_eviction:
       warn_eviction
     if kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
@@ -71,24 +72,12 @@ code: |
         confirm_suing_choice
       if not tenant_called_inspector:
         add_inspection_letter
+      interview_order_navigate_conditions
+    
   snapshot_interview_state
-  nav.set_section('review_conditions')
-  bad_conditions["common problems"].claims
-  for claim in bad_conditions["common problems"].claims.true_values():
-    bad_conditions["common problems"].details[claim].condition_existed_at_start
-  if wants_detailed_conditions:
-    # go to the opening screen first, instead of asking "is there another" question
-    bad_conditions.gather()
-    if bad_conditions.count_conditions() > 0:
-      # This is a bit of a workaround
-      for room in bad_conditions:
-        for condition in bad_conditions[room].claims.true_values():
-          bad_conditions[room].details[condition].condition_existed_at_start  
-      review_conditions
-    else:
-      warn_add_conditions
-  else:
-    bad_conditions.gathered = True
+  include_conditions_in_complaint # Evaluate so it is available in complaint template
+  if initial_action_selection in ["document_by_room", "give_notice"]:
+    interview_order_navigate_conditions
   nav.set_section('document_choice')
   screen_ll_knows_problem
   reconsider('snapshot_interview_state')
@@ -152,6 +141,32 @@ code: |
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
   download_conditions_checklist_docs
+---
+code: |
+  nav.set_section('review_conditions')
+  bad_conditions["common problems"].claims
+  for claim in bad_conditions["common problems"].claims.true_values():
+    bad_conditions["common problems"].details[claim].condition_existed_at_start
+  if wants_detailed_conditions:
+    # go to the opening screen first, instead of asking "is there another" question
+    bad_conditions.gather()
+    if bad_conditions.count_conditions() > 0:
+      # This is a bit of a workaround
+      for room in bad_conditions:
+        for condition in bad_conditions[room].claims.true_values():
+          bad_conditions[room].details[condition].condition_existed_at_start  
+      review_conditions
+    else:
+      warn_add_conditions
+  else:
+    bad_conditions.gathered = True
+  interview_order_navigate_conditions = True
+---
+depends on:
+  - initial_action_selection
+  - kind_of_lawsuit
+code: |
+  include_conditions_in_complaint = initial_action_selection in ["document_by_room", "give_notice"] or (initial_action_selection == "help_in_court" and kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"))
 ---
 objects:
   - users[0].attorney: ALIndividual
@@ -332,7 +347,7 @@ language: en
 sections:
   - section_getting_started: Getting started
   - review_conditions: List problems
-  - document_choice: Choose a solution
+  - main_triage_screen: Choose a solution
   - provide_details: Answer questions
   - preview_and_sign: Preview and sign
   - download_conditions_checklist_docs: Download
@@ -383,8 +398,9 @@ code: |
   except:
     pass  
   flattened_conditions = []
-  for category in bad_conditions.complete_elements():
-    flattened_conditions.extend(bad_conditions[category].claims.true_values())
+  if include_conditions_in_complaint:
+    for category in bad_conditions.complete_elements():
+      flattened_conditions.extend(bad_conditions[category].claims.true_values())
 
   stuff_to_snapshot['bad_conditions'] = comma_list(flattened_conditions)
   if defined('reached_download_screen'):
@@ -416,17 +432,19 @@ fields:
   - Choose any that apply: kind_of_lawsuit
     datatype: checkboxes
     choices:
-      - I want the court to enforce a repair order from a city inspector: enforce_inspection
+      - I need the court to enforce a repair order from a city inspector: enforce_inspection
       - I need repairs to my home: get_emergency_repairs
-      - My landlord did not fix problems in my home in the past: past_repair_needs
+      - I need my landlord to pay me because my home needed repairs earlier, but at least some of the problems are fixed now: past_repair_needs
         help: |
           You can choose this even if some or all of the problems are fixed now.
+      - My landlord locked me out of my home without a court order: illegal_lockout          
       - My landlord entered my home without permission: entered_without_permission
+      - ${ verified_complaint_claims_terms["insufficient notice"] }: insufficient_notice
       - My landlord has locked me out of my home: illegal_lockout
       - My landlord is making me pay for utilities but we do not have a written agreement: utilities_no_agreement
       - My utilities have been shutoff: utility_shutoff
       - I need help with another landlord-tenant law: other_landlord_tenant
-      - My landlord is ignoring a court order: file_contempt_complaint
+      #- My landlord is ignoring a court order: file_contempt_complaint
 ---
 id: confirm notice
 question: |
@@ -462,15 +480,40 @@ question: |
 subquestion: |
   Make sure you respond to the eviction in court.
 
-  You may not want to use this website to start a new lawsuit against your landlord 
-  until the eviction case is over.
+  In some cases, you can sue your landlord for the same problems as part of the eviction.
+  The problems can also be a "defense" that stops your eviction.
 
-  In some cases, the same problems that you can sue your landlord for can stop your 
-  eviction. You can use [MADE](https://gbls.org/MADE) to respond to your eviction
-  case.
+  ${ collapse_template(when_does_8a_apply) }
+  
+  Most tenants should use [MADE](https://gbls.org/MADE) to stop their eviction
+  before they start a new case against their landlord.
+  
+  ${ action_button_html("https://gbls.org/MADE", size="md", label="Use MADE to stop my eviction", color="primary", icon="arrow-up-right-from-square") }
 continue button label: |
   Continue anyway
 continue button field: warn_eviction
+---
+template: when_does_8a_apply
+subject: |
+  When can a problem stop my eviction?
+content: |
+  If you are being evicted only because:
+
+  * you owe rent, or
+  * your landlord only wants you to move out and is not saying it is your fault
+
+  you may be protected from eviction by [239 &sect; 8A](https://www.masslegalhelp.org/housing/lt1-chapter-12-legal-defenses-counterclaims-article).
+
+  239 &sect; 8A gives you the right to "buy back" your home if your landlord owes you
+  at least $1 because of a repair that they did not make or they violated another 
+  landlord-tenant law.
+
+  You cannot use this right if your landlord is evicting you because of a "fault" reason,
+  such as breaking a rule in your lease other than being behind in the rent.
+
+  You can use the "buy back" right to stop an eviction if you raise it in your eviction
+  case. You need to file an eviction answer using [MADE](https://gbls.org/MADE) to claim
+  it instead of using this website.
 ---
 id: warn against suing
 question: |
@@ -558,9 +601,11 @@ question: |
   % else:
   Let's get started helping ${ users.familiar() }!
   % endif
-subquestion: |  
+subquestion: |
+  % if initial_action_selection in ["document_by_room", "give_notice"] or (initial_action_selection == "help_in_court" and kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs")):
   We will start by asking you about the repairs that you need.
 
+  % endif
   <div class="alert alert-primary h-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
@@ -870,6 +915,7 @@ subquestion: |
   ${ bad_conditions.add_action() }
   % endif
 ---
+continue button field: main_triage_screen
 id: triage
 question: |
   Deciding on your next steps
@@ -987,6 +1033,42 @@ terms:
     Retaliation could include evicting you or raising your rent because you
     complained about housing problems. Retaliation is illegal and you have
     protections in a court.
+---
+# Set a default value for all document choices
+variable name: document_choice
+use objects: True
+data:
+  get_report: True
+  tell_landlord: False
+  organize_tenants: False
+  get_inspection: False
+  enforce_inspection: False
+  demand_letter_93a: False
+  sue_landlord: False
+---
+depends on:
+  - document_choice
+only sets:
+  - set_document_choice_by_lawsuit_kind
+code: |
+  if kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+    screen_contacted_housing_inspector = tenant_called_inspector
+    if (
+        not tenant_sent_ll_notice 
+        and confirm_suing_choice == "give_notice_first"
+    ):
+      screen_ll_knows_problem = False
+      document_choice["sue_landlord"] = False
+      document_choice["tell_landlord"] = True
+  else:
+    screen_contacted_housing_inspector = False
+    document_choice["sue_landlord"] = True
+  set_document_choice_by_lawsuit_kind = True
+---
+code: |
+  if initial_action_selection == "help_in_court":
+    # Don't use triage screen if initial action was suing LL
+    screen_ll_knows_problem = True
 ---
 id: interview_order_request_housing_inspection
 code: |
