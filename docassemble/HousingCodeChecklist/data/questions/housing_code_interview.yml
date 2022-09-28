@@ -232,13 +232,11 @@ subquestion: |
 continue button field: intro_and_terms_of_use
 question: |
   How this works
-subquestion: | 
-  This website will help you solve problems with bad conditions in your home.
+subquestion: |
   <div class="custom-counter">
   <ol class="custom-counter">
   <li>Read about your landlord's responsibilities.</li>
   <li>Track the problems you have in each room of your home.</li>
-  <li>Upload photos or add other information about each problem.</li>
   <li>Choose a next step to get your landlord to fix the problems.</li>
   </ol>
   </div>
