@@ -63,6 +63,7 @@ code: |
     users[0].attorney.name.first
   intro_terms_of_use
   if initial_action_selection == "help_in_court":
+    nav.set_section('review_conditions')
     kind_of_lawsuit
     set_document_choice_by_lawsuit_kind
     if initial_screen_tenant_facing_eviction:
@@ -425,30 +426,30 @@ subquestion: |
   
   ${ action_button_html('https://interviews.gbls.org/start/eviction', label='Launch MADE') } 
 ---
+continue button field: review_conditions
 id: choose a sue your landlord action
 question: |
-  What problem do you want to sue for?
+  Why do you need to take your landlord to court?
 fields:
   - Choose any that apply: kind_of_lawsuit
     datatype: checkboxes
     choices:
-      - I need the court to enforce a repair order from a city inspector: enforce_inspection
-      - I need repairs to my home: get_emergency_repairs
-      - I need my landlord to pay me because my home needed repairs earlier, but at least some of the problems are fixed now: past_repair_needs
+      - I need the court to enforce an order from a housing inspector: enforce_inspection
+      - I need repairs to my home now: get_emergency_repairs
+      - I needed repairs to my home in the past 6 years: past_repair_needs
         help: |
           You can choose this even if some or all of the problems are fixed now.
-      - My landlord locked me out of my home without a court order: illegal_lockout          
-      - My landlord entered my home without permission: entered_without_permission
-      - ${ verified_complaint_claims_terms["insufficient notice"] }: insufficient_notice
-      - My landlord has locked me out of my home: illegal_lockout
+      - My landlord changed my locks or moved my things: illegal_lockout          
+      - My landlord went into my home without permission: entered_without_permission
+      - My landlord went into my home without giving me enough notice: insufficient_notice
       - My landlord is making me pay for utilities but we do not have a written agreement: utilities_no_agreement
       - My utilities have been shutoff: utility_shutoff
-      - I need help with another landlord-tenant law: other_landlord_tenant
+      - I need help with something else: other_landlord_tenant
       #- My landlord is ignoring a court order: file_contempt_complaint
 ---
 id: confirm notice
 question: |
-  Before you sue your landlord
+  Before you take your landlord to court
 fields:
   - Do you have an active eviction case in court?: initial_screen_tenant_facing_eviction
     datatype: yesnoradio
@@ -517,9 +518,9 @@ content: |
 ---
 id: warn against suing
 question: |
-  You may want to wait to sue
+  You may want to wait to take your landlord to court
 subquestion: |
-  Before you sue your landlord, you should make sure that they know about the problem.
+  Before you take your landlord to court, you should make sure that they know about the problem.
 
   Even if you did not tell your landlord about the problem, there may be another way
   that they know. For example:
@@ -531,7 +532,7 @@ fields:
   - What do you want to do?: confirm_suing_choice
     datatype: radio
     choices:
-      - Sue my landlord now anyway: sue_now
+      - Take my landlord to court now: sue_now
       - Give my landlord notice first: give_notice_first
 ---
 id: add inspection letter to suit
@@ -872,7 +873,40 @@ id: review conditions
 question: |
   Here is what you told us so far
 subquestion: |  
+  % if initial_action_selection == "help_in_court":
+  You need to sue your landlord because:
+
+  % for basis in kind_of_lawsuit.true_values():
+  % if basis == "enforce_inspection":
+  * Enforce an inspection
+  % elif basis == "get_emergency_repairs":
+  * Get repairs
+  % elif basis == "past_repair_needs":
+  * Get paid because of repairs I needed in the last 6 years
+  % elif basis == "illegal_lockout":
+  * Landlord illegally locked me out or moved my things
+  % elif basis == "entered_without_permission":
+  * Landlord entered my home without permission
+  % elif basis == "insufficient_notice":
+  * Landlord entered without notice
+  % elif basis == "utilities_no_agreement":
+  * Landlord made me pay for utilities without a written agreement
+  % elif basis == "utility_shutoff":
+  * My utilities were shutoff
+  % elif basis == "other_landlord_tenant":
+  * Other
+  % elif basis == "file_contempt_complaint":
+  * My landlord is ignoring a court order
+  % endif
+  % endfor
+
+  [:pencil: Change my answers](${ url_action('kind_of_lawsuit') })
+  % endif
+  % if initial_action_selection != "help_in_court" or kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+  <h2 class="h4"> Problems in your home</h2>
+
   ${ review_conditions_template }
+  % endif
 ---
 template: review_conditions_template
 content: |
@@ -1038,7 +1072,7 @@ terms:
 variable name: document_choice
 use objects: True
 data:
-  get_report: True
+  get_report: False
   tell_landlord: False
   organize_tenants: False
   get_inspection: False
@@ -1051,8 +1085,14 @@ depends on:
 only sets:
   - set_document_choice_by_lawsuit_kind
 code: |
+  # Decide which documents we need based on this initial
+  # screening question
+
   if kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+    document_choice["get_report"] = True
     screen_contacted_housing_inspector = tenant_called_inspector
+    if not tenant_called_inspector:
+      document_choice["get_inspection"] = add_inspection_letter
     if (
         not tenant_sent_ll_notice 
         and confirm_suing_choice == "give_notice_first"
@@ -1060,9 +1100,13 @@ code: |
       screen_ll_knows_problem = False
       document_choice["sue_landlord"] = False
       document_choice["tell_landlord"] = True
+    else:
+      document_choice["sue_landlord"] = True
   else:
     screen_contacted_housing_inspector = False
     document_choice["sue_landlord"] = True
+  if kind_of_lawsuit["enforce_inspection"]:
+    document_choice["enforce_inspection"] = True
   set_document_choice_by_lawsuit_kind = True
 ---
 code: |
@@ -1095,7 +1139,7 @@ subquestion: |
   When you are ready, click "next" to add your signature.
   
   % if screen_ll_knows_problem:
-  ${ housing_code_bundle.as_pdf(key='preview') }
+  ${ everything_for_emailing_bundle.as_pdf(key='preview') }
 
   % else:
   ${ tenant_repair_letter_bundle.as_pdf(key='preview') }

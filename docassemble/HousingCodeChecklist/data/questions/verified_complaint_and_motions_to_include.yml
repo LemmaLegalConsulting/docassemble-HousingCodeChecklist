@@ -259,7 +259,7 @@ fields:
   - ${ verified_complaint_claims_terms["illegal lockout"] }: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
     default: |
-      ${ kind_of_lawsuit["entered_without_permission"] if initial_action_selection == "help_in_court" else False}
+      ${ kind_of_lawsuit["illegal_lockout"] if initial_action_selection == "help_in_court" else False}
   - ${ verified_complaint_claims_terms["utility no agreement"]}: verified_complaint_claims["utility no agreement"].has_claim
     datatype: yesno
     help: |
