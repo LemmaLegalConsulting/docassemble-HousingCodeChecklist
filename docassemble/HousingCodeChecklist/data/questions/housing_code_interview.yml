@@ -1202,6 +1202,9 @@ code: |
 code: |  
   temporary_order.enabled = wants_further_documents
 ---
+code: |  
+  order_of_notice.enabled = wants_further_documents
+---
 objects:
   - organize_tenants_attachment: ALStaticDocument.using(title="Organize tenants", filename="lt1-pullout-10-getting-organized.pdf")
   - sue_your_landlord_attachment: ALStaticDocument.using(filename="lt1-pullout-13-taking-landlord-to-court.pdf", title="Sue your landlord")
@@ -1252,7 +1255,7 @@ objects:
         Repair_Demand_Letter_attachment,
       ], title="All documents for your records", filename="tenant_copy")
   - further_documents_bundle: ALDocumentBundle.using(elements=[
-        temporary_order
+        temporary_order, order_of_notice
       ], title="Documents for future case use",
       filename="further_documents",
       )

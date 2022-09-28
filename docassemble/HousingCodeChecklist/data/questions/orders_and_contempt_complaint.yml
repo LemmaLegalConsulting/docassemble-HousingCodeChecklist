@@ -10,6 +10,7 @@ yesno: wants_further_documents
 ---
 objects:
   - temporary_order: ALDocument.using(title="Temporary Order", filename="temporary_order.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - order_of_notice: ALDocument.using(title="Order of Notice", filename="order_of_notice.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachments:
   - name: Temporary Order
@@ -17,3 +18,8 @@ attachments:
     variable name: temporary_order[i]        
     skip undefined: True
     docx template file: temporary_order.docx
+  - name: Order of Notice
+    filename: Order of Notice   
+    variable name: order_of_notice[i]        
+    skip undefined: True
+    docx template file: order_of_notice.docx
