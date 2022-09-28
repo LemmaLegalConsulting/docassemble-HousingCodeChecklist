@@ -1,0 +1,19 @@
+# DEPENDS ON Repair_Demand_Letter_to_include.yml but doesn't separately include it
+---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - verified_complaint_and_motions_to_include.yml
+---
+question: |
+  Would you like documents that will be helpful for your case in the future?
+yesno: wants_further_documents
+---
+objects:
+  - temporary_order: ALDocument.using(title="Temporary Order", filename="temporary_order.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+attachments:
+  - name: Temporary Order
+    filename: Temporary Order   
+    variable name: temporary_order[i]        
+    skip undefined: True
+    docx template file: temporary_order.docx
