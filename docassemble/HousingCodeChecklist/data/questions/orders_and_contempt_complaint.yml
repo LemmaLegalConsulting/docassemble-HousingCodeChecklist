@@ -8,9 +8,44 @@ question: |
   Would you like documents that will be helpful for your case in the future?
 yesno: wants_further_documents
 ---
+question: |
+  Have you already received a Temporary Restraining Order/Preliminary Injunction against your landlord?
+yesno: has_tro
+---
+question: |
+  When did the court issue a Temporary Restraining Order/Preliminary Injunction against your landlord?
+fields: 
+  - Date: date_issued
+    datatype: date
+---
+question: |
+  What did the judge order your landlord to desist and refrain from?
+fields:
+  - no label: tro_order_text
+    input type: area
+---
+question: |
+  Did your landlord ever follow the order?
+fields: 
+  - no label: ll_once_followed_tro
+    datatype: yesnoradio
+---
+question: |
+  When did your landlord stop following the order?
+fields: 
+  - Date: date_ll_stopped_following_tro
+    datatype: date
+---
+question: |
+  How has your landlord failed to follow the judge's order?
+fields:
+  - no label: ll_failed_order_by_text
+    input type: area
+---
 objects:
   - temporary_order: ALDocument.using(title="Temporary Order", filename="temporary_order.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - order_of_notice: ALDocument.using(title="Order of Notice", filename="order_of_notice.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - contempt_complaint: ALDocument.using(title="Contempt Complaint", filename="contempt_complaint.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachments:
   - name: Temporary Order
@@ -23,3 +58,8 @@ attachments:
     variable name: order_of_notice[i]        
     skip undefined: True
     docx template file: order_of_notice.docx
+  - name: Contempt Complaint
+    filename: Contempt Complaint 
+    variable name: contempt_complaint[i]        
+    skip undefined: True
+    docx template file: contempt_complaint.docx
