@@ -1,21 +1,20 @@
 ---
 include:
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.ALMassachusetts:al_massachusetts.yml
+  - docassemble.MassAccess:massaccess.yml
+  - customized_screens.yml
   - orders_and_contempt_complaint.yml
 ---
-mandatory: True
-comment: |
-  Global interview metadata
-variable name: interview_metadata["contempt_complaint_standalone"]
-data:
-  title: >-
+metadata:
+  title: |
     Contempt Complaint
-  short title: >-
+  short title: |
     Contempt Complaint
-  allowed courts: 
-    - "Boston Municipal Court"
-    - "District Court"
-    - "Housing Court"
-    - "Superior Court"
+---
+objects:
+  - other_parties: ALPeopleList.using(there_are_any=True)
+  - users: ALPeopleList.using(there_are_any=True)
 ---
 code: |
   user_started_case = True
@@ -61,6 +60,7 @@ comment: |
   Delete mandatory: True to include in another interview
 mandatory: True
 code: |
+  al_intro_screen
   Contempt_Complaint_intro
   interview_order_Contempt_Complaint
   signature_date
