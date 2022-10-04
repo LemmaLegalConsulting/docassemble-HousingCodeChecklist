@@ -1,4 +1,4 @@
-  ---
+---
 include:
   - docassemble.AssemblyLine:al_package.yml
   - docassemble.ALMassachusetts:al_massachusetts.yml
@@ -36,6 +36,9 @@ code: |
 ---
 code: |
   al_form_type = 'starts_case'
+---
+code: |
+  landlord_name_is_optional = False
 ---
 objects:
   - other_parties: ALPeopleList.using(there_are_any=True)
