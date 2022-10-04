@@ -134,6 +134,8 @@ question: |
   How can ${ other_parties } be contacted?
 subquestion: |
   If you do not know, you can leave this screen blank.  
+
+  ${ collapse_template(why_need_ll_contact_information_template) }
 fields:
   - ${ other_parties.familiar() }'s phone number: other_parties[0].phone_number
     datatype: al_international_phone
@@ -141,6 +143,16 @@ fields:
   - ${ other_parties.familiar() }'s email address: other_parties[0].email
     datatype: email
     required: False
+---
+template: why_need_ll_contact_information_template
+subject: |
+  Why do you need my landlord's contact information?
+content: |
+  Your landlord's contact information will be written
+  on the documents that this website creates.
+
+  The court may use the number or email to pick a time
+  for you and your landlord to come into court.
 ---
 id: your name
 question:  |
