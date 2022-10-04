@@ -12,6 +12,9 @@ metadata:
   short title: |
     Contempt Complaint
 ---
+code: |
+  interview_short_title = "Prepare a Contempt Complaint"
+---
 objects:
   - other_parties: ALPeopleList.using(there_are_any=True)
   - users: ALPeopleList.using(there_are_any=True)
@@ -25,13 +28,16 @@ code: |
 code: |
   al_form_type = 'existing_case'
 ---
+code: |
+  landlord_name_is_optional = False
+---
 sections:
   - review_Contempt_Complaint: Review your answers
 ---
 #################### Interview order #####################
 comment: |
   Controls order and branching logic for questions specific to this form
-id: interview_order_Repair_Demand_Letter
+id: interview_order_Contempt_Complaint
 code: |
   nav.set_section('review_Contempt_Complaint')
   user_role = "plaintiff"
@@ -75,9 +81,9 @@ id: intro Contempt_Complaint
 question: |
   Contempt Complaint
 subquestion: |
-    Fill out a Contempt Complaint to tell the court that your landlord has failed or refused to obey the court order. 
+    Fill out a Contempt Complaint to tell the court that your landlord has failed or refused to comply with the court order. 
     
-    Use this form only after a reasonable time has passed and your landlord has not obeyed the court order.
+    Use this form only after a reasonable time has passed and your landlord has not complied with the court order.
 continue button field: Contempt_Complaint_intro    
 ---
 id: preview Contempt_Complaint
