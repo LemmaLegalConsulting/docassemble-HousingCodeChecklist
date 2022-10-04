@@ -1,0 +1,123 @@
+---
+include:
+  - orders_and_contempt_complaint.yml
+---
+mandatory: True
+comment: |
+  Global interview metadata
+variable name: interview_metadata["contempt_complaint_standalone"]
+data:
+  title: >-
+    Contempt Complaint
+  short title: >-
+    Contempt Complaint
+  allowed courts: 
+    - "Boston Municipal Court"
+    - "District Court"
+    - "Housing Court"
+    - "Superior Court"
+---
+code: |
+  user_started_case = True
+---
+code: |
+  user_role = "plaintiff"
+---
+code: |
+  al_form_type = 'existing_case'
+---
+sections:
+  - review_Contempt_Complaint: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_Repair_Demand_Letter
+code: |
+  nav.set_section('review_Contempt_Complaint')
+  user_role = "plaintiff"
+  users.gather()
+  set_parts(subtitle=str(users))
+  users[0].address.address
+  other_parties.gather()
+  set_progress(20)
+  other_parties[0].address.address
+  wants_further_documents = True
+  has_tro = True
+  trial_court
+  date_issued
+  set_progress(40)
+  tro_order_text
+  set_progress(60)
+  if ll_once_followed_tro:
+    date_ll_stopped_following_tro
+  set_progress(80)
+  ll_failed_order_by_text
+  interview_order_Contempt_Complaint = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  Contempt_Complaint_intro
+  interview_order_Contempt_Complaint
+  signature_date
+  # Save anonymized interview statistics (customize the saved data below)
+  store_variables_snapshot(data={'zip': users[0].address.zip})
+  Contempt_Complaint_preview_question
+  basic_questions_signature_flow
+  users[0].signature
+  Contempt_Complaint_download
+---
+id: intro Contempt_Complaint
+question: |
+  Contempt Complaint
+subquestion: |
+    Fill out a Contempt Complaint to tell the court that your landlord has failed or refused to obey the court order. 
+    
+    Use this form only after a reasonable time has passed and your landlord has not obeyed the court order.
+continue button field: Contempt_Complaint_intro    
+---
+id: preview Contempt_Complaint
+question: |
+  Preview your Contempt Complaint before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_recipient_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Make changes" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_Contempt_Complaint'), label='Make changes', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: Contempt_Complaint_preview_question    
+---
+id: download Contempt_Complaint
+event: Contempt_Complaint_download
+question: |
+  Your Contempt Complaint is ready to download.
+subquestion: |
+  Thank you ${users}. Your Contempt Complaint is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Make changes" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_Contempt_Complaint'), label='Make changes', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=True) }
+
+progress: 100
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[contempt_complaint], filename="Contempt_Complaint.docx_package.pdf", title="All forms to download for your records", enabled=True)
+  - al_recipient_bundle: ALDocumentBundle.using(elements=[contempt_complaint], filename="Contempt_Complaint.docx_package.pdf", title="All forms to download for your records", enabled=True)
+---
+code: |
+  contempt_complaint.enabled = True
