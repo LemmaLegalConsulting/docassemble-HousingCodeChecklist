@@ -26,6 +26,7 @@ code: |
   user_role = "plaintiff"
 ---
 code: |
+  allowed_courts = ["Boston Municipal Court","District Court","Housing Court","Superior Court"]
   al_form_type = 'existing_case'
 ---
 code: |
