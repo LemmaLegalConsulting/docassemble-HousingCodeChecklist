@@ -4,44 +4,23 @@ include:
   - docassemble.AssemblyLine:al_package.yml
   - verified_complaint_and_motions_to_include.yml
 ---
-terms:
-  Grant of Temporary Restraining Order: |
-    * Orders your landlord to either do something to correct 
-      a problem or stop doing something that is illegal.
-    * A temporary order for a limited period of time.
-    * May be granted even if your landlord is not in the court during your           request for the order.
-    
-    **Give this Order to the court when you file your Verified Complaint. 
-    You do not need to fill it out. The court fills it out.**
-  Order of Notice: |
-    * Sets the date for a hearing at which you and your landlord must appear,         and at which time the judge will decide whether or not to
-    order the landlord to stop the illegal behavior. 
-    
-    **Give this Order to the court when you file your Verified Complaint. 
-    You do not need to fill it out. The court fills it out.**
-  Contempt Complaint: |
-    * Tell the court that your landlord has failed or refused to obey the court       order. 
-    
-    **Use this form only after a reasonable time has passed and your                 landlord has not obeyed the court order.**
-
+code: |
+  if has_tro:
+    date_issued
+    tro_order_text
+    if ll_once_followed_tro:
+      date_ll_stopped_following_tro
+    ll_failed_order_by_text
+  interview_order_contempt_complaint = True
 ---
 question: |
-  Do you want to draft a few other documents that may be helpful for your case?
-subquestion: |
-  In addition to your Verified Complaint, there are three forms that may be useful to your case.
-  
-    * {Grant of Temporary Restraining Order}
-    * {Order of Notice}
-    * {Contempt Complaint}
-  
-yesno: wants_further_documents
+  Did did the judge already order your landlord to do something about your case?
+fields: 
+  - A judge already ordered my landlord to do something: has_tro
+    datatype: yesnoradio
 ---
 question: |
-  Have you already received a Temporary Restraining Order/Preliminary Injunction against your landlord?
-yesno: has_tro
----
-question: |
-  When did the court issue a Temporary Restraining Order/Preliminary Injunction against your landlord?
+  When did the judge make their order?
 fields: 
   - Date: date_issued
     datatype: date
@@ -75,19 +54,66 @@ objects:
   - order_of_notice: ALDocument.using(title="Order of Notice", filename="order_of_notice.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - contempt_complaint: ALDocument.using(title="Contempt Complaint", filename="contempt_complaint.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
-attachments:
+attachment:
   - name: Temporary Order
     filename: Temporary Order   
     variable name: temporary_order[i]        
     skip undefined: True
     docx template file: temporary_order.docx
+---
+attachment:
   - name: Order of Notice
     filename: Order of Notice   
     variable name: order_of_notice[i]        
     skip undefined: True
     docx template file: order_of_notice.docx
+---
+attachment:
   - name: Contempt Complaint
     filename: Contempt Complaint 
     variable name: contempt_complaint[i]        
     skip undefined: True
     docx template file: contempt_complaint.docx
+---
+id: |-
+  review screen
+continue button field: review_Contempt_Complaint
+question: |-
+  Review asking a judge to enforce an order they already made
+review:
+  - Edit: |-
+      has_tro
+    button: |
+      **Did did the judge already order your landlord to do something about your case?**
+
+      A judge already ordered my landlord to do something: ${ word(yesno(has_tro)) }
+  - Edit: |-
+      date_issued
+    button: |
+      **When did the court issue a Temporary Restraining Order/Preliminary Injunction against your landlord?**
+
+      Date: ${ showifdef('date_issued') }
+  - Edit: |-
+      tro_order_text
+    button: |
+      **What did the judge order your landlord to correct or stop doing?**
+
+      ${ showifdef('tro_order_text') }
+  - Edit: |-
+      ll_once_followed_tro
+    button: |
+      **Did your landlord ever follow the judge's order?**
+
+      ${ word(yesno(ll_once_followed_tro)) }
+  - Edit: |-
+      date_ll_stopped_following_tro
+    button: |
+      **When did your landlord stop following the judge's order?**
+
+      Date: ${ showifdef('date_ll_stopped_following_tro') }
+  - Edit: |-
+      ll_failed_order_by_text
+    button: |
+      **How has your landlord failed to follow the judge's order?**
+
+      ${ showifdef('ll_failed_order_by_text') }

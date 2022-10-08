@@ -48,7 +48,6 @@ code: |
   other_parties.gather()
   set_progress(20)
   other_parties[0].address.address
-  wants_further_documents = True
   has_tro = True
   trial_court
   date_issued
@@ -128,3 +127,5 @@ objects:
 ---
 code: |
   contempt_complaint.enabled = True
+---
+  
