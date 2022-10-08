@@ -1509,8 +1509,8 @@ objects:
       )
 ---
 objects:
-  - celhp_logo: DAStaticFile.using(filename="CELHPlogoFL3x-2-300x171.png")
   - lsc_logo: DAStaticFile.using(filename="lsc_logo_horizontal.jpg")
+  - mlac_logo: DAStaticFile.using(filename="mlac_logo.png")
 ---
 event: about_this_interview
 id: about made uptocode
@@ -1523,15 +1523,28 @@ back button label: |
 ---
 template: about_this_interview_version_info
 content: |
-  <a href="https://www.lsc.gov/"><img src="${ lsc_logo.url_for() }" style="max-width: 80%" alt="Legal Services Corporation logo"/></a>
+  MADE: UpToCode is a free website that gives tenants the power to solve
+  landlord problems. It's funded by the national Legal Services Corporation and
+  Massachusetts nonprofits.
 
-  MADE: UpToCode was originally authored by Quinten Steenhuis in 2021 in
+  UpToCode includes a translated and easy to read English version of the Massachusetts
+  Sanitary Code, the law that lists the requirements that Massachusetts landlords
+  must follow. It helps tenants:
+  
+  1. discover their rights under the law,
+  1. report problems to their landlord, a city housing inspector, or the court,
+  1. get a court order to enforce repairs or to get compensation for illegal landlord
+  actions.
+
+  UpToCode was originally authored by Quinten Steenhuis in 2021 in
   partnership with [Massachusetts Law Reform Institute](https://mlri.org) as
   part of the COVID Eviction Legal Help Project legal services component.
 
   In 2022, the [Legal Services Corporation](https://lsc.gov) and [Northeast
   Legal Aid](https://northeastlegalaid.org) funded a major revision with new
   features, including the ability to file a complaint in court.
+
+  UpToCode is generously hosted by [Greater Boston Legal Services](https://gbls.org).
   
   Community organizations [La Colaborativa](https://la-colaborativa.org) and
   [Lynn United for Change](https://lynnunited.org) played a special role in
@@ -1556,3 +1569,7 @@ content: |
   Last updated on ${ package_updated_on }. [:fab-fa-github: View code on
   GitHub](${ github_url }).
   % endif
+
+  <a href="https://www.lsc.gov/"><img src="${ lsc_logo.url_for() }" style="max-width: 80%" alt="Legal Services Corporation logo"/></a>
+
+  <a href="https://www.mlac.org/"><img src="${ mlac_logo.url_for() }" alt="Massachusetts Legal Assistance Corporation logo"/></a>
