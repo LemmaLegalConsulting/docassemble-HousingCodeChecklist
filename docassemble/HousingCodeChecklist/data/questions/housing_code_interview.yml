@@ -13,6 +13,7 @@ include:
   - customized_screens.yml 
   - language.yml 
   - simple_conditions.yml
+  - orders_and_contempt_complaint.yml
 ---
 features:
   bootstrap theme: bootstrap.min.css
@@ -133,11 +134,13 @@ code: |
     if person_answering == "attorney" and representation_type == "entering_appearance":
       users[0].attorney.address.address
     interview_order_verified_complaint_and_motions
+  if screen_ll_knows_problem and document_choice["contempt_complaint"]:
+    interview_order_contempt_complaint
   # if screen_ll_knows_problem and {'enforce_inspection','get_inspection','get_injunction', 'tell_landlord'}.intersection(document_choice.true_values()):
   if screen_ll_knows_problem and {'enforce_inspection','get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
      nav.set_section('preview_and_sign')
      preview_conditions_checklist_docs
-     basic_questions_signature_flow     
+     basic_questions_signature_flow
   reached_download_screen = True
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
@@ -340,7 +343,12 @@ data: !!omap
       section_link: review_verified_complaint_and_motions
       section_label: Sue my landlord
       name: Sue my landlord in court
-      count: 0
+      count: 10
+  - contempt_complaint:
+      section_link: review_Contempt_Complaint
+      section_label: Ask judge to enforce their own order
+      name: Ask judge to enforce their own order
+      count: 3
 ---
 language: en
 sections:
@@ -443,7 +451,7 @@ fields:
       - My landlord is making me pay for utilities but we do not have a written agreement: utilities_no_agreement
       - My utilities have been shutoff: utility_shutoff
       - I need help with something else: other_landlord_tenant
-      #- My landlord is ignoring a court order: file_contempt_complaint
+      - My landlord is ignoring a court order: file_contempt_complaint
 ---
 id: confirm notice
 question: |
@@ -1031,7 +1039,8 @@ fields:
       - Ask a judge to enforce an order from a housing inspector: enforce_inspection
       #- Ask a judge to order my landlord to fix the problem: get_injunction
       - Ask for a fair settlement (consumer protection demand letter or settlement letter): demand_letter_93a
-      - Sue my landlord for money or to get an emergency order: sue_landlord
+      - Ask a judge to order my landlord to fix a problem or sue my landlord for money: sue_landlord
+      - Tell a judge that my landlord is ignoring the judge's order: contempt_complaint
     default:
       - get_report
   - no label: document_choice
@@ -1077,6 +1086,7 @@ data:
   enforce_inspection: False
   demand_letter_93a: False
   sue_landlord: False
+  contempt_complaint: False
 ---
 depends on:
   - document_choice
@@ -1100,6 +1110,11 @@ code: |
       document_choice["tell_landlord"] = True
     else:
       document_choice["sue_landlord"] = True
+  elif kind_of_lawsuit["file_contempt_complaint"]: # shouldn't start a new lawsuit
+    screen_contacted_housing_inspector = None
+    initial_screen_tenant_facing_eviction = None
+    screen_ll_knows_problem = True
+    document_choice["contempt_complaint"] = True
   else:
     screen_contacted_housing_inspector = False
     document_choice["sue_landlord"] = True
@@ -1167,13 +1182,13 @@ subquestion: |
   ${ tenant_repair_letter_bundle.download_list_html(format="docx") }
   
   % endif  
-  % if screen_ll_knows_problem and document_choice['sue_landlord']:
+  % if screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"]:
   [BR]
   <h2 class="h4">Documents for you to print and file in court</h2>
   ${ affirmative_complaint_bundle.download_list_html(format="docx") }
     
   % endif
-
+  
   ${ everything_for_emailing_bundle.send_button_html() }
 ---
 template: housing_code_bundle.send_email_template
@@ -1405,6 +1420,9 @@ code: |
 code: |
   tenant_repair_request_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
 ---
+code: |  
+  Repair_Demand_Letter_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
+---
 code: |
   sanitary_code_template_attachment.enabled = screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection') and inspection
 ---
@@ -1412,10 +1430,22 @@ code: |
   Housing_Temporary_Restraining_Order0002_attachment.enabled = screen_ll_knows_problem and document_choice['get_injunction']
 ---
 code: |
-  verified_complaint_and_motions_attachment.enabled = screen_ll_knows_problem and document_choice["sue_landlord"]
+  verified_complaint_and_motions_attachment.enabled = document_choice["sue_landlord"]
 ---
 code: |
-  Repair_Demand_Letter_attachment.enabled = screen_ll_knows_problem and document_choice["demand_letter_93a"]
+  verified_complaint_and_motions_post_interview_instructions.enabled = document_choice['sue_landlord']
+---
+code: |
+  verified_complaint_and_motions_attachment.enabled = screen_ll_knows_problem and document_choice['sue_landlord']
+---
+code: |  
+  temporary_order.enabled = verified_complaint_and_motions_attachment.enabled
+---
+code: |  
+  order_of_notice.enabled = verified_complaint_and_motions_attachment.enabled
+---
+code: |
+  contempt_complaint.enabled = screen_ll_knows_problem and document_choice['contempt_complaint']
 ---
 objects:
   - organize_tenants_attachment: ALStaticDocument.using(title="Organize tenants", filename="lt1-pullout-10-getting-organized.pdf")
@@ -1453,12 +1483,18 @@ objects:
       filename="repair_request_letter",
       )
   - affirmative_complaint_bundle: ALDocumentBundle.using(elements=[
-        verified_complaint_and_motions_attachment
+        verified_complaint_and_motions_attachment,
+        order_of_notice,
+        temporary_order,
+        contempt_complaint,
       ], title="Documents to file in court and serve your landlord",
       filename="affirmative_complaint_documents",
       )
   - everything_for_emailing_bundle: ALDocumentBundle.using(elements=[
         verified_complaint_and_motions_attachment,
+        temporary_order,
+        order_of_notice,
+        contempt_complaint,
         conditions_report_attachment,
         organize_tenants_attachment,      
         tenant_repair_request_attachment,
@@ -1466,6 +1502,11 @@ objects:
         sanitary_code_template_attachment,
         Repair_Demand_Letter_attachment,
       ], title="All documents for your records", filename="tenant_copy")
+  - further_documents_bundle: ALDocumentBundle.using(elements=[
+        temporary_order, order_of_notice, contempt_complaint
+      ], title="Documents for future case use",
+      filename="further_documents",
+      )
 ---
 objects:
   - celhp_logo: DAStaticFile.using(filename="CELHPlogoFL3x-2-300x171.png")

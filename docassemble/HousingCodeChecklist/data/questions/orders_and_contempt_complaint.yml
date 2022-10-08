@@ -1,0 +1,119 @@
+# DEPENDS ON Repair_Demand_Letter_to_include.yml but doesn't separately include it
+---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - verified_complaint_and_motions_to_include.yml
+---
+code: |
+  if has_tro:
+    date_issued
+    tro_order_text
+    if ll_once_followed_tro:
+      date_ll_stopped_following_tro
+    ll_failed_order_by_text
+  interview_order_contempt_complaint = True
+---
+question: |
+  Did did the judge already order your landlord to do something about your case?
+fields: 
+  - A judge already ordered my landlord to do something: has_tro
+    datatype: yesnoradio
+---
+question: |
+  When did the judge make their order?
+fields: 
+  - Date: date_issued
+    datatype: date
+---
+question: |
+  What did the judge order your landlord to correct or stop doing?
+fields:
+  - no label: tro_order_text
+    input type: area
+---
+question: |
+  Did your landlord ever follow the judge's order?
+fields: 
+  - no label: ll_once_followed_tro
+    datatype: yesnoradio
+---
+question: |
+  When did your landlord stop following the judge's order?
+fields: 
+  - Date: date_ll_stopped_following_tro
+    datatype: date
+---
+question: |
+  How has your landlord failed to follow the judge's order?
+fields:
+  - no label: ll_failed_order_by_text
+    input type: area
+---
+objects:
+  - temporary_order: ALDocument.using(title="Temporary Order", filename="temporary_order.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - order_of_notice: ALDocument.using(title="Order of Notice", filename="order_of_notice.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - contempt_complaint: ALDocument.using(title="Contempt Complaint", filename="contempt_complaint.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+attachment:
+  - name: Temporary Order
+    filename: Temporary Order   
+    variable name: temporary_order[i]        
+    skip undefined: True
+    docx template file: temporary_order.docx
+---
+attachment:
+  - name: Order of Notice
+    filename: Order of Notice   
+    variable name: order_of_notice[i]        
+    skip undefined: True
+    docx template file: order_of_notice.docx
+---
+attachment:
+  - name: Contempt Complaint
+    filename: Contempt Complaint 
+    variable name: contempt_complaint[i]        
+    skip undefined: True
+    docx template file: contempt_complaint.docx
+---
+id: |-
+  review screen
+continue button field: review_Contempt_Complaint
+question: |-
+  Review asking a judge to enforce an order they already made
+review:
+  - Edit: |-
+      has_tro
+    button: |
+      **Did did the judge already order your landlord to do something about your case?**
+
+      A judge already ordered my landlord to do something: ${ word(yesno(has_tro)) }
+  - Edit: |-
+      date_issued
+    button: |
+      **When did the court issue a Temporary Restraining Order/Preliminary Injunction against your landlord?**
+
+      Date: ${ showifdef('date_issued') }
+  - Edit: |-
+      tro_order_text
+    button: |
+      **What did the judge order your landlord to correct or stop doing?**
+
+      ${ showifdef('tro_order_text') }
+  - Edit: |-
+      ll_once_followed_tro
+    button: |
+      **Did your landlord ever follow the judge's order?**
+
+      ${ word(yesno(ll_once_followed_tro)) }
+  - Edit: |-
+      date_ll_stopped_following_tro
+    button: |
+      **When did your landlord stop following the judge's order?**
+
+      Date: ${ showifdef('date_ll_stopped_following_tro') }
+  - Edit: |-
+      ll_failed_order_by_text
+    button: |
+      **How has your landlord failed to follow the judge's order?**
+
+      ${ showifdef('ll_failed_order_by_text') }
