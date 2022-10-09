@@ -1,16 +1,10 @@
 from docassemble.base.util import (
     path_and_mimetype,
-    Address,
-    LatitudeLongitude,
-    DAStaticFile,
-    markdown_to_html,
-    prevent_dependency_satisfaction,
+    DADateTime,
     DAObject,
     DAList,
     DADict,
-    log,
-    space_to_underscore,
-    DAContext,
+    today,
 )
 import pandas as pd
 import os
@@ -206,6 +200,25 @@ class ConditionsDict(DADict):
                 if condition.deadline == "24 hours" and condition.condition_ended == condition_ended
             ],
         )
+
+    def conditions_start(self) -> DADateTime:
+        return min([
+            condition.start_date
+            for condition
+            in self.as_list()
+        ])
+
+    def conditions_end(self) -> DADateTime:
+        return max([
+            condition.end_date
+            for condition
+            in self.as_list()
+            if hasattr(condition, "end_date")
+        ], default=today())
+
+    def conditions_days(self) -> int:
+        return abs( (self.conditions_end() - self.conditions_start()).days )
+
 
 
 def conditions_from_list(

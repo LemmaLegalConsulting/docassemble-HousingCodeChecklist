@@ -286,13 +286,11 @@ id: include citations?
 question: |
   Do you want to include a citation to the sanitary code?
 subquestion: |
-  If you want, you can include a citation to the specific sanitary code that 
-  relates to each problem you are having when you list the problems in your
-  letter.
+  If you want, you can include a citation to the sanitary code next to each condition in your letter.
 
   Example:
   
-  > Floor has holes or cracks; C.M.R. 410.500
+  > ${ bad_conditions.active_conditions().item(0).description or bad_conditions.active_conditions().item(0).original_description } (C.M.R. ${ bad_conditions.active_conditions().item(0).code })
 fields:
   - Citation style: sanitary_code_citation_style
     datatype: radio
@@ -302,19 +300,15 @@ fields:
 ---
 template: tenant_repair_issue_description_default
 content: |
-  % for category in bad_conditions:
-  % for index, row in bad_conditions[category].df.iterrows():
-  % if bad_conditions[category].details[index].description:
-  * ${ bad_conditions[category].details[index].description.capitalize() }; \
+  % for condition in bad_conditions.active_conditions():
+  % if condition.description:
+  * ${ condition.description.capitalize() }
   % else:
-  * ${ row['Interview description'] }; \
+  * ${ condition.original_description }
   % endif
   % if sanitary_code_citation_style == "detailed_cites":
-  C.M.R. ${ row['Sanitary Code Section'] }
-  % else:
-
+  (C.M.R. ${ condition.code })
   % endif
-  % endfor  
   % endfor
 ---
 ###############
@@ -347,7 +341,8 @@ subquestion: |
   We also included a link to the sanitary code section that applies.
   % endif
 fields:
-  - no label: tenant_repair_issue_description
+  - Describe the problem you want your landlord to fix: tenant_repair_issue_description
+    label above field: True
     datatype: area
     rows: 6
     default: ${ tenant_repair_issue_description_default }
@@ -761,6 +756,68 @@ fields:
   - Email: users[0].attorney.email
     datatype: email
     required: False
+---
+id: How much compensation would you like to claim from the landlord with bad_conditions defined
+question: |
+  What amount of money would be fair for your landlord to pay you?
+subquestion: |
+  ${ collapse_template(settlement_offer_93a_explanation) }
+  
+  ${ collapse_template(what_if_problem_over_multiple_periods) }
+
+  The amount that you list here will be your "settlement offer".    
+fields:
+  - How do you want to decide the amount to ask for?: damage_calculation_method
+    datatype: radio
+    choices:
+      - Let me do my own math: tenant_calculation
+      - Help me with the math: uptocode_calculation
+      - Do not ask for a specific settlement amount: skip_amount
+  - How serious were the problems?: damage_tenant_severity_estimate
+    datatype: radio
+    choices:
+      - The apartment was unlivable: bqe_total
+        help: |
+          You can choose this answer even if you did not move out.
+      - The problems were serious but not unlivable: bqe_partial
+    show if:      
+      variable: damage_calculation_method
+      is: uptocode_calculation
+  - How long did you have the problems (in days)?: tenant_time_estimate
+    datatype: number
+    show if:
+      variable: damage_calculation_method
+      is: uptocode_calculation
+    default: ${ bad_conditions.conditions_days() }
+    help: |
+      The default number, ${ bad_conditions.conditions_days() }, was calculated from the oldest and
+      newest problems you listed earlier.
+  - What **percentage** do you think is fair to get off of the rent for each month that you had the problems?: tenant_percentage_estimate
+    datatype: range
+    min: 0
+    max: 100
+    step: 5
+    default: 0
+    show if:
+      variable: damage_calculation_method
+      is: uptocode_calculation
+    help: |
+      It is up to you to ask for a percentage you think is fair. A less serious problem might 
+      be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
+      The percentage will be multiplied by the number of days, weeks or months you had the problem.
+    validate: |
+      lambda y: y > 0 or validation_error("Select a number greater than 0.")
+  - Settlement offer amount: tenant_self_estimated_damages_amount
+    datatype: currency
+    min: 0
+    show if:
+      variable: damage_calculation_method
+      is: tenant_calculation
+validation code: |
+  if damage_calculation_method == "uptocode_calculation":
+    tenant_time_estimate_denominator = 365
+    if tenant_percentage_estimate < 5:
+      validation_error("Select a percentage that is greater than 0", field="tenant_percentage_estimate")
 ---
 template: about_page_contents
 subject: |
