@@ -1136,6 +1136,8 @@ fields:
 validation code: |
   if screen_ll_knows_problem and len(document_choice.true_values()) < 1:
     validation_error("Select at least one.", field="document_choice")
+  if "contempt_complaint" not in document_choice:
+    document_choice["contempt_complaint"] = False
 terms:
   retaliated: |
     Retaliation could include evicting you or raising your rent because you
