@@ -237,13 +237,11 @@ continue button field: intro_and_terms_of_use
 question: |
   How this works
 subquestion: |
-  <div class="custom-counter">
-  <ol class="custom-counter">
-  <li>Read about your landlord's responsibilities.</li>
-  <li>Track the problems you have in each room of your home.</li>
-  <li>Choose a next step to get your landlord to fix the problems.</li>
-  </ol>
-  </div>
+  
+  1. Track the problems you have in each room of your home.
+  1. Choose a next step to get your landlord to fix the problems.
+  1. Answer step-by-step questions.
+  1. Download your completed documents.
 
   ${ display_template(about_page_contents, scrollable=True) }
 fields:
@@ -256,35 +254,6 @@ fields:
     validation messages:
       minlength: |
         You cannot continue unless you agree to the terms of use.
-css: |
-  <style>
-    .custom-counter ol {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    }
-
-    .custom-counter li {
-    counter-increment: step-counter;
-    margin-bottom: 10px;
-    }
-
-    .custom-counter li::before {
-    content: counter(step-counter);
-    margin-right: 5px;
-    font-size: 80%;
-    background-color: black;
-    color: white;
-    font-weight: bold;
-    padding: 3px 8px;
-    border-radius: 50%;
-    }
-    
-    /* List number counter sizes to match circles in nav items (in styles.css). If one is adjusted, the other will have to be adjusted also. */
-    .custom-counter li::before {
-      padding: 0.5px 6.5px;
-    }
-  </style>
 ---
 event: initial_action
 code: |
