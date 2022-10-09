@@ -757,6 +757,68 @@ fields:
     datatype: email
     required: False
 ---
+id: How much compensation would you like to claim from the landlord with bad_conditions defined
+question: |
+  What amount of money would be fair for your landlord to pay you?
+subquestion: |
+  ${ collapse_template(settlement_offer_93a_explanation) }
+  
+  ${ collapse_template(what_if_problem_over_multiple_periods) }
+
+  The amount that you list here will be your "settlement offer".    
+fields:
+  - How do you want to decide the amount to ask for?: damage_calculation_method
+    datatype: radio
+    choices:
+      - Let me do my own math: tenant_calculation
+      - Help me with the math: uptocode_calculation
+      - Do not ask for a specific settlement amount: skip_amount
+  - How serious were the problems?: damage_tenant_severity_estimate
+    datatype: radio
+    choices:
+      - The apartment was unlivable: bqe_total
+        help: |
+          You can choose this answer even if you did not move out.
+      - The problems were serious but not unlivable: bqe_partial
+    show if:      
+      variable: damage_calculation_method
+      is: uptocode_calculation
+  - How long did you have the problems (in days)?: tenant_time_estimate
+    datatype: number
+    show if:
+      variable: damage_calculation_method
+      is: uptocode_calculation
+    default: ${ bad_conditions.conditions_days() }
+    help: |
+      The default number, ${ bad_conditions.conditions_days() }, was calculated from the oldest and
+      newest problems you listed earlier.
+  - What **percentage** do you think is fair to get off of the rent for each month that you had the problems?: tenant_percentage_estimate
+    datatype: range
+    min: 0
+    max: 100
+    step: 5
+    default: 0
+    show if:
+      variable: damage_calculation_method
+      is: uptocode_calculation
+    help: |
+      It is up to you to ask for a percentage you think is fair. A less serious problem might 
+      be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
+      The percentage will be multiplied by the number of days, weeks or months you had the problem.
+    validate: |
+      lambda y: y > 0 or validation_error("Select a number greater than 0.")
+  - Settlement offer amount: tenant_self_estimated_damages_amount
+    datatype: currency
+    min: 0
+    show if:
+      variable: damage_calculation_method
+      is: tenant_calculation
+validation code: |
+  if damage_calculation_method == "uptocode_calculation":
+    tenant_time_estimate_denominator = 365
+    if tenant_percentage_estimate < 5:
+      validation_error("Select a percentage that is greater than 0", field="tenant_percentage_estimate")
+---
 template: about_page_contents
 subject: |
   Terms of use and data privacy policy
