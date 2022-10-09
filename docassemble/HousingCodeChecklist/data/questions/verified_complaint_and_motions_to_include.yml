@@ -56,6 +56,7 @@ code: |
   if tenant_gets_rent_subsidy and tenant_subsidy_is_voucher:
     verified_complaint_tenant_voucher_at_risk
   complaint_ask_for_tro
+  complaint_ask_for_relocation
   trial_court
   other_parties[0].phone_number
   users[0].email
@@ -124,6 +125,17 @@ fields:
     label above field: True
     show if: complaint_ask_for_tro
     required: False
+---
+id: relocation expenses
+question: |
+  Getting a new place to stay
+subquestion: |
+  If the problems are very serious, you may need to move out to allow
+  the landlord to make repairs.
+fields:
+  - Do you want the landlord to pay for a hotel or new apartment while the repairs are made?: complaint_ask_for_relocation
+    datatype: yesnoradio
+    default: True      
 ---
 id: getting money
 question: |
