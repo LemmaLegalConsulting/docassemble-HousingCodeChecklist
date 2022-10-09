@@ -6,6 +6,7 @@ translations:
 ---
 include:
   - docassemble.AssemblyLine:al_package.yml
+  - docassemble.ALToolbox:display_template.yml
   - Repair_Demand_Letter_to_include.yml
   - verified_complaint_and_motions_to_include.yml
   - docassemble.SanitaryCode:sanitary_code_template.yml
@@ -57,7 +58,10 @@ mandatory: True
 id: interview order
 code: |
   initial_action_display_cards
-  intro_and_terms_of_use
+  if initial_action_selection == "help_in_court":
+    intro_and_terms_of_use_in_court
+  else:
+    intro_and_terms_of_use
   person_answering
   users[0].name.first
   if person_answering == "attorney" and representation_type == "entering_appearance":
@@ -176,10 +180,13 @@ objects:
   - users[0].attorney: ALIndividual
 ---
 objects:
-  - document_problems_image: DAStaticFile.using(filename="dripping_faucet.jpg")
-  - notify_image: DAStaticFile.using(filename="typewriter_luca-onniboni-4v9Kk01mEbY-unsplash1.jpg")
-  - help_in_court_image: DAStaticFile.using(filename="gavel_wesley-tingey-9z9fxr_7Z-k-unsplash_Cropped.jpg")
-  - eviction_image: DAStaticFile.using(filename="apartments_anders-holm-jensen-urYCLa2G4Lg-unsplash_Cropped.jpg")
+  #- document_problems_image: DAStaticFile.using(filename="dripping_faucet.jpg")
+  #- notify_image: DAStaticFile.using(filename="typewriter_luca-onniboni-4v9Kk01mEbY-unsplash1.jpg")
+  #- help_in_court_image: DAStaticFile.using(filename="gavel_wesley-tingey-9z9fxr_7Z-k-unsplash_Cropped.jpg")
+  #- eviction_image: DAStaticFile.using(filename="apartments_anders-holm-jensen-urYCLa2G4Lg-unsplash_Cropped.jpg")
+  - eviction_image: DAStaticFile.using(filename="undraw_coming_home_re_ausc.svg")
+  - explore_problems_image: DAStaticFile.using(filename="standing-1.svg")
+  - get_order_from_judge_image: DAStaticFile.using(filename="undraw_judge_katerina_limpitsouni_ny-1-q.svg")
   - uptocode_logo: DAStaticFile.using(filename="horiztonal-white1.5x_blue.svg")
 ---
 event: initial_action_display_cards
@@ -187,42 +194,49 @@ id: landing-page
 question: |
   You deserve a safe and decent home
 subquestion: |
-  Need help getting repairs in Massachusetts? Choose a task below to get started.
-  
-  <div class="row row-cols-1 row-cols-md-2 g-4">
-    <div class="col">
-      <div class="card h-100">
-        <img src="${ document_problems_image.url_for() }" class="card-img-top" alt="...">
+  Need help with repairs or stopping landlord harassment? Choose a task to get started.
+
+  <div class="row g-3 mb-2">
+  <div class="col-md-6">
+  <div class="card" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4 d-flex align-content-end">
+        <img src="${ explore_problems_image.url_for() }" class="img-fluid rounded-start" alt="illustration - person standing, ready to act">
+      </div>
+      <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title" >Document problems</h5>
-          <p class="card-text">Use our checklist to document problems room by room.</p>
-          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Explore room by room</a>
+          <h5 class="card-title">Explore problems and solutions</h5>
+          <p class="card-text">Explore problems room by room and get your landlord to fix them.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start exploring</a>
         </div>
       </div>
     </div>
-    <div class="col">
-      <div class="card h-100">
-        <img src="${ notify_image.url_for() }" class="card-img-top" alt="...">
+  </div>
+  </div>
+  <div class="col-md-6">
+  <div class="card" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4 d-flex align-content-end">
+        <img src="${ get_order_from_judge_image.url_for() }" class="img-fluid rounded-start" alt="illustration - judge holding gavel">
+      </div>
+      <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">Tell your landlord or city</h5>
-          <p class="card-text">Answer simple questions to give your landlord or the city legal notice of the problems.</p>
-          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="give_notice") }" role="button">Write a letter</a>
+          <h5 class="card-title">Get an order from a judge</h5>
+          <p class="card-text">Get an emergency order or an order for your landlord to pay you money.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="help_in_court") }" role="button">Get help in court</a>
         </div>
       </div>
     </div>
-    <div class="col">
-      <div class="card h-100">
-        <img src="${ help_in_court_image.url_for() }" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Get help in court</h5>
-          <p class="card-text">Sue your landlord or ask a judge to order an emergency repair.</p>
-          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="help_in_court") }" role="button">Get help from a judge</a>
-        </div>      
+  </div>
+  </div>
+
+  <div class="col-md-6">
+  <div class="card" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4 d-flex align-content-end" style="max-height: 12em;">
+        <img src="${ eviction_image.url_for() }" class="img-fluid rounded-start" alt="illustration - apartment building">
       </div>
-    </div>
-    <div class="col">
-      <div class="card h-100">
-        <img src="${ eviction_image.url_for() }" class="card-img-top" alt="...">
+      <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title">Defend against an eviction</h5>
           <p class="card-text">Getting evicted? Stop the eviction before you do anything else.</p>
@@ -231,20 +245,66 @@ subquestion: |
       </div>
     </div>
   </div>
+  </div>
+
+
+  </div>
+css: |
+  <style>
+  .question-landing-page div.container {
+    max-width: 100rem;
+  }
+  </style>
+
+---  
+comment: |
+  #   <div class="col">
+  #     <div class="card h-100">
+  #       <img src="${ notify_image.url_for() }" class="card-img-top" alt="...">
+  #       <div class="card-body">
+  #         <h5 class="card-title">Tell your landlord or city</h5>
+  #         <p class="card-text">Answer simple questions to give your landlord or the city legal notice of the problems.</p>
+  #         <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="give_notice") }" role="button">Write a letter</a>
+  #       </div>
+  #     </div>
+  #   </div>
+  #   <div class="col">
+  #     <div class="card h-100">
+  #       <img src="${ help_in_court_image.url_for() }" class="card-img-top" alt="...">
+  #       <div class="card-body">
+  #         <h5 class="card-title">Get help in court</h5>
+  #         <p class="card-text">Sue your landlord or ask a judge to order an emergency repair.</p>
+  #         <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="help_in_court") }" role="button">Get help from a judge</a>
+  #       </div>      
+  #     </div>
+  #   </div>
+  #   <div class="col">
+  #     <div class="card h-100">
+  #       <img src="${ eviction_image.url_for() }" class="card-img-top" alt="...">
+  #       <div class="card-body">
+  #         <h5 class="card-title">Defend against an eviction</h5>
+  #         <p class="card-text">Getting evicted? Stop the eviction before you do anything else.</p>
+  #         <a class="btn btn-primary stretched-link align-self-end" href="https://interviews.gbls.org/start/eviction/" role="button">Defend against an eviction</a>
+  #       </div>
+  #     </div>
+  #   </div>
+  # </div>
 ---
-continue button field: intro_and_terms_of_use
+continue button field: intro_and_terms_of_use_in_court
 question: |
   How this works
 subquestion: |
-  <div class="custom-counter">
-  <ol class="custom-counter">
-  <li>Read about your landlord's responsibilities.</li>
-  <li>Track the problems you have in each room of your home.</li>
-  <li>Choose a next step to get your landlord to fix the problems.</li>
-  </ol>
-  </div>
-fields:  
-  - To continue, you must accept the [terms of use](https://www.gbls.org/self-help/eviction/terms-of-use): acknowledged_information_use
+  On the next few screens you can:
+
+  1. Tell us about the problems you are having with your landlord.
+  1. Answer step-by-step questions.
+  1. Download your completed documents, print, and file in court.
+
+  It takes most tenants about 45 minutes to finish.
+
+  ${ display_template(about_page_contents, scrollable=True) }
+fields:
+  - To continue, you must accept the terms of use: acknowledged_information_use
     datatype: checkboxes
     none of the above: False    
     minlength: 1
@@ -253,35 +313,32 @@ fields:
     validation messages:
       minlength: |
         You cannot continue unless you agree to the terms of use.
-css: |
-  <style>
-    .custom-counter ol {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    }
 
-    .custom-counter li {
-    counter-increment: step-counter;
-    margin-bottom: 10px;
-    }
+---
+continue button field: intro_and_terms_of_use
+question: |
+  How this works
+subquestion: |
+  On the next few screens you can:
 
-    .custom-counter li::before {
-    content: counter(step-counter);
-    margin-right: 5px;
-    font-size: 80%;
-    background-color: black;
-    color: white;
-    font-weight: bold;
-    padding: 3px 8px;
-    border-radius: 50%;
-    }
-    
-    /* List number counter sizes to match circles in nav items (in styles.css). If one is adjusted, the other will have to be adjusted also. */
-    .custom-counter li::before {
-      padding: 0.5px 6.5px;
-    }
-  </style>
+  1. Track the problems you have in each room of your home. You can add dates and photos, too.
+  1. Choose a next step to get your landlord to fix the problems.
+  1. Answer step-by-step questions.
+  1. Download your completed documents, print, and deliver to the right place.
+
+  It takes most tenants between 20 minutes and 1 hour to finish.
+
+  ${ display_template(about_page_contents, scrollable=True) }
+fields:
+  - To continue, you must accept the terms of use: acknowledged_information_use
+    datatype: checkboxes
+    none of the above: False    
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.
 ---
 event: initial_action
 code: |
@@ -448,10 +505,14 @@ fields:
       - My landlord changed my locks or moved my things: illegal_lockout          
       - My landlord went into my home without permission: entered_without_permission
       - My landlord went into my home without giving me enough notice: insufficient_notice
-      - My landlord is making me pay for utilities but we do not have a written agreement: utilities_no_agreement
-      - My utilities have been shutoff: utility_shutoff
+      - My landlord made me pay for utilities but we did not have a written agreement: utilities_no_agreement
+      - My utilities were shutoff: utility_shutoff
       - I need help with something else: other_landlord_tenant
       - My landlord is ignoring a court order: file_contempt_complaint
+    minlength: 1
+    validation messages:
+      minlength: |
+        You need to choose at least one problem to continue.
 ---
 id: confirm notice
 question: |
@@ -715,7 +776,7 @@ id: room chooser
 question: |
   Your landlord's responsibilities
 subquestion: |
-  % if len(bad_conditions):
+  % if len(bad_conditions) > 1:
   You have already listed problems in these rooms:
   
   % for button in bad_conditions:
@@ -723,8 +784,8 @@ subquestion: |
   % endfor
   % else:
   Your home is protected by the [state sanitary 
-  code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download). 
-  Click the buttons below to learn what a safe home means in different categories.
+  code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
+  Click a room or category to add a problem.
   % endif
 field: bad_conditions.new_item_name
 buttons:
@@ -796,6 +857,8 @@ subquestion: |
   of learning about the problem.
   
   If you do not see your problem listed below, try a different category.
+
+  ${ collapse_template(emergency_sanitary_code_template) }
 fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
@@ -805,18 +868,19 @@ fields:
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else [] + bad_conditions["common problems"].claims.true_values()
-help: 
-  label: |
-    Sanitary Code
-  content: |
-    The problems listed above are cited in the following sections of the
-    [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
-        
-    Problem | Sanitary Code
-    --------|------------------
-    % for row in dataloader.get_rows(allowed_types=["24 hours"], filter_column="Deadline").iterrows():
-    ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] }
-    % endfor
+---
+template: emergency_sanitary_code_template
+subject: |
+  Related sanitary code
+content: |
+  The problems listed above are cited in the following sections of the
+  [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
+      
+  Problem | Sanitary Code
+  --------|------------------
+  % for row in dataloader.get_rows(allowed_types=["24 hours"], filter_column="Deadline").iterrows():
+  ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] if row[1]['Sanitary Code Section'] else ""}
+  % endfor
 ---
 if:
   i != 'emergency'
@@ -829,6 +893,8 @@ question: |
 subquestion: |
   You can list any problems that you have had in the last 6 years at this apartment,
   even if they are fixed now.  
+
+  ${ collapse_template(sanitary_code_template) }
 fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
@@ -838,18 +904,19 @@ fields:
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []  + bad_conditions["common problems"].claims.true_values()
-help: 
-  label: |
-    Sanitary Code
-  content: |
-    The problems listed above are cited in the following sections of the
-    [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
-        
-    Problem | Sanitary Code
-    --------|------------------
-    % for row in dataloader.get_rows(allowed_types=[i], filter_column="Category").iterrows():
-    ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] or "" }
-    % endfor        
+---
+template: sanitary_code_template
+subject: |
+  Related sanitary code
+content: |
+  The problems listed above are cited in the following sections of the
+  [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
+      
+  Problem | Sanitary Code
+  --------|------------------
+  % for row in dataloader.get_rows(allowed_types=[i], filter_column="Category").iterrows():
+  ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] or "" }
+  % endfor        
 ---
 id: there is another condition
 question: |
