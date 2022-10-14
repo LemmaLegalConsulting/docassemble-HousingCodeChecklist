@@ -56,11 +56,11 @@ fields:
     choices:
       - Business or organization: business
       - Person: individual
-  - Landlord's first name: other_parties[0].name.first
+  - First: other_parties[0].name.first
     show if:
       variable: other_parties[0].person_type
       is: "individual"
-  - Last name: other_parties[0].name.last
+  - Last: other_parties[0].name.last
     show if:
       variable: other_parties[0].person_type      
       is: "individual"
@@ -71,7 +71,7 @@ fields:
       variable: other_parties[0].person_type      
       is: "individual"
     required: False
-  - Landlord's business name: other_parties[0].name.first
+  - Business name: other_parties[0].name.first
     show if:
       variable: other_parties[0].person_type
       is: business
@@ -191,10 +191,10 @@ question:  |
   Tenant's name
   % endif
 fields:
-  - First Name: users[0].name.first
-  - Middle Name: users[0].name.middle
+  - First: users[0].name.first
+  - Middle: users[0].name.middle
     required: False
-  - Last Name: users[0].name.last
+  - Last: users[0].name.last
   - Suffix: users[0].name.suffix
     code: |
       name_suffix()
@@ -230,17 +230,17 @@ question: |
   % endif
 fields:
   - Law firm or organization name: users[0].attorney.organization
-  - First Name: users[0].attorney.name.first
+  - First: users[0].attorney.name.first
     default: |
       % if user_logged_in():
       ${ user_info().first_name }
       % endif
-  - Middle Name: users[0].attorney.middle
+  - Middle: users[0].attorney.middle
     required: False
     default: |
       % if user_logged_in():
       % endif    
-  - Last Name: users[0].attorney.name.last
+  - Last: users[0].attorney.name.last
     default: |
       % if user_logged_in():
       ${ user_info().last_name }
