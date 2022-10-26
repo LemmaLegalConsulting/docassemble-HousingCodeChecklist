@@ -56,7 +56,7 @@ fields:
     choices:
       - Business or organization: business
       - Person: individual
-  - First: other_parties[0].name.first
+  - Landlord's first name: other_parties[0].name.first
     show if:
       variable: other_parties[0].person_type
       is: "individual"
