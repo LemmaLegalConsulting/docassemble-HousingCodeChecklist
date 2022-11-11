@@ -1314,7 +1314,7 @@ content: |
 ---
 id: details for this claim
 question: |
-  More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).lower().lstrip() }"
+  More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[:1].lower() }${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[1:] }"
 fields:
   - Describe the problem using your own words (optional): bad_conditions[i].details[j].description
     datatype: area
