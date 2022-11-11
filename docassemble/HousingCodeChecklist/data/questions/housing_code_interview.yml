@@ -717,8 +717,10 @@ subquestion: |
   question mark icon to get more information about each
   problem.
 
-  You can include any problems you have had over the last 6 years in this apartment, even
+  You can include any problems you have had over the last **6 years** in this apartment, even
   if they are fixed now.
+
+  ${ collapse_template(how_far_back_should_i_go_template) }
 fields:
   - label: |
       % if person_answering == "tenant":
@@ -733,6 +735,16 @@ fields:
   - note: |
       Don't see your problem on this list? There are more problems
       to pick from if you keep going.
+---
+template: how_far_back_should_i_go_template
+subject: |
+  What problems should I list?
+content: |
+  If you want to sue your landlord for money, you can list any problems that you have
+  had over the last 6 years. Even if the problem is fixed now.
+
+  Tenants who do not want to sue their landlord usually only list problems that still 
+  need to be fixed.
 ---
 id: review simple conditions
 question: |
