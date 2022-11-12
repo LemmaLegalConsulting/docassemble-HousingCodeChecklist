@@ -538,8 +538,8 @@ edit:
 confirm: True
 ---
 objects:
-  - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions", filename="verified_complaint_and_motions_next_steps.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - verified_complaint_and_motions_attachment: ALDocument.using(title="Tenant complaint for emergency repairs", filename="verified_complaint_and_motions.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions for your court documents", filename="next_steps_complaint.docx", has_addendum=False)
+  - verified_complaint_and_motions_attachment: ALDocument.using(title="Tenant complaint for emergency repairs", filename="verified_complaint_and_motions.docx", has_addendum=False)
 
 ---
 attachments:
@@ -548,6 +548,8 @@ attachments:
     variable name: verified_complaint_and_motions_post_interview_instructions[i]        
     skip undefined: True
     docx template file: verified_complaint_and_motions_next_steps.docx
+---
+attachments:    
   - name: verified complaint and motions attachment
     filename: verified_complaint_and_motions.docx     
     variable name: verified_complaint_and_motions_attachment[i]        
