@@ -161,7 +161,7 @@ code: |
     if bad_conditions.count_conditions() > 0:
       # This is a bit of a workaround
       for room in bad_conditions:
-        for condition in bad_conditions[room].claims.true_values():
+        for condition in bad_conditions[room].claims.true_values().difference(bad_conditions.get("common problems",DAEmpty()).claims.true_values()):
           bad_conditions[room].details[condition].condition_existed_at_start  
       review_conditions
     else:
@@ -638,7 +638,7 @@ depends on:
 code: |
   bad_conditions[i].claims
   bad_conditions[i].df
-  for condition in bad_conditions[i].claims.true_values():
+  for condition in bad_conditions[i].claims.true_values().difference(bad_conditions.get("common problems",DAEmpty()).claims.true_values()):
     bad_conditions[i].details[condition].condition_existed_at_start
   bad_conditions[i].complete = True
 ---
@@ -954,7 +954,11 @@ code: |
 depends on:
   - bad_conditions[i].claims
 code: |
-  bad_conditions[i].df = dataloader.load_rows(bad_conditions[i].claims.true_values())
+  if i != "common problems":
+    overlapping_conditions = bad_conditions.get("common problems",DAEmpty()).claims.true_values()
+  else:
+    overlapping_conditions = []
+  bad_conditions[i].df = dataloader.load_rows(bad_conditions[i].claims.true_values().difference(overlapping_conditions))
 ---
 continue button field: review_conditions
 id: review conditions
