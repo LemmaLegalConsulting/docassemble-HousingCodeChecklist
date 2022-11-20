@@ -706,6 +706,9 @@ subquestion: |
 continue button field: learn_more
 ---
 id: simple conditions
+undefine:
+  - bad_conditions["common problems"].df
+  - bad_conditions["common problems"].complete
 question: |
   % if person_answering == "tenant":
   Do you have any of the problems listed below?
@@ -928,7 +931,7 @@ content: |
   --------|------------------
   % for row in dataloader.get_rows(allowed_types=[i], filter_column="Category").iterrows():
   ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] or "" }
-  % endfor        
+  % endfor
 ---
 id: there is another condition
 question: |

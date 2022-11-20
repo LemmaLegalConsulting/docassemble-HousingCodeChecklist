@@ -225,7 +225,7 @@ def conditions_from_list(
     dataloader: DataLoader, loci: List[Union[int, str]], language: str = "en"
 ) -> List[Dict[str, str]]:
     df = dataloader.load_rows(loci=loci)
-    conditions = []
+    conditions:List[Dict[str, str]] = []
     for row in df.iterrows():
         if language == "es":
             conditions.append(
