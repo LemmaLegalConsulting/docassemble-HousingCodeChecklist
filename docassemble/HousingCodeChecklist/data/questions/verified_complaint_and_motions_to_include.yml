@@ -233,21 +233,27 @@ data:
   entered without permission: 
     question: Went into my home without permission
     document: entered my home without permission
+    direct: entered your home without permission
   illegal lockout: 
     question: Locked me out of my home or took my belongings out of my home
     document: locked me out of my home or removed my belongings without lawful authority
+    direct: locked you out of your home or removed your belongings
   utility shutoff: 
     question: Turned off the gas, electricity or oil service or did not turn it back on
     document: turned off or failed to restore a utility service
+    direct: turned off or failed to restore a utility service
   utility no agreement:
     question: Made me pay for utilities without a written agreement
     document: required me to pay for utilities without a written agreement
+    direct: required you to pay for utilities without a written agreement
   insufficient notice: 
     question: Made repairs without giving me reasonable warning of the time and day they would come
     document: did not give me reasonable notice to make repairs
+    direct: did not give you reasonable notice to make repairs
   other:
     question: other
     document: other
+    direct: other
 ---
 id: What did the landlord do
 question: |
@@ -264,15 +270,15 @@ subquestion: |
   
   My landlord:
 fields:
-  - ${ verified_complaint_claims_terms["entered without permission"] }: verified_complaint_claims["entered without permission"].has_claim
+  - ${ verified_complaint_claims_terms["entered without permission"]["question"] }: verified_complaint_claims["entered without permission"].has_claim
     datatype: yesno
     default: |
       ${ kind_of_lawsuit["entered_without_permission"] if initial_action_selection == "help_in_court" else False}
-  - ${ verified_complaint_claims_terms["illegal lockout"] }: verified_complaint_claims["illegal lockout"].has_claim
+  - ${ verified_complaint_claims_terms["illegal lockout"]["question"] }: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
     default: |
       ${ kind_of_lawsuit["illegal_lockout"] if initial_action_selection == "help_in_court" else False}
-  - ${ verified_complaint_claims_terms["utility no agreement"]}: verified_complaint_claims["utility no agreement"].has_claim
+  - ${ verified_complaint_claims_terms["utility no agreement"]["question"]}: verified_complaint_claims["utility no agreement"].has_claim
     datatype: yesno
     help: |
       The landlord must pay for utilities like electricity and gas unless there is a written agreement. A spoken agreement
@@ -288,7 +294,7 @@ fields:
     none of the above: False
     minlength: 1
     show if: verified_complaint_claims["utility no agreement"].has_claim
-  - ${ verified_complaint_claims_terms["utility shutoff"] }: verified_complaint_claims["utility shutoff"].has_claim
+  - ${ verified_complaint_claims_terms["utility shutoff"]["question"] }: verified_complaint_claims["utility shutoff"].has_claim
     datatype: yesno
     default: |
       ${ kind_of_lawsuit["utility_shutoff"] if initial_action_selection == "help_in_court" else False}
@@ -301,7 +307,7 @@ fields:
     none of the above: False
     minlength: 1
     show if: verified_complaint_claims["utility shutoff"].has_claim
-  - ${ verified_complaint_claims_terms["insufficient notice"] }: verified_complaint_claims["insufficient notice"].has_claim
+  - ${ verified_complaint_claims_terms["insufficient notice"]["question"] }: verified_complaint_claims["insufficient notice"].has_claim
     datatype: yesno
     default: |
       ${ kind_of_lawsuit["insufficient_notice"] if initial_action_selection == "help_in_court" else False}
@@ -320,7 +326,7 @@ question: |
   % if i == "other":
   More information about your landlord's violation of landlord-tenant law
   % else:
-  More information about when your landlord ${ verified_complaint_claims_terms[i] }.
+  More information about when your landlord ${ verified_complaint_claims_terms[i]["direct"] }.
   % endif
 subquestion: |
   % if i == "other":
@@ -337,7 +343,7 @@ subquestion: |
   was turned off. 
   % endif
   % else:
-  Tell us a little more about what happened when your landlord ${ verified_complaint_claims_terms[i] }.
+  Tell us a little more about what happened when your landlord ${ verified_complaint_claims_terms[i]["direct"] }.
   % endif
   
   About 1-2 sentences is helpful for the judge to know in this document. You can explain more details
