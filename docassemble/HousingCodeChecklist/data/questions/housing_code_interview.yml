@@ -187,7 +187,7 @@ objects:
   #- eviction_image: DAStaticFile.using(filename="apartments_anders-holm-jensen-urYCLa2G4Lg-unsplash_Cropped.jpg")
   - eviction_image: DAStaticFile.using(filename="undraw_coming_home_re_ausc.svg")
   - explore_problems_image: DAStaticFile.using(filename="standing-1.svg")
-  - get_order_from_judge_image: DAStaticFile.using(filename="undraw_judge_katerina_limpitsouni_ny-1-q.svg")
+  - get_order_from_judge_image: DAStaticFile.using(filename="judge_katerina_limpitsouni.svg")
   - uptocode_logo: DAStaticFile.using(filename="horiztonal-white1.5x_blue.svg")
 ---
 event: initial_action_display_cards
