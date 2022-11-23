@@ -1333,11 +1333,12 @@ content: |
 ---
 id: details for this claim
 question: |
-  More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[:1].lower() }${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[1:] }"
+  More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[:1].lower() }${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[1:] }"  
 fields:
-  - Describe the problem using your own words (optional): bad_conditions[i].details[j].description
+  - Describe the problem using your own words (write about 1 sentence; optional): bad_conditions[i].details[j].description
     datatype: area
-    required: False    
+    rows: 2
+    required: False
   - Was the problem there when you moved in?: bad_conditions[i].details[j].condition_existed_at_start
     datatype: yesnoradio
   - note: |
@@ -1387,10 +1388,11 @@ fields:
       is: False
   - The problem is fixed: bad_conditions[i].details[j].condition_ended
     datatype: yesno
-  - Date problem ended: bad_conditions[i].details[j].end_date
-    max: ${ today().format("yyyy-MM-dd") }  
+  - Date problem ended (optional): bad_conditions[i].details[j].end_date
+    max: ${ today().format("yyyy-MM-dd") }
     datatype: date
     show if: bad_conditions[i].details[j].condition_ended
+    required: False
   - Take or upload a photo: bad_conditions[i].details[j].has_file_to_upload
     datatype: yesno
   - Add a photo or other proof of the problem, if you have it: bad_conditions[i].details[j].files
