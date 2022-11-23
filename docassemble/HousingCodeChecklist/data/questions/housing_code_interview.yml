@@ -84,20 +84,18 @@ code: |
   include_conditions_in_complaint # Evaluate so it is available in complaint template
   if initial_action_selection in ["document_by_room", "give_notice"]:
     interview_order_navigate_conditions
-  nav.set_section('document_choice')
+  nav.set_section('main_triage_screen')
   screen_ll_knows_problem
   reconsider('snapshot_interview_state')
   nav.set_section('provide_details')  
   if not screen_ll_knows_problem:
     update_sections_with_selected_documents
     nav.set_section(sub_documents['tell_landlord'].get('section_link'))
-    users[0].address.address
-    try:
-      users[0].address.geocode()
-    except:
-      pass
+    interview_order_tenant_repair_request
     nav.set_section(sub_documents['organize_tenants'].get('section_link'))
     organizing_interstitial
+    nav.set_section("preview_and_sign")
+    basic_questions_signature_flow
   else:
     explain_documents
     update_sections_with_selected_documents  
@@ -169,6 +167,9 @@ code: |
   else:
     bad_conditions.gathered = True
   interview_order_navigate_conditions = True
+---
+code: |
+  al_form_requires_digital_signature = False
 ---
 depends on:
   - initial_action_selection
@@ -435,9 +436,10 @@ code: |
         })
   else:
     new_sections.append({sub_documents['tell_landlord'].get('section_link'): sub_documents['tell_landlord'].get('section_label')})
+    new_sections.append({sub_documents['organize_tenants'].get('section_link'): sub_documents['organize_tenants'].get('section_label')})
   old_nav = nav.get_sections()
   
-  position = 3 # Current, hardcoded position in the list
+  position = 3 # ################ Current, hardcoded position in the list
   position_label = 'Answer questions'
   for index, item in enumerate(old_nav):
     if next(iter(item)) == 'provide_details':
@@ -1155,7 +1157,7 @@ fields:
 validation code: |
   if screen_ll_knows_problem and len(document_choice.true_values()) < 1:
     validation_error("Select at least one.", field="document_choice")
-  if "contempt_complaint" not in document_choice:
+  if screen_ll_knows_problem and "contempt_complaint" not in document_choice:
     document_choice["contempt_complaint"] = False
 terms:
   retaliated: |
@@ -1343,7 +1345,6 @@ fields:
     datatype: yesnoradio
   - note: |
       **When did the problem start?**
-
       Enter as much of the date as you know.
     show if: 
       variable: bad_conditions[i].details[j].condition_existed_at_start
