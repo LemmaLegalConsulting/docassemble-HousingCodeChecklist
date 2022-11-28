@@ -1,6 +1,6 @@
 ---
 include:
-  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALMassachusetts:al_massachusetts.yml
   - Repair_Demand_Letter_to_include.yml
 ---

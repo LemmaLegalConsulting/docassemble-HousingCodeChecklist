@@ -1,7 +1,7 @@
 # DEPENDS ON Repair_Demand_Letter_to_include.yml but doesn't separately include it
 ---
 include:
-  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.AssemblyLine:assembly_line.yml
   - verified_complaint_and_motions_to_include.yml
 ---
 code: |
