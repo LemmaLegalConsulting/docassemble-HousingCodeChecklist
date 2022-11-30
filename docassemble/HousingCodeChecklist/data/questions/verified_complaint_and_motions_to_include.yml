@@ -1,7 +1,8 @@
 # DEPENDS ON Repair_Demand_Letter_to_include.yml but doesn't separately include it
 ---
 include:
-  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.ALAffidavitOfIndigency:affidavit_body.yml
 ---
 mandatory: True
 comment: |
@@ -74,6 +75,9 @@ code: |
       verified_complaint_claims[claim].details
   verified_complaint_claims.gathered = True
 ---
+code: |
+  affidavitofindigency_attachment.enabled = verified_complaint_wants_fee_waiver and is_indigent
+---
 comment: |
   This question is used to introduce your interview. Please customize
 id: Verified_complaint_and_motions_for_temporary_restraining_order_and_preliminary_injunction
@@ -83,9 +87,39 @@ question: |
 subquestion: |
   This form helps you to tell the judge what the landlord has done and to ask the court to order the landlord to stop the illegal activity.
 ---
+code: |
+  verified_complaint_tro_fee = 90
+  verified_complaint_entry_of_action_Fee = 135
+---
+code: |
+  fees['Filing fee'].waive = True
+  fees['Filing fee'].amount = verified_complaint_tro_fee + verified_complaint_entry_of_action_Fee
+  fees['Service'].waive = True
+  fees['Service'].amount = 45
+  set_fee_waiver_defaults = True
+---
+id: review fee waiver
+continue button field: review_fee_waiver
+continue button label: ${word("Resume")}
+question: |
+  Review your fee wiver
+subquestion: |
+  * [Edit fees and costs](${url_action("fees['Filing fee'].waive")})
+  * [Edit name](${url_action("users[0].name.first")})
+  * [Edit public benefits](${url_action("public_assistance_kinds")})
+  * [Edit income](${url_action("hh_income.value")})
+  * [Edit inability to pay](${url_action("can_afford")})  
+---
+code: |
+  # Case name for Affidavit of Indigency form
+  case_name = f"{ users } v. { other_parties }"
+---
+objects:
+  - docket_numbers: DAEmpty
+---
 id: File a Verified Complaint Form
 question: |
-  File a Verified Complaint Form
+  Get help from a judge in court
 subquestion: |
   The next set of forms will help you file a complaint against your landlord in court.
   
@@ -95,9 +129,13 @@ subquestion: |
   1. Let you back in to the apartment if they illegally locked you out
   1. Turn back on utility services or start paying for utility services
   1. Pay you money (damages) based on your rights under Massachusetts law
+
+  The court may charge you up to 
+  ${ currency(verified_complaint_tro_fee +verified_complaint_entry_of_action_Fee) } to file
+  these documents. But most tenants can file at no cost. We will ask you questions to
+  find out if you can file for free later on. 
   
 continue button field: File_a_Verified_Complaint_Form
-
 ---
 id: relief sought
 question: |
@@ -440,6 +478,29 @@ fields:
     show if:
       variable:  confirm_ask_for_damages
       is: postpone_damages
+---
+################## Fee waiver integration ##################
+---
+id: wants fee waiver
+question: |
+  Filing for free
+subquestion: |
+  The court may charge you a fee to file these forms.
+
+  The cost can include:
+
+  - ${ currency(verified_complaint_tro_fee) } to get an emergency order, and
+  - ${ currency(verified_complaint_entry_of_action_Fee) } to file the case in court.
+
+  But most tenants do not pay anything. You can file for free if:
+
+  1. You earn less than 125% of the Federal Poverty Level for Massachusetts, or
+  1. You get certain benefits, like Mass Health, or
+  1. You cannot afford to pay the fee.
+
+fields:
+  - Would you like to ask the court to let you file for free?: verified_complaint_wants_fee_waiver
+    datatype: yesnoradio
 ---
 only sets:
   - update_ask_for_damages

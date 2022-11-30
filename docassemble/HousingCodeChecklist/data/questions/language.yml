@@ -100,45 +100,68 @@ data:
     image: tools
 ---
 language: es
-comment: |
-  Section labels for child interviews that have follow-up
-  questions
-code: |
-  sub_documents = DAOrderedDict('sub_documents')
-  sub_documents['get_report'] = {
-    'section_link': 'review_checklist',
-    'section_label': 'Mi lista de problemas' }
-  sub_documents['tell_landlord'] = {
-    'section_link': 'review_tenant_repair_request',
-    'section_label': 'Dile a mi dueño' }
-  sub_documents['share_with_tenants'] = {
-    'section_link': 'review_share_with_tenants',
-    'section_label': 'Dile a otros inquilinos' }
-  sub_documents['organize_tenants'] = {
-    'section_link': 'organizing_interstitial',
-    'section_label': 'Organizar' }
-  sub_documents['get_inspection'] = {
-    'section_link': 'review_request_housing_inspection',
-    'section_label': 'Obtenga una inspección' }
-  sub_documents['enforce_inspection'] = {
-    'section_link': 'review_sanitary_code_template',
-    'section_label': 'Hacer cumplir una inspección' }
-  sub_documents['fix_problems'] = {
-    'section_link': 'review_repair_and_deduct',
-    'section_label': 'Repararlo yo mismo'}
-  sub_documents['get_injunction'] = {
-    "section_link": "review_housing_tro",
-    "section_label": "Obtenga la orden de un juez" }
-  sub_documents['sue_landlord'] = {
-    'section_link': 'review_sue_landlord',
-    'section_label': 'Demandar a mi dueño'}
-  sub_documents["contempt_complaint"] = {
-    'section_link': "review_Contempt_Complaint",
-    "section_label": "Pide a un juez que haga cumplir su propia orden"
-  }
-
-  sub_documents.auto_gather=False
-  sub_documents.gathered = True
+variable name: sub_documents
+data: !!omap
+  - get_report:
+      section_link: review_checklist
+      section_label: Mi lista de problemas
+      name: Mi lista de problemas
+      count: 2
+  - tell_landlord: 
+      section_link: review_tenant_repair_request
+      section_label: Dile a mi dueño
+      name: Dile a mi dueño
+      count: 2
+  - demand_letter_93a:
+      section_link: review_Repair_Demand_Letter
+      section_label: Escribir una carta de demanda
+      name: Escribir una carta de demanda
+      count: 2
+  #- share_with_tenants:
+  #    section_link: review_share_with_tenants
+  #    section_label: Tell other tenants
+  #    name: Share your information with other tenants
+  #    count: 0
+  - organize_tenants:
+      section_link: organizing_interstitial
+      section_label: Organizar a otros inquilinos    
+      name: Organizar a otros inquilinos
+      count: 0
+  - get_inspection: 
+      section_link: review_request_housing_inspection
+      section_label: Obtenga una inspecció
+      name: Obtenga una inspecció
+      count: 2
+  - enforce_inspection: 
+      section_link: review_sanitary_code_template
+      section_label: Hacer cumplir una inspección de la ciudad
+      name: Hacer cumplir una inspección de la ciudad
+      count: 2
+  - fix_problems:
+      section_link: review_repair_and_deduct
+      section_label: Repararlo yo mismo
+      name: Repararlo yo mismo
+      count: 0
+  #- get_injunction:
+  #    section_link: review_housing_tro
+  #    section_label: Get a judge's order
+  #    name: Ask a judge for an injunction (order)
+  #    count: 8
+  - sue_landlord:
+      section_link: review_verified_complaint_and_motions
+      section_label: Demandar a mi dueño
+      name: Demandar a mi dueño
+      count: 10
+  - fee_waiver:
+      section_link: review_fee_waiver
+      section_label: Presente en la corte gratis
+      name: Presente en la corte gratis
+      count: 5      
+  - contempt_complaint:
+      section_link: review_Contempt_Complaint
+      section_label: Pide a un juez que haga cumplir su propia orden
+      name: Pide a un juez que haga cumplir su propia orden
+      count: 3
 ---
 language: es
 sections:
@@ -342,6 +365,21 @@ data: !!omap
   #    section_label: Sue my landlord
   #    name: Sue my landlord in court
   #    count: 0
+  - sue_landlord:
+      section_link: review_verified_complaint_and_motions
+      section_label: Sue pwopriyetè m nan
+      name: Sue pwopriyetè m nan
+      count: 10
+  - fee_waiver:
+      section_link: review_fee_waiver
+      section_label: Depoze nan tribinal pou gratis
+      name: Depoze nan tribinal pou gratis
+      count: 5      
+  - contempt_complaint:
+      section_link: review_Contempt_Complaint
+      section_label: Mande jij pou fè respekte lòd pa yo
+      name: Mande jij pou fè respekte lòd pa yo
+      count: 3  
 ---
 language: pt
 comment: |
@@ -389,8 +427,18 @@ data: !!omap
   #    section_label: Get a judge's order
   #    name: Ask a judge for an injunction (order)
   #    count: 8
-  #- sue_landlord:
-  #    section_link: review_sue_landlord
-  #    section_label: Sue my landlord
-  #    name: Sue my landlord in court
-  #    count: 0
+  - sue_landlord:
+      section_link: review_sue_landlord
+      section_label: Processar meu senhorio
+      name: Processar meu senhorio
+      count: 0
+  - fee_waiver:
+      section_link: review_fee_waiver
+      section_label: Isenção de custas judiciais
+      name: Isenção de custas judiciais
+      count: 5      
+  - contempt_complaint:
+      section_link: review_Contempt_Complaint
+      section_label: Peça ao juiz para fazer valer sua própria ordem
+      name: Peça ao juiz para fazer valer sua própria ordem
+      count: 3
