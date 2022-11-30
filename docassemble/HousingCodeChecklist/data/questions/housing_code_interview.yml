@@ -633,6 +633,7 @@ features:
 ---
 objects:
   - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
+  - inspector_loader: InspectorLoader.using(filename="housing_inspectors.xlsx")
   - bad_conditions: ConditionsDict.using(there_are_any=True)
 ---
 depends on:
@@ -1225,9 +1226,39 @@ code: |
     users[0].address.geocode()
   except:
     pass
+  display_inspector_information
   other_parties[0].name.first
   other_parties[0].address.address
   interview_order_request_housing_inspection = True
+---
+code: |
+  inspector_information = inspector_loader.load_row(users[0].normalized_address().city).fillna("")
+---
+id: display inspector information
+continue button field: display_inspector_information
+question: |
+  ${ inspector_information["Title"] } for ${ users[0].address.city }
+subquestion: |
+  To reach ${ inspector_information["Title"] }:
+
+  &nbsp; | &nbsp;
+  -------|---------
+  % if inspector_information["Telephone"]:
+  Telephone | ${ tel(inspector_information["Telephone"]) }
+  % endif
+  % if inspector_information["EXTENSION"]:
+  Extension | ${ inspector_information["EXTENSION"] }
+  % endif
+  % if inspector_information["URL"]:
+  Website | [${ inspector_information["URL"] }](${ inspector_information["URL"]})
+  % endif
+  Address | ${ inspector_information["Address Line 1"] }, ${ inspector_information["Address Line 2"] }, MA ${ inspector_information["Zip"] }
+  % if inspector_information["Email"]:
+  Email | [${ inspector_information["Email"]}](mailto:${ inspector_information["Email"]})
+  % endif
+  % if inspector_information["Special Contact"]:
+  Other report method | ${ inspector_information["Special Contact"] }
+  % endif
 ---
 id: preview_conditions_checklist_docs
 continue button field: preview_conditions_checklist_docs

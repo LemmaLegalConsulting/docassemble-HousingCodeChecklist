@@ -8,11 +8,12 @@ from docassemble.base.util import (
 )
 import pandas as pd
 import os
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Iterable
 from collections import OrderedDict
 
 __all__ = [
     "DataLoader",
+    "InspectorLoader",
     "conditions_with_help",
     "ConditionsDict",
     "tr_category",
@@ -32,7 +33,7 @@ class BaseDataLoader(DAObject):
         display_column: Union[List[str], str] = "name",
         allowed_types: list = None,
         filter_column=None,
-    ) -> list:
+    ) -> Iterable:
         """
         Return a subset of rows, with only the specified column and index.
 
@@ -49,7 +50,7 @@ class BaseDataLoader(DAObject):
         display_column: Union[List[str], str] = "name",
         allowed_types: list = None,
         filter_column=None,
-    ) -> pd.DataFrame:
+    ) -> Union[pd.DataFrame, pd.Series]:
         """
         Return the raw dataframe filtered to the specified column(s) and matching the specified condition(s).
         """
@@ -60,7 +61,7 @@ class BaseDataLoader(DAObject):
         else:
             return df[display_column]
 
-    def load_row(self, index: Union[int, str]) -> pd.DataFrame:
+    def load_row(self, index: Union[int, str]) -> Union[pd.Series, pd.DataFrame]:
         """
         Retrieve all of the data in a single row of the DataFrame
         """
@@ -69,7 +70,7 @@ class BaseDataLoader(DAObject):
             row = df.loc[index]
         except:
             return pd.DataFrame()
-        return df
+        return row
 
     def load_rows(self, loci: List[Union[int, str]]) -> pd.DataFrame:
         """
@@ -125,6 +126,14 @@ class DataLoader(BaseDataLoader):
         df.set_index(
             "ID", inplace=True
         )  # Our XLSX file has a column 'ID' with a text invariant identifier
+        return df
+
+class InspectorLoader(BaseDataLoader):
+    def _load_data(self) -> pd.DataFrame:
+        df = super()._load_data()
+        df.set_index(
+            "City", inplace=True
+        )
         return df
 
 
