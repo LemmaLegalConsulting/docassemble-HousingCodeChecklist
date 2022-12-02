@@ -614,7 +614,7 @@ attachments:
     filename: Post-interview-instructions     
     variable name: verified_complaint_and_motions_post_interview_instructions[i]        
     skip undefined: True
-    docx template file: verified_complaint_and_motions_next_steps.docx
+    docx template file: next_steps_complaint.docx
 ---
 attachments:    
   - name: verified complaint and motions attachment
