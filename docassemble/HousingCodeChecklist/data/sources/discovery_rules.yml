@@ -1,0 +1,45 @@
+---
+variable name: complaint_interrogatories
+data:
+  owners:
+    summary: |
+      Name and address of each owner and date purchased
+    category: tenancy
+    rules: []
+  household_members:
+    summary: |
+      Describe members of household
+    category: tenancy
+    rules: []
+  persons_with_knowledge:
+    summary: |
+      Information about each person who can answer facts in complaint or Answer
+    category: claims
+    rules:
+      - True
+  witnesses:
+    summary: |
+      Name of witnesses Defendant intends to call
+    category: claims
+    rules:
+      - True
+  subsidy_details:
+    summary: |
+      Subsidy details
+    category: subsidy
+    rules:
+      - tenant_gets_rent_subsidy
+  subsidy_in_jeopardy:
+    summary: |
+      Information from PHA that subsidy is in jeopardy
+    category: subsidy
+    rules:
+      - tenant_gets_rent_subsidy
+---
+variable name: complaint_document_requests
+data:
+  rental_documents:
+    summary: |
+      All rental documents
+    category: tenancy
+    rules: []
