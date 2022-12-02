@@ -76,7 +76,7 @@ code: |
   verified_complaint_claims.gathered = True
 ---
 code: |
-  affidavitofindigency_attachment.enabled = verified_complaint_wants_fee_waiver and is_indigent
+  affidavitofindigency_attachment.enabled = document_choice['sue_landlord'] and verified_complaint_wants_fee_waiver and is_indigent
 ---
 comment: |
   This question is used to introduce your interview. Please customize
