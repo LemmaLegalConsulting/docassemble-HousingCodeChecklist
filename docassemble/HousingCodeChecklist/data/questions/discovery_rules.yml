@@ -35,6 +35,96 @@ data:
     category: subsidy
     rules:
       - tenant_gets_rent_subsidy
+  repairs_needed:
+    summary: |
+      Repair details
+    category: apartment_building_problems
+    rules:
+      - kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs")
+  tenancy_inspections:
+    summary: |
+      Tenancy inspection details
+    category: apartment_building_problems
+    rules:
+      - kind_of_lawsuit.any_true("enforce_inspection")
+  purchase_inspections:
+    summary: |
+      Purchase inspection details
+    category: apartment_building_problems
+    rules:
+      - kind_of_lawsuit.any_true("enforce_inspection")
+  repairs_attempted:
+    summary: |
+      Repair attempted
+    category: apartment_building_problems
+    rules:
+      - kind_of_lawsuit.any_true("enforce_inspection","get_emergency_repairs", "past_repair_needs")
+  lead_paint:
+    summary: |
+      Any lead paint present
+    category: apartment_building_problems
+    rules:
+      - 
+  tenant_damage:
+    summary: |
+      Claims that tenant caused damage
+    category: apartment_building_problems
+    rules:
+      - tenant_caused_damage_claim
+  tenant_prevented_repair:
+    summary: |
+      Claims that tenant prevented repair
+    category: apartment_building_problems
+    rules:
+      - 
+  ll_entered:
+    summary: |
+      Landlord entered premises
+    category: apartment_building_problems
+    rules:
+      - kind_of_lawsuit.any_true("entered_without_permission")
+  maintenance:
+    summary: |
+      Describe maintenance
+    category: apartment_building_problems
+    rules:
+      - 
+  utilities_writen_agreement:
+    summary: |
+      Describe utilities writen agreement
+    category: utilities
+    rules:
+      - 
+  utilities_shut_off:
+    summary: |
+      Utilities were shut off
+    category: utilities
+    rules:
+      - kind_of_lawsuit.any_true("utility_shutoff")
+  common_area_utility_accounts:
+    summary: |
+      Common area utility accounts
+    category: utilities
+    rules:
+      - 
+  common_area_utility_usage:
+    summary: |
+      Common area utility usage
+    category: utilities
+    rules:
+      - 
+  property_ll_owns:
+    summary: |
+      Landlord's property
+    category: ll_facts
+    rules:
+      - 
+  ll_is_trust:
+    summary: |
+      Landlord is trust
+    category: ll_facts
+    rules:
+      - ll_is_trust
 ---
 variable name: complaint_document_requests
 data:
@@ -42,4 +132,128 @@ data:
     summary: |
       All rental documents
     category: tenancy
+    rules: []
+  rent_payment_records:
+    summary: |
+      Rent payment records
+    category: tenancy
+    rules: []
+  other_records:
+    summary: |
+      Other records
+    category: tenancy
+    rules: []
+  documents_from_predecessor:
+    summary: |
+      Documents from predecessor
+    category: tenancy
+    rules: []
+  landlords_purchase:
+    summary: |
+      Landlord's purchase
+    category: tenancy
+    rules: []
+  subsidized_housing_describe_subsidy:
+    summary: |
+      Documents concerning type or nature of rental subsidy
+    category: subsidy
+    rules: []
+  discrimination_subsidy_receipt:
+    summary: |
+      Documents concerning tenant's request that landlord accept subsidy
+    category: subsidy
+    rules: []
+  tenant file:
+    summary: |
+      Documents concerning housing conditions in any tenant file 
+    category: subsidy
+    rules: []
+  rent_increase_requests:
+    summary: |
+      Documents concerning landlord's request to increase rent and responses to that request
+    category: subsidy
+  grievance_hearings:
+    summary: |
+      Documents concerning any grievance hearing
+    category: subsidy
+    rules: []
+  ll_HA_communications:
+    summary: |
+      Communications between landlord and any housing authority
+    category: subsidy
+    rules: []
+  inspection_notice:
+    summary: |
+      Documents notifying the tenant of inspections or repairs, or both
+    category: apartment_building_problems
+    rules: []
+  photos:
+    summary: |
+      All photos of apartment
+    category: apartment_building_problems
+    rules: []
+  lead_paint:
+    summary: |
+      Documents related to lead paint
+    category: apartment_building_problems
+    rules: []
+  conditions:
+    summary: |
+      Documents concerning conditions in tenant's apartment
+    category: apartment_building_problems
+    rules: []
+  repairs:
+    summary: |
+      Documents concerning repairs in tenant's apartment
+    category: apartment_building_problems
+    rules: []
+  rental_value:
+    summary: |
+      Documents concerning the rental value of the tenant's apartment
+    category: apartment_building_problems
+    rules: []
+  utilities_written_agreement:
+    summary: |
+      Documents concerning payment of utilities
+    category: other
+    rules: []
+  utilities_shutoff:
+    summary: |
+      Documents concerning utility shutoff
+    category: other
+    rules: []
+  utilities_common_area_accounts:
+    summary: |
+      Documents concerning utilities common area accounts
+    category: other
+    rules: []
+  utilities_outside_unit:
+    summary: |
+      Documents concerning utilities outside unit
+    category: other
+    rules: []
+  insurance:
+    summary: |
+      Documents concerning insurance
+    category: other
+    rules: []
+  management:
+    summary: |
+      Documents concerning management
+    category: other
+    rules: []
+  maintenance:
+    summary: |
+      Documents concerning maintenance
+    category: other
+    rules: []
+  lawsuits:
+    summary: |
+      Documents concerning lawsuits
+    category: other
+    rules: []
+  mortgage:
+    summary: |
+      Documents concerning the mortgage
+    category: other
     rules: []
