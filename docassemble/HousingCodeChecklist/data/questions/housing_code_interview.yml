@@ -8,6 +8,7 @@ include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAffidavitOfIndigency:affidavit_body.yml
   - docassemble.ALToolbox:display_template.yml
+  - docassemble.ALToolbox:review_widget.yml
   - Repair_Demand_Letter_to_include.yml
   - verified_complaint_and_motions_to_include.yml
   - docassemble.SanitaryCode:sanitary_code_template.yml
@@ -1348,6 +1349,9 @@ subquestion: |
   % endif
   
   ${ everything_for_emailing_bundle.send_button_html() }
+
+  <br/>
+  ${ review_widget(up_action='up_action', down_action='down_action', review_action='review_action') }
 ---
 template: housing_code_bundle.send_email_template
 subject: |
