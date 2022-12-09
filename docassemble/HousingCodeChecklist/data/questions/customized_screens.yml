@@ -284,9 +284,9 @@ code: |
 ---
 id: include citations?
 question: |
-  Do you want to include a citation to the sanitary code?
+  Do you want to include a citation to the State Sanitary Code?
 subquestion: |
-  If you want, you can include a citation to the sanitary code next to each condition in your letter.
+  If you want, you can include a citation to the State Sanitary Code next to each condition in your letter.
 
   Example:
   
@@ -295,7 +295,7 @@ fields:
   - Citation style: sanitary_code_citation_style
     datatype: radio
     choices:
-      - Include the specific sanitary code citation: detailed_cites
+      - Include the specific State Sanitary Code citation: detailed_cites
       - Just say what the problem is: no_detailed_cites
 ---
 template: tenant_repair_issue_description_default
@@ -338,7 +338,7 @@ subquestion: |
   We used the problems that you selected to start a draft.
   
   % if sanitary_code_citation_style == "detailed_cites":
-  We also included a link to the sanitary code section that applies.
+  We also included a link to the State Sanitary Code section that applies.
   % endif
 fields:
   - Describe the problem you want your landlord to fix: tenant_repair_issue_description
@@ -619,7 +619,7 @@ help: |
   [Read more](https://www.masslegalhelp.org/housing/lt1-chapter-8-rights-decent-place-live)
 ---
 ########################################
-# Petition to enforce sanitary code
+# Petition to enforce State Sanitary Code
 ########################################
 ---
 id: no inspection kickout

@@ -799,8 +799,8 @@ content: |
   150 problems. Some may be problems you did not know your
   landlord needs to fix.
 
-  The list comes from the Massachusetts sanitary code. We have
-  translated the sanitary code into easier to understand sentences
+  The list comes from the Massachusetts State Sanitary Code. We have
+  translated the State Sanitary Code into easier to understand sentences
   with short explanations.
 ---  
 # WARNING: This page id needs to stay the same or the selectors for
@@ -816,8 +816,8 @@ subquestion: |
   * [:pencil-alt: ${ str(button).capitalize() }](${ url_action('bad_conditions["' + button + '"].claims') } )
   % endfor
   % else:
-  Your home is protected by the [state sanitary 
-  code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
+  Your home is protected by the [State Sanitary 
+  Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
   Click a room or category to add a problem.
   % endif
 field: bad_conditions.new_item_name
@@ -904,12 +904,12 @@ fields:
 ---
 template: emergency_sanitary_code_template
 subject: |
-  Related sanitary code
+  Related State Sanitary Code
 content: |
   The problems listed above are cited in the following sections of the
-  [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
+  [State Sanitary Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
       
-  Problem | Sanitary Code
+  Problem | State Sanitary Code
   --------|------------------
   % for row in dataloader.get_rows(allowed_types=["24 hours"], filter_column="Deadline").iterrows():
   ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] if row[1]['Sanitary Code Section'] else ""}
@@ -940,12 +940,12 @@ fields:
 ---
 template: sanitary_code_template
 subject: |
-  Related sanitary code
+  Related State Sanitary Code
 content: |
   The problems listed above are cited in the following sections of the
-  [sanitary code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
+  [State Sanitary Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
       
-  Problem | Sanitary Code
+  Problem | State Sanitary Code
   --------|------------------
   % for row in dataloader.get_rows(allowed_types=[i], filter_column="Category").iterrows():
   ${ row[1]['Interview description'] } | ${ row[1]['Sanitary Code Section'] or "" }
