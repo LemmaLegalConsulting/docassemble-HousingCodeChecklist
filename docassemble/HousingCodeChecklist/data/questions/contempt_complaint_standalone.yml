@@ -122,8 +122,8 @@ subquestion: |
 progress: 100
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[contempt_complaint], filename="Contempt_Complaint.docx_package.pdf", title="All forms to download for your records", enabled=True)
-  - al_recipient_bundle: ALDocumentBundle.using(elements=[contempt_complaint], filename="Contempt_Complaint.docx_package.pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[contempt_complaint], filename="Contempt_Complaint", title="All forms to download for your records", enabled=True)
+  - al_recipient_bundle: ALDocumentBundle.using(elements=[contempt_complaint], filename="Contempt_Complaint", title="All forms to download for your records", enabled=True)
 ---
 code: |
   contempt_complaint.enabled = True

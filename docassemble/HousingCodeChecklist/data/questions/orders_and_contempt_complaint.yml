@@ -50,9 +50,9 @@ fields:
     input type: area
 ---
 objects:
-  - temporary_order: ALDocument.using(title="Temporary Order", filename="temporary_order.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - order_of_notice: ALDocument.using(title="Order of Notice", filename="order_of_notice.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - contempt_complaint: ALDocument.using(title="Contempt Complaint", filename="contempt_complaint.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - temporary_order: ALDocument.using(title="Temporary Order", filename="temporary_order", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - order_of_notice: ALDocument.using(title="Order of Notice", filename="order_of_notice", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - contempt_complaint: ALDocument.using(title="Contempt Complaint", filename="contempt_complaint", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachment:
   - name: Temporary Order

@@ -569,8 +569,8 @@ edit:
 confirm: True
 ---
 objects:
-  - Repair_Demand_Letter_post_interview_instructions: ALDocument.using(title="Instructions", filename="Repair_Demand_Letter_next_steps.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - Repair_Demand_Letter_attachment: ALDocument.using(title="Repair Demand Letter", filename="Repair_Demand_Letter.docx", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - Repair_Demand_Letter_post_interview_instructions: ALDocument.using(title="Instructions", filename="Repair_Demand_Letter_next_steps", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - Repair_Demand_Letter_attachment: ALDocument.using(title="Repair Demand Letter", filename="Repair_Demand_Letter", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachments:
   - name: Repair Demand Letter post interview instructions

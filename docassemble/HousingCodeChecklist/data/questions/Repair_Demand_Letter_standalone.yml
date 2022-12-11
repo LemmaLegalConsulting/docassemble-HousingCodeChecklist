@@ -133,8 +133,8 @@ progress: 100
 
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[Repair_Demand_Letter_post_interview_instructions,Repair_Demand_Letter_attachment], filename="Repair_Demand_Letter.docx_package.pdf", title="All forms to download for your records", enabled=True)
-  - al_recipient_bundle: ALDocumentBundle.using(elements=[Repair_Demand_Letter_attachment], filename="Repair_Demand_Letter.docx_package.pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[Repair_Demand_Letter_post_interview_instructions,Repair_Demand_Letter_attachment], filename="Repair_Demand_Letter", title="All forms to download for your records", enabled=True)
+  - al_recipient_bundle: ALDocumentBundle.using(elements=[Repair_Demand_Letter_attachment], filename="Repair_Demand_Letter", title="All forms to download for your records", enabled=True)
 ---
 code: |
   Repair_Demand_Letter_post_interview_instructions.enabled = True
