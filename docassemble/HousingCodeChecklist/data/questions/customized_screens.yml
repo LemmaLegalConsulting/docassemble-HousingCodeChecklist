@@ -788,9 +788,9 @@ fields:
     show if:
       variable: damage_calculation_method
       is: uptocode_calculation
-    default: ${ bad_conditions.conditions_days() }
+    default: ${ bad_conditions.conditions_days(default_date=users[0].move_in_date) }
     help: |
-      The default number, ${ bad_conditions.conditions_days() }, was calculated from the oldest and
+      The default number, ${ bad_conditions.conditions_days(default_date=users[0].move_in_date) }, was calculated from the oldest and
       newest problems you listed earlier.
   - What **percentage** do you think is fair to get off of the rent for each month that you had the problems?: tenant_percentage_estimate
     datatype: range

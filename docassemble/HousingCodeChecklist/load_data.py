@@ -1,14 +1,15 @@
 from docassemble.base.util import (
-    path_and_mimetype,
+    as_datetime,
     DADateTime,
-    DAObject,
-    DAList,
     DADict,
+    DAList,
+    DAObject,
+    path_and_mimetype,
     today,
 )
 import pandas as pd
 import os
-from typing import List, Union, Dict, Iterable
+from typing import List, Union, Dict, Iterable, Optional
 from collections import OrderedDict
 
 __all__ = [
@@ -210,23 +211,31 @@ class ConditionsDict(DADict):
             ],
         )
 
-    def conditions_start(self) -> DADateTime:
+    def conditions_start(self, default_date:Optional[Union[DADateTime,str]]=None) -> DADateTime:
+        if not default_date:
+            default_date = today()
+        if not isinstance(default_date, DADateTime):
+            try:
+                default_date = as_datetime(default_date)
+            except:
+                default_date = today()
         return min([
             condition.start_date
             for condition
             in self.as_list()
-        ])
+            if hasattr(condition, "start_date")
+        ], default=default_date)
 
-    def conditions_end(self) -> DADateTime:
+    def conditions_end(self, default_date:Optional[Union[DADateTime,str]]=None) -> DADateTime:
         return max([
             condition.end_date
             for condition
             in self.as_list()
             if hasattr(condition, "end_date")
-        ], default=today())
+        ], default=default_date)
 
-    def conditions_days(self) -> int:
-        return abs( (self.conditions_end() - self.conditions_start()).days )
+    def conditions_days(self,default_date:Optional[Union[DADateTime,str]]=None) -> int:
+        return abs( (self.conditions_end(default_date) - self.conditions_start(default_date)).days )
 
 
 
