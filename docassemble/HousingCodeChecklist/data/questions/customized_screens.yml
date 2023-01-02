@@ -820,10 +820,8 @@ validation code: |
       validation_error("Select a percentage that is greater than 0", field="tenant_percentage_estimate")
 ---
 template: about_page_contents
-subject: ""
+subject: Terms of Use and Privacy Policy
 content: |
-  <h2 class="h4"> Terms of Use and Privacy Policy</h2>
-
   This website is free to use. Greater Boston Legal Services (“GBLS”), a nonprofit legal aid program, hosts the site.
 
   And we include information from:

@@ -303,17 +303,30 @@ comment: |
 ---
 continue button field: intro_and_terms_of_use_in_court
 question: |
-  How this works
+  Get an order from a judge
 subquestion: |
+  <div class="alert alert-primary h-100 mh-100" role="alert">
+    <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this works</h2>
+    <p class="h-100 overflow-visible mb-0">
+
   On the next few screens you can:
 
-  1. Tell us about the problems you are having with your landlord.
-  1. Answer step-by-step questions.
-  1. Download your completed documents, print, and file in court.
-
+  <ol>
+  <li>
+  Tell us about the problems you are having with your landlord.
+  </li>
+  <li>
+  Answer step-by-step questions.
+  </li>
+  <li>
+  Download your completed documents, print, and file in court.
+  </li>
+  </p>
+  </div>
   It takes most tenants about 45 minutes to finish.
 
-  ${ display_template(about_page_contents, scrollable=True) }
+
+  ${ display_template(about_page_contents, scrollable=True, collapse=True) }
 fields:
   - To continue, you must accept the terms of use: acknowledged_information_use
     datatype: checkboxes
@@ -328,18 +341,37 @@ fields:
 ---
 continue button field: intro_and_terms_of_use
 question: |
-  How this works
+  Start exploring problems and solutions
+decoration: signs-post
 subquestion: |
+
+  <div class="alert alert-primary h-100 mh-100" role="alert">
+    <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this works</h2>
+    <p class="h-100 overflow-visible mb-0">
+
   On the next few screens you can:
 
-  1. Track the problems you have in each room of your home. You can add dates and photos, too.
-  1. Choose a next step to get your landlord to fix the problems.
-  1. Answer step-by-step questions.
-  1. Download your completed documents, print, and deliver to the right place.
+  <ol>
+  <li>
+    Track the problems you have in each room of your home. You can add dates and photos, too.
+  </li>
+  <li>
+  Start a next step. You can send a letter, get
+  a city inspection, or get a judge to order your landlord to fix the problem.
+  </li>
+  <li>
+  Answer step-by-step questions.
+  </li>
+  <li>
+  Download your completed documents, print, and deliver to the right place.
+  </li>
+  </ul>
+  </p>
+  </div>
 
   It takes most tenants between 20 minutes and 1 hour to finish.
 
-  ${ display_template(about_page_contents, scrollable=True) }
+  ${ display_template(about_page_contents, scrollable=True, collapse=True) }
 fields:
   - To continue, you must accept the terms of use: acknowledged_information_use
     datatype: checkboxes
