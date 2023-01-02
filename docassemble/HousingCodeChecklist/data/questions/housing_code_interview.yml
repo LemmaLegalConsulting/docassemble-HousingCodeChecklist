@@ -43,7 +43,7 @@ metadata:
     - Sofija Belacjic
 
   title url: |
-    https://madeuptocode.org
+    https://getuptocode.org
   tags:
     - HO-00-00-00-00
 comment: |
@@ -328,7 +328,11 @@ fields:
 ---
 continue button field: intro_and_terms_of_use
 question: |
+<<<<<<< Updated upstream
   How this works
+=======
+  Start exploring problems and solutions
+>>>>>>> Stashed changes
 subquestion: |
   On the next few screens you can:
 
@@ -1367,7 +1371,7 @@ content: |
   We are attaching a copy of the documents that you worked on. Keep this for
   your records.
 
-  Learn more at [madeuptocode.org](https://madeuptocode.org)
+  Learn more at [getuptocode.org](https://getuptocode.org)
 ---
 template: tenant_repair_letter_bundle.send_email_template
 subject: |
@@ -1383,7 +1387,7 @@ content: |
   We are attaching a copy of the documents that you worked on. Keep this for
   your records.
 
-  Learn more at [madeuptocode.org](https://madeuptocode.org)
+  Learn more at [getuptocode.org](https://getuptocode.org)
 ---
 template: affirmative_complaint_bundle.send_email_template
 subject: |
@@ -1403,7 +1407,7 @@ content: |
   and deliver a copy to your landlord. Read the attached documents for more
   instructions.
 
-  Learn more at [madeuptocode.org](https://madeuptocode.org)
+  Learn more at [getuptocode.org](https://getuptocode.org)
 ---
 id: details for this claim
 question: |
