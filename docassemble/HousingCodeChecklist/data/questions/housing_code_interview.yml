@@ -144,14 +144,15 @@ code: |
       case_name
       docket_numbers
       ask_affidavit_questions
-    nav.set_section('preview_and_sign')      
+    nav.set_section('preview_and_sign')
+    preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
   # if screen_ll_knows_problem and {'enforce_inspection','get_inspection','get_injunction', 'tell_landlord'}.intersection(document_choice.true_values()):
   if screen_ll_knows_problem and {'enforce_inspection','get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
      nav.set_section('preview_and_sign')
-     preview_conditions_checklist_docs
+     preview_docs
      basic_questions_signature_flow
   reached_download_screen = True
   reconsider('snapshot_interview_state')
@@ -1320,8 +1321,8 @@ content: |
   % endif
 
 ---
-id: preview_conditions_checklist_docs
-continue button field: preview_conditions_checklist_docs
+id: preview_docs
+continue button field: preview_docs
 question: |
   Review your documents before you sign
 subquestion: |
