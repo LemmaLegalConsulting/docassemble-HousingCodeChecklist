@@ -271,7 +271,7 @@ question: |
   When did you move in to ${ users[0].address.on_one_line() }?
 fields:
   - no label: users[0].move_in_date
-    datatype: date
+    datatype: ThreePartsDate
 ---
 code: |
   if len(bad_conditions[i].details.elements):
@@ -328,7 +328,7 @@ subquestion: |
   Make a change if you need to.
 fields:
   - Earliest date: tenant_repair_issue_date
-    datatype: date
+    datatype: ThreePartsDate
     default: ${ tenant_repair_default_date }
 ---
 id: issue description
@@ -577,7 +577,7 @@ subquestion: |
   or failed to do. Please give us some information about what happened.
 fields:
   - 'When did the issue start?': incident_date
-    datatype: date
+    datatype: ThreePartsDate
     default: ${ tenant_repair_default_date }
   - 'My landlord illegally locked me out of the apartment': incident_locked_out
     datatype: yesno

@@ -23,7 +23,7 @@ question: |
   When did the judge make their order?
 fields: 
   - Date: date_issued
-    datatype: date
+    datatype: ThreePartsDate
 ---
 question: |
   What did the judge order your landlord to correct or stop doing?
@@ -41,7 +41,7 @@ question: |
   When did your landlord stop following the judge's order?
 fields: 
   - Date: date_ll_stopped_following_tro
-    datatype: date
+    datatype: ThreePartsDate
 ---
 question: |
   How has your landlord failed to follow the judge's order?

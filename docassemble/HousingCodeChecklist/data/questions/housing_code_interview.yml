@@ -872,8 +872,10 @@ variable name: available_buttons
 data:
   - emergency: Emergency
     image: first-aid
+    css class: btn-primary
   - Living area: Living area  
     image: couch
+
   - Bathroom: Bathroom
     image: bath
   - Kitchen: Kitchen
@@ -1493,7 +1495,7 @@ fields:
     datatype: yesno
   - Date problem ended (optional): bad_conditions[i].details[j].end_date
     max: ${ today().format("yyyy-MM-dd") }
-    datatype: date
+    datatype: ThreePartsDate
     show if: bad_conditions[i].details[j].condition_ended
     required: False
   - Take or upload a photo: bad_conditions[i].details[j].has_file_to_upload

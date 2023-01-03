@@ -142,12 +142,19 @@
   padding-right: 1.8em;
   margin-bottom: 0.5em;
   border-radius: 3px;
-  color: #343a40; 
   font-weight: 600;
   /* color: black; */
 }
 
 .question-room-chooser .btn-da-custom:after {
+  /*
+  display: inline-block;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  
+  font: "Font Awesome 6 Solid";
+  content: "\f137";
+  */
   content: ">";
   position: absolute;
   top: 50%;
