@@ -87,9 +87,18 @@ question: |
 subquestion: |
   This form helps you to tell the judge what the landlord has done and to ask the court to order the landlord to stop the illegal activity.
 ---
+depends on:
+  - trial_court.department
 code: |
-  verified_complaint_tro_fee = 90
-  verified_complaint_entry_of_action_Fee = 135
+  if trial_court.department == "Housing Court":
+    verified_complaint_tro_fee = 90
+    verified_complaint_entry_of_action_Fee = 135
+  elif trial_court.department in ["District Court", "Boston Municipal Court"]:
+    verified_complaint_tro_fee = 90
+    verified_complaint_entry_of_action_Fee = 195
+  else: # Superior Court
+    verified_complaint_tro_fee = 90
+    verified_complaint_entry_of_action_Fee = 240
 ---
 code: |
   fees['Filing fee'].waive = True
