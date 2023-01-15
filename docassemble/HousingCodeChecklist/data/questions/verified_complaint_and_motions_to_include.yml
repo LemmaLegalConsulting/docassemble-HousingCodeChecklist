@@ -94,7 +94,7 @@ code: |
     verified_complaint_tro_fee = 90
     verified_complaint_entry_of_action_Fee = 135
   elif trial_court.department in ["District Court", "Boston Municipal Court"]:
-    verified_complaint_tro_fee = 90
+    verified_complaint_tro_fee = 0
     verified_complaint_entry_of_action_Fee = 195
   else: # Superior Court
     verified_complaint_tro_fee = 90
@@ -104,7 +104,10 @@ code: |
   fees['Filing fee'].waive = True
   fees['Filing fee'].amount = verified_complaint_tro_fee + verified_complaint_entry_of_action_Fee
   fees['Service'].waive = True
-  fees['Service'].amount = 45
+  if trial_court.department in ["District Court", "Boston Municipal Court"]:
+    fees['Service'].amount = 60
+  else:
+    fees['Service'].amount = 45
   set_fee_waiver_defaults = True
 ---
 id: review fee waiver
@@ -282,7 +285,7 @@ data:
     document: entered my home without permission
     direct: entered your home without permission
   illegal lockout: 
-    question: Locked me out of my home or took my belongings out of my home
+    question: My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
     document: locked me out of my home or removed my belongings without lawful authority
     direct: locked you out of your home or removed your belongings
   utility shutoff: 

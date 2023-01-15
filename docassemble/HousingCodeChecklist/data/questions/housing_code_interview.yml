@@ -550,7 +550,7 @@ fields:
       - I needed repairs to my home in the past 6 years: past_repair_needs
         help: |
           You can choose this even if some or all of the problems are fixed now.
-      - My landlord changed my locks or moved my things: illegal_lockout          
+      - My landlord changed my locks or moved my things or threatened to do so: illegal_lockout          
       - My landlord went into my home without permission: entered_without_permission
       - My landlord went into my home without giving me enough notice: insufficient_notice
       - My landlord made me pay for utilities but we did not have a written agreement: utilities_no_agreement
@@ -1027,7 +1027,7 @@ subquestion: |
   % elif basis == "past_repair_needs":
   * Get paid because of repairs I needed in the last 6 years
   % elif basis == "illegal_lockout":
-  * Landlord illegally locked me out or moved my things
+  * Landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
   % elif basis == "entered_without_permission":
   * Landlord entered my home without permission
   % elif basis == "insufficient_notice":
