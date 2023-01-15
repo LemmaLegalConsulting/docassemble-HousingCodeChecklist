@@ -199,6 +199,7 @@ objects:
   - eviction_image: DAStaticFile.using(filename="undraw_coming_home_re_ausc.svg")
   - explore_problems_image: DAStaticFile.using(filename="standing-1.svg")
   - get_order_from_judge_image: DAStaticFile.using(filename="judge_katerina_limpitsouni.svg")
+  - resume_session_image: DAStaticFile.using(filename="undraw_folder_files_re_2cbm.svg")
   - uptocode_logo: DAStaticFile.using(filename="horiztonal-white1.5x_blue.svg")
 ---
 event: initial_action_display_cards
@@ -259,6 +260,24 @@ subquestion: |
   </div>
   </div>
 
+  % if get_saved_interview_list(filename=user_info().filename, exclude_current_filename=False, exclude_newly_started_sessions=True):
+  <div class="col-md-6">
+  <div class="card" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4 d-flex align-content-end" style="max-height: 12em;">
+        <img src="${ resume_session_image.url_for() }" class="img-fluid rounded-start" alt="illustration - open files">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">Keep working</h5>
+          <p class="card-text">You have already started using UpToCode. You can start from where you left off.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ interview_url(i=f"{user_info().package}:load_answers.yml") }" role="button">Use my previous answers</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  % endif
 
   </div>
 css: |

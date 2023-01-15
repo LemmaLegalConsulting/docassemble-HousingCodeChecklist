@@ -1,0 +1,63 @@
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - language.yml
+---
+features:
+  bootstrap theme: bootstrap.min.css
+---
+metadata:
+  title: |-
+    MADE: UpToCode
+  authors:
+    - Quinten Steenhuis
+    - Michael Cronin
+    - Joelle Ataya
+    - Cherise Barandao
+    - Christopher Selak    
+    - Michael Carroll
+    - Maeve MacGlinchey
+    - Caroline Robinson
+    - Plocket
+    - Kate Barry
+    - Lily Yang
+    - Matthew Brooks
+    - Lance Godard
+    - Kendall Garner
+    - David Colarusso
+    - Sofija Belacjic
+
+  title url: |
+    https://getuptocode.org
+  tags:
+    - HO-00-00-00-00
+comment: |
+  Some of the documents that this interview assembles
+  use work done as part of the Assembly Line project.
+---
+default screen parts:
+  logo: |
+    <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
+  short logo: |
+    <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
+---
+objects:
+  - uptocode_logo: DAStaticFile.using(filename="horiztonal-white1.5x_blue.svg")
+---
+code: |
+  answers = get_saved_interview_list(filename=f"{user_info().package}:housing_code_interview.yml", exclude_newly_started_sessions=True)
+  first_answer = dict(next(iter(answers)))
+---
+code: |
+  if len(answers) == 1:
+    response(url=interview_url(i=f"{user_info().package}:housing_code_interview.yml", session=first_answer.get("key")))
+  load_answers
+---
+mandatory: True
+event: load_answers
+question: |
+  Keep working on an UpToCode session
+subquestion: |
+  Choose a session to keep working on below.
+
+  ${ session_list_html(filename=f"{user_info().package}:housing_code_interview.yml", show_title=False, exclude_newly_started_sessions=True)}
