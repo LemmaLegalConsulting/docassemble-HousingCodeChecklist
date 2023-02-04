@@ -703,6 +703,7 @@ features:
     - docassemble.ALToolbox:collapse_template.css
     - styles.css
   javascript:
+    - favicon.js
     - back_button.js
   #navigation: horizontal    
   small screen navigation: dropdown
