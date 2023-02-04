@@ -56,6 +56,10 @@ default screen parts:
   short logo: |
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
 ---
+code: |
+  # Allow downloads on the custom error screen
+  al_enable_incomplete_downloads = True
+---
 mandatory: True
 id: interview order
 code: |
@@ -816,6 +820,10 @@ content: |
 
   Tenants who do not want to sue their landlord usually only list problems that still 
   need to be fixed.
+---
+code: |
+  # temp debug
+  flats = bad_conditions.as_list()
 ---
 id: review simple conditions
 question: |
