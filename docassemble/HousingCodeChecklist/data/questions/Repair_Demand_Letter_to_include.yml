@@ -477,9 +477,6 @@ content: |
   The amount that is a fair percentage to ask for depends on the facts of your
   case. It is up to a judge or jury to decide what amount is fair.
 ---
-code: |
-  signature_fields = ['users[0].signature']
----
 id: Repair Demand Letter review screen
 event: review_Repair_Demand_Letter
 question: |

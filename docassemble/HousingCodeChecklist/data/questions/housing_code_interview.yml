@@ -166,6 +166,12 @@ code: |
   download_conditions_checklist_docs
 ---
 code: |
+  if person_answering == "attorney" and representation_type == "entering_appearance":
+    signature_fields = ["users[0].attorney.signature"]
+  else:
+    signature_fields = ["users[0].signature"]
+---
+code: |
   nav.set_section('review_conditions')
   bad_conditions["common problems"].claims
   for claim in bad_conditions["common problems"].claims.true_values():
