@@ -143,6 +143,8 @@ code: |
       users[0].attorney.address.address
     interview_order_verified_complaint_and_motions
     if verified_complaint_wants_fee_waiver:
+      document_choice["fee_waiver"] = True
+      reconsider("update_sections_with_selected_documents")
       nav.set_section(sub_documents['fee_waiver'].get('section_link'))
       set_fee_waiver_defaults
       case_name
