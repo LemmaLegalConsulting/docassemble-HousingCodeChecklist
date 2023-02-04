@@ -166,15 +166,30 @@ class ConditionsDict(DADict):
 
     def as_list(self, language:str="en"):
         flattened = DAList(auto_gather=False, gathered=True)
-        for category in self:
+        for category in self.elements:
             for index, row in self[category].df.iterrows():
                 the_condition = self[category].details[index]
+                the_condition.index = index
                 the_condition.original_description = row.get("Interview description")
                 the_condition.code = row["Sanitary Code Section"] or "410.00"
                 the_condition.category = category
                 the_condition.deadline = row.get("Deadline")
+                the_condition.row = row
                 flattened.append(the_condition)
         return flattened
+    
+    
+    def has_condition(self, condition:Union[List[str], str]) -> bool:
+        """
+        Return True if and only if the specified condition or list of conditions
+        intersects with the conditions the user selected.
+        """
+        for category in self.elements:
+            if isinstance(condition, list):
+                return self.elements[category].claims.any_true(*condition)
+            else:
+                return self.elements[category].claims.any_true(condition)
+        return False
 
     def active_conditions(self, language:str="en"):
         return DAList(

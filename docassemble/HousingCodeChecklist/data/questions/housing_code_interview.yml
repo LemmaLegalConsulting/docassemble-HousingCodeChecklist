@@ -56,6 +56,10 @@ default screen parts:
   short logo: |
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
 ---
+code: |
+  # Allow downloads on the custom error screen
+  al_enable_incomplete_downloads = True
+---
 mandatory: True
 id: interview order
 code: |
