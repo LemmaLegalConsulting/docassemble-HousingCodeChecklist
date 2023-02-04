@@ -100,8 +100,10 @@ subquestion: |
 continue button field: verified_complaint_and_motions_preview_question    
 ---
 code: |
-  signature_fields = ["users[0].signature"]
-
+  if person_answering == "attorney" and representation_type == "entering_appearance":
+    signature_fields = ["users[0].attorney.signature"]
+  else:
+    signature_fields = ["users[0].signature"]
 ---
 id: download verified_complaint_and_motions
 event: verified_complaint_and_motions_download
