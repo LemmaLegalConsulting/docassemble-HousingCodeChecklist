@@ -323,18 +323,18 @@ fields:
   - ${ verified_complaint_claims_terms["entered without permission"]["question"] }: verified_complaint_claims["entered without permission"].has_claim
     datatype: yesno
     default: |
-      ${ kind_of_lawsuit["entered_without_permission"] if initial_action_selection == "help_in_court" else False}
+      ${ kind_of_lawsuit["entered_without_permission"] }
   - ${ verified_complaint_claims_terms["illegal lockout"]["question"] }: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
     default: |
-      ${ kind_of_lawsuit["illegal_lockout"] if initial_action_selection == "help_in_court" else False}
+      ${ kind_of_lawsuit["illegal_lockout"] }
   - ${ verified_complaint_claims_terms["utility no agreement"]["question"]}: verified_complaint_claims["utility no agreement"].has_claim
     datatype: yesno
     help: |
       The landlord must pay for utilities like electricity and gas unless there is a written agreement. A spoken agreement
       is not enough.
     default: |
-      ${ kind_of_lawsuit["utilities_no_agreement"] if initial_action_selection == "help_in_court" else False}
+      ${ kind_of_lawsuit["utilities_no_agreement"] }
   - Utility: complaint_utility_not_paid
     datatype: checkboxes
     choices:
@@ -347,7 +347,7 @@ fields:
   - ${ verified_complaint_claims_terms["utility shutoff"]["question"] }: verified_complaint_claims["utility shutoff"].has_claim
     datatype: yesno
     default: |
-      ${ kind_of_lawsuit["utility_shutoff"] if initial_action_selection == "help_in_court" else False}
+      ${ kind_of_lawsuit["utility_shutoff"] }
   - Utility: complaint_utility_shutoff
     datatype: checkboxes
     choices:
@@ -360,7 +360,7 @@ fields:
   - ${ verified_complaint_claims_terms["insufficient notice"]["question"] }: verified_complaint_claims["insufficient notice"].has_claim
     datatype: yesno
     default: |
-      ${ kind_of_lawsuit["insufficient_notice"] if initial_action_selection == "help_in_court" else False}
+      ${ kind_of_lawsuit["insufficient_notice"] }
   - Did something else that breaks Massachusetts landlord-tenant law: verified_complaint_claims["other"].has_claim
     datatype: yesno
     help: |

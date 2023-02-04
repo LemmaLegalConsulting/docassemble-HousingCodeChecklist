@@ -41,7 +41,7 @@ metadata:
     - Kendall Garner
     - David Colarusso
     - Sofija Belacjic
-
+    - Mia Bonardi
   title url: |
     https://getuptocode.org
   tags:
@@ -143,6 +143,8 @@ code: |
       users[0].attorney.address.address
     interview_order_verified_complaint_and_motions
     if verified_complaint_wants_fee_waiver:
+      document_choice["fee_waiver"] = True
+      reconsider("update_sections_with_selected_documents")
       nav.set_section(sub_documents['fee_waiver'].get('section_link'))
       set_fee_waiver_defaults
       case_name
@@ -799,14 +801,31 @@ subquestion: |
 fields:
   - label: |
       % if person_answering == "tenant":
-      What problems do you have?
+      What repair problems do you have?
       % else:
-      What problems does ${ users.familiar() } have?
+      What repair problems does ${ users.familiar() } have?
       % endif
     field: bad_conditions["common problems"].claims
     datatype: checkboxes
     code: |
       conditions_from_list(dataloader, simple_conditions_list, language=user_language)
+  - note: |
+      <h2 class="h4">Have you had any of these additional problems?<h2>
+    show if:
+      code: |
+        initial_action_selection != "help_in_court"
+  - Choose any that apply: kind_of_lawsuit
+    datatype: checkboxes
+    choices:
+      - My landlord changed my locks or moved my things or threatened to do so: illegal_lockout          
+      - My landlord went into my home without permission: entered_without_permission
+      - My landlord went into my home without giving me enough notice: insufficient_notice
+      - My landlord made me pay for utilities but we did not have a written agreement: utilities_no_agreement
+      - My utilities were shutoff: utility_shutoff
+      - My landlord is ignoring a court order: file_contempt_complaint
+    show if:
+      code: |
+        initial_action_selection != "help_in_court"
   - note: |
       Don't see your problem on this list? There are more problems
       to pick from if you keep going.
@@ -1202,7 +1221,8 @@ fields:
       - Ask a judge to order my landlord to fix a problem or sue my landlord for money: sue_landlord
       - Tell a judge that my landlord is ignoring the judge's order: contempt_complaint
     default:
-      - get_report
+      code: |
+        ["get_report"] if kind_of_lawsuit.all_false() else ["get_report", "sue_landlord"]
   - no label: document_choice
     required: False
     datatype: checkboxes
@@ -1224,7 +1244,8 @@ fields:
       - Sue my landlord for money or to get an emergency order: sue_landlord
     none of the above: False
     default:
-      - get_report
+      code: |
+        ["get_report"] if kind_of_lawsuit.all_false() else ["get_report", "sue_landlord"]
 
 validation code: |
   if screen_ll_knows_problem and len(document_choice.true_values()) < 1:
@@ -1718,6 +1739,7 @@ objects:
       filename="repair_request_letter",
       )
   - affirmative_complaint_bundle: ALDocumentBundle.using(elements=[
+        verified_complaint_and_motions_post_interview_instructions,
         verified_complaint_and_motions_attachment,
         order_of_notice,
         temporary_order,
