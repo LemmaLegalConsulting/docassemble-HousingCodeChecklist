@@ -266,6 +266,34 @@ under: |
   ${x}
 progress: 99
 ---
+id: signature choice
+decoration: file-signature
+question: |
+  Your documents are almost ready
+subquestion: |
+  How do you want to sign them?
+fields: 
+  - I will sign: signature_choice
+    input type: radio
+    choices:
+      - On a phone with my finger: phone
+        help: |
+          We can text or share a link with your phone on the next screen
+      - On a computer with my mouse: this_device
+      - On the paper with a pen after I print the documents: sign_after_printing
+  - I am signing under the pains and penalties of perjury: acknowledgement
+    datatype: checkboxes
+    none of the above: False    
+    minlength: 1
+    choices:
+      - Acknowledge.
+    validation messages:
+      minlength: |
+        You cannot continue unless you acknowledge.
+    js show if: |
+      val("signature_choice") == "phone" || val("signature_choice") == "this_device" 
+continue button field: saw_signature_choice        
+---
 id: move in date
 question: |
   When did you move in to ${ users[0].address.on_one_line() }?
