@@ -821,10 +821,6 @@ content: |
   Tenants who do not want to sue their landlord usually only list problems that still 
   need to be fixed.
 ---
-code: |
-  # temp debug
-  flats = bad_conditions.as_list()
----
 id: review simple conditions
 question: |
   Do you want to keep exploring problems?
