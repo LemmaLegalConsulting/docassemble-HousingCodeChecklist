@@ -1,6 +1,6 @@
 ---
 metadata:
-  title: CourtFormsOnline Feedback Form
+  title: UpToCode Feedback Form
   short title: Feedback
 ---
 modules:
@@ -98,7 +98,7 @@ subquestion: |
   - If your income is low enough, try the [Mass Legal Answers Online](http://masslao.org/) website where volunteer lawyers answer questions
   about your personal civil legal problems. 
 
-  Thank you for telling us about your experience using CourtFormsOnline.
+  Thank you for telling us about your experience using UpToCode.
 fields:
   - "**What would you like to tell us about?**": reason
     input type: radio
@@ -389,7 +389,7 @@ subquestion: |
   about your personal civil legal problems. 
 buttons:
   - Exit: exit
-    url: https://courtformsonline.org
+    url: https://getuptocode.org
 ---
 id: end_results
 event: end_results
@@ -405,7 +405,7 @@ subquestion: |
   % endif
 buttons:
   - Exit: exit
-    url: https://courtformsonline.org
+    url: https://getuptocode.org
 ---
 template: bug_report
 subject: |
