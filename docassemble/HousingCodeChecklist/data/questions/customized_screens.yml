@@ -281,15 +281,14 @@ fields:
           We can text or share a link with your phone on the next screen
       - On a computer with my mouse: this_device
       - On the paper with a pen after I print the documents: sign_after_printing
-  - I am signing under the pains and penalties of perjury: acknowledgement
+  - no label: users[0].states_above_true
     datatype: checkboxes
-    none of the above: False    
     minlength: 1
     choices:
-      - Acknowledge.
+      - I affirm that the answers I have given are true, under the pains and penalties of perjury: states_true
     validation messages:
       minlength: |
-        You cannot continue unless you acknowledge.
+        You cannot keep going unless you did your best to tell the truth.
     js show if: |
       val("signature_choice") == "phone" || val("signature_choice") == "this_device" 
 continue button field: saw_signature_choice        
