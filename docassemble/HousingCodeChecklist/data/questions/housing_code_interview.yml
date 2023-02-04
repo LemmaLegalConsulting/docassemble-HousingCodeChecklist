@@ -1718,6 +1718,7 @@ objects:
       filename="repair_request_letter",
       )
   - affirmative_complaint_bundle: ALDocumentBundle.using(elements=[
+        verified_complaint_and_motions_post_interview_instructions,
         verified_complaint_and_motions_attachment,
         order_of_notice,
         temporary_order,
