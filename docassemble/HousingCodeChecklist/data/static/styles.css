@@ -26,11 +26,12 @@
 
 /* === Nav item containers === */
 .danav-vertical.danavnested {
-  padding-left: 1em;
+  margin-left: 1em;
+  padding: 0;
 }
 
 /* Vertical line for outer-most nav items */
-.danav-vertical:not(.danavnested) {
+.danav-vertical {
   border-left: 2px solid #cccccc;
   border-radius: 0;
 }
@@ -45,7 +46,7 @@
   display: inline-block;
   position: absolute;
   /* The dimensions have to be bigger than the images of the circles, though it doesn't matter how much bigger. */
-  width: 1.5em;
+  width: 2.1em;
   /* This aligns well with the text while smaller heights don't. The images can be changed so that the we can decrease the circle sizes if we want. */
   height: 2em;
   /* Account for the border that creates the vertical line. */
@@ -71,6 +72,12 @@
   /* Has extra white above the circle image to hide the border going through it. */
   background-image: url(active_first_item.svg);
 }
+/* First nested items */
+.danav-vertical .danav-vertical .danavlink.active:first-child:before,
+.danav-vertical .danav-vertical .danavlink.daclickable.active:first-child:before {
+  /* same image, but with bar extending from left to match vertical bar */
+  background-image: url(active_first_item_nested.svg);
+}
 .danav-vertical .danavlink.active:last-child:before,
 .danav-vertical .danavlink.daclickable.active:last-child:before {
   /* Has extra white below the circle image to hide the border going through it. */
@@ -81,6 +88,9 @@
 /* The color for an active item is now primay-colored text with no background. Should be handled with SCSS. Previous style was while text with primary-colored background. */
 .danav-vertical .nav-link.active,
 .danav-vertical .show > .nav-link {
+  /* To play with a thick underline, uncomment these. A little too much? Especially with 'g's */
+  /* text-decoration: underline;
+  text-decoration-thickness: 2.5px; */
   background: none;
   color: #007bff;
 }
@@ -91,6 +101,7 @@
   display: none;
 }
 
+
 /* === Completed nav items (will all look clickable) === */
 .danav-vertical .danavlink::before {
   background-image: url(done.svg);
@@ -99,10 +110,16 @@
   /* Has extra white above the circle image to hide the border going through it. */
   background-image: url(done_first_item.svg);
 }
+/* First nested items */
+.danav-vertical .danav-vertical .danavlink:first-child:before {
+  /* Same image, but with bar extending from left to match vertical bar */
+  background-image: url(done_first_item_nested.svg);
+}
 .danav-vertical .danavlink:last-child:before {
   /* Has extra white below the circle image to hide the border going through it. */
   background-image: url(done_last_item.svg);
 }
+
 
 /* === Nav items for sections that have not yet been visited. === */
 .danav-vertical .danavlink.danotavailableyet:before {
@@ -174,4 +191,3 @@
   width: 1.5em !important;
   vertical-align: middle;
 }
-
