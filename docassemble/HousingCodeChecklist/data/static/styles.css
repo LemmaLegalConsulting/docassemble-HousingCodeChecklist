@@ -89,8 +89,8 @@
 .danav-vertical .nav-link.active,
 .danav-vertical .show > .nav-link {
   /* To play with a thick underline, uncomment these. A little too much? Especially with 'g's */
-  /* text-decoration: underline;
-  text-decoration-thickness: 2.5px; */
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
   background: none;
   color: #007bff;
 }
