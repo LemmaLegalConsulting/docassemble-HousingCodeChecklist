@@ -186,9 +186,14 @@ class ConditionsDict(DADict):
         """
         for category in self.elements:
             if isinstance(condition, list):
-                return self.elements[category].claims.any_true(*condition)
+                if any(
+                    cond in self.elements[category].claims and self.elements[category].claims[cond]
+                    for cond in condition
+                ):
+                    return True
             else:
-                return self.elements[category].claims.any_true(condition)
+                if condition in self.elements[category].claims and self.elements[category].claims[condition]:
+                    return True
         return False
 
     def active_conditions(self, language:str="en"):
