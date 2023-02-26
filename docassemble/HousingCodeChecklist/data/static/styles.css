@@ -100,7 +100,9 @@
 .danav-vertical .danavlink .toggler {
   display: none;
 }
-
+.daclickable:hover {
+  text-decoration: underline;
+}
 
 /* === Completed nav items (will all look clickable) === */
 .danav-vertical .danavlink::before {
