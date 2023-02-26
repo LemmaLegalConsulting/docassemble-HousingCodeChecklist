@@ -131,9 +131,6 @@ code: |
   if screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection'):
     nav.set_section(sub_documents['enforce_inspection'].get('section_link'))
     sanitary_code_template
-  # if screen_ll_knows_problem and document_choice['get_injunction']:
-  #   nav.set_section(sub_documents['get_injunction'].get('section_link'))
-  #   interview_order_Housing_Temporary_Restraining_Order0002
   if screen_ll_knows_problem and document_choice['demand_letter_93a']:
     nav.set_section(sub_documents['demand_letter_93a'].get('section_link'))
     interview_order_Repair_Demand_Letter
@@ -155,7 +152,6 @@ code: |
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
-  # if screen_ll_knows_problem and {'enforce_inspection','get_inspection','get_injunction', 'tell_landlord'}.intersection(document_choice.true_values()):
   if screen_ll_knows_problem and {'enforce_inspection','get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
      nav.set_section('preview_and_sign')
      preview_docs
@@ -464,11 +460,6 @@ data: !!omap
       section_label: Fix the problems myself
       name: Make repairs and deduct the cost from my rent
       count: 0
-  #- get_injunction:
-  #    section_link: review_housing_tro
-  #    section_label: Get a judge's order
-  #    name: Ask a judge for an injunction (order)
-  #    count: 8
   - sue_landlord:
       section_link: review_verified_complaint_and_motions
       section_label: Sue my landlord
@@ -783,7 +774,6 @@ subquestion: |
   ${ collapse_template(how_to_notify_landlord_template) }
   ${ collapse_template(get_inspection_template) }
   ${ collapse_template(sue_your_landlord_template) } 
-#  ${ collapse_template(get_injunction_template) }
 continue button field: learn_more
 ---
 id: simple conditions
@@ -1223,7 +1213,6 @@ fields:
       #- Fix the problems myself and deduct money from my rent: fix_problems
       # TODO(41): low priority
       - Ask a judge to enforce an order from a housing inspector: enforce_inspection
-      #- Ask a judge to order my landlord to fix the problem: get_injunction
       - Ask for a fair settlement (consumer protection demand letter or settlement letter): demand_letter_93a
       - Ask a judge to order my landlord to fix a problem or sue my landlord for money: sue_landlord
       - Tell a judge that my landlord is ignoring the judge's order: contempt_complaint
