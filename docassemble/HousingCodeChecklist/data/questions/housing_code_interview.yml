@@ -1246,7 +1246,6 @@ fields:
       - Get a city inspection: get_inspection
       # - Withhold rent: withhold_rent
       #- Fix the problems myself and deduct money from my rent: fix_problems
-      - Ask a judge to order my landlord to fix the problem: get_injunction
       - Ask for a fair settlement (consumer demand letter): demand_letter_93a
       - Sue my landlord for money or to get an emergency order: sue_landlord
     none of the above: False
@@ -1674,9 +1673,6 @@ code: |
   sanitary_code_template_attachment.enabled = screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection') and inspection
 ---
 code: |
-  Housing_Temporary_Restraining_Order0002_attachment.enabled = screen_ll_knows_problem and document_choice['get_injunction']
----
-code: |
   verified_complaint_and_motions_attachment.enabled = document_choice["sue_landlord"]
 ---
 code: |
@@ -1688,8 +1684,11 @@ code: |
 code: |  
   temporary_order.enabled = verified_complaint_and_motions_attachment.enabled
 ---
-code: |  
-  order_of_notice.enabled = verified_complaint_and_motions_attachment.enabled
+code: |
+  if trial_court.department != "Housing Court":
+    order_of_notice.enabled = verified_complaint_and_motions_attachment.enabled
+  else:
+    order_of_notice.enabled = False
 ---
 code: |
   contempt_complaint.enabled = screen_ll_knows_problem and document_choice['contempt_complaint']
