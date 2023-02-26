@@ -1688,8 +1688,11 @@ code: |
 code: |  
   temporary_order.enabled = verified_complaint_and_motions_attachment.enabled
 ---
-code: |  
-  order_of_notice.enabled = verified_complaint_and_motions_attachment.enabled
+code: |
+  if trial_court.department != "Housing Court":
+    order_of_notice.enabled = verified_complaint_and_motions_attachment.enabled
+  else:
+    order_of_notice.enabled = False
 ---
 code: |
   contempt_complaint.enabled = screen_ll_knows_problem and document_choice['contempt_complaint']
