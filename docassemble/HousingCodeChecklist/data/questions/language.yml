@@ -77,9 +77,6 @@ data:
   - value: Lighting
     label: La iluminación
     image: lightbulb    
-  - value: Ventilation and Light
-    label: Ventilación
-    image: sun
   - value: Electricity and Gas
     label: Electricidad y Gas
     image: plug
@@ -211,9 +208,6 @@ data:
   - value: Lighting
     label: Ekleraj
     image: lightbulb    
-  - value: Ventilation and Light
-    label: Vantilasyon ak limyè
-    image: sun    
   - value: Electricity and Gas
     label: Elektrisite ak gaz
     image: plug
@@ -270,16 +264,13 @@ data:
     image: thermometer-full
   - value: Lighting
     label: Iluminação
-    image: lightbulb    
-  - value: Ventilation and Light
-    label: Ventilação e luz
-    image: sun    
+    image: lightbulb
   - value: Electricity and Gas
     label: Eletricidade e Gás
     image: plug
   - value: Water
     label: Água
-    image: faucet    
+    image: faucet
   - value: Garbage
     label: Lixo
     image: trash-alt
