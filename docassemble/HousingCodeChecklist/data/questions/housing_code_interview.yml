@@ -934,8 +934,6 @@ data:
     image: thermometer-full
   - Lighting: Lighting
     image: lightbulb    
-  - Ventilation and Light: Ventilation and light
-    image: sun    
   - Electricity and Gas: Electricity and Gas
     image: plug
   - Water: Water
