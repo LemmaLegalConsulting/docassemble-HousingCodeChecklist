@@ -19,7 +19,7 @@ include:
   - orders_and_contempt_complaint.yml
 ---
 features:
-  bootstrap theme: bootstrap.min.css
+  bootstrap theme: uptocode.bootstrap.css
 ---
 metadata:
   title: |-
@@ -333,7 +333,7 @@ continue button field: intro_and_terms_of_use_in_court
 question: |
   Get an order from a judge
 subquestion: |
-  <div class="alert alert-primary h-100 mh-100" role="alert">
+  <div class="alert alert-secondary h-100 mh-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this works</h2>
     <p class="h-100 overflow-visible mb-0">
 
@@ -371,7 +371,7 @@ continue button field: intro_and_terms_of_use
 question: |
   Start exploring problems and solutions
 subquestion: |
-  <div class="alert alert-primary h-100 mh-100" role="alert">
+  <div class="alert alert-secondary h-100 mh-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this works</h2>
     <p class="h-100 overflow-visible mb-0">
 
@@ -746,7 +746,7 @@ subquestion: |
   We will start by asking you about the repairs that you need.
 
   % endif
-  <div class="alert alert-primary h-100" role="alert">
+  <div class="alert alert-secondary h-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
     "Retaliation" is illegal. 
