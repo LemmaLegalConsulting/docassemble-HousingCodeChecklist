@@ -506,12 +506,12 @@ subquestion: |
 
   But most tenants do not pay anything. You can file for free if:
 
-  1. You earn less than 125% of the Federal Poverty Level for Massachusetts, or
   1. You get certain benefits, like Mass Health, or
+  1. You earn less than 125% of the Federal Poverty Level for Massachusetts, or
   1. You cannot afford to pay the fee.
 
 fields:
-  - Would you like to ask the court to let you file for free?: verified_complaint_wants_fee_waiver
+  - Would you like to find out if you qualify to file for free?: verified_complaint_wants_fee_waiver
     datatype: yesnoradio
 ---
 only sets:
