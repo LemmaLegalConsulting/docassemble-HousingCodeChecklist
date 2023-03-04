@@ -13,10 +13,10 @@ include:
   - verified_complaint_and_motions_to_include.yml
   - docassemble.SanitaryCode:sanitary_code_template.yml
   - Repair_Letter_Tenant.yml
-  - customized_screens.yml
   - language.yml
   - simple_conditions.yml
   - orders_and_contempt_complaint.yml
+  - customized_screens.yml
 ---
 features:
   bootstrap theme: uptocode.bootstrap.css

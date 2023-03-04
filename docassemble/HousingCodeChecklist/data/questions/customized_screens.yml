@@ -695,7 +695,7 @@ fields:
   - no label: trial_court
     datatype: object_radio
     choices: all_matches
-    none of the above: True
+    none of the above: My court is not listed
     disable others: True
     object labeler: court_short_description
     show if: 
@@ -703,16 +703,17 @@ fields:
         len(all_matches)
     default: |
       all_courts.matching_housing_court(users[0].address)
-  - note: |
+  - label: |
       Does the list above look wrong? If you know that you can
       file in a court we didn't list, choose from the full list below.
-    show if: 
-      code: |
-        len(all_matches)
-  - no label: trial_court
+    label above field: True      
+    field: trial_court
     datatype: object
     object labeler: court_short_label
     choices: all_courts.filter_courts(allowed_courts)
+    show if:
+      variable: trial_court
+      is: None
 ---
 template: housing_how_to_pick_court_help_template
 subject: |
