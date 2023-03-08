@@ -529,6 +529,41 @@ event: review_verified_complaint_and_motions
 question: |-
   Review your answers
 review:
+  - Edit: users.revisit
+    button: |-
+      **Tenant**
+      
+      % for item in users:
+      - ${ item }
+      % endfor
+  - Edit: other_parties.revisit
+    button: |-
+      **Landlord(s)**
+      
+      % for item in other_parties:
+      - ${ item }
+      % endfor
+  - Edit: trial_court
+    button: |-
+      **Trial court**
+      
+      % if defined("trial_court.name"):
+      Name: ${ trial_court.name }
+      
+      % endif
+      % if defined("trial_court.address.county"):
+      Address: ${ trial_court.address.block() }
+      % endif
+  - Edit: rent_amount
+    button: |-
+      **Monthly rent**
+      
+      ${ currency(rent_amount) }
+  - Edit: date_of_93A_notice
+    button: |-
+      **When did you first send the landlord a demand letter?**
+      
+      ${ date_of_93A_notice }
   - Edit: |-
       verified_complaint_claims.revisit
     button: |-
@@ -631,6 +666,53 @@ review:
       **Filing for free**
 
       Would you like to find out if you qualify to file for free?: ${ word(yesno(verified_complaint_wants_fee_waiver)) }
+---
+continue button field: other_parties.revisit
+question: |
+  Edit landlords
+subquestion: |
+  ${ other_parties.table }
+  ${ other_parties.add_action() }
+---
+table: other_parties.table
+rows: other_parties
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+edit:
+  - name.first
+  - phone_number
+  - address.address
+confirm: True
+---
+continue button field: users.revisit
+question: |
+  Edit tenant information
+subquestion: |
+  ${ users.table }
+  ${ users.add_action() }
+---
+table: users.table
+rows: users
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Email: |
+      row_item.email if defined("row_item.email") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+edit:
+  - name.first
+  - email
+  - address.address
+  - phone_number
+confirm: True
 ---
 event: |-
   verified_complaint_claims.revisit
