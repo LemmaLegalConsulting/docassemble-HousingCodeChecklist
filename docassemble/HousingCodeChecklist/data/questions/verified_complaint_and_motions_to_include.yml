@@ -526,100 +526,159 @@ code: |
 ---
 id: verified complaint and motions review screen
 event: review_verified_complaint_and_motions
-question: |
+question: |-
   Review your answers
 review:
-  - Edit: rent_amount
-    button: |
-      **monthly rent**:
-      ${ currency(rent_amount) }
-  - Edit: date_of_93A_notice
-    button: |
-      **When did you first send the landlord a demand letter?**:
-      ${ date_of_93A_notice }
-  - Edit: other_parties.revisit
-    button: |
-      **Landlords**
+  - Edit: |-
+      verified_complaint_claims.revisit
+    button: |-
+      **Verified Complaint Claims**
 
-      % for item in other_parties:
-        * ${ item }
+      % for item in verified_complaint_claims:
+      - ${ item }
       % endfor
-  - Edit: trial_court
-    button: |
-      **trial_court**
+  - Edit: |-
+      docket_numbers.revisit
+    button: |-
+      **Docket Numbers**
 
-      % if defined("trial_court.name.first"):
-      * name: ${ trial_court.name.full() }
-      % endif
-      % if defined("trial_court.address.county"):
-      * address: ${ trial_court.address.block() }
-      % endif
-  - Edit: users.revisit
-    button: |
-      **Users**
-
-      % for item in users:
-        * ${ item }
+      % for item in docket_numbers:
+      - ${ item }
       % endfor
-  - Edit: signature_date
+  - Edit: |-
+      verified_complaint_and_motions_post_interview_instructions.revisit
+    button: |-
+      **Verified Complaint And Motions Post Interview Instructions**
+
+      % for item in verified_complaint_and_motions_post_interview_instructions:
+      - ${ item }
+      % endfor
+  - Edit: |-
+      verified_complaint_and_motions_attachment.revisit
+    button: |-
+      **Verified Complaint And Motions Attachment**
+
+      % for item in verified_complaint_and_motions_attachment:
+      - ${ item }
+      % endfor
+  - Edit: |-
+      complaint_ask_for_tro
     button: |
-      **signature_date**:
-      ${ signature_date }
----
-continue button field: other_parties.revisit
-question: |
-  Edit landlords
-subquestion: |
-  ${ other_parties.table }
+      **Getting help right away**
+      
+      Do you need an emergency order?: ${ word(yesno(complaint_ask_for_tro)) }
+  - Edit: |-
+      complaint_ask_for_relocation
+    button: |
+      **Getting a new place to stay**
 
-  ${ other_parties.add_action() }
+      Do you want the landlord to pay for a hotel or new apartment while the repairs are made?: ${ word(yesno(complaint_ask_for_relocation)) }
+  - Edit: |-
+      complaint_ask_for_damages
+    button: |
+      **Getting money from your landlord**
+
+      Do you want to ask for money in this lawsuit?: ${ word(yesno(complaint_ask_for_damages)) }
+  - Edit: |-
+      verified_complaint_claims["entered without permission"].has_claim
+    button: |
+      **Is there anything else that your landlord did?**
+
+      ${ verified_complaint_claims_terms["entered without permission"]["question"] }: ${ word(yesno(verified_complaint_claims["entered without permission"].has_claim)) }
+
+      ${ verified_complaint_claims_terms["illegal lockout"]["question"] }: ${ word(yesno(verified_complaint_claims["illegal lockout"].has_claim)) }
+
+      ${ verified_complaint_claims_terms["utility no agreement"]["question"]}: ${ word(yesno(verified_complaint_claims["utility no agreement"].has_claim)) }
+
+      Utility: ${ showifdef('complaint_utility_not_paid') }
+
+      ${ verified_complaint_claims_terms["utility shutoff"]["question"] }: ${ word(yesno(verified_complaint_claims["utility shutoff"].has_claim)) }
+
+      Utility: ${ showifdef('complaint_utility_shutoff') }
+
+      ${ verified_complaint_claims_terms["insufficient notice"]["question"] }: ${ word(yesno(verified_complaint_claims["insufficient notice"].has_claim)) }
+
+      Did something else that breaks Massachusetts landlord-tenant law: ${ word(yesno(verified_complaint_claims["other"].has_claim)) }
+
+      None of the above: ${ word(yesno(verified_complaint_nota)) }
+  - Edit: |-
+      tenant_subsidy_is_voucher
+    button: |
+      **Is your housing subsidy at risk?**
+
+      Do you have a mobile voucher (Section 8 or MRVP)?: ${ word(yesno(tenant_subsidy_is_voucher)) }
+
+      Are you at risk of being forced to move by your housing authority?: ${ showifdef('verified_complaint_tenant_voucher_at_risk') }
+  - Edit: |-
+      demand_letter_sent
+    button: |
+      **Did you send the landlord a demand letter?**
+
+      I sent my landlord a demand letter: ${ word(yesno(demand_letter_sent)) }
+
+      When did you send it?: ${ showifdef('date_of_93A_notice') }
+
+      Did you get a reasonable settlement offer within 30 days?: ${ word(yesno(got_93a_settlement_offer)) }
+  - Edit: |-
+      confirm_ask_for_damages
+    button: |
+      **You said you did not send a demand letter yet**
+
+      What do you want to do?: ${ showifdef('confirm_ask_for_damages') }
+  - Edit: |-
+      verified_complaint_wants_fee_waiver
+    button: |
+      **Filing for free**
+
+      Would you like to find out if you qualify to file for free?: ${ word(yesno(verified_complaint_wants_fee_waiver)) }
 ---
-table: other_parties.table
-rows: other_parties
+event: |-
+  verified_complaint_claims.revisit
+id: |-
+  revisit verified_complaint_claims
+question: |-
+  Edit your answers about Verified Complaint Claims
+subquestion: |-
+  ${ verified_complaint_claims.table }
+---
+event: |-
+  docket_numbers.revisit
+id: |-
+  revisit docket_numbers
+question: |-
+  Edit your answers about Docket Numbers
+subquestion: |-
+  ${ docket_numbers.table }
+---
+event: |-
+  verified_complaint_and_motions_post_interview_instructions.revisit
+id: |-
+  revisit verified_complaint_and_motions_post_interview_instructions
+question: |-
+  Edit your answers about Verified Complaint And Motions Post Interview Instructions
+subquestion: |-
+  ${ verified_complaint_and_motions_post_interview_instructions.table }
+---
+event: |-
+  verified_complaint_and_motions_attachment.revisit
+id: |-
+  revisit verified_complaint_and_motions_attachment
+question: |-
+  Edit your answers about Verified Complaint And Motions Attachment
+subquestion: |-
+  ${ verified_complaint_and_motions_attachment.table }
+---
 columns:
-  - Name: |
-      row_item.name.full() if defined("row_item.name.first") else ""
-  - Phone number: |
-      row_item.phone_number if defined("row_item.phone_number") else ""
-  - Address: |
-      row_item.address.block() if defined("row_item.address.address") else ""
-edit:
-  - name.first
-  - phone_number
-  - address.address
-confirm: True
-
----
-continue button field: users.revisit
-question: |
-  Edit tenant information
-subquestion: |
-  ${ users.table }
-
-  ${ users.add_action() }
----
-table: users.table
-rows: users
-columns:
-  - Name: |
-      row_item.name.full() if defined("row_item.name.first") else ""
-  - Email: |
-      row_item.email if defined("row_item.email") else ""
-  - Address: |
-      row_item.address.block() if defined("row_item.address.address") else ""
-  - Phone number: |
-      row_item.phone_number if defined("row_item.phone_number") else ""
-edit:
-  - name.first
-  - email
-  - address.address
-  - phone_number
-confirm: True
+  - 'When did this happen? State an exact date or the best date you can remember, such as "last summer". Include a year.': |-
+      row_item.date if hasattr(row_item, 'date') else ''
+rows: |-
+  verified_complaint_claims
+table: |-
+  verified_complaint_claims.table
 ---
 objects:
   - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions for your court documents", filename="next_steps_complaint.docx", has_addendum=False)
   - verified_complaint_and_motions_attachment: ALDocument.using(title="Tenant complaint for emergency repairs", filename="verified_complaint_and_motions.docx", has_addendum=False)
-
 ---
 attachments:
   - name: verified complaint and motions post interview instructions
