@@ -297,7 +297,7 @@ id: move in date
 question: |
   When did you move in to ${ users[0].address.on_one_line() }?
 fields:
-  - no label: users[0].move_in_date
+  - Date: users[0].move_in_date
     datatype: ThreePartsDate
 ---
 code: |

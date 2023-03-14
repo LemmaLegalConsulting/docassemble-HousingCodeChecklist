@@ -143,6 +143,11 @@ fields:
       variable: building_larger_than_4_units
       is: False
   - note: |
+      Find out if your landlord owns any other rental property at [masslandrecords.com](https://www.masslandrecords.com) by selecting your district and then searching your landlord's name.
+    show if: 
+      variable: building_larger_than_4_units
+      is: False
+  - note: |
       **Good news**. It looks like your landlord is **in the business** of being
       a landlord. That means that they need to follow the consumer protection law.
     js show if: |

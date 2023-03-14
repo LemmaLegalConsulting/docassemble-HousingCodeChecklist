@@ -318,7 +318,7 @@ subquestion: |
   Think about problems that have happened in the last 6 years, even if they
   are fixed now.
   
-  My landlord:
+  **My landlord:**
 fields:
   - ${ verified_complaint_claims_terms["entered without permission"]["question"] }: verified_complaint_claims["entered without permission"].has_claim
     datatype: yesno
@@ -376,24 +376,24 @@ question: |
   % if i == "other":
   More information about your landlord's violation of landlord-tenant law
   % else:
-  More information about when your landlord ${ verified_complaint_claims_terms[i]["direct"] }.
+  More information about when your landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
   % endif
 subquestion: |
   % if i == "other":
   Tell us more about what happened with the other violation of landlord-tenant law.
   % elif i == "utility no agreement":
   Tell us a little more about what happened when your landlord required you to pay for
-  ${ complaint_utility_not_paid.true_values() } without a written agreement.
+  **${ complaint_utility_not_paid.true_values() }** without a written agreement.
   % elif i == "utility shutoff":
   % if len(complaint_utility_shutoff.true_values()) > 1: 
-  Tell us a little more about what happened when your ${ complaint_utility_shutoff.true_values() }
+  Tell us a little more about what happened when your **${ complaint_utility_shutoff.true_values() }**
   were turned off. 
   % else:
-  Tell us a little more about what happened when your ${ complaint_utility_shutoff.true_values() }
+  Tell us a little more about what happened when your **${ complaint_utility_shutoff.true_values() }**
   was turned off. 
   % endif
   % else:
-  Tell us a little more about what happened when your landlord ${ verified_complaint_claims_terms[i]["direct"] }.
+  Tell us a little more about what happened when your landlord **${ verified_complaint_claims_terms[i]["direct"] }.**
   % endif
   
   About 1-2 sentences is helpful for the judge to know in this document. You can explain more details
@@ -411,7 +411,7 @@ fields:
     field: verified_complaint_claims[i].details
     datatype: area
     rows: 2
-  - When did this happen? State an exact date or the best date you can remember, such as "last summer". Include a year.: verified_complaint_claims[i].date
+  - When did this happen? State an exact date or the best date you can remember, such as "Summer 2021". Include a year.: verified_complaint_claims[i].date
     label above field: True
     validate: |
       lambda y: re.search(r"\d\d\d\d", y) or validation_error(f"Include a year with your answer, like \"{today().year}\"")
