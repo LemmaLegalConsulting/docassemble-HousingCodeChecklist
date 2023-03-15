@@ -114,6 +114,8 @@ subquestion: |
   The [consumer protection
   law](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law)
   only protects tenants from landlords acting as a **business**.
+  
+  Your landlord may be both an individual and a commercial landlord (a business).
 fields:
   - Is your **landlord** a housing authority?: landlord_is_housing_authority
     datatype: yesnoradio
