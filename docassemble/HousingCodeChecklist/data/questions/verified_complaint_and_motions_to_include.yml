@@ -280,14 +280,14 @@ fields:
 variable name: verified_complaint_claims_terms
 use objects: True
 data:
-  entered without permission: 
-    question: Went into my home without permission
-    document: entered my home without permission
-    direct: entered your home without permission
   illegal lockout: 
     question: My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
     document: locked me out of my home or removed my belongings without lawful authority
     direct: locked you out of your home or removed your belongings
+  entered without permission: 
+    question: Went into my home without permission
+    document: entered my home without permission
+    direct: entered your home without permission
   utility shutoff: 
     question: Turned off the gas, electricity or oil service or did not turn it back on
     document: turned off or failed to restore a utility service
@@ -320,14 +320,27 @@ subquestion: |
   
   **My landlord:**
 fields:
-  - ${ verified_complaint_claims_terms["entered without permission"]["question"] }: verified_complaint_claims["entered without permission"].has_claim
-    datatype: yesno
-    default: |
-      ${ kind_of_lawsuit["entered_without_permission"] }
   - ${ verified_complaint_claims_terms["illegal lockout"]["question"] }: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
     default: |
       ${ kind_of_lawsuit["illegal_lockout"] }
+  - ${ verified_complaint_claims_terms["entered without permission"]["question"] }: verified_complaint_claims["entered without permission"].has_claim
+    datatype: yesno
+    default: |
+      ${ kind_of_lawsuit["entered_without_permission"] }
+  - ${ verified_complaint_claims_terms["utility shutoff"]["question"] }: verified_complaint_claims["utility shutoff"].has_claim
+    datatype: yesno
+    default: |
+      ${ kind_of_lawsuit["utility_shutoff"] }
+  - Utility: complaint_utility_shutoff
+    datatype: checkboxes
+    choices:
+      - Gas: gas
+      - Fuel oil: fuel oil
+      - Electricity: electricity
+    none of the above: False
+    minlength: 1
+    show if: verified_complaint_claims["utility shutoff"].has_claim
   - ${ verified_complaint_claims_terms["utility no agreement"]["question"]}: verified_complaint_claims["utility no agreement"].has_claim
     datatype: yesno
     help: |
@@ -344,19 +357,6 @@ fields:
     none of the above: False
     minlength: 1
     show if: verified_complaint_claims["utility no agreement"].has_claim
-  - ${ verified_complaint_claims_terms["utility shutoff"]["question"] }: verified_complaint_claims["utility shutoff"].has_claim
-    datatype: yesno
-    default: |
-      ${ kind_of_lawsuit["utility_shutoff"] }
-  - Utility: complaint_utility_shutoff
-    datatype: checkboxes
-    choices:
-      - Gas: gas
-      - Fuel oil: fuel oil
-      - Electricity: electricity
-    none of the above: False
-    minlength: 1
-    show if: verified_complaint_claims["utility shutoff"].has_claim
   - ${ verified_complaint_claims_terms["insufficient notice"]["question"] }: verified_complaint_claims["insufficient notice"].has_claim
     datatype: yesno
     default: |
@@ -374,13 +374,13 @@ fields:
 id: claim i details
 question: |
   % if i == "other":
-  More information about your landlord's violation of landlord-tenant law
+  More information about your landlord's **violation of landlord-tenant law**.
   % else:
   More information about when your landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
   % endif
 subquestion: |
   % if i == "other":
-  Tell us more about what happened with the other violation of landlord-tenant law.
+  Tell us more about what happened with the **other violation of landlord-tenant law**.
   % elif i == "utility no agreement":
   Tell us a little more about what happened when your landlord required you to pay for
   **${ complaint_utility_not_paid.true_values() }** without a written agreement.
