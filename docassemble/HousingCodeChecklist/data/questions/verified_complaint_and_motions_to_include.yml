@@ -181,9 +181,9 @@ question: |
   Getting a new place to stay
 subquestion: |
   If the problems are very serious, you may need to move out to allow
-  the landlord to make repairs.
+  the landlord to fix them.
 fields:
-  - Do you want the landlord to pay for a hotel or new apartment while the repairs are made?: complaint_ask_for_relocation
+  - Do you want the landlord to pay for a hotel or new apartment while they fix the problem(s)?: complaint_ask_for_relocation
     datatype: yesnoradio
     default: True      
 ---
