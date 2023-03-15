@@ -1195,7 +1195,7 @@ fields:
     datatype: yesnoradio
     show if: screen_ll_knows_problem
   - note: |
-      **You may want to get an inspection.** You are not required to get a
+      **You may want to get an inspection.** You have the option to get one below. You are not required to get a
       housing inspection. But it can help a judge understand the problems
       better. You do not need to wait for the inspection to get more help.
     show if:
@@ -1401,7 +1401,7 @@ subquestion: |
   1. Read the instructions to learn how to file and deliver your
   documents.
   % if defined('trial_court'):
-  1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call for instructions at ${ tel(trial_court.phone_number) }.
+  1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call the court for instructions at ${ tel(trial_court.phone_number) }.
   % endif
   1. You can come back to this website later to take additional steps.
   % if showifdef("interview_order_request_housing_inspection"):

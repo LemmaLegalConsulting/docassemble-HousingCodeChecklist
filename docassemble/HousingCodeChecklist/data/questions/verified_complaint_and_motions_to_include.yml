@@ -156,7 +156,7 @@ subquestion: |
   If you need help right away, a judge can give you an emergency order.
   The emergency order is supposed to last for 10 days.
 
-  Later, the judge can make the order permanent if the landlord doesn't
+  Later, the judge can make the order permanent if the landlord does not
   fix the problem right away.
 fields:
   - Do you need an emergency order?: complaint_ask_for_tro
@@ -396,8 +396,9 @@ subquestion: |
   Tell us a little more about what happened when your landlord **${ verified_complaint_claims_terms[i]["direct"] }.**
   % endif
   
-  About 1-2 sentences is helpful for the judge to know in this document. You can explain more details
-  later.
+  The information you share on this screen will appear on your 
+  final documents for the judge. You can edit and explain more
+  details later.
 fields:  
   - label above field: True
     label: |
