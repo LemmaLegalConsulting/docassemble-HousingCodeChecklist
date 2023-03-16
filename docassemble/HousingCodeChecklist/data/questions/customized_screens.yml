@@ -18,7 +18,7 @@ fields:
     datatype: radio
     choices:
       - The tenant: tenant
-      - An attorney: attorney
+      - An attorney or paralegal: attorney
       - Someone **else** helping a tenant: tenant_helper
   - Will you file an appearance?: representation_type
     input type: radio
