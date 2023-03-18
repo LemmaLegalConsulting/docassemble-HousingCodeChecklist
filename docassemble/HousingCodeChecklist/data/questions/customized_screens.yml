@@ -18,7 +18,7 @@ fields:
     datatype: radio
     choices:
       - The tenant: tenant
-      - An attorney: attorney
+      - An attorney or paralegal: attorney
       - Someone **else** helping a tenant: tenant_helper
   - Will you file an appearance?: representation_type
     input type: radio
@@ -28,11 +28,32 @@ fields:
     show if:
       variable: person_answering
       is: attorney
-  - note: |
-      **Okay. The court documents will state "Prepared with assistance of counsel" in the footer.**
+  - Would you like to customize the footer?: customize_footer
+    datatype: yesnoradio
     show if:
       variable: representation_type
       is: ghostwriting
+  - note: |
+      This custom option is mainly for legal aid organizations with a standard practice of inserting their organization's name in the footer of the document. Example: "Prepared with assistance of [legal aid organization name]".
+  
+      Lawyers should not customize the footer and must put "Prepared with assistance of counsel". See [Trial Court Rule XVI]( https://www.mass.gov/trial-court-rules/trial-court-rule-xvi-uniform-rule-on-limited-assistance-representation#9-assisting-a-party-to-prepare-court-documents).
+    show if:
+      variable: representation_type
+      is: ghostwriting
+  - Organization name: org_name
+    input type: combobox
+    choices: 
+      - Greater Boston Legal Services
+      - Northeast Legal Aid
+      - Community Legal Aid
+      - Metro West Legal Services
+      - South Coastal Counties Legal Services
+    show if: customize_footer
+  - note: |
+      **Okay. The court documents will state "Prepared with assistance of counsel" in the footer.**
+    show if:
+      variable: customize_footer
+      is: False
 ---
 depends on:
   - document_choice["sue_landlord"]
