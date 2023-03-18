@@ -215,7 +215,7 @@ id: landing-page
 question: |
   You deserve a safe and decent home
 subquestion: |
-  Need help with repairs or stopping landlord harassment? Choose a task to get started.
+  Need help with repairs or stopping landlord harassment? Select a task to get started.
 
   <div class="row g-3 mb-2">
   <div class="col-md-6">
@@ -227,7 +227,7 @@ subquestion: |
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title">Explore problems and solutions</h5>
-          <p class="card-text">Explore problems room by room and get your landlord to fix them.</p>
+          <p class="card-text">Explore problems by room and category and get your landlord to fix them.</p>
           <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start exploring</a>
         </div>
       </div>
@@ -552,7 +552,7 @@ continue button field: launch_made
 question: |
   Stop your eviction
 subquestion: |
-  Click the link below to start using MADE, Massachusetts Defense
+  Tap the link below to start using MADE, Massachusetts Defense
   for Eviction in a new window.
   
   When you are finished, you can come back here.
@@ -824,7 +824,7 @@ fields:
       code: |
         initial_action_selection != "help_in_court"
   - note: |
-      Don't see your problem on this list? There are more problems
+      If you do not see your problem on this list, there are more problems
       to pick from if you keep going.
 ---
 template: how_far_back_should_i_go_template
@@ -848,8 +848,9 @@ subquestion: |
   % else:
   You have picked 1 problem so far.
   % endif
-  % endif  
-  You can keep exploring problems room by room, or skip ahead
+  % endif
+  
+  You can keep exploring problems by room and category, or skip ahead
   to start working on a solution.
 
   ${ collapse_template(how_many_problems_are_there_template)}
@@ -865,11 +866,11 @@ template: how_many_problems_are_there_template
 subject: |
   How many problems can you help me with?
 content: |
-  If you explore room by room, you can pick from a list of about
+  If you explore by room and category, you can pick from a list of about
   150 problems. Some may be problems you did not know your
   landlord needs to fix.
 
-  The list comes from the Massachusetts Sanitary Code. We have
+  The list of problems comes from the State Sanitary Code. We have
   translated the Sanitary Code into easier to understand sentences
   with short explanations.
 ---  
@@ -877,10 +878,10 @@ content: |
 # the button styles in styles.css will need to be updated to match
 id: room chooser
 question: |
-  Your landlord's responsibilities
+  Explore problems by room and category
 subquestion: |
   % if len(bad_conditions) > 1:
-  You have already listed problems in these rooms:
+  You have already listed problems in these rooms and categories:
   
   % for button in bad_conditions:
   * [:pencil-alt: ${ str(button).capitalize() }](${ url_action('bad_conditions["' + button + '"].claims') } )
@@ -888,7 +889,8 @@ subquestion: |
   % else:
   Your home is protected by the [State Sanitary 
   Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
-  Click a room or category to add a problem.
+  
+  Select a room or category to add a problem.
   % endif
 field: bad_conditions.new_item_name
 buttons:
@@ -896,7 +898,10 @@ buttons:
     [button for button in available_buttons if next(iter(button)) not in bad_conditions ]
 back button label: |
   Back
-post: |
+under: |
+  You can keep exploring problems by room and category, or skip ahead
+  to start working on a solution.
+  
   % if len(bad_conditions.elements):
   ${ action_button_html(url_ask('set_gathered'), label="Skip and continue", color="primary", size="md") }
   % endif
@@ -912,10 +917,8 @@ variable name: available_buttons
 data:
   - emergency: Emergency
     image: first-aid
-    css class: btn-primary
   - Living area: Living area  
     image: couch
-
   - Bathroom: Bathroom
     image: bath
   - Kitchen: Kitchen
@@ -959,7 +962,7 @@ subquestion: |
   Your landlord should start fixing any problem listed below within 24 hours
   of learning about the problem.
   
-  If you do not see your problem listed below, try a different category.
+  If you do not see your problem listed below, try a different room or category.
 
   ${ collapse_template(emergency_sanitary_code_template) }
 fields:
@@ -976,7 +979,7 @@ template: emergency_sanitary_code_template
 subject: |
   Related Sanitary Code
 content: |
-  The problems listed above are cited in the following sections of the
+  The problems listed below are cited in the following sections of the
   [Sanitary Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
       
   Problem | Sanitary Code
@@ -992,7 +995,7 @@ undefine:
   - bad_conditions[i].complete  
 id: Non-emergency claims
 question: |
-  Problems with ${ i }
+  Problems with **${ i }**
 subquestion: |
   You can list any problems that you have had in the last 6 years at this apartment,
   even if they are fixed now.  
@@ -1012,7 +1015,7 @@ template: sanitary_code_template
 subject: |
   Related Sanitary Code
 content: |
-  The problems listed above are cited in the following sections of the
+  The problems listed below are cited in the following sections of the
   [Sanitary Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
       
   Problem | Sanitary Code
@@ -1023,11 +1026,17 @@ content: |
 ---
 id: there is another condition
 question: |
-  Do you want to list problems in another category?
+  Do you want to list problems in another room or category?
 subquestion: |
-  So far you have reviewed problems in ${ comma_and_list([f'"{str(key).capitalize()}"' for key in bad_conditions.keys()]) }.
+  So far you have reviewed problems in:
   
-  Tap "yes" if you want to look at problems in another category.
+  % for button in bad_conditions:
+  * [:pencil-alt: ${ str(button).capitalize() }](${ url_action('bad_conditions["' + button + '"].claims') } )
+  % endfor
+  
+  Select "yes" if you want to look at problems in another room or category.
+  
+  Select "no" if you want to skip other rooms and categories and continue to a solution.
 yesno: bad_conditions.there_is_another
 ---
 code: |
@@ -1091,8 +1100,8 @@ subquestion: |
 template: review_conditions_template
 content: |
   % if len(bad_conditions.elements): 
-  Click a category or room below to revisit your choices.
-  Click a problem to edit the time the problem started, upload evidence,
+  Select a room or category below to revisit your choices.
+  Select a problem to edit the time the problem started, upload evidence,
   and make other changes.
   
   % for category in bad_conditions.elements:
@@ -1107,6 +1116,9 @@ content: |
   % if len(bad_conditions) < len(available_buttons):
   ${ bad_conditions.add_action() }
   % endif
+  
+  If you are done selecting, listing, and editing problems by room and 
+  category, continue to start working on a solution.
 ---
 event: warn_add_conditions
 question: |
@@ -1115,7 +1127,7 @@ subquestion: |
   You should add at least one problem to continue.
   % if len(bad_conditions): 
   
-  Click a category below to revisit your selections.  
+  Select a room or category below to revisit your selections.  
   % endif  
   % for category in bad_conditions:
   #### [${ category.title() if not category is None else 'None' }](${ url_action('bad_conditions["' + str(category) + '"].claims') })
@@ -1183,7 +1195,7 @@ fields:
     datatype: yesnoradio
     show if: screen_ll_knows_problem
   - note: |
-      **You may want to get an inspection.** You are not required to get a
+      **You may want to get an inspection.** You have the option to get one below. You are not required to get a
       housing inspection. But it can help a judge understand the problems
       better. You do not need to wait for the inspection to get more help.
     show if:
@@ -1363,10 +1375,10 @@ continue button field: preview_docs
 question: |
   Review your documents before you sign
 subquestion: |
-  Tap to open the document below in a new window.
+  Open the document below in a new window.
   
-  If you need to make any changes, tap the navigation labels
-  to revisit the section you want to change.
+  If you need to make any changes, select the navigation labels on the left
+  to revisit the section or sections you want to change.
   
   When you are ready, click "next" to add your signature.
   
@@ -1389,7 +1401,7 @@ subquestion: |
   1. Read the instructions to learn how to file and deliver your
   documents.
   % if defined('trial_court'):
-  1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call for instructions at ${ tel(trial_court.phone_number) }.
+  1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call the court for instructions at ${ tel(trial_court.phone_number) }.
   % endif
   1. You can come back to this website later to take additional steps.
   % if showifdef("interview_order_request_housing_inspection"):
@@ -1477,7 +1489,7 @@ content: |
 ---
 id: details for this claim
 question: |
-  More information about "${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[:1].lower() }${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[1:] }"  
+  More information about **"${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[:1].lower() }${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[1:] }"**
 fields:
   - Describe the problem using your own words (write about 1 sentence; optional): bad_conditions[i].details[j].description
     datatype: area
