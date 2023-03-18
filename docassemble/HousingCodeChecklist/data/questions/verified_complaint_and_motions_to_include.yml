@@ -156,7 +156,7 @@ subquestion: |
   If you need help right away, a judge can give you an emergency order.
   The emergency order is supposed to last for 10 days.
 
-  Later, the judge can make the order permanent if the landlord doesn't
+  Later, the judge can make the order permanent if the landlord does not
   fix the problem right away.
 fields:
   - Do you need an emergency order?: complaint_ask_for_tro
@@ -181,9 +181,9 @@ question: |
   Getting a new place to stay
 subquestion: |
   If the problems are very serious, you may need to move out to allow
-  the landlord to make repairs.
+  the landlord to fix them.
 fields:
-  - Do you want the landlord to pay for a hotel or new apartment while the repairs are made?: complaint_ask_for_relocation
+  - Do you want the landlord to pay for a hotel or new apartment while they fix the problems?: complaint_ask_for_relocation
     datatype: yesnoradio
     default: True      
 ---
@@ -280,14 +280,14 @@ fields:
 variable name: verified_complaint_claims_terms
 use objects: True
 data:
-  entered without permission: 
-    question: Went into my home without permission
-    document: entered my home without permission
-    direct: entered your home without permission
   illegal lockout: 
     question: My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
     document: locked me out of my home or removed my belongings without lawful authority
     direct: locked you out of your home or removed your belongings
+  entered without permission: 
+    question: Went into my home without permission
+    document: entered my home without permission
+    direct: entered your home without permission
   utility shutoff: 
     question: Turned off the gas, electricity or oil service or did not turn it back on
     document: turned off or failed to restore a utility service
@@ -318,16 +318,29 @@ subquestion: |
   Think about problems that have happened in the last 6 years, even if they
   are fixed now.
   
-  My landlord:
+  **My landlord:**
 fields:
-  - ${ verified_complaint_claims_terms["entered without permission"]["question"] }: verified_complaint_claims["entered without permission"].has_claim
-    datatype: yesno
-    default: |
-      ${ kind_of_lawsuit["entered_without_permission"] }
   - ${ verified_complaint_claims_terms["illegal lockout"]["question"] }: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
     default: |
       ${ kind_of_lawsuit["illegal_lockout"] }
+  - ${ verified_complaint_claims_terms["entered without permission"]["question"] }: verified_complaint_claims["entered without permission"].has_claim
+    datatype: yesno
+    default: |
+      ${ kind_of_lawsuit["entered_without_permission"] }
+  - ${ verified_complaint_claims_terms["utility shutoff"]["question"] }: verified_complaint_claims["utility shutoff"].has_claim
+    datatype: yesno
+    default: |
+      ${ kind_of_lawsuit["utility_shutoff"] }
+  - Utility: complaint_utility_shutoff
+    datatype: checkboxes
+    choices:
+      - Gas: gas
+      - Fuel oil: fuel oil
+      - Electricity: electricity
+    none of the above: False
+    minlength: 1
+    show if: verified_complaint_claims["utility shutoff"].has_claim
   - ${ verified_complaint_claims_terms["utility no agreement"]["question"]}: verified_complaint_claims["utility no agreement"].has_claim
     datatype: yesno
     help: |
@@ -344,19 +357,6 @@ fields:
     none of the above: False
     minlength: 1
     show if: verified_complaint_claims["utility no agreement"].has_claim
-  - ${ verified_complaint_claims_terms["utility shutoff"]["question"] }: verified_complaint_claims["utility shutoff"].has_claim
-    datatype: yesno
-    default: |
-      ${ kind_of_lawsuit["utility_shutoff"] }
-  - Utility: complaint_utility_shutoff
-    datatype: checkboxes
-    choices:
-      - Gas: gas
-      - Fuel oil: fuel oil
-      - Electricity: electricity
-    none of the above: False
-    minlength: 1
-    show if: verified_complaint_claims["utility shutoff"].has_claim
   - ${ verified_complaint_claims_terms["insufficient notice"]["question"] }: verified_complaint_claims["insufficient notice"].has_claim
     datatype: yesno
     default: |
@@ -374,30 +374,31 @@ fields:
 id: claim i details
 question: |
   % if i == "other":
-  More information about your landlord's violation of landlord-tenant law
+  More information about your landlord's **violation of landlord-tenant law**.
   % else:
-  More information about when your landlord ${ verified_complaint_claims_terms[i]["direct"] }.
+  More information about when your landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
   % endif
 subquestion: |
   % if i == "other":
-  Tell us more about what happened with the other violation of landlord-tenant law.
+  Tell us more about what happened with the **other violation of landlord-tenant law**.
   % elif i == "utility no agreement":
   Tell us a little more about what happened when your landlord required you to pay for
-  ${ complaint_utility_not_paid.true_values() } without a written agreement.
+  **${ complaint_utility_not_paid.true_values() }** without a written agreement.
   % elif i == "utility shutoff":
   % if len(complaint_utility_shutoff.true_values()) > 1: 
-  Tell us a little more about what happened when your ${ complaint_utility_shutoff.true_values() }
+  Tell us a little more about what happened when your **${ complaint_utility_shutoff.true_values() }**
   were turned off. 
   % else:
-  Tell us a little more about what happened when your ${ complaint_utility_shutoff.true_values() }
+  Tell us a little more about what happened when your **${ complaint_utility_shutoff.true_values() }**
   was turned off. 
   % endif
   % else:
-  Tell us a little more about what happened when your landlord ${ verified_complaint_claims_terms[i]["direct"] }.
+  Tell us a little more about what happened when your landlord **${ verified_complaint_claims_terms[i]["direct"] }.**
   % endif
   
-  About 1-2 sentences is helpful for the judge to know in this document. You can explain more details
-  later.
+  The information you share on this screen will appear on your 
+  final documents for the judge. You can edit and explain more
+  details later.
 fields:  
   - label above field: True
     label: |
@@ -411,7 +412,7 @@ fields:
     field: verified_complaint_claims[i].details
     datatype: area
     rows: 2
-  - When did this happen? State an exact date or the best date you can remember, such as "last summer". Include a year.: verified_complaint_claims[i].date
+  - When did this happen? State an exact date or the best date you can remember, such as "Summer 2021". Include a year.: verified_complaint_claims[i].date
     label above field: True
     validate: |
       lambda y: re.search(r"\d\d\d\d", y) or validation_error(f"Include a year with your answer, like \"{today().year}\"")
