@@ -552,7 +552,7 @@ continue button field: launch_made
 question: |
   Stop your eviction
 subquestion: |
-  Select the link below to start using MADE, Massachusetts Defense
+  Tap the link below to start using MADE, Massachusetts Defense
   for Eviction in a new window.
   
   When you are finished, you can come back here.
@@ -787,7 +787,7 @@ question: |
   Does ${ users.familiar() } have any of the problems listed below?
   % endif
 subquestion: |
-  This is a list of common problems that tenants have. Select the 
+  This is a list of common problems that tenants have. Tap the 
   question mark icon to get more information about each
   problem.
 
@@ -870,7 +870,7 @@ content: |
   150 problems. Some may be problems you did not know your
   landlord needs to fix.
 
-  The list of problems comes from the [State Sanitary Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download). We have
+  The list of problems comes from the State Sanitary Code. We have
   translated the Sanitary Code into easier to understand sentences
   with short explanations.
 ---  
