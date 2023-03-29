@@ -1000,7 +1000,7 @@ subquestion: |
   You can list any problems that you have had in the last 6 years at this apartment,
   even if they are fixed now.  
 
-  ${ collapse_template(sanitary_code_template) }
+  ${ collapse_template(sanitary_code_explanation_template) }
 fields:
   - no label: bad_conditions[i].claims
     datatype: checkboxes
@@ -1011,7 +1011,7 @@ fields:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []  + bad_conditions["common problems"].claims.true_values()
 ---
-template: sanitary_code_template
+template: sanitary_code_explanation_template
 subject: |
   Related Sanitary Code
 content: |
@@ -1333,7 +1333,12 @@ code: |
   interview_order_request_housing_inspection = True
 ---
 code: |
-  inspector_information = inspector_loader.load_row(users[0].normalized_address().city).fillna("")
+  if users[0].normalized_address().city.lower() in ['boston', 'charlestown', 'dorchester','roxbury', 'jamaica plain', 'brighton', 'allston']:
+    inspector_information = inspector_loader.load_row("Boston").fillna("")
+  else:
+    inspector_information = inspector_loader.load_row(users[0].normalized_address().city).fillna("")
+  if inspector_information.empty:
+    inspector_information = DAEmpty()
 ---
 id: display inspector information
 continue button field: display_inspector_information
@@ -1669,6 +1674,7 @@ code: |
   Repair_Demand_Letter_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
 ---
 code: |
+  # Petition to enforce the sanitary code - enforce_inspection
   sanitary_code_template_attachment.enabled = screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection') and inspection
 ---
 code: |

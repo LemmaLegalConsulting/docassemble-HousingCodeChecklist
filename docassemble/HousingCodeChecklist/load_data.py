@@ -2,6 +2,7 @@ from docassemble.base.util import (
     as_datetime,
     DADateTime,
     DADict,
+    DAEmpty,
     DAList,
     DAObject,
     path_and_mimetype,
@@ -136,7 +137,17 @@ class InspectorLoader(BaseDataLoader):
             "City", inplace=True
         )
         return df
-
+    
+    def load_row(self, index: Union[int, str]) -> Union[pd.Series, pd.DataFrame]:
+        """
+        Retrieve all of the data in a single row of the DataFrame
+        """
+        df = self._load_data()
+        try:
+            row = df.loc[index]
+        except:
+            return pd.DataFrame()
+        return row
 
 class Condition(DAObject):
     def init(self, *pargs, **kwargs):
