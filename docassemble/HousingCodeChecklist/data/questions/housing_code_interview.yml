@@ -13,10 +13,10 @@ include:
   - verified_complaint_and_motions_to_include.yml
   - docassemble.SanitaryCode:sanitary_code_template.yml
   - Repair_Letter_Tenant.yml
+  - customized_screens.yml
   - language.yml
   - simple_conditions.yml
   - orders_and_contempt_complaint.yml
-  - customized_screens.yml
 ---
 features:
   bootstrap theme: uptocode.bootstrap.css
@@ -59,6 +59,13 @@ default screen parts:
 code: |
   # Allow downloads on the custom error screen
   al_enable_incomplete_downloads = True
+---
+variable name: allowed_courts
+data:
+  - Boston Municipal Court
+  - District Court
+  - Housing Court
+  - Superior Court
 ---
 mandatory: True
 id: interview order
@@ -1677,6 +1684,11 @@ code: |
   # Petition to enforce the sanitary code - enforce_inspection
   sanitary_code_template_attachment.enabled = screen_ll_knows_problem and screen_contacted_housing_inspector and document_choice.get('enforce_inspection') and inspection
 ---
+depends on:
+  - sanitary_code_template_attachment.enabled
+code: |
+  sanitary_code_instructions_attachment.enabled = sanitary_code_template_attachment.enabled
+---
 code: |
   verified_complaint_and_motions_attachment.enabled = document_choice["sue_landlord"]
 ---
@@ -1690,8 +1702,11 @@ code: |
   temporary_order.enabled = verified_complaint_and_motions_attachment.enabled
 ---
 code: |
-  if trial_court.department != "Housing Court":
-    order_of_notice.enabled = verified_complaint_and_motions_attachment.enabled
+  if verified_complaint_and_motions_attachment.enabled:
+    if trial_court.department != "Housing Court":
+      order_of_notice.enabled = True
+    else:
+      order_of_notice.enabled = False
   else:
     order_of_notice.enabled = False
 ---
