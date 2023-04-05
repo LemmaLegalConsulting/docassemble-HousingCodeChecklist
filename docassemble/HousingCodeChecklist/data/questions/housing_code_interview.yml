@@ -605,7 +605,7 @@ fields:
       
       Answer "no" if:
       
-      - there is no eviction case
+      - there is no eviction case,
       - the eviction case is already over, or
       - you only have a "Notice to Quit" or "Notice to Terminate Tenancy"
   - Does your landlord know about the problems that you need them to fix?: tenant_sent_ll_notice
@@ -759,7 +759,7 @@ subquestion: |
     "Retaliation" is illegal. 
     Your landlord cannot evict you or raise your rent because you complain
     about problems in your home. 
-    <a class="alert-link" href="https://www.masslegalhelp.org/when-is-eviction-illegal">Read more</a>.
+    <a class="alert-link" href="https://www.masslegalhelp.org/when-is-eviction-illegal" target="_blank" rel="noopener noreferrer">Read more</a>.
     </p>
   </div>
 continue button field: intro_terms_of_use  

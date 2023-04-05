@@ -412,7 +412,7 @@ fields:
     field: verified_complaint_claims[i].details
     datatype: area
     rows: 2
-  - When did this happen? State an exact date or the best date you can remember, such as "Summer 2021". Include a year.: verified_complaint_claims[i].date
+  - When did this happen? State an exact date or the best date you can remember, such as "Summer 2021". **Include a year.**: verified_complaint_claims[i].date
     label above field: True
     validate: |
       lambda y: re.search(r"\d\d\d\d", y) or validation_error(f"Include a year with your answer, like \"{today().year}\"")
