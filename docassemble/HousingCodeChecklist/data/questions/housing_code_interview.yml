@@ -848,17 +848,38 @@ id: review simple conditions
 question: |
   Do you want to keep exploring problems?
 subquestion: |
-  % if bad_conditions["common problems"].claims.any_true():
-  % if len(bad_conditions["common problems"].claims.true_values()) > 1:
-  You have picked ${ len(bad_conditions["common problems"].claims.true_values()) } problems
-  so far.
-  % else:
-  You have picked 1 problem so far.
-  % endif
-  % endif
+  % if len(bad_conditions.elements): 
+  **You have told us about the following problems:**
   
-  You can keep exploring problems by room and category, or skip ahead
-  to start working on a solution.
+  % for basis in kind_of_lawsuit.true_values():
+  % if basis == "enforce_inspection":
+  * Enforce an inspection
+  % elif basis == "get_emergency_repairs":
+  * Get repairs
+  % elif basis == "past_repair_needs":
+  * Get paid because of repairs I needed in the last 6 years
+  % elif basis == "illegal_lockout":
+  * Landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
+  % elif basis == "entered_without_permission":
+  * Landlord entered my home without permission
+  % elif basis == "insufficient_notice":
+  * Landlord entered without notice
+  % elif basis == "utilities_no_agreement":
+  * Landlord made me pay for utilities without a written agreement
+  % elif basis == "utility_shutoff":
+  * My utilities were shutoff
+  % elif basis == "other_landlord_tenant":
+  * Other
+  % elif basis == "file_contempt_complaint":
+  * My landlord is ignoring a court order
+  % endif
+  % endfor
+  % for category in bad_conditions.elements:  
+  % for index, row in bad_conditions[category].df.iterrows():
+  * [:pencil-alt: ${ row['Interview description'] }](${ url_action(f'bad_conditions["{str(category)}"].details["{str(index)}"].condition_existed_at_start')})
+  % endfor
+  % endfor
+  % endif
 
   ${ collapse_template(how_many_problems_are_there_template)}
 
