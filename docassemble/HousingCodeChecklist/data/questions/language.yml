@@ -7,7 +7,7 @@ modules:
   - docassemble.AssemblyLine.language
 ---
 code: |
-  metadata_title = "MADE: UpToCode"
+  metadata_title = "UpToCode"
 ---
 initial: True
 code: |
