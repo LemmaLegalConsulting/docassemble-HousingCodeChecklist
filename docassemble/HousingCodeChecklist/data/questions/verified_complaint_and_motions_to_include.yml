@@ -759,9 +759,15 @@ rows: |-
 table: |-
   verified_complaint_claims.table
 ---
+code: |
+  if complaint_ask_for_tro and include_conditions_in_complaint:
+    verified_complaint_and_motions_attachment.title = "Tenant complaint for emergency repairs"
+  else:
+    verified_complaint_and_motions_attachment.title = "Tenant complaint for repairs"
+---
 objects:
   - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions for your court documents", filename="next_steps_complaint.docx", has_addendum=False)
-  - verified_complaint_and_motions_attachment: ALDocument.using(title="Tenant complaint for emergency repairs", filename="verified_complaint_and_motions.docx", has_addendum=False)
+  - verified_complaint_and_motions_attachment: ALDocument.using(filename="verified_complaint_and_motions.docx", has_addendum=False)
 ---
 attachments:
   - name: verified complaint and motions post interview instructions
