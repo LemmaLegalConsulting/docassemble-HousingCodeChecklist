@@ -23,7 +23,7 @@ features:
 ---
 metadata:
   title: |-
-    MADE: UpToCode
+    UpToCode
   authors:
     - Quinten Steenhuis
     - Michael Cronin
@@ -1823,9 +1823,9 @@ objects:
   - mlac_logo: DAStaticFile.using(filename="mlac_logo.png")
 ---
 event: about_this_interview
-id: about made uptocode
+id: about uptocode
 question: |
-  About MADE: UpToCode
+  About UpToCode
 subquestion: |
   ${ about_this_interview_version_info }
 back button label: |
@@ -1833,9 +1833,11 @@ back button label: |
 ---
 template: about_this_interview_version_info
 content: |
-  MADE: UpToCode is a free website that gives tenants the power to solve
+  UpToCode is a free website that gives tenants the power to solve
   landlord problems. It's funded by the national Legal Services Corporation and
   Massachusetts nonprofits.
+  
+  UpToCode does not share any personal identifying information with the government or any other entity. 
 
   UpToCode includes a translated and easy to read English version of the Massachusetts
   Sanitary Code, the law that lists the requirements that Massachusetts landlords
