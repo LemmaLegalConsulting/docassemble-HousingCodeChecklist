@@ -1696,10 +1696,13 @@ code: |
   request_housing_inspection_attachment.enabled = screen_ll_knows_problem and document_choice['get_inspection']
 ---
 code: |
-  tenant_repair_request_attachment.enabled = letter_to_notify_landlord_instructions_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
+  tenant_repair_request_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
+---
+code: |
+  letter_to_notify_landlord_instructions_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
 ---
 code: |  
-  Repair_Demand_Letter_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
+  Repair_Demand_Letter_attachment.enabled = screen_ll_knows_problem and document_choice['demand_letter_93a']
 ---
 code: |
   # Petition to enforce the sanitary code - enforce_inspection
