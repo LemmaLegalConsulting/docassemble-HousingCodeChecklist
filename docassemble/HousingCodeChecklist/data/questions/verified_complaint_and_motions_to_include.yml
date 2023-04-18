@@ -762,8 +762,12 @@ table: |-
 code: |
   if complaint_ask_for_tro and include_conditions_in_complaint:
     verified_complaint_and_motions_attachment.title = "Tenant complaint for emergency repairs"
-  else:
+  elif not complaint_ask_for_tro and include_conditions_in_complaint:
     verified_complaint_and_motions_attachment.title = "Tenant complaint for repairs"
+  elif complaint_ask_for_tro and not include_conditions_in_complaint:
+    verified_complaint_and_motions_attachment.title = "Tenant complaint for emergency relief"
+  else:
+    verified_complaint_and_motions_attachment.title = "Tenant complaint for relief"
 ---
 objects:
   - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions for your court documents", filename="next_steps_complaint.docx", has_addendum=False)
