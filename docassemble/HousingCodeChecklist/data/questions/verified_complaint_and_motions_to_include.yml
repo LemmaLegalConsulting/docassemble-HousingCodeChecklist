@@ -494,7 +494,7 @@ fields:
   - note: |
       **Okay**. Your complaint will include your demand letter. You can update your complaint later. We can also remind you to come back and update your complaint.
     show if:
-      variable:  confirm_ask_for_damages
+      variable: confirm_ask_for_damages
       is: keep_on_suing
 ---
 ################## Fee waiver integration ##################
