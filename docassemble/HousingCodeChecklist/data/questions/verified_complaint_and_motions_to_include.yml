@@ -492,7 +492,7 @@ fields:
       variable: confirm_ask_for_damages
       is: postpone_damages
   - note: |
-      **Okay**. Your complaint will include your demand letter. You can update your complaint later. We can also remind you to come back and update your complaint.
+      **Okay**. Your complaint will include a demand that your landlord must respond to within 30 days. We can remind you to come back and amend your complaint after 30 days.
     show if:
       variable: confirm_ask_for_damages
       is: keep_on_suing
