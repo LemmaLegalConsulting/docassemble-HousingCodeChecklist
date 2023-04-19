@@ -129,11 +129,6 @@ data: !!omap
       section_label: Obtenga una inspecció
       name: Obtenga una inspecció
       count: 2
-  - enforce_inspection: 
-      section_link: review_sanitary_code_template
-      section_label: Hacer cumplir una inspección de la ciudad
-      name: Hacer cumplir una inspección de la ciudad
-      count: 2
   - fix_problems:
       section_link: review_repair_and_deduct
       section_label: Repararlo yo mismo
@@ -304,7 +299,6 @@ sections:
   - download_conditions_checklist_docs: Telechaje
 auto open: True  
 ---
----
 language: ht
 comment: |
   Section labels for child interviews that have follow-up
@@ -336,11 +330,6 @@ data: !!omap
       section_label: Jwenn yon enspeksyon 
       name: Mande yon enspeksyon vil la 
       count: 2
-  #- enforce_inspection: 
-  #    section_link: review_sanitary_code_template
-  #    section_label: Enforce an inspection
-  #    name: Ask a judge to enforce a city inspection
-  #    count: 2
   - fix_problems:
       section_link: review_repair_and_deduct
       section_label: Ranje pwoblèm yo tèt mwen
@@ -403,11 +392,6 @@ data: !!omap
       section_label: Faça uma inspeção
       name: Solicite uma vistoria municipal 
       count: 2
-  #- enforce_inspection: 
-  #    section_link: review_sanitary_code_template
-  #    section_label: Enforce an inspection
-  #    name: Ask a judge to enforce a city inspection
-  #    count: 2
   - fix_problems:
       section_link: review_repair_and_deduct
       section_label: Corrigir os problemas sozinho 
