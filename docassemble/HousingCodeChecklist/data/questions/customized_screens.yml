@@ -713,6 +713,24 @@ review:
       Your landlord's address: ${ other_parties[0].address.address }
 ---
 if: |
+  # this should only be reached if the user's address is out of state
+  not len(all_matches) and all_courts.filter_courts(allowed_courts) 
+sets:
+  - trial_court
+id: choose a court (no matching courts found)
+question: |
+  What court do you want to file in?
+subquestion: |
+  Most tenants file in the Housing Court.
+  
+  ${ collapse_template(housing_how_to_pick_court_help_template) }
+fields:
+  - no label: trial_court
+    datatype: object
+    object labeler: court_short_label
+    choices: all_courts.filter_courts(allowed_courts) 
+---
+if: |
   len(all_matches) and all_courts.filter_courts(allowed_courts) 
 id: choose a court (courts matching provided address were found)
 question: |
