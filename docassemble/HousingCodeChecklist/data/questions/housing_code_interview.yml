@@ -849,7 +849,6 @@ id: review simple conditions
 question: |
   Do you want to keep exploring problems?
 subquestion: |
-  % if len(bad_conditions.elements): 
   **You have told us about the following problems:**
   
   % for basis in kind_of_lawsuit.true_values():
@@ -880,7 +879,6 @@ subquestion: |
   * [:pencil-alt: ${ row['Interview description'] }](${ url_action(f'bad_conditions["{str(category)}"].details["{str(index)}"].condition_existed_at_start')})
   % endfor
   % endfor
-  % endif
 
   ${ collapse_template(how_many_problems_are_there_template)}
 
