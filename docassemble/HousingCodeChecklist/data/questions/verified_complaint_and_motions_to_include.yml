@@ -40,6 +40,7 @@ code: |
   allowed_courts = interview_metadata["verified_complaint_and_motions"]["allowed courts"]
   nav.set_section('review_verified_complaint_and_motions')
   user_role = 'plaintiff'
+  user_ask_role = 'plaintiff'
   File_a_Verified_Complaint_Form
   users.gather()
   other_parties.gather()
@@ -66,6 +67,7 @@ code: |
   trial_court.address.address
   other_parties[0].address.address
   signature_date
+  verified_complaint_wants_fee_waiver
   interview_order_verified_complaint_and_motions = True
 ---
 code: |
@@ -489,8 +491,13 @@ fields:
       demand letter. We can also remind you to come back and ask for money in
       about 30 days.
     show if:
-      variable:  confirm_ask_for_damages
+      variable: confirm_ask_for_damages
       is: postpone_damages
+  - note: |
+      **Okay**. Your complaint will include a demand that your landlord must respond to within 30 days. We can remind you to come back and amend your complaint after 30 days.
+    show if:
+      variable: confirm_ask_for_damages
+      is: keep_on_suing
 ---
 ################## Fee waiver integration ##################
 ---

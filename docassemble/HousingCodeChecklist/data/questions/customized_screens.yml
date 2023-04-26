@@ -677,21 +677,21 @@ help: |
   
   [Read more](https://www.masslegalhelp.org/housing/lt1-chapter-8-rights-decent-place-live)
 ---
-########################################
-# Petition to enforce Sanitary Code
-########################################
----
-id: no inspection kickout
-question: |
-  You need to have an inspection in order to enforce the inspection
-subquestion: |
-  In order to file the Petition properly you need to have an inspection report or an inspection scheduled at least 24 hours before the filing of this petition.
-
-  Contact your town offices to find out how to schedule an inspection.
-  
-  We will leave this form out of your final packet.
-continue button field: kick_out
----
+#########################################
+## Petition to enforce Sanitary Code
+#########################################
+#---
+#id: no inspection kickout
+#question: |
+#  You need to have an inspection in order to enforce the inspection
+#subquestion: |
+#  In order to file the Petition properly you need to have an inspection report or an inspection scheduled at least 24 hours before the filing of this petition.
+#
+#  Contact your town offices to find out how to schedule an inspection.
+#  
+#  We will leave this form out of your final packet.
+#continue button field: kick_out
+#---
 event: review_request_housing_inspection
 question: |
   Review your request for a housing inspection
@@ -711,6 +711,24 @@ review:
   - Edit: other_parties[0].address.address
     button: |
       Your landlord's address: ${ other_parties[0].address.address }
+---
+if: |
+  # this should only be reached if the user's address is out of state
+  not len(all_matches) and all_courts.filter_courts(allowed_courts) 
+sets:
+  - trial_court
+id: choose a court (no matching courts found)
+question: |
+  What court do you want to file in?
+subquestion: |
+  Most tenants file in the Housing Court.
+  
+  ${ collapse_template(housing_how_to_pick_court_help_template) }
+fields:
+  - no label: trial_court
+    datatype: object
+    object labeler: court_short_label
+    choices: all_courts.filter_courts(allowed_courts) 
 ---
 if: |
   len(all_matches) and all_courts.filter_courts(allowed_courts) 
