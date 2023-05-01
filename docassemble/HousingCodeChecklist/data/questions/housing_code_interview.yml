@@ -494,12 +494,27 @@ depends on:
   - document_choice
 code: |
   new_sections = []
-  if screen_ll_knows_problem:
+  if initial_action_selection in ["document_by_room", "give_notice"] and screen_ll_knows_problem:
     for document in sub_documents:
       if document in document_choice.true_values():
         new_sections.append({
           sub_documents[document].get('section_link'):  sub_documents[document].get('section_label')
         })
+  elif initial_action_selection == "help_in_court": 
+  
+    position = 2 # ################ Current, hardcoded position in the list
+    position_label = 'Choose a solution'
+    
+    old_nav1 = nav.get_sections()
+    new_nav = [item for item in old_nav1 if not next(iter(item.values())) == 'main_triage_screen']
+    
+    for index, item in enumerate(new_nav):
+      position = index
+      position_label = next(iter(item.values()))
+    new_nav[position] = {position_label: 'Answer questions'}
+
+    nav.set_sections(new_nav)
+  
   else:
     new_sections.append({sub_documents['tell_landlord'].get('section_link'): sub_documents['tell_landlord'].get('section_label')})
     new_sections.append({sub_documents['organize_tenants'].get('section_link'): sub_documents['organize_tenants'].get('section_label')})
@@ -574,8 +589,8 @@ fields:
       - My landlord went into my home without giving me enough notice: insufficient_notice
       - My landlord made me pay for utilities but we did not have a written agreement: utilities_no_agreement
       - My utilities were shutoff: utility_shutoff
-      - I need help with something else: other_landlord_tenant
       - My landlord is ignoring a court order: file_contempt_complaint
+      - I need help with something else: other_landlord_tenant
     minlength: 1
     validation messages:
       minlength: |
