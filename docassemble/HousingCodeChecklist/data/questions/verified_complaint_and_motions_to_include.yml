@@ -186,8 +186,7 @@ subquestion: |
   the landlord to fix them.
 fields:
   - Do you want the landlord to pay for a hotel or new apartment while they fix the problems?: complaint_ask_for_relocation
-    datatype: yesnoradio
-    default: True      
+    datatype: yesnoradio    
 ---
 id: getting money
 question: |
