@@ -359,46 +359,47 @@ subquestion: |
 
   ${ display_template(about_page_contents, scrollable=True, collapse=True) }
 fields:
-  - To continue, you must accept the terms of use: acknowledged_information_use
+  - "To continue, you must accept the Terms of Use.": acknowledged_information_use
     datatype: checkboxes
     none of the above: False    
     minlength: 1
     choices:
-      - I accept the terms of use.
+      - I accept the Terms of Use.
     validation messages:
       minlength: |
-        You cannot continue unless you agree to the terms of use.
+        You cannot continue unless you agree to the Terms of Use.
 
 ---
 continue button field: intro_and_terms_of_use
 question: |
-  Start exploring problems and solutions
+  Explore solutions to the problems in your home
 subquestion: |
   <div class="alert alert-secondary h-100 mh-100" role="alert">
-    <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this works</h2>
+    <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this program works</h2>
     <p class="h-100 overflow-visible mb-0">
 
   On the next few screens you can:
 
   <ol>
   <li>
-    Track the problems you have in each room of your home. You can add dates and photos, too.
+    Track the problems in each room of your home. You can add dates and photos, too.
   </li>
   <li>
-  Start a next step. You can send a letter, get
-  a city inspection, or get a judge to order your landlord to fix the problem.
+  Answer questions to help you:
+  <ul>
+  <li>write a letter,</li>
+  <li>ask the city for an inspection, or</li>
+  <li>ask a judge to order your landlord to fix the problem.</li>
+  </ul>
   </li>
   <li>
-  Answer step-by-step questions.
-  </li>
-  <li>
-  Download your completed documents, print, and deliver to the right place.
+  Download your completed documents, print, and deliver them to the right place.
   </li>
   </ul>
   </p>
   </div>
 
-  It takes most tenants between 20 minutes and 1 hour to finish.
+  It takes most tenants 20 minutes to 1 hour to answer the questions and get the documents they need.
 
   ${ display_template(about_page_contents, scrollable=True, collapse=True) }
 fields:
@@ -410,7 +411,7 @@ fields:
       - I accept the terms of use.
     validation messages:
       minlength: |
-        You cannot continue unless you agree to the terms of use.
+        You can only continue if you agree to the terms of use.
 ---
 event: initial_action
 code: |
@@ -698,7 +699,7 @@ features:
   progress bar: False
 ---
 objects:
-  - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
+  - dataloader: DataLoader.using(filename="housing_code_checklist_pl.xlsx")
   - inspector_loader: InspectorLoader.using(filename="housing_inspectors.xlsx")
   - bad_conditions: ConditionsDict.using(there_are_any=True)
 ---
@@ -736,20 +737,22 @@ question: |
   % if person_answering == "tenant":
   ${ users.familiar() }, you can do this!
   % else:
-  Let's get started helping ${ users.familiar() }!
+  Let's start helping ${ users.familiar() }!
   % endif
 subquestion: |
   % if initial_action_selection in ["document_by_room", "give_notice"] or (initial_action_selection == "help_in_court" and kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs")):
-  We will start by asking you about the repairs that you need.
+  Start with the repairs your home needs.
 
   % endif
   <div class="alert alert-secondary h-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
-    "Retaliation" is illegal. 
-    Your landlord cannot evict you or raise your rent because you complain
-    about problems in your home. 
-    <a class="alert-link" href="https://www.masslegalhelp.org/when-is-eviction-illegal" target="_blank" rel="noopener noreferrer">Read more</a>.
+    "Retaliation" is illegal. Your landlord cannot:
+    <ul>
+    <li>evict you, <strong>or</strong></li>
+    <li>raise your rent,</li> 
+    </ul>just because you complain about problems in your home. 
+    <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction" target="_blank" rel="noopener noreferrer">Read more</a>.
     </p>
   </div>
 continue button field: intro_terms_of_use  
@@ -779,60 +782,58 @@ undefine:
   - bad_conditions["common problems"].complete
 question: |
   % if person_answering == "tenant":
-  Do you have any of the problems listed below?
+  Does your home have any of these problems?
   % else:
-  Does ${ users.familiar() } have any of the problems listed below?
+  Does ${ users.familiar() }'s home have any of these problems?
   % endif
 subquestion: |
-  This is a list of common problems that tenants have. Tap the 
-  question mark icon to get more information about each
-  problem.
-
-  You can include any problems you have had over the last **6 years** in this apartment, even
-  if they are fixed now.
-
+  This is a list of problems that tenants often have in their home. Tap the  question mark <i class="fa-solid fa-circle-question" style="color: #c7e6b0;"></i> to get more information about each problem.
+  
+   % if person_answering == "tenant":
+  You can include any problems you had over the last **6 years** in this apartment, even if they are fixed now.
+  % else:
+  You can include any problems ${ users.familiar() } had over the last **6 years** in this apartment, even if they are fixed now.
+  % endif
+  
   ${ collapse_template(how_far_back_should_i_go_template) }
 fields:
   - label: |
       % if person_answering == "tenant":
-      What repair problems do you have?
+      What repairs does your home need?
       % else:
-      What repair problems does ${ users.familiar() } have?
+      What repairs does ${ users.familiar() }'s need?
       % endif
     field: bad_conditions["common problems"].claims
     datatype: checkboxes
     code: |
       conditions_from_list(dataloader, simple_conditions_list, language=user_language)
   - note: |
-      <h2 class="h4">Have you had any of these additional problems?<h2>
+      <h2 class="h4">Did you have any of these other problems?<h2>
     show if:
       code: |
         initial_action_selection != "help_in_court"
   - Choose any that apply: kind_of_lawsuit
     datatype: checkboxes
     choices:
-      - My landlord changed my locks or moved my things or threatened to do so: illegal_lockout          
-      - My landlord went into my home without permission: entered_without_permission
+      - My landlord changed my locks, moved my things or threatened to do so: illegal_lockout          
+      - My landlord went into my home without my permission: entered_without_permission
       - My landlord went into my home without giving me enough notice: insufficient_notice
-      - My landlord made me pay for utilities but we did not have a written agreement: utilities_no_agreement
+      - My landlord made me pay for utilities, but we did not have a written agreement: utilities_no_agreement
       - My utilities were shutoff: utility_shutoff
       - My landlord is ignoring a court order: file_contempt_complaint
     show if:
       code: |
         initial_action_selection != "help_in_court"
   - note: |
-      If you do not see your problem on this list, there are more problems
-      to pick from if you keep going.
+      If you do not see the problem you need help with on this list, go to the next screen to see more.
 ---
 template: how_far_back_should_i_go_template
 subject: |
   What problems should I list?
 content: |
-  If you want to sue your landlord for money, you can list any problems that you have
-  had over the last 6 years. Even if the problem is fixed now.
+  If you want to sue your landlord for money, you can list any problems you had over the last 6 years. Even if the problem is fixed now.
 
-  Tenants who do not want to sue their landlord usually only list problems that still 
-  need to be fixed.
+  Tenants who do not want to sue their landlord usually list only problems that still need to be fixed.
 ---
 id: review simple conditions
 question: |
@@ -1013,7 +1014,7 @@ id: Non-emergency claims
 question: |
   Problems with **${ i }**
 subquestion: |
-  You can list any problems that you have had in the last 6 years at this apartment,
+  You can list any problems that you had in the last 6 years at this apartment,
   even if they are fixed now.  
 
   ${ collapse_template(sanitary_code_explanation_template) }
