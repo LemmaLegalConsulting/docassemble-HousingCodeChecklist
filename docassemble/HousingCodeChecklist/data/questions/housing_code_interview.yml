@@ -91,15 +91,18 @@ code: |
       if not tenant_called_inspector:
         add_inspection_letter
       interview_order_navigate_conditions
-    
+  
   snapshot_interview_state
-  include_conditions_in_complaint # Evaluate so it is available in complaint template
+  
   if initial_action_selection in ["document_by_room", "give_notice"]:
     interview_order_navigate_conditions
   nav.set_section('main_triage_screen')
   screen_ll_knows_problem
   reconsider('snapshot_interview_state')
-  nav.set_section('provide_details')  
+  nav.set_section('provide_details')
+  
+  include_conditions_in_complaint # Evaluate so it is available in complaint template
+  
   if not screen_ll_knows_problem:
     update_sections_with_selected_documents
     nav.set_section(sub_documents['tell_landlord'].get('section_link'))
@@ -193,11 +196,9 @@ code: |
 code: |
   al_form_requires_digital_signature = False
 ---
-depends on:
-  - initial_action_selection
-  - kind_of_lawsuit
+reconsider: True
 code: |
-  include_conditions_in_complaint = initial_action_selection in ["document_by_room", "give_notice"] or (initial_action_selection == "help_in_court" and kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"))
+  include_conditions_in_complaint = bad_conditions.count_conditions() > 0
 ---
 objects:
   - users[0].attorney: ALIndividual
@@ -530,7 +531,7 @@ code: |
   except:
     pass  
   flattened_conditions = []
-  if include_conditions_in_complaint:
+  if defined("bad_conditions") and include_conditions_in_complaint:
     for category in bad_conditions.complete_elements():
       flattened_conditions.extend(bad_conditions[category].claims.true_values())
 
@@ -838,7 +839,6 @@ id: review simple conditions
 question: |
   Do you want to keep exploring problems?
 subquestion: |
-  % if len(bad_conditions.elements): 
   **You have told us about the following problems:**
   
   % for basis in kind_of_lawsuit.true_values():
@@ -867,7 +867,6 @@ subquestion: |
   * [:pencil-alt: ${ row['Interview description'] }](${ url_action(f'bad_conditions["{str(category)}"].details["{str(index)}"].condition_existed_at_start')})
   % endfor
   % endfor
-  % endif
 
   ${ collapse_template(how_many_problems_are_there_template)}
 
@@ -1671,7 +1670,7 @@ code: |
   organize_tenants_attachment.enabled = screen_ll_knows_problem and document_choice['organize_tenants'] 
 ---
 code: |
-  conditions_report_attachment.enabled = action_argument('enabled') or screen_ll_knows_problem and document_choice['get_report']
+  conditions_report_attachment.enabled = action_argument('enabled') or (screen_ll_knows_problem and document_choice['get_report'] and include_conditions_in_complaint)
 ---
 code: |
   request_housing_inspection_attachment.enabled = screen_ll_knows_problem and document_choice['get_inspection']
