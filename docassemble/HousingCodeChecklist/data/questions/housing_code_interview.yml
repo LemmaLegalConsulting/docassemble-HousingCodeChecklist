@@ -220,15 +220,15 @@ question: |
 subquestion: |
   Need help with repairs or stopping landlord harassment? Select a task to get started.
   
-  % if started_on_phone:
+  % if device() and hasattr(device(), "is_mobile") and device().is_mobile:
 
   <div class="row g-3 mb-2">
   <div class="col-md-6">
   <div class="card" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">Explore problems and solutions</h5>
+        <div class="card-body bg-info">
+          <h5 class="card-title"><i class="fa-solid fa-magnifying-glass"></i> Explore problems and solutions</h5>
           <p class="card-text">Explore problems by room and category and get your landlord to fix them.</p>
           <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start exploring</a>
         </div>
@@ -240,8 +240,8 @@ subquestion: |
   <div class="card" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">Get an order from a judge</h5>
+        <div class="card-body bg-info">
+          <h5 class="card-title"><i class="fa-solid fa-gavel"></i> Get an order from a judge</h5>
           <p class="card-text">Get an emergency order or an order for your landlord to pay you money.</p>
           <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="help_in_court") }" role="button">Get help in court</a>
         </div>
@@ -254,8 +254,8 @@ subquestion: |
   <div class="card" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">Defend against an eviction</h5>
+        <div class="card-body bg-info">
+          <h5 class="card-title"><i class="fa-solid fa-user-shield"></i> Defend against an eviction</h5>
           <p class="card-text">Getting evicted? Stop the eviction before you do anything else.</p>
           <a class="btn btn-primary stretched-link align-self-end" href="https://interviews.gbls.org/start/eviction/" role="button">Defend against an eviction</a>
         </div>
@@ -269,8 +269,8 @@ subquestion: |
   <div class="card" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title">Keep working</h5>
+        <div class="card-body bg-info">
+          <h5 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Keep working</h5>
           <p class="card-text">You have already started using UpToCode. You can start from where you left off.</p>
           <a class="btn btn-primary stretched-link align-self-end" href="${ interview_url(i=f"{user_info().package}:load_answers.yml") }" role="button">Use my previous answers</a>
         </div>
