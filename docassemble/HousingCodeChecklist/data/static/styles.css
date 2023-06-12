@@ -34,7 +34,7 @@
 
 /* === All nav items === */
 .danav-vertical .nav-link {
-  padding: .2em 1em;
+  padding: .55em 1em;
 }
 
 .danav-vertical .danavlink::before {
@@ -144,17 +144,17 @@
   /* The button style guide gives 15 extra pixels or so to the width
   * of the center column. These styles currently choose to make the
   * text and all `em` styles slightly smaller instead. */
-  font-size: 0.9em;
+  font-size: 0.7em;
   /* position relative to anchor the position absolute angle bracket
   * on the right-hand side */
   position: relative;
-  width: 46%;
+  width: 48%;
   height: auto;
-  margin-right: 0.7em;
+  margin-right: 0.3em;
   text-align: left;
   padding: 0.75rem 0.8em;
   /* Maintain room for the right-hand side angle bracket */
-  padding-right: 1.8em;
+  padding-right: 1.6em;
   margin-bottom: 0.5em;
   border-radius: 3px;
   font-weight: 600;
