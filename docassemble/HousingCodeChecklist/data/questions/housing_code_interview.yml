@@ -54,6 +54,10 @@ default screen parts:
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
   short logo: |
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
+  navigation bar html: |
+    % if defined('acknowledged_information_use'):
+    ${ get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
+    % endif
 ---
 code: |
   # Allow downloads on the custom error screen
