@@ -360,7 +360,7 @@ subquestion: |
 
   Example:
   
-  > ${ bad_conditions.active_conditions().item(0).description or bad_conditions.active_conditions().item(0).original_description } (C.M.R. ${ bad_conditions.active_conditions().item(0).code })
+  > ${ bad_conditions.active_conditions().item(0).description or bad_conditions.active_conditions().item(0).original_description } (${ bad_conditions.active_conditions().item(0).code })
 fields:
   - Citation style: sanitary_code_citation_style
     datatype: radio
@@ -377,7 +377,7 @@ content: |
   * ${ condition.original_description }
   % endif
   % if sanitary_code_citation_style == "detailed_cites":
-  (C.M.R. ${ condition.code })
+  (${ condition.code })
   % endif
   % endfor
 ---

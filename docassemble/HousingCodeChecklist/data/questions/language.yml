@@ -4,7 +4,7 @@
 ############################################
 ---
 modules:
-  - docassemble.AssemblyLine.language
+  - .language
 ---
 code: |
   metadata_title = "UpToCode"
@@ -35,9 +35,12 @@ code: |
 #    `Package: ${ user_info().package } ${ package_version_number }; ${ al_version }`
 #    <div data-variable="${ encode_name(str( user_info().variable )) }" id="sought_variable" aria-hidden="true" style="display: none;"></div>
 #    % endif  
-# default screen parts:
-#  pre: |    
-    # ${get_language_list(get_tuples(['en','es','pt','ht']),current=user_language)}
+---
+default screen parts:
+    pre: |
+     % if not defined('acknowledged_information_use'):
+     ${ docassemble.AssemblyLine.language.get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
+     % endif
 ---
 depends on:
   - user_language

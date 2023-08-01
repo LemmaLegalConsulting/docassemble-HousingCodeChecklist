@@ -54,6 +54,10 @@ default screen parts:
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
   short logo: |
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
+  navigation bar html: |
+    % if defined('acknowledged_information_use'):
+    ${ get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
+    % endif
 ---
 code: |
   # Allow downloads on the custom error screen
@@ -91,15 +95,18 @@ code: |
       if not tenant_called_inspector:
         add_inspection_letter
       interview_order_navigate_conditions
-    
+  
   snapshot_interview_state
-  include_conditions_in_complaint # Evaluate so it is available in complaint template
+  
   if initial_action_selection in ["document_by_room", "give_notice"]:
     interview_order_navigate_conditions
   nav.set_section('main_triage_screen')
   screen_ll_knows_problem
   reconsider('snapshot_interview_state')
-  nav.set_section('provide_details')  
+  nav.set_section('provide_details')
+  
+  include_conditions_in_complaint # Evaluate so it is available in complaint template
+  
   if not screen_ll_knows_problem:
     update_sections_with_selected_documents
     nav.set_section(sub_documents['tell_landlord'].get('section_link'))
@@ -193,11 +200,9 @@ code: |
 code: |
   al_form_requires_digital_signature = False
 ---
-depends on:
-  - initial_action_selection
-  - kind_of_lawsuit
+reconsider: True
 code: |
-  include_conditions_in_complaint = initial_action_selection in ["document_by_room", "give_notice"] or (initial_action_selection == "help_in_court" and kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"))
+  include_conditions_in_complaint = bad_conditions.count_conditions() > 0
 ---
 objects:
   - users[0].attorney: ALIndividual
@@ -219,6 +224,70 @@ question: |
   You deserve a safe and decent home
 subquestion: |
   Need help with repairs or stopping landlord harassment? Select a task to get started.
+  
+  % if device() and hasattr(device(), "is_mobile") and device().is_mobile:
+
+  <div class="row g-3 mb-2">
+  <div class="col-md-6">
+  <div class="card" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-8">
+        <div class="card-body bg-info">
+          <h5 class="card-title"><i class="fa-solid fa-magnifying-glass"></i> Explore problems and solutions</h5>
+          <p class="card-text">Explore problems by room and category and get your landlord to fix them.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start exploring</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="col-md-6">
+  <div class="card" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-8">
+        <div class="card-body bg-info">
+          <h5 class="card-title"><i class="fa-solid fa-gavel"></i> Get an order from a judge</h5>
+          <p class="card-text">Get an emergency order or an order for your landlord to pay you money.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="help_in_court") }" role="button">Get help in court</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="col-md-6">
+  <div class="card" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-8">
+        <div class="card-body bg-info">
+          <h5 class="card-title"><i class="fa-solid fa-user-shield"></i> Defend against an eviction</h5>
+          <p class="card-text">Getting evicted? Stop the eviction before you do anything else.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="https://interviews.gbls.org/start/eviction/" role="button">Defend against an eviction</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  % if get_saved_interview_list(filename=user_info().filename, exclude_current_filename=False, exclude_newly_started_sessions=True):
+  <div class="col-md-6">
+  <div class="card" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-8">
+        <div class="card-body bg-info">
+          <h5 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Keep working</h5>
+          <p class="card-text">You have already started using UpToCode. You can start from where you left off.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ interview_url(i=f"{user_info().package}:load_answers.yml") }" role="button">Use my previous answers</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  % endif
+
+  </div>
+  
+  % else:
 
   <div class="row g-3 mb-2">
   <div class="col-md-6">
@@ -291,6 +360,8 @@ subquestion: |
   % endif
 
   </div>
+  
+  % endif
 css: |
   <style>
   .question-landing-page div.container {
@@ -531,7 +602,7 @@ code: |
   except:
     pass  
   flattened_conditions = []
-  if include_conditions_in_complaint:
+  if defined("bad_conditions") and include_conditions_in_complaint:
     for category in bad_conditions.complete_elements():
       flattened_conditions.extend(bad_conditions[category].claims.true_values())
 
@@ -787,14 +858,10 @@ question: |
   Does ${ users.familiar() }'s home have any of these problems?
   % endif
 subquestion: |
-  This is a list of problems that tenants often have in their home. Tap the  question mark <i class="fa-solid fa-circle-question" style="color: #c7e6b0;"></i> to get more information about each problem.
-  
-   % if person_answering == "tenant":
-  You can include any problems you had over the last **6 years** in this apartment, even if they are fixed now.
-  % else:
-  You can include any problems ${ users.familiar() } had over the last **6 years** in this apartment, even if they are fixed now.
-  % endif
-  
+  This is a list of common problems that tenants have. Tap the <svg class="svg-inline--fa fa-circle-question" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle-question" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="#c7e6b0" d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM288 352c0 17.7-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32z"></path></svg> 
+  question mark icon to get more information about each
+  problem.
+
   ${ collapse_template(how_far_back_should_i_go_template) }
 fields:
   - label: |
@@ -839,7 +906,6 @@ id: review simple conditions
 question: |
   Do you want to keep exploring problems?
 subquestion: |
-  % if len(bad_conditions.elements): 
   **You have told us about the following problems:**
   
   % for basis in kind_of_lawsuit.true_values():
@@ -868,7 +934,6 @@ subquestion: |
   * [:pencil-alt: ${ row['Interview description'] }](${ url_action(f'bad_conditions["{str(category)}"].details["{str(index)}"].condition_existed_at_start')})
   % endfor
   % endfor
-  % endif
 
   ${ collapse_template(how_many_problems_are_there_template)}
 
@@ -1672,7 +1737,7 @@ code: |
   organize_tenants_attachment.enabled = screen_ll_knows_problem and document_choice['organize_tenants'] 
 ---
 code: |
-  conditions_report_attachment.enabled = action_argument('enabled') or screen_ll_knows_problem and document_choice['get_report']
+  conditions_report_attachment.enabled = action_argument('enabled') or (screen_ll_knows_problem and document_choice['get_report'] and include_conditions_in_complaint)
 ---
 code: |
   request_housing_inspection_attachment.enabled = screen_ll_knows_problem and document_choice['get_inspection']

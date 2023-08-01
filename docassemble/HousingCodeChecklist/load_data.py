@@ -319,3 +319,6 @@ def tr_category(category, available_buttons):
         if category == cat.get("value"):
             return cat.get("label")
     return category
+  
+
+
