@@ -458,13 +458,13 @@ subquestion: |
   <li>
   Answer questions to help you:
   <ul>
-  <li>write a letter,</li>
+  <li>write your landlord a letter,</li>
   <li>ask the city for an inspection, or</li>
   <li>ask a judge to order your landlord to fix the problem.</li>
   </ul>
   </li>
   <li>
-  Download your completed documents, print, and deliver them to the right place.
+  Download, print, and deliver your completed documents to the right place.
   </li>
   </ul>
   </p>
@@ -770,7 +770,7 @@ features:
   progress bar: False
 ---
 objects:
-  - dataloader: DataLoader.using(filename="housing_code_checklist_pl.xlsx")
+  - dataloader: DataLoader.using(filename="housing_code_checklist.xlsx")
   - inspector_loader: InspectorLoader.using(filename="housing_inspectors.xlsx")
   - bad_conditions: ConditionsDict.using(there_are_any=True)
 ---
@@ -812,17 +812,16 @@ question: |
   % endif
 subquestion: |
   % if initial_action_selection in ["document_by_room", "give_notice"] or (initial_action_selection == "help_in_court" and kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs")):
+  % if person_answering == "tenant":
   Start with the repairs your home needs.
-
+  % else:
+  Start with the repairs ${ users.familiar() }'s home needs. 
+  % endif
   % endif
   <div class="alert alert-secondary h-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
-    "Retaliation" is illegal. Your landlord cannot:
-    <ul>
-    <li>evict you, <strong>or</strong></li>
-    <li>raise your rent,</li> 
-    </ul>just because you complain about problems in your home. 
+    "Retaliation" is illegal. Your landlord cannot evict you <b>or</b> raise your rent just because you complain about problems in your home. 
     <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction" target="_blank" rel="noopener noreferrer">Read more</a>.
     </p>
   </div>

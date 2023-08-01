@@ -12,9 +12,9 @@ include:
 ---
 id: who is using this interview
 question: |
-  How are you using this website?
+  Who are you?
 fields:
-  - I am: person_answering
+  - no label: person_answering
     datatype: radio
     choices:
       - A tenant: tenant
@@ -910,7 +910,7 @@ content: |
 
   <h3 class="h5">You need to know</h3>
 
-  * **This website does not provide legal advice**. If you need legal advice, you can use [Massachusetts Legal Resource Finder](https://masslrf.org) to find a lawyer.
+  * **This website does not provide legal advice**. If you need legal advice, you can use the [Massachusetts Legal Resource Finder](https://masslrf.org) to find a lawyer.
   * The information and documents on this website have no warranty. We provide the information “as-is.” By using the site, you agree not to hold GBLS or the information providers on this site liable.
   * We work hard to keep the information on the site up to date. Lawyers drafted and reviewed the documents this site uses. But laws and local rules change over time. These changes can make a document unenforceable when you use it.
   * We do our best to keep the site working! To do that, we allow you to submit feedback so we can track problems on the site. But we cannot provide individual technical support.
@@ -932,7 +932,8 @@ content: |
 
   <h3 class="h5">We keep your information safe</h3>
 
-  * We use the same technology that banks and online stores use to keep your information safe. We use:
+  We use the same technology that banks and online stores use to keep your information safe. We use:
+  
   * 256 bit encryption
   * Software firewalls
   * Limited access controls
