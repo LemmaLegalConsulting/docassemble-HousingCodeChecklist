@@ -14,7 +14,7 @@ id: who is using this interview
 question: |
   Who are you?
 fields:
-  - no label: person_answering
+  - I am: person_answering
     datatype: radio
     choices:
       - A tenant: tenant
