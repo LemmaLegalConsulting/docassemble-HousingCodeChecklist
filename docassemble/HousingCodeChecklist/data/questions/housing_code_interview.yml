@@ -1260,8 +1260,7 @@ fields:
     show if: screen_ll_knows_problem
   - note: |
       **You may want to give your landlord time.** Some serious problems
-      need to be fixed in 24 hours, and others in 5 days. Other problems
-      can be fixed in up to 30 days.
+      need to be fixed in 24 hours, and others problems must be fixed in up to 30 days.
       
       If you have not given your landlord enough time to fix the problem yet,
       you may want to wait before you get help from a court. But it is up
