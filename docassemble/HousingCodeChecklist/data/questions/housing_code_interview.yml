@@ -896,14 +896,11 @@ template: how_far_back_should_i_go_template
 subject: |
   What problems should I list?
 content: |
-  If you want to sue your landlord for money, list any problems in this apartment that:
+  You can list any problems in this apartment that:
   
   1. still need to be fixed and 
   2. you have had over the last 6 years (since ${ today().minus(years=6) }), even
   if they are fixed now.
-  
-  Tenants who do not want to sue their landlord usually only list problems that still 
-  need to be fixed.
 ---
 id: review simple conditions
 question: |
@@ -1632,12 +1629,10 @@ fields:
     show if: bad_conditions[i].details[j].condition_ended
     required: False
     help: |
-      If you want to sue your landlord for money, list any problems in this apartment that:
+      You can list any problems in this apartment that:
       
       1. still need to be fixed and 
       2. you have had over the last 6 years (since ${ today().minus(years=6) }), even if they are fixed now.
-      
-      Tenants who do not want to sue their landlord usually only list problems that still need to be fixed.
   - Take or upload a photo: bad_conditions[i].details[j].has_file_to_upload
     datatype: yesno
   - Add a photo or other proof of the problem, if you have it: bad_conditions[i].details[j].files
