@@ -897,9 +897,11 @@ template: how_far_back_should_i_go_template
 subject: |
   What problems should I list?
 content: |
-  If you want to sue your landlord for money, you can list any problems you had over the last 6 years. Even if the problem is fixed now.
-
-  Tenants who do not want to sue their landlord usually list only problems that still need to be fixed.
+  You can list any problems in this apartment that:
+  
+  1. still need to be fixed and 
+  2. you have had over the last 6 years (since ${ today().minus(years=6) }), even
+  if they are fixed now.
 ---
 id: review simple conditions
 question: |
@@ -1585,10 +1587,6 @@ fields:
     datatype: integer
     code: |
       list(range(today().year, today().year - 20 - 1, -1))
-    help: |
-      Problems that started in the last **6** years are the most important to
-      report, but use the closest year that you know even if it was older than 6
-      years ago.
     show if: 
       variable: bad_conditions[i].details[j].condition_existed_at_start
       is: False
@@ -1621,11 +1619,20 @@ fields:
       is: False
   - The problem is fixed: bad_conditions[i].details[j].condition_ended
     datatype: yesno
+  - note: |
+      Problems fixed before ${ today().minus(years=6) } should not be listed.
+    show if: bad_conditions[i].details[j].condition_ended
   - Date problem ended (optional): bad_conditions[i].details[j].end_date
-    max: ${ today().format("yyyy-MM-dd") }
+    alMax: ${ today() }
+    alMin: ${ today().minus(years=6) }
     datatype: ThreePartsDate
     show if: bad_conditions[i].details[j].condition_ended
     required: False
+    help: |
+      You can list any problems in this apartment that:
+      
+      1. still need to be fixed and 
+      2. you have had over the last 6 years (since ${ today().minus(years=6) }), even if they are fixed now.
   - Take or upload a photo: bad_conditions[i].details[j].has_file_to_upload
     datatype: yesno
   - Add a photo or other proof of the problem, if you have it: bad_conditions[i].details[j].files
