@@ -1457,8 +1457,9 @@ question: |
 subquestion: |
   Open the document below in a new window.
   
-  If you need to make any changes, select the navigation labels on the left
-  to revisit the section or sections you want to change.
+  Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('uptocode_review'), label='Edit answers', color='info') }
   
   When you are ready, click "next" to add your signature.
   
@@ -1929,3 +1930,204 @@ content: |
   <a href="https://www.lsc.gov/"><img src="${ lsc_logo.url_for() }" style="max-width: 80%" alt="Legal Services Corporation logo"/></a>
 
   <a href="https://www.mlac.org/"><img src="${ mlac_logo.url_for() }" alt="Massachusetts Legal Assistance Corporation logo"/></a>
+---
+id: |-
+  review screen
+continue button field: uptocode_review
+question: |
+  % if person_answering == "tenant":
+  Review your answers
+  % else: 
+  Review the answers
+  % endif
+review:
+  - note: | 
+      % if person_answering == "tenant":
+      ##Information about you##
+      % else:
+      ##Information about the tenant##
+      % endif
+  - Edit:
+      - users.revisit
+    button: |
+      % if users.there_are_any:
+      % for item in users:
+
+      **${ item }**
+
+      % endfor
+      % else:
+      **None**
+      % endif
+  - Edit: |-
+      users[0].attorney.revisit
+    button: |-
+      % if users[0].attorney:
+      **Your attorney**
+
+      % for item in users[0].attorney:
+      ${ item }
+      % endfor
+      % endif
+  - note: | 
+      ##Information about the other party##
+  - Edit:
+      - other_parties.revisit
+    button: |
+      % if other_parties.there_are_any:
+      % for item in other_parties:
+
+      **${ item }**
+
+      % endfor
+      % else:
+      **None**
+      % endif
+  - note: | 
+      % if person_answering == "tenant":
+      ##Your lawsuit##
+      % else:
+      ##The tenant's lawsuit##
+      % endif
+  - Edit: |-
+      kind_of_lawsuit
+    button: |
+      % if person_answering == "tenant":
+      **Why you need to take your landlord to court:**
+      % else:
+      **Why the tenant needs to take their landlord to court:**
+      % endif
+      % if kind_of_lawsuit.any_true():
+      % for item in kind_of_lawsuit.true_values():
+      
+       - **${ item }**
+      
+      % endfor
+      % else:
+      **None**
+      % endif
+  - Edit: |-
+      bad_conditions.revisit
+    button: |
+      % if person_answering == "tenant":
+      **Bad conditions in your home:**
+      % else:
+      **Bad conditions in the tenant's home:**
+      % endif
+
+      % for item in bad_conditions:
+      - ${ item }
+      % endfor
+  - note: | 
+      % if person_answering == "tenant":
+      ##Before you take your landlord to court##
+      % else:
+      ##Before the tenant takes their landlord to court##
+      % endif
+  - Edit: |-
+      initial_screen_tenant_facing_eviction
+    button: |
+      % if person_answering == "tenant":
+      **You have an active eviction case in court:**
+      % else:
+      **The tenant has an active eviction case in court:**
+      % endif
+      - ${ word(yesno(initial_screen_tenant_facing_eviction)) }
+
+      % if person_answering == "tenant":
+      **Your landlord knows about the problems that you need them to fix:**
+      % else:
+      **The tenant landlord knows about the problems that they need fixed:**
+      % endif
+      - ${ word(yesno(tenant_sent_ll_notice)) }
+
+      % if person_answering == "tenant":
+      **You called a town or city inspector about the problem:**
+      % else:
+      **The tenant called a town or city inspector about the problem:**
+      % endif
+      - ${ word(yesno(tenant_called_inspector)) }
+  - Edit: |-
+      add_inspection_letter
+    button: |
+      % if person_answering == "tenant":
+      **Include a letter to your city or town inspector:**
+      % else:
+      **Include a letter to the tenant's city or town inspector:**
+      % endif
+      - ${ word(yesno(add_inspection_letter)) }
+  - Edit: |-
+      screen_tenant_facing_eviction
+    button: |
+      % if person_answering == "tenant":
+      **You have an active eviction case in court:**
+      % else:
+      **The tenant has an active eviction case in court:**
+      % endif
+      - ${ word(yesno(screen_tenant_facing_eviction)) }
+      
+      % if person_answering == "tenant":
+      **Your landlord already knows about at least one of the problems in your home:**
+      % else:
+      **The tenant's landlord already knows about at least one of the problems in their home:**
+      % endif
+      - ${ word(yesno(screen_ll_knows_problem)) }
+
+      % if person_answering == "tenant":
+      **Your landlord is already fixing all of the problems:**
+      % else:
+      **The tenant's landlord is already fixing all of the problems:**
+      % endif
+      - ${ word(yesno(screen_ll_already_fixing)) }
+
+      % if person_answering == "tenant":
+      **Other tenants in your building are also having housing problems:**
+      % else:
+      **Other tenants in the tenant's building are also having housing problems:**
+      % endif
+      - ${ showifdef('screen_other_tenants_with_problem') }
+
+      % if person_answering == "tenant":
+      **You have reported all of the problems to a city housing inspector:**
+      % else:
+      **The tenant has reported all of the problems to a city housing inspector:**
+      % endif
+      - ${ word(yesno(screen_contacted_housing_inspector)) }
+---
+event: |-
+  users[0].attorney.revisit
+id: |-
+  revisit users[0].attorney
+question: |-
+  Edit your answers about users[0].Attorney
+subquestion: |-
+  ${ users[0].attorney.table }
+---
+event: |-
+  bad_conditions.revisit
+id: |-
+  revisit bad_conditions
+question: |-
+  Edit your answers about Bad Conditions
+subquestion: |-
+  ${ bad_conditions.table }
+---
+columns:
+  - Describe the problem using your own words (write about 1 sentence; optional): |-
+      row_item.description if hasattr(row_item, 'description') else ''
+  - Was the problem there when you moved in?: |-
+      row_item.condition_existed_at_start if hasattr(row_item, 'condition_existed_at_start') else ''
+  - Month: |-
+      row_item.start_month if hasattr(row_item, 'start_month') else ''
+  - The problem is fixed: |-
+      row_item.condition_ended if hasattr(row_item, 'condition_ended') else ''
+  - Date problem ended (optional): |-
+      row_item.end_date if hasattr(row_item, 'end_date') else ''
+  - Take or upload a photo: |-
+      row_item.has_file_to_upload if hasattr(row_item, 'has_file_to_upload') else ''
+  - Add a photo or other proof of the problem, if you have it: |-
+      row_item.files if hasattr(row_item, 'files') else ''
+rows: |-
+  bad_conditions
+table: |-
+  bad_conditions.table
