@@ -44,10 +44,11 @@
   /* The dimensions have to be bigger than the images of the circles, though it doesn't matter how much bigger. */
   width: 2.1em;
   /* This aligns well with the text while smaller heights don't. The images can be changed so that the we can decrease the circle sizes if we want. */
-  height: 2em;
+  height: 100%;
   /* Account for the border that creates the vertical line. */
   left: -0.1em;
   top: 0;
+  bottom: 0.5em;
   /* Translated relative to the pseudo-element itself. */
   transform: translate(-50%, 0%);
   /* Base the size on height, which is currently most consistently the same between different images. */
