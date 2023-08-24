@@ -5,7 +5,6 @@ include:
   - verified_complaint_and_motions_to_include.yml
 ---
 code: |
-  nav.set_section('provide_details')
   trial_court
   date_issued
   tro_order_text

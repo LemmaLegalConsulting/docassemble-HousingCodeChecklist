@@ -105,7 +105,7 @@ code: |
   reconsider('snapshot_interview_state')
   nav.set_section('provide_details')
   
-  if not (kind_of_lawsuit["file_contempt_complaint"] and len(kind_of_lawsuit) == 0):
+  if not kind_of_lawsuit["file_contempt_complaint"] and not len(kind_of_lawsuit) == 1:
     include_conditions_in_complaint # Evaluate so it is available in complaint template
   
   if not screen_ll_knows_problem:
@@ -162,7 +162,6 @@ code: |
     preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
-    nav.set_section('provide_details')
     interview_order_contempt_complaint
     nav.set_section('preview_and_sign')
     preview_docs
