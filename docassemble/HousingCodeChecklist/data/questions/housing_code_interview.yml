@@ -874,24 +874,33 @@ fields:
     code: |
       conditions_from_list(dataloader, simple_conditions_list, language=user_language)
   - note: |
+      % if person_answering == "tenant":
       <h2 class="h4">Did you have any of these other problems?<h2>
+      % else:
+      <h2 class="h4">Did  ${ users.familiar() } have any of these other problems?<h2>
+      % endif
     show if:
       code: |
         initial_action_selection != "help_in_court"
   - Choose any that apply: kind_of_lawsuit
     datatype: checkboxes
     choices:
-      - My landlord changed my locks, moved my things or threatened to do so: illegal_lockout          
-      - My landlord went into my home without my permission: entered_without_permission
-      - My landlord went into my home without giving me enough notice: insufficient_notice
-      - My landlord made me pay for utilities, but we did not have a written agreement: utilities_no_agreement
-      - My utilities were shutoff: utility_shutoff
-      - My landlord is ignoring a court order: file_contempt_complaint
+      - ${"My landlord changed my locks, moved my things or threatened to do so" if person_answering == "tenant" else "The tenant's landlord changed their locks, moved their things or threatened to do so"}: "illegal_lockout"     
+      - ${"My landlord went into my home without my permission" if person_answering == "tenant" else "The tenant's landlord went into the tenant's home without permission"}: "entered_without_permission"
+      - ${"My landlord went into my home without giving me enough notice" if person_answering == "tenant" else "The tenant's landlord went into the tenant's home without giving them enough notice"}: "insufficient_notice"
+      - ${"My landlord made me pay for utilities, but we did not have a written agreement" if person_answering == "tenant" else "The tenant's landlord made the tenant pay for utilities, but they did not have a written agreement"}: "utilities_no_agreement"
+      - ${"My utilities were shutoff" if person_answering == "tenant" else "The tenant's utilities were shutoff"}: "utility_shutoff"
+      - ${"My landlord is ignoring a court order" if person_answering == "tenant" else "The landlord is ignoring a court order"}: "file_contempt_complaint"
     show if:
       code: |
         initial_action_selection != "help_in_court"
   - note: |
+      % if person_answering == "tenant":
       If you do not see the problem you need help with on this list, go to the next screen to see more.
+      % else:
+      If you do not see the problem ${ users.familiar() } needs help with on this list, go to the next screen to see more.
+      % endif
+      
 ---
 template: how_far_back_should_i_go_template
 subject: |

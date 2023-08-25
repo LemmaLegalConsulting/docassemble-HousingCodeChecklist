@@ -66,18 +66,36 @@ if: |
   not landlord_name_is_optional
 id: names of opposing parties name required
 question: |
+  % if person_answering == "tenant":
   What is your landlord's name?
+  % else:
+  What is the name of the tenant's landlord?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   Write the name of your landlord, not your property manager. The landlord
   is the person who owns the building. You can find out who owns the building
   at [masslandrecords.com](https://www.masslandrecords.com/). The landlord is 
   also usually the name you write on a rent check. 
+  % else: 
+  Write the name of tenant's landlord, not the tenant's property manager. The landlord
+  is the person who owns the building. You can find out who owns the building
+  at [masslandrecords.com](https://www.masslandrecords.com/). The landlord is 
+  also usually the name the tenant writes on a rent check. 
+  % endif
 fields:
-  - Is your home owned by an individual or a business?: other_parties[0].person_type
-    input type: radio
+  - label: |
+      % if person_answering == "tenant":
+      Is your home owned by an individual or a business?
+      % else: 
+      Is the tenant's home owned by an individual or a business?
+      % endif
+    field: other_parties[0].person_type
+    datatype: yesnoradio
     choices:
       - Business or organization: business
       - Individual: individual
+      
   - Landlord's first name: other_parties[0].name.first
     show if:
       variable: other_parties[0].person_type
@@ -146,6 +164,18 @@ fields:
 validation code: |
   if ll_name_unknown:
     other_parties[0].name.first = "[ Landlord's Name ]"
+---
+sets:
+  - other_parties[i].name.first
+  - other_parties[i].name.last
+  - other_parties[i].name.middle
+  - other_parties[i].name.suffix
+id: names of opposing parties
+question: |
+  TestWhat is the name of your ${ ordinal(i) } landlord?
+fields:
+  - code: |
+      other_parties[i].name_fields(person_or_business='unsure')
 ---
 id: tenant contact information
 question: |
@@ -221,6 +251,60 @@ fields:
     code: |
       name_suffix()
     required: False
+---
+id: any other users
+question: |
+  % if person_answering == "tenant":
+  Did anyone else file with you?
+  % else:
+  Did anyone else file with the defendant?
+  % endif
+subquestion: |
+  % if len(users.elements) > 1:
+  You have already told us about ${comma_and_list(users.complete_elements())}.
+  % else:
+  
+  We need the name of each person who is part of this case so that
+  the court clerk can waive fees for the right file.
+  
+  We will ask for the name of each person on the "other side"
+  next.
+  % endif
+  
+fields:
+  - Is anyone else on your side of the case?: users.there_is_another
+    datatype: yesnoradio
+---
+id: any other users
+question: |
+  % if person_answering == "tenant":
+       Did anyone else file with you?
+      % else:
+       Did anyone else file with the tenant?
+      % endif
+subquestion: |
+  % if len(users.elements) > 1:
+  You have already told us about ${comma_and_list(users.complete_elements())}.
+  % else:
+  
+  We need the name of each person who is part of this case so that
+  the court clerk can waive fees for the right file.
+  
+  We will ask for the name of each person on the "other side"
+  next.
+  % endif
+fields:
+  - Is anyone else on your side of the case?: users.there_is_another
+    datatype: yesnoradio 
+#fields:
+#  - label: |
+#      % if person_answering == "tenant":
+#      Is anyone else on your side of the case?
+#      % else:
+#      Is anyone else on the tenant's side of the case?
+#      % endif
+#    field: users.there_is_another
+#    datatype: yesnoradio
 ---
 id: persons address
 generic object: Individual
