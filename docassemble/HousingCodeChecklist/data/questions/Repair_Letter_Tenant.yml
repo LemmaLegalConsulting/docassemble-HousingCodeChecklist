@@ -172,13 +172,25 @@ fields:
 ---
 id: tenant_repair_introduction
 question: |
+  % if person_answering == "tenant":
   Introduce your letter
+  % else:
+  Introduce the tenant's letter
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   Add a few words to introduce your letter to ${ other_parties.familiar() }.
   
   For example, you may remind your landlord how long you have been a tenant.
   
   If you are not sure what to say, it is okay to leave this blank.
+  % else:
+  Add a few words to introduce the tenant's letter to ${ other_parties.familiar() }.
+  
+  For example, the tenant may remind their landlord how long they have been a tenant.
+  
+  If the tenant is not sure what to say, it is okay to leave this blank.
+  % endif
 fields:
   - no label: tenant_repair_introduction
     datatype: area

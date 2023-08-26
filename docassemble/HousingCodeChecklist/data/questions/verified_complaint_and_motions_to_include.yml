@@ -135,6 +135,7 @@ id: File a Verified Complaint Form
 question: |
   Get help from a judge in court
 subquestion: |
+  % if person_answering == "tenant":
   The next set of forms will help you file a complaint against your landlord in court.
   
   A judge can order your landlord to:
@@ -148,7 +149,22 @@ subquestion: |
   ${ currency(verified_complaint_tro_fee +verified_complaint_entry_of_action_Fee) } to file
   these documents. But most tenants can file at no cost. We will ask you questions to
   find out if you can file for free later on. 
+  % else:
   
+  The next set of forms will help the tenant file a complaint against their landlord in court.
+  
+  A judge can order their landlord to:
+  
+  1. Fix problems in the tenant's apartment
+  1. Let the tenant back into the apartment if they illegally locked the tenant out
+  1. Turn back on utility services or start paying for utility services
+  1. Pay the tenant money (damages) based on the tenant's rights under Massachusetts law
+
+  The court may charge the tenant up to 
+  ${ currency(verified_complaint_tro_fee +verified_complaint_entry_of_action_Fee) } to file
+  these documents. But most tenants can file at no cost. We will ask questions to
+  find out if the tenant can file for free later on.
+  % endif
 continue button field: File_a_Verified_Complaint_Form
 ---
 id: relief sought
@@ -190,13 +206,23 @@ fields:
 ---
 id: getting money
 question: |
+  % if person_answering == "tenant":
   Getting money from your landlord
+  % else:
+  Getting money from the tenant's landlord
+  % endif
 subquestion: |
   ${ collapse_template(complaint_right_to_get_money_template) }
 
   ${ collapse_template(complaint_right_to_get_money_should_i) }
 fields:
-  - Do you want to ask for money in this lawsuit?: complaint_ask_for_damages
+  - label: |
+      % if person_answering == "tenant":
+      Do you want to ask for money in this lawsuit?
+      % else:
+      Does the tenant want to ask for money in this lawsuit?
+      % endif
+    field: complaint_ask_for_damages
     datatype: yesnoradio
 ---
 template: complaint_right_to_get_money_template
@@ -308,18 +334,32 @@ data:
 ---
 id: What did the landlord do
 question: |
+  % if person_answering == "tenant":
   Is there anything else that your landlord did?
+  % else:
+  Is there anything else that the tenant's landlord did?
+  % endif
 subquestion: |
-  % if include_conditions_in_complaint:
+  % if include_conditions_in_complaint and person_answering == "tenant":
   You have already told us about the housing problems that your landlord did not repair.
   % endif
+  % if include_conditions_in_complaint:
+    The tenant already told us about the housing problems that their landlord did not repair.
+  % endif
 
+  % if person_answering == "tenant":
   Is there anything else you would like to tell the court about?
-
+  % else:
+   Is there anything else the tenant would like to tell the court about?
+  % endif
   Think about problems that have happened in the last 6 years, even if they
   are fixed now.
   
+  % if person_answering == "tenant":
   **My landlord:**
+  % else:
+  **The tenant's landlord:**
+  % endif
 fields:
   - ${ verified_complaint_claims_terms["illegal lockout"]["question"] }: verified_complaint_claims["illegal lockout"].has_claim
     datatype: yesno
@@ -365,7 +405,11 @@ fields:
   - Did something else that breaks Massachusetts landlord-tenant law: verified_complaint_claims["other"].has_claim
     datatype: yesno
     help: |
+      % if person_answering == "tenant":
       Not sure what to say here? This choice is less common. You can add details on the next page.
+      % else:
+      Is the tenant not sure what to say here? This choice is less common. You can add their details on the next page.
+      % endif
     default: |
       ${ kind_of_lawsuit["other_landlord_tenant"] if initial_action_selection == "help_in_court" else False}
   - None of the above: verified_complaint_nota
@@ -452,21 +496,48 @@ fields:
 ---
 id: Did you send the landlord a demand letter?
 question: |
+  % if person_answering == "tenant":
   Did you send the landlord a demand letter?
+  % else:
+  Did the tenant send the landlord a demand letter?
+  % endif
 subquestion: |
   This is sometimes called a 93A demand letter, a 30 day demand letter, or a request for settlement.
 fields: 
-  - I sent my landlord a demand letter: demand_letter_sent
+  - label: |
+      % if person_answering == "tenant":
+      I sent my landlord a demand letter
+      % else:
+      The tenant sent their landlord a demand letter
+      % endif
+    field: demand_letter_sent
     datatype: yesnoradio
-  - When did you send it?: date_of_93A_notice
+  - label: |
+      % if person_answering == "tenant":
+      When did you send it?
+      % else:
+      When did the tenant send it?
+      % endif
+    field: date_of_93A_notice
     datatype: date
     show if: demand_letter_sent
-  - Did you get a reasonable settlement offer within 30 days?: got_93a_settlement_offer
+  - label: |
+      % if person_answering == "tenant":
+      Did you get a reasonable settlement offer within 30 days?
+      % else:
+      Did the tenant get a reasonable settlement offer within 30 days?
+      % endif
+    field: got_93a_settlement_offer
     datatype: yesnoradio
     show if: demand_letter_sent
     help: |
+      % if person_answering == "tenant":
       Answer "no" if you did not get an offer, or if you believe that the offer was not a reasonable
       offer to settle your demand.
+      % else:
+      Answer "no" if the tenant did not get an offer, or if the tenant believes that the offer was not a reasonable
+      offer to settle their demand.
+      % endif
 ---
 id: confirm ask for damages
 question: |

@@ -109,49 +109,107 @@ fields:
 ---
 id: is_landlord_subject_to_93a
 question: |
+  % if person_answering == "tenant":
   Is your landlord a business?
+  % else:
+  Is the tenant's landlord a business?
+  % endif
 subquestion: |
   The [consumer protection
   law](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law)
   only protects tenants from landlords acting as a **business**.
   
+  % if person_answering == "tenant":
   Your landlord may be both an individual and a commercial landlord (a business).
+  % else:
+  The tenant's landlord may be both an individual and a commercial landlord (a business).
+  % endif
 fields:
-  - Is your **landlord** a housing authority?: landlord_is_housing_authority
+  - label: |
+      % if person_answering == "tenant":
+      Is your **landlord** a housing authority?
+      % else:
+      Is the tenant's **landlord** a housing authority?
+      % endif
+    field: landlord_is_housing_authority
     datatype: yesnoradio
     help: |
+      % if person_answering == "tenant":
       For example, the Boston Housing Authority. Answer "no" if you have a mobile
       voucher, like a Section 8 or MRVP. Your landlord is the person that you pay
       rent to, not the agency that administers your voucher.
-  - Is your landlord the city or state?: landlord_is_government
+      % else:
+      For example, the Boston Housing Authority. Answer "no" if the tenant has a mobile
+      voucher, like a Section 8 or MRVP. The tenant's landlord is the person that the tenant pays
+      rent to, not the agency that administers the tenant's voucher.
+      % endif
+  - label: |
+      % if person_answering == "tenant":
+      Is your landlord the city or state?
+      % else:
+      Is the tenant's landlord the city or state?
+      % endif
+    field: landlord_is_government
     datatype: yesnoradio
     help: |
+      % if person_answering == "tenant":
       For example, the City of Boston. Answer "no" if you have a mobile
       voucher, like a Section 8 or MRVP.
+      % else:
+      For example, the City of Boston. Answer "no" if the tenant has a mobile
+      voucher, like a Section 8 or MRVP.
+      % endif
     show if:
       variable: landlord_is_housing_authority
       is: False          
-  - Does your landlord live in an apartment or room in your building?: landlord_lives_in_building
+  - label: |
+      % if person_answering == "tenant":
+      Does your landlord live in an apartment or room in your building?
+      % else:
+      Does the tenant's landlord live in an apartment or room in the tenant's building?
+      % endif
+    field: landlord_lives_in_building
     datatype: yesnoradio
     show if:
       variable: landlord_is_government
       is: False
-  - Does the building your landlord owns have at least 5 apartments?: building_larger_than_4_units
+  - label: |
+      % if person_answering == "tenant":
+      Does the building your landlord owns have at least 5 apartments?
+      % else:
+      Does the building the tenant's landlord own have at least 5 apartments?
+      % endif
+    field: building_larger_than_4_units
     datatype: yesnoradio
     show if: landlord_lives_in_building
-  - Does your landlord own any other rental property?: landlord_rents_other_property
+  - label: |
+      % if person_answering == "tenant":
+      Does your landlord own any other rental property?
+      % else:
+      Does the tenant's landlord own any other rental property?
+      % endif
+    field: landlord_rents_other_property
     datatype: yesnoradio
     show if: 
       variable: building_larger_than_4_units
       is: False
   - note: |
+      % if person_answering == "tenant":
       Find out if your landlord owns any other rental property at [masslandrecords.com](https://www.masslandrecords.com) by selecting your district and then searching your landlord's name.
+      % else:
+      Find out if the tenant's landlord owns any other rental property at [masslandrecords.com](https://www.masslandrecords.com) by selecting the tenant's district and then searching the landlord's name.
+      % endif
     show if: 
       variable: building_larger_than_4_units
       is: False
   - note: |
+      % if person_answering == "tenant":
       **Good news**. It looks like your landlord is **in the business** of being
       a landlord. That means that they need to follow the consumer protection law.
+      % else:
+      **Good news**. It looks like the tenant's landlord is **in the business** of being
+      a landlord. That means that they need to follow the consumer protection law.
+      % endif
     js show if: |
       val("landlord_is_housing_authority") === false && val("landlord_is_government") === false && (val("landlord_lives_in_building") === false || (val("building_larger_than_4_units") || val("landlord_rents_other_property")) )
 ---
@@ -186,26 +244,56 @@ fields:
 ---
 id: How long have you lived at the address
 question: |
+  % if person_answering == "tenant":
   When did you move in to ${ users[0].address.on_one_line() }?
+  % else:
+  When did the tenant move in to ${ users[0].address.on_one_line() }?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   State the best date that you know. You can say an exact date or an estimate, like
   "June of 2020".
+  % else: 
+  State the best date that the tenant knows. The tenant can say an exact date or an estimate, like
+  "June of 2020".
+  % endif
 fields:
-  - I have been a tenant at this address since: tenant_movein_date
+  - label: |
+      % if person_answering == "tenant":
+      I have been a tenant at this address since
+      % else:
+      ${ users.familiar() } has been a tenant at this address since
+      % endif
+    field: tenant_movein_date
     validate: |
       lambda y: re.search(r"\d\d\d\d", y) or validation_error("Include a year, like \"June of 2020\"")
 ---
 id: When did you first notify the landlord of the bad conditions
 question: |
+  % if person_answering == "tenant":
   What is the first time that you told the landlord about the problem?
+  % else:
+  What is the first time that the tenant told the landlord about the problem
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   State the best date that you know. You can say an exact date or an estimate, like
   "June of 2020".
+  % else:
+  State the best date that the tenant knows. The tenant can say an exact date or an estimate, like
+  "June of 2020".
+  % endif
 fields:
   - Date notified landlord: notification_date
     validate: |
       lambda y: re.search(r"\d\d\d\d", y) or validation_error("Include a year, like \"June of 2020\"")
-  - Did you notify your landlord about the problem in writing?: written_notification
+  - label: |
+      % if person_answering == "tenant":
+      Did you notify your landlord about the problem in writing?
+      % else:
+      Did the tenant notify their landlord about the problem in writing?
+      % endif
+    field: written_notification
     datatype: yesnoradio
   - When?: letter_date
     validate: |
@@ -223,11 +311,21 @@ fields:
 ---
 id: How have the conditions affected you and your property
 question: |
+  % if person_answering == "tenant":
   How have the conditions affected you and your property?
+  % else:
+  How have the conditions affected the tenant and their property?
+  % endif
 subquestion: |
   ${ collapse_template(help_effect_of_conditions) }
 fields:
-  - Explain the effect on you: effect_of_conditions
+  - label: |
+      % if person_answering == "tenant":
+      Explain the effect on you
+      % else:
+      Explain the effect on the tenant
+      % endif
+    field: effect_of_conditions 
     label above field: True
     input type: area
     rows: 3
@@ -248,23 +346,52 @@ content: |
 ---
 id: rent subsidy
 question: |
+  % if person_answering == "tenant":
   Do you get a rent subsidy?
+  % else:
+  Does the tenant get a rent subsidy?
+  % endif
 fields:
-  - Do you get a rent subsidy like Section 8?: tenant_gets_rent_subsidy
+  - label: |
+      % if person_answering == "tenant": 
+      Do you get a rent subsidy like Section 8?
+      % else:
+      Does the tenant get a rent subsidy like Section 8?
+      % endif
+    field: tenant_gets_rent_subsidy
     datatype: yesnoradio
     help: |
+      % if person_answering == "tenant":
       Answer "yes" if you:
       
       - Live in subsidized housing
       - Have a rental voucher, like Section 8 or MRVP
+      % else:
+      Answer "yes" if the tenant:
+      
+      - Lives in subsidized housing
+      - Has a rental voucher, like Section 8 or MRVP
+      % endif
+      
+      
 ---
 id: rent amount
 question: |
+  % if person_answering == "tenant":
   How much is your rent?
+  % else:
+  How much is the tenant's rent?
+  % endif
 subquestion: |
   ${ collapse_template(why_do_you_need_my_rent_amount_template) }
 fields:
-  - What is your share of the rent?: tenant_rent_share
+  - label: |
+      % if person_answering == "tenant":
+      What is your share of the rent?
+      % else: 
+      What is the tenant's share of the rent?
+      % endif
+    field: tenant_rent_share
     datatype: currency
     show if: 
       code: |
@@ -275,12 +402,25 @@ fields:
       code: |
         tenant_gets_rent_subsidy
     help: |
+      % if person_answering == "tenant":
       Write the total rent your landlord gets for your apartment. This is
       normally the amount that the landlord advertised the apartment for.
       
       It may include a portion paid by you and a portion paid by your housing
       authority. It is okay to write the best number that you know.
-  - What is the monthly rent for your home?: tenant_unit_rent
+      % else:
+      Write the total rent the tenant's landlord gets for their apartment. This is normally the amount that the landlord advertised the apartment for.
+     
+      It may include a portion paid by the tenant and a portion paid by the tenant's housing
+      authority. It is okay to write the best number that the tenant knows.
+      % endif
+  - label: |
+      % if person_answering == "tenant":
+      What is the monthly rent for your home?
+      % else:
+      What is the monthly rent for the tenant's home?
+      % endif
+    field: tenant_unit_rent
     datatype: currency
     show if:
       code: |
@@ -384,26 +524,54 @@ code: |
 ---
 id: preview damages calculation
 question: |
+  % if person_answering == "tenant":
   Your settlement request calculation
+  % else:
+  The tenant's settlement request calculation
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   Based on the information you gave us, you can ask for
+  % else:
+  Based on the information from tenant, the tenant can ask for
+  % endif
+  
   ${ bold(currency(max(three_times_rent_amount, tenant_warranty_estimate) if damage_tenant_severity_estimate == "bqe_total" else tenant_warranty_estimate)) }.
 
   ${ collapse_template(damage_calculation_template) }
-
+  % if person_answering == "tenant":
   Look at the calculation below. Make any changes that you need to the amount you
   want to ask your landlord to pay you.
+  % else:
+  Look at the calculation below. Make any changes that the tenant needs to the amount the tenant
+  wants to ask their landlord to pay them.
+  % endif
 fields:
-  - Confirm your settlement request amount: tenant_confirmed_uptocode_damages_estimate
+  - label: |
+      % if person_answering == "tenant":
+      Confirm your settlement request amount
+      % else:
+      Confirm the tenant's settlement request amount
+      % endif
+    field: tenant_confirmed_uptocode_damages_estimate
     datatype: currency
     default: |
       ${ max(three_times_rent_amount, tenant_warranty_estimate) if damage_tenant_severity_estimate == "bqe_total" else tenant_warranty_estimate }
     help: |
-      % if tenant_time_estimate / tenant_time_estimate_denominator >= 6:
+      % if tenant_time_estimate / tenant_time_estimate_denominator >= 6 and person_answering == "tenant":
       **We limited the time period for your rent reduction because it was more than 6 years.**
       % endif
+      % if tenant_time_estimate / tenant_time_estimate_denominator >= 6:
+      **We limited the time period for the tenant's rent reduction because it was more than 6 years.**
+      % endif
+      
+      % if person_answering == "tenant":
       This estimate depends on the information that you gave us. Remember, you should only ask for 
-      the amount that you could get by going to court.      
+      the amount that you could get by going to court.   
+      % else:
+      This estimate depends on the information that the tenant gave us. Remember, the tenant should only ask for 
+      the amount that they could get by going to court.
+      % endif
 ---
 template: damage_calculation_template
 subject: |

@@ -179,11 +179,19 @@ fields:
 ---
 id: tenant contact information
 question: |
+  % if person_answering == "tenant":
   What is your contact information?
+  % else:
+  What is the tenant's contact information
+  % endif
 subquestion: |
-  % if screen_ll_knows_problem and document_choice['sue_landlord']:
+  % if screen_ll_knows_problem and document_choice['sue_landlord'] and person_answering == "tenant":
   The court may need to call you to set up a hearing. If you
   do not have your own phone number or email, consider using
+  a phone number that belongs to a trusted friend or family member.
+  % else:
+  The court may need to call the tenant to set up a hearing. If the tenant
+  does not have their own phone number or email, they can consider using
   a phone number that belongs to a trusted friend or family member.
   % endif
 fields:  
@@ -196,7 +204,13 @@ fields:
   - Email address: users[0].email    
     datatype: email
     required: False
-  - I do not have any of these: users[0].no_contact_method
+  - label: |
+      % if person_answering == "tenant":
+      I do not have any of these
+      % else:
+      The tenant does not have any of these
+      % endif
+    field: users[0].no_contact_method
     datatype: yesno
     disable others: True
 validation code: |
@@ -422,7 +436,11 @@ continue button field: saw_signature_choice
 ---
 id: move in date
 question: |
+  % if person_answering == "tenant":
   When did you move in to ${ users[0].address.on_one_line() }?
+  % else:
+  When did the tenant move in to ${ users[0].address.on_one_line() }?
+  % endif
 fields:
   - Date: users[0].move_in_date
     datatype: ThreePartsDate
@@ -438,10 +456,17 @@ code: |
 ---
 id: include citations?
 question: |
+  % if person_answering == "tenant":
   Do you want to include a citation to the Sanitary Code?
+  % else:
+  Does the tenant want to include a citation to the Sanitary Code?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   If you want, you can include a citation to the Sanitary Code next to each condition in your letter.
-
+  % else:
+  If the tenant wants, include a citation to the Sanitary Code next to each condition in the letter.
+  % endif
   Example:
   
   > ${ bad_conditions.active_conditions().item(0).description or bad_conditions.active_conditions().item(0).original_description } (${ bad_conditions.active_conditions().item(0).code })
@@ -474,12 +499,23 @@ code: |
 ---
 id: tenant_repair_issue_date
 question: |
+  % if person_answering == "tenant":
   When did you first experience the problems that you want to tell
   ${ other_parties } about?
+  % else:
+  When did the tenant first experience the problems that they want to tell
+  ${ other_parties } about?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   The date below will be the date of any problems in your apartment when you first moved in.
   
   Make a change if you need to.
+  % else:
+  The date below will be the date of any problems in the tenant's apartment when they first moved in.
+  
+  Make a change if tenant needs to.
+  % endif
 fields:
   - Earliest date: tenant_repair_issue_date
     datatype: ThreePartsDate
@@ -487,15 +523,29 @@ fields:
 ---
 id: issue description
 question: |
+  % if person_answering == "tenant":
   Describe the problems that you want your landlord to fix
+  % else:
+  Describe the problems that the tenant wants their landlord to fix
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   We used the problems that you selected to start a draft.
+  % else:
+  We used the problems that the tenant selected to start a draft.
+  % endif
   
   % if sanitary_code_citation_style == "detailed_cites":
   We also included a link to the Sanitary Code section that applies.
   % endif
 fields:
-  - Describe the problem you want your landlord to fix: tenant_repair_issue_description
+  - label: |
+      % if person_answering == "tenant":
+      Describe the problem you want your landlord to fix
+      % else:
+      Describe the problem that the tenant wants the landlord to fix
+      % endif
+    field: tenant_repair_issue_description
     label above field: True
     datatype: area
     rows: 6
@@ -527,9 +577,18 @@ fields:
 continue button field: organizing_interstitial
 id: organizing
 question: |
+  % if person_answering == "tenant":
   Work together with your neighbors
+  % else:
+  The tenant should work together with their neighbors
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   You are stronger together!
+  % else:
+  Tenants are stronger together!
+  % endif
+  
   A tenant's union is a group of tenants working together. Your local tenant's
   union may have:
   
@@ -818,7 +877,11 @@ if: |
   len(all_matches) and all_courts.filter_courts(allowed_courts) 
 id: choose a court (courts matching provided address were found)
 question: |
+  % if person_answering == "tenant":
   What court do you want to file in?
+  % else:
+  What court does the tenant want to file in?
+  % endif
 subquestion: |
   Most tenants file in the Housing Court.
 
@@ -840,7 +903,7 @@ fields:
   - no label: trial_court
     datatype: object_radio
     choices: all_matches
-    none of the above: My court is not listed
+    none of the above: ${"My court is not listed" if person_answering == "tenant" else "The tenant's court is not listed"}
     disable others: True
     object labeler: court_short_description
     show if: 
@@ -921,31 +984,55 @@ fields:
 ---
 id: How much compensation would you like to claim from the landlord with bad_conditions defined
 question: |
+  % if person_answering == "tenant":
   What amount of money would be fair for your landlord to pay you?
+  % else:
+  What amount of money would be fair for the landlord to pay the tenant?
+  % endif
 subquestion: |
   ${ collapse_template(settlement_offer_93a_explanation) }
   
   ${ collapse_template(what_if_problem_over_multiple_periods) }
 
-  The amount that you list here will be your "settlement offer".    
+  % if person_answering == "tenant":
+  The amount that you list here will be your "settlement offer". 
+  % else:
+  The amount that is listed here will be the "settlement offer."
+  % endif
 fields:
-  - How do you want to decide the amount to ask for?: damage_calculation_method
+  - label: |
+      % if person_answering == "tenant":
+      How do you want to decide the amount to ask for?
+      % else:
+      How does the tenant want to decide the amount to ask for?
+      % endif
+    field: damage_calculation_method
     datatype: radio
     choices:
-      - Let me do my own math: tenant_calculation
-      - Help me with the math: uptocode_calculation
-      - Do not ask for a specific settlement amount: skip_amount
+      - ${"Let me do my own math" if person_answering == "tenant" else " The tenant would like to do their own math"}: tenant_calculation
+      - ${"Help me with the math" if person_answering == "tenant" else "The tenant would like help with the math"}: uptocode_calculation
+      - ${"Do not ask for a specific settlement amount" if person_answering == "tenant" else "The tenant does not want to ask for a specific settlement amount"}: skip_amount
   - How serious were the problems?: damage_tenant_severity_estimate
     datatype: radio
     choices:
       - The apartment was unlivable: bqe_total
         help: |
+          % if person_answering == "tenant":
           You can choose this answer even if you did not move out.
+          % else:
+          The tenant can choose this answer even if they did not move out.
+          % endif
       - The problems were serious but not unlivable: bqe_partial
     show if:      
       variable: damage_calculation_method
       is: uptocode_calculation
-  - How long did you have the problems (in days)?: tenant_time_estimate
+  - label: |
+      % if person_answering == "tenant":
+      How long did you have the problems (in days)?
+      % else:
+      How long did the tenant have the problems (in days)?
+      % endif
+    field: tenant_time_estimate
     datatype: number
     show if:
       variable: damage_calculation_method
@@ -954,7 +1041,13 @@ fields:
     help: |
       The default number, ${ bad_conditions.conditions_days(default_date=users[0].move_in_date) }, was calculated from the oldest and
       newest problems you listed earlier.
-  - What **percentage** do you think is fair to get off of the rent for each month that you had the problems?: tenant_percentage_estimate
+  - label: |
+      % if person_answering == "tenant":
+      What **percentage** do you think is fair to get off of the rent for each month that you had the problems?
+      % else:
+      What **percentage** does the tenant think is fair to get off of the rent for each month that they had the problems?
+      % endif
+    field: tenant_percentage_estimate
     datatype: range
     min: 0
     max: 100
@@ -964,9 +1057,15 @@ fields:
       variable: damage_calculation_method
       is: uptocode_calculation
     help: |
+      % if person_answering == "tenant":
       It is up to you to ask for a percentage you think is fair. A less serious problem might 
       be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
       The percentage will be multiplied by the number of days, weeks or months you had the problem.
+      % else:
+      It is up to the tenant to ask for a percentage they think is fair. A less serious problem might 
+      be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
+      The percentage will be multiplied by the number of days, weeks or months the tenant had the problem.
+      % endif
     validate: |
       lambda y: y > 0 or validation_error("Select a number greater than 0.")
   - Settlement offer amount: tenant_self_estimated_damages_amount

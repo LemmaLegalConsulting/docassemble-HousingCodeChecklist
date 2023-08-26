@@ -821,7 +821,11 @@ subquestion: |
   <div class="alert alert-secondary h-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
+    % if person_answering == "tenant":
     "Retaliation" is illegal. Your landlord cannot evict you <b>or</b> raise your rent just because you complain about problems in your home. 
+    % else:
+    "Retaliation" is illegal. The tenant's landlord cannot evict them or raise their rent just because they complain about problems in the tenant's home. 
+    % endif
     <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction" target="_blank" rel="noopener noreferrer">Read more</a>.
     </p>
   </div>
@@ -1419,9 +1423,9 @@ fields:
     js show if: |
       val("screen_ll_knows_problem") && val("screen_contacted_housing_inspector")
     choices:
-      - Save or print a copy of my checklist for later: get_report
-      - Tell my landlord about the problems: tell_landlord
-      - Organize with my neighbors or other tenants in my city: organize_tenants
+      - ${"Save or print a copy of my checklist for later" if person_answering == "tenant" else "Save or print a copy of the tenant's checklist for later"}: get_report
+      - ${"Tell my landlord about the problems" if person_answering == "tenant" else "Tell the tenant's landlord about the problems"}: tell_landlord
+      - ${"Organize with my neighbors or other tenants in my city" if person_answering == "tenant" else "Organize with the tenant's neighbors or other tenants in their city"}: organize_tenants
       #- Let other tenants know about my bad landlord: share_with_tenants
       #  help: |
       #    This will share your address and landlord's name, but not your name
@@ -1431,8 +1435,8 @@ fields:
       #- Fix the problems myself and deduct money from my rent: fix_problems
       # TODO(41): low priority
       - Ask for a fair settlement (consumer protection demand letter or settlement letter): demand_letter_93a
-      - Ask a judge to order my landlord to fix a problem or sue my landlord for money: sue_landlord
-      - Tell a judge that my landlord is ignoring the judge's order: contempt_complaint
+      - ${"Ask a judge to order my landlord to fix a problem or sue my landlord for money" if person_answering == "tenant" else "Ask a judge to order the tenant's landlord to fix a problem or sue the tenant's landlord for money"}: sue_landlord
+      - ${"Tell a judge that my landlord is ignoring the judge's order" if person_answering == "tenant" else "Tell a judge that the tenant's landlord is ignoring the judge's order"}: contempt_complaint
     default:
       code: |
         ["get_report"] if kind_of_lawsuit.all_false() else ["get_report", "sue_landlord"]
@@ -1442,9 +1446,9 @@ fields:
     js show if: |
       val("screen_ll_knows_problem") && !val("screen_contacted_housing_inspector")
     choices:
-      - Save or print a copy of my checklist for later: get_report
-      - Tell my landlord about the problems: tell_landlord
-      - Organize with my neighbors or other tenants in my city: organize_tenants
+      - ${"Save or print a copy of my checklist for later" if person_answering == "tenant" else "Save or print a copy of the tenant's checklist for later"}: get_report
+      - ${"Tell my landlord about the problems" if person_answering == "tenant" else "Tell the tenant's landlord about the problems"}: tell_landlord
+      - ${"Organize with my neighbors or other tenants in my city" if person_answering == "tenant" else "Organize with the tenant's neighbors or other tenants in their city"}: organize_tenants
       #- Let other tenants know about my bad landlord: share_with_tenants
       #  help: |
       #    This will share your address and landlord's name, but not your name
@@ -1453,7 +1457,7 @@ fields:
       # - Withhold rent: withhold_rent
       #- Fix the problems myself and deduct money from my rent: fix_problems
       - Ask for a fair settlement (consumer demand letter): demand_letter_93a
-      - Sue my landlord for money or to get an emergency order: sue_landlord
+      -  ${"Ask a judge to order my landlord to fix a problem or sue my landlord for money" if person_answering == "tenant" else "Ask a judge to order the tenant's landlord to fix a problem or sue the tenant's landlord for money"}: sue_landlord
     none of the above: False
     default:
       code: |
@@ -1817,14 +1821,30 @@ validation code: |
 ---
 id: your address
 question: |
+  % if person_answering == "tenant":
   What is your landlord's address?
+  % else:
+  What is the tenant's landlord's address?
+  % endif
 fields:
-  - I do not know my landlord's address: ll_address_unknown
+  - label: |
+      % if person_answering == "tenant":
+      I do not know my landlord's address
+      % else:
+      The tenant does not know their landlord's address
+      % endif
+    field: ll_address_unknown
     datatype: yesno
   - note: |
+      % if person_answering == "tenant":
       **Okay**. You need your landlord's address for many of the forms on
       this website. You can still finish this form but you will need to add
       your landlord's address before you deliver the form.
+      % else:
+      **Okay**. The tenant needs their landlord's address for many of the forms on
+      this website. You can still finish this form but the tenant will need to add
+      their landlord's address before the tenant delivers the form.
+      % endif
     show if: ll_address_unknown       
   - Street address: other_parties[0].address.address
     address autocomplete: True
@@ -1852,11 +1872,19 @@ continue button field: explain_documents
 question: |
   We may have a few more questions
 subquestion: |
+  % if person_answering == "tenant":
   On the next screens, we will ask whatever questions are needed to finish
   creating the documents that you asked for. 
   
   At the end, you will have a chance to download and email the documents for
   yourself or send them to someone else.
+  % else:
+  On the next screens, we will ask whatever questions are needed to finish
+  creating the documents for the tenant. 
+  
+  At the end, you will have a chance to download and email the documents for
+  yourself or send them to someone else.
+  % endif
 ---
 continue button field: explain_sharing
 question: |
