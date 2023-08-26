@@ -113,7 +113,7 @@ question: |
   % if person_answering == "tenant":
   Did anyone else file with you?
   % else:
-  Did anyone else file with the defendant?
+  Did anyone else file with the tenant?
   % endif
 subquestion: |
   % if len(users.elements) > 1:
@@ -132,7 +132,7 @@ fields:
       % if person_answering == "tenant":
       Is anyone else on your side of the case?
       % else:
-      Is anyone else on the defendant's side of the case?
+      Is anyone else on the tenant's side of the case?
       % endif
     field: users.there_is_another
     datatype: yesnoradio

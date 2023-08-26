@@ -854,7 +854,7 @@ question: |
   % if person_answering == "tenant":
   Does your home have any of these problems?
   % else:
-  Does ${ users.familiar() }'s home have any of these problems?
+  Does the tenant's home have any of these problems?
   % endif
 subquestion: |
   This is a list of common problems that tenants have. Tap the <svg class="svg-inline--fa fa-circle-question" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle-question" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="#c7e6b0" d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM288 352c0 17.7-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32z"></path></svg> 
@@ -867,7 +867,7 @@ fields:
       % if person_answering == "tenant":
       What repairs does your home need?
       % else:
-      What repairs does ${ users.familiar() }'s need?
+      What repairs does the tenant's home need?
       % endif
     field: bad_conditions["common problems"].claims
     datatype: checkboxes
@@ -877,7 +877,7 @@ fields:
       % if person_answering == "tenant":
       <h2 class="h4">Did you have any of these other problems?<h2>
       % else:
-      <h2 class="h4">Did  ${ users.familiar() } have any of these other problems?<h2>
+      <h2 class="h4">Did the tenant have any of these other problems?<h2>
       % endif
     show if:
       code: |
@@ -914,29 +914,68 @@ content: |
 ---
 id: review simple conditions
 question: |
+  % if person_answering == "tenant":
   Do you want to keep exploring problems?
+  % else:
+  Does the tenant want to keep exploring problems?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   **You have told us about the following problems:**
+  % else:
+  **The tenant has had the following problems:**
+  % endif
   
   % for basis in kind_of_lawsuit.true_values():
   % if basis == "get_emergency_repairs":
   * Get repairs
   % elif basis == "past_repair_needs":
-  * Get paid because of repairs I needed in the last 6 years
+    % if person_answering == "tenant":
+      * Get paid because of repairs I needed in the last 6 years
+    % else: 
+      * Get paid because of repairs the tenant needed in the last 6 years
+    % endif
+    
   % elif basis == "illegal_lockout":
-  * Landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
+    % if person_answering == "tenant":
+      * Landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
+    % else:
+      * Landlord illegally locked the tenant out of the apartment or moved the tenant's belongings out, or threatened to do so
+    % endif
+    
   % elif basis == "entered_without_permission":
-  * Landlord entered my home without permission
+    % if person_answering == "tenant":
+      * Landlord entered my home without permission
+    % else:
+      * Landlord entered the tenant's home without permission
+    % endif
+    
   % elif basis == "insufficient_notice":
   * Landlord entered without notice
   % elif basis == "utilities_no_agreement":
+    % if person_answering == "tenant":
   * Landlord made me pay for utilities without a written agreement
+    % else:
+  * Landlord made the tenant pay for utilities without a written agreement
+    % endif
+    
   % elif basis == "utility_shutoff":
+    % if person_answering == "tenant":
   * My utilities were shutoff
+    % else: 
+  * The tenant's utilities were shutoff
+    % endif
+    
   % elif basis == "other_landlord_tenant":
   * Other
   % elif basis == "file_contempt_complaint":
+    % if person_answering == "tenant":
+    
   * My landlord is ignoring a court order
+    % else:
+  * The tenant's landlord is ignoring a court order
+    % endif
+    
   % endif
   % endfor
   % for category in bad_conditions.elements:  
@@ -951,7 +990,7 @@ fields:
   - Keep exploring problems?: wants_detailed_conditions
     datatype: radio
     choices:
-      - Yes, explore problems I may have in each room: True
+      - ${"Yes, explore problems I may have in each room" if person_answering == "tenant" else "Yes, explore problems the tenant may have in each room"}: True
       - No, go straight to a solution: False
 ---
 template: how_many_problems_are_there_template
@@ -1234,59 +1273,139 @@ subquestion: |
 continue button field: main_triage_screen
 id: triage
 question: |
+  % if person_answering == "tenant":
   Deciding on your next steps
+  % else: 
+  Deciding on the tenant's next steps
+  % endif
 fields:
-  - Do you have an active eviction case in court?: screen_tenant_facing_eviction
+  - label: |
+      % if person_answering == "tenant":
+      Do you have an active eviction case in court?
+      % else:
+      Does the tenant have an active eviction case in court?
+      % endif
+    field: screen_tenant_facing_eviction
     datatype: yesnoradio
+    
     help: |
+      % if person_answering == "tenant":
+      
       Answer "yes" if:
       
-      - you have a case that is already in court, or
-      - you have a "Summons and Complaint" from your landlord with a court date coming up
+      - The tenant has a case that is already in court, or
+      - The tenant has a "Summons and Complaint" from your landlord with a court date coming up
       
       Answer "no" if:
       
       - there is no eviction case
       - the eviction case is already over, or
       - you only have a "Notice to Quit" or "Notice to Terminate Tenancy"
+      % else:
+      Answer "yes" if:
+      
+      - the tenant has a case that is already in court, or
+      - the tenant has a "Summons and Complaint" from the landlord with a court date coming up
+      
+      Answer "no" if:
+      - there is no eviction case
+      - the eviction case is already over, or
+      - The tenant only has a "Notice to Quit" or "Notice to Terminate Tenancy"
+      % endif
+      
   - note: |
+      % if person_answering == "tenant":
       **Make sure you respond to the eviction.** You can use [MADE](https://gbls.org/MADE) to 
       stop the eviction case. You shouldn't start a new court case with UpToCode.
+      % else:
+      **Make sure the tenant responds to the eviction.**You can use [MADE](https://gbls.org/MADE) to 
+      stop the eviction case. The tenant shouldn't start a new court case with UpToCode.
+      % endif
     show if: screen_tenant_facing_eviction
-  - Does your landlord already know about at least one of the problems in your home?: screen_ll_knows_problem
+  - label: |
+      % if person_answering == "tenant":
+      Does your landlord already know about at least one of the problems in your home?   
+      % else:
+      Does the tenant's landlord already know about at least one of the problems in the tenant's home?
+      % endif
+    field: screen_ll_knows_problem
     datatype: yesnoradio
   - note: |
+      % if person_answering == "tenant":
       **Okay.** Your first step should be to tell your landlord about the
       problem. We can help you write a letter to tell your landlord and put
       them on legal notice.
+      % else: 
+      **Okay.** The tenant's first step should be to tell your landlord about the
+      problem. We can help you write a letter to tell your landlord and put
+      them on legal notice.
+      % endif
     show if:
       variable: screen_ll_knows_problem
       is: False
-  - Is your landlord already fixing all of the problems?: screen_ll_already_fixing
+  - label: |
+      % if person_answering == "tenant":
+      Is your landlord already fixing all of the problems?
+      % else:
+      Is the tenant's landlord already fixing all of the problems
+      % endif
+    field: screen_ll_already_fixing 
     datatype: yesnoradio
     show if: screen_ll_knows_problem
   - note: |
+      % if person_answering == "tenant":
       **You may want to give your landlord time.** Some serious problems
       need to be fixed in 24 hours, and others problems must be fixed in up to 30 days.
       
       If you have not given your landlord enough time to fix the problem yet,
       you may want to wait before you get help from a court. But it is up
       to you.
+      % else:
+      **The tenant may want to give your landlord time.** Some serious problems
+      need to be fixed in 24 hours, and others problems must be fixed in up to 30 days.
+      
+      If the tenant has not given their landlord enough time to fix the problem yet,
+      the tenant may want to wait before the tenant gets help from a court. But it is up
+      to you.
+      % endif
     show if: screen_ll_already_fixing
-  - Are other tenants in your building also having housing problems?: screen_other_tenants_with_problem
+  - label: |
+      % if person_answering == "tenant":
+      Are other tenants in your building also having housing problems?
+      % else:
+      Are other tenants in the tenant's building also having housing problems?
+      % endif
+    field: screen_other_tenants_with_problem
     datatype: yesnomaybe
     show if: screen_ll_knows_problem
   - note: |
+      % if person_answering == "tenant":
       **${ users.familiar() }, you and your neighbors are stronger together**. You have the right to **organize**
       with other tenants to fight the bad housing conditions.
+      else:
+      **The tenant, you and your neighbors are stronger together**. You have the right to **organize**
+      % endif
+      with other tenants to fight the bad housing conditions.
     show if: screen_other_tenants_with_problem
-  - Have you reported all of the problems to a city housing inspector?: screen_contacted_housing_inspector       
+  - label: |
+      % if person_answering == "tenant":
+      Have you reported all of the problems to a city housing inspector? 
+      % else:
+      Has the tenant reported all of their problems to a city housing inspector?
+      % endif
+    field: screen_contacted_housing_inspector
     datatype: yesnoradio
     show if: screen_ll_knows_problem
   - note: |
+      % if person_answering == "tenant":
       **You may want to get an inspection.** You have the option to get one below. You are not required to get a
       housing inspection. But it can help a judge understand the problems
       better. You do not need to wait for the inspection to get more help.
+      % else:
+      **The tenant may want to get an inspection.** The tenant has the option to get one below. The tenant is not required to get a
+      housing inspection. But it can help a judge understand the problems
+      better. The tenant does not need to wait for the inspection to get more help.
+      % endif
     show if:
       variable: screen_contacted_housing_inspector
       is: False
@@ -1580,15 +1699,31 @@ id: details for this claim
 question: |
   More information about **"${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[:1].lower() }${ str(bad_conditions[i].df.loc[j]['Interview description']).strip()[1:] }"**
 fields:
-  - Describe the problem using your own words (write about 1 sentence; optional): bad_conditions[i].details[j].description
+  - label: |
+      % if person_answering == "tenant":
+      Describe the problem using your own words (write about 1 sentence; optional) 
+      % else: 
+      Describe the problem using the tenant's own words (write about 1 sentence; optional)
+      % endif
+    field: bad_conditions[i].details[j].description
     datatype: area
     rows: 2
     required: False
-  - Was the problem there when you moved in?: bad_conditions[i].details[j].condition_existed_at_start
+  - label: |
+      % if person_answering == "tenant":
+      Was the problem there when you moved in? 
+      % else: 
+      Was the problem there when the tenant moved in?
+      % endif
+    field: bad_conditions[i].details[j].condition_existed_at_start
     datatype: yesnoradio
   - note: |
       **When did the problem start?**
-      Enter as much of the date as you know.
+      % if person_answering == "tenant":
+        Enter as much of the date as you know.
+      % else:
+        Enter as much of the date as the tenant knows.
+      % endif
     show if: 
       variable: bad_conditions[i].details[j].condition_existed_at_start
       is: False
@@ -1638,10 +1773,17 @@ fields:
     show if: bad_conditions[i].details[j].condition_ended
     required: False
     help: |
+      % if person_answering == "tenant":
       You can list any problems in this apartment that:
       
       1. still need to be fixed and 
       2. you have had over the last 6 years (since ${ today().minus(years=6) }), even if they are fixed now.
+      % else:
+      List any problems in this apartment that:
+      
+      1. still need to be fixed and 
+      2. the tenant had over the last 6 years (since ${ today().minus(years=6) }), even if they are fixed now.
+      % endif
   - Take or upload a photo: bad_conditions[i].details[j].has_file_to_upload
     datatype: yesno
   - Add a photo or other proof of the problem, if you have it: bad_conditions[i].details[j].files
