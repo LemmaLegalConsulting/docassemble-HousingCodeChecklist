@@ -653,6 +653,208 @@ fields:
       minlength: |
         You need to choose at least one problem to continue.
 ---
+id: user benefits
+question: |
+  % if person_answering == "tenant":
+  Do you get any of these benefits?
+  % else:
+  Does the tenant get any of these benefits?
+  % endif
+subquestion: |
+  Check any that apply
+fields:
+  - no label: public_assistance_kinds
+    datatype: checkboxes
+    choices:
+      - Transitional Aid to Families with Dependent Children (TAFDC): TAFDC
+      - Medicaid (MassHealth): Medicaid
+      - Emergency Aid to Elderly, Disabled or Children (EAEDC): EAEDC
+      - Massachusetts Veterans Benefits Programs: VA Benefits
+      - Supplemental Security Income (SSI): SSI
+    required: False
+---
+id: qualify on face
+continue button field: qualify_interstitial
+question: |
+  % if need_supplement and person_answering == "tenant":
+  You need to submit a supplemental affidavit to learn if you qualify
+  % elif person_answering == "tenant":
+  Based on your answers, it looks like you qualify for a fee waiver
+  % elif need_supplement:
+  The tenant needs to submit a supplemental affidavit to learn if they qualify
+  % else:
+  Based on the tenant's answers, it looks like they qualify for a fee waiver
+  % endif
+subquestion: |
+  % if public_assistance_kinds.any_true() and person_answering == "tenant":
+  Based on the information you gave us so far, you should qualify for a free
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  
+  You receive these public benefits: ${public_assistance_kinds.true_values()}
+  
+  % elif public_assistance_kinds.any_true():
+  Based on the information you gave us so far, the tenant should qualify for a free
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  
+  The tenant will receive these public benefits: ${public_assistance_kinds.true_values()}
+  
+  % elif household_income_qualifies and person_answering == "tenant":
+  Based on the information you gave us so far, you should qualify for a fee
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  
+  **You earn less than the income limit.**
+
+  You said that your ${times_per_year(times_per_year_list, hh_income.times_per_year).lower()} income
+  is ${currency(hh_income.total(times_per_year=hh_income.times_per_year))}.
+  
+  The limit for a household of ${nice_number(household_size)} is 125% of
+  the poverty level, or ${currency(household_income_limit/hh_income.times_per_year)}.
+  
+  % elif household_income_qualifies:
+  Based on the information you gave us so far, you should qualify for a fee
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  
+  **You earn less than the income limit.**
+
+  You said that your ${times_per_year(times_per_year_list, hh_income.times_per_year).lower()} income
+  is ${currency(hh_income.total(times_per_year=hh_income.times_per_year))}.
+  
+  The limit for a household of ${nice_number(household_size)} is 125% of
+  the poverty level, or ${currency(household_income_limit/hh_income.times_per_year)}.
+
+  % elif not can_afford and person_answering == "tenant":
+  You told us that you can't afford to pay the fees and pay for the necessities
+  of life. A judge will take a closer look at your income and expenses and decide
+  if you qualify for sure.
+  
+  % elif not can_afford:
+  You told us that the tenant can't afford to pay the fees and pay for the necessities
+  of life. A judge will take a closer look at the tenant's income and expenses and decide
+  if they qualify for sure.
+  % endif
+  
+  ${ collapse_template(fee_waiver_help_template) }
+
+  % if (person_answering == "tenant") and (public_assistance_kinds.any_true() or household_income_qualifies):
+  On the next screen, we'll ask you about the specific fees you want waived.
+  
+  % elif public_assistance_kinds.any_true() or household_income_qualifies:
+  On the next screen, we'll ask you about the specific fees the tenant wants waived.
+  % elif person_answering == "tenant":
+  Next, you will complete the supplemental affidavit. This will ask for more
+  details about your finances, which the court needs to determine if you qualify.
+  % else:
+  Next, the tenant will complete the supplemental affidavit. This will ask for more
+  details about their finances, which the court needs to determine if they qualify.
+  % endif
+---
+id: select fees waived
+question: |
+  % if person_answering == "tenant":
+  What fees do you need the court to waive or pay?
+  % else:
+  What fees does the tenant need the court to waive or pay?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  You do not need to list every cost right now. You can file a separate fee waiver request for
+  fees that come up later in your case.
+
+  ${ collapse_template(what_fee_amount_should_i_write_template) }
+  
+  Check the boxes that you need below.
+  
+  % else:
+   The tenant does not need to list every cost right now. The tenant can file a separate fee waiver request for
+  fees that come up later in their case.
+
+  ${ collapse_template(what_fee_amount_should_i_write_template) }
+  
+  Check the boxes that the tenant needs below.
+  % endif
+fields:
+  # - Electronic filing fee (about $6/document): fees['E-filing'].waive
+  #   datatype: yesno
+  #   default: True
+  #   help: |
+  #     We've checked this by default because it applies in every case.
+  - Filing fee or e-filing fee: fees['Filing fee'].waive
+    datatype: yesno
+  - Amount (if known): fees['Filing fee'].amount
+    datatype: currency
+    required: False
+    show if: fees['Filing fee'].waive    
+  - Costs of serving the other party: fees['Service'].waive
+    datatype: yesno
+  - Amount (if known): fees['Service'].amount
+    datatype: currency
+    required: False
+    show if: fees['Service'].waive          
+  - Expert witness services, including examinations and testimony: fees['Costs of an expert witness'].waive
+    datatype: yesno
+  - Amount (if known):  fees['Costs of an expert witness'].amount
+    datatype: currency
+    required: False
+    show if:  fees['Costs of an expert witness'].waive    
+  - Describe the need for expert testimony/exams:  fees['Costs of an expert witness'].description
+    datatype: area
+    show if:  fees['Costs of an expert witness'].waive    
+  - Deposition-related costs: fees['Depositions'].waive
+    datatype: yesno
+  - Amount (if known):  fees['Depositions'].amount
+    datatype: currency
+    required: False
+    show if:  fees['Depositions'].waive    
+  - Who do you want to take a deposition of?:  fees['Depositions'].description
+    datatype: area
+    rows: 2
+    show if:  fees['Depositions'].waive    
+  - Fee for filing appeal: fees['Appeal cost'].waive
+    datatype: yesno
+  - Amount (if known): fees['Appeal cost'].amount
+    datatype: currency
+    required: False
+    show if: fees['Appeal cost'].waive
+  - Appeal bond: fees['Appeal bond'].waive
+    datatype: yesno
+  - Amount (if known): fees['Appeal bond'].amount
+    datatype: currency
+    required: False
+    show if: fees['Appeal bond'].waive    
+  - CD or cassette recordings of trial or hearing: fees['recordings'].waive
+    datatype: yesno
+  - note: |
+      You do not need to tell the court the amount to waive for
+      the cost of recordings.
+    show if: fees['recordings'].waive      
+  - Written transcript of trial or hearing: fees['transcript'].waive
+    datatype: yesno
+  - Amount (if known): fees['transcript'].amount    
+    datatype: currency
+    required: False
+    show if: fees['transcript'].waive        
+  - Other fee paid to the court: fees['Other'].waive    
+    datatype: yesno
+  - Amount (if known):  fees['Other'].amount
+    datatype: currency
+    required: False
+    show if:  fees['Other'].waive    
+  - Describe the other fee/cost:  fees['Other'].description
+    datatype: area
+    show if:  fees['Other'].waive    
+  - Other special fees or costs: fees['Other cost'].waive    
+    datatype: yesno
+  - Amount (if known):  fees['Other cost'].amount
+    datatype: currency
+    required: False
+    show if:  fees['Other cost'].waive    
+  - Describe the other fee/cost:  fees['Other cost'].description
+    datatype: area
+    show if:  fees['Other cost'].waive       
+validation code: |
+  if len([fee for fee in fees if fees[fee].waive]) < 1:
+    validation_error("You need to choose at least one.", field="fees['Other cost'].waive")
+---
 id: confirm notice
 question: |
   Before you take your landlord to court
@@ -1585,14 +1787,26 @@ content: |
 id: preview_docs
 continue button field: preview_docs
 question: |
+  % if person_answering == "tenant":
   Review your documents before you sign
+  % else:
+  Review the tenant's documents
+  % endif
 subquestion: |
   Open the document below in a new window.
   
+  % if person_answering == "tenant":
   If you need to make any changes, select the navigation labels on the left
   to revisit the section or sections you want to change.
   
   When you are ready, click "next" to add your signature.
+  
+  % else:
+  If the tenant needs to make any changes, select the navigation labels on the left
+  to revisit the section or sections they want to change.
+  
+  When the tenant is ready, click "next" to add a signature.
+  % endif
   
   % if screen_ll_knows_problem:
   ${ everything_for_emailing_bundle.as_pdf(key='preview') }
@@ -1605,18 +1819,34 @@ subquestion: |
 id: download_conditions_checklist_docs
 event: download_conditions_checklist_docs
 question: |
+  % if person_answering == "tenant":
   Your documents are ready
+  % else:
+  The tenant's documents are ready
+  % endif
 subquestion: |
-  
+  % if person_answering == "tenant":
   1. Download and print your documents below. You can also send yourself
   or someone else a copy of the documents in an email.
   1. Read the instructions to learn how to file and deliver your
   documents.
-  % if defined('trial_court'):
-  1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call the court for instructions at ${ tel(trial_court.phone_number) }.
+  % else: 
+  1. Download and print the tenant's documents below. The tenant can also send themselves
+  or someone else a copy of the documents in an email.
+  1. Read the instructions to learn how to file and deliver your
+  documents.
   % endif
+  % if defined('trial_court') and person_answering == "tenant":
+  1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call the court for instructions at ${ tel(trial_court.phone_number) }.
+  % elif defined('trial_court'):
+  1. The tenant can deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. They can call the court for instructions at ${ tel(trial_court.phone_number) }.
+  % endif
+  % if person_answering == "tenant":
   1. You can come back to this website later to take additional steps.
-  % if showifdef("interview_order_request_housing_inspection"):
+  % else:
+  1. You can come back to this website later to take additional steps.
+  % endif
+  % if showifdef("interview_order_request_housing_inspection") and person_answering == "tenant":
 
   <h2 class="h4">To call the housing inspector for your city or town</h2>
   You can call the inspector at ${ tel(inspector_information["Telephone"]) }.
@@ -1625,27 +1855,64 @@ subquestion: |
   inspector comes to your home.
 
   ${ collapse_template(detailed_inspector_information_template)}  
+  
+  % elif showifdef("interview_order_request_housing_inspection"): 
+  
+  <h2 class="h4">To call the housing inspector for your city or town</h2>
+  You can call the inspector at ${ tel(inspector_information["Telephone"]) }.
+  
+  Use the report below to explain why you are calling, and keep a copy with you when the 
+  inspector comes to your home.
+
+  ${ collapse_template(detailed_inspector_information_template)}
+  
   % endif
 
-  % if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
+  % if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0 and person_answering == "tenant":
   <h2 class="h4">Documents for you to print and deliver or keep for your records</h2>
   ${ housing_code_bundle.download_list_html(format="docx") }
-
+  
+  % elif screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
+  <h2 class="h4">Documents for the tenant to print and deliver or keep for their records</h2>
+  ${ housing_code_bundle.download_list_html(format="docx") }
+  
   % elif len(tenant_repair_letter_bundle.enabled_documents()) > 0: 
   ${ tenant_repair_letter_bundle.download_list_html(format="docx") }
   
   % endif  
-  % if screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"]:
+  % if screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"] and person_answering == "tenant":
   [BR]
   <h2 class="h4">Documents for you to print and file in court</h2>
   ${ affirmative_complaint_bundle.download_list_html(format="docx") }
-    
+ 
+  % elif screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"]:
+  [BR]
+  <h2 class="h4">Documents for the tenant to print and file in court</h2>
+  ${ affirmative_complaint_bundle.download_list_html(format="docx") }
+  
   % endif
   
   ${ everything_for_emailing_bundle.send_button_html() }
 
   <br/>
   ${ only_once_review_widget() }
+---
+id: judge actions
+question: |
+  % if person_answering == "tenant":
+  Did the judge already order your landlord to do something about your case?
+  % else:
+  Did the judge already order the tenant's landlord to do something about their case?
+  % endif
+fields: 
+  - label: |
+      % if person_answering == "tenant":
+      A judge already ordered my landlord to do something
+      % else:
+      A judge already ordered the tenant's landlord to do something
+      % endif
+    field: has_tro
+    datatype: yesnoradio
 ---
 template: housing_code_bundle.send_email_template
 subject: |

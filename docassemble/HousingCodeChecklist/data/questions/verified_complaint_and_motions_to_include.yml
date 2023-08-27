@@ -171,15 +171,30 @@ id: relief sought
 question: |
   Getting help right away
 subquestion: |
+  % if person_answering == "tenant":
   If you need help right away, a judge can give you an emergency order.
   The emergency order is supposed to last for 10 days.
 
   Later, the judge can make the order permanent if the landlord does not
   fix the problem right away.
+  % else:
+  If the tenant needs help right away, a judge can give them an emergency order.
+  The emergency order is supposed to last for 10 days.
+
+  Later, the judge can make the order permanent if the landlord does not
+  fix the problem right away.
+  % endif
 fields:
-  - Do you need an emergency order?: complaint_ask_for_tro
+  - label: | 
+      % if person_answering == "tenant": 
+        Do you need an emergency order?
+      % else:
+        Does the tenant need an emergency order?
+      % endif
+    field: complaint_ask_for_tro
     datatype: yesnoradio
   - label: |
+      % if person_answering == "tenant": 
       Is there anything you want to say about why you need an emergency order?
       Your complaint will include the facts of the problems you mentioned. So
       you don't need to repeat that here. 
@@ -187,6 +202,15 @@ fields:
       Include information about special circumstances that make your situation
       urgent. If you don't have special circumstances, it's okay to leave this
       section blank.
+      % else:
+      Is there anything the tenant wants to say about why they need an emergency order?
+      Their complaint will include the facts of the problems they mentioned. So
+      they don't need to repeat that here. 
+
+      Include information about special circumstances that make their situation
+      urgent. If they don't have special circumstances, it's okay to leave this
+      section blank.
+      % endif
     field: verified_complaint_other_emergency_basis
     datatype: area
     rows: 2
@@ -196,12 +220,27 @@ fields:
 ---
 id: relocation expenses
 question: |
+  % if person_answering == "tenant":
   Getting a new place to stay
+  % else:
+  Getting the tenant a new place to stay
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   If the problems are very serious, you may need to move out to allow
   the landlord to fix them.
+  % else:
+  If the problems are very serious, the tenant may need to move out to allow
+  the landlord to fix them.
+  % endif
 fields:
-  - Do you want the landlord to pay for a hotel or new apartment while they fix the problems?: complaint_ask_for_relocation
+  - label: |
+      % if person_answering == "tenant":
+      Do you want the landlord to pay for a hotel or new apartment while they fix the problems?
+      % else:
+      Does the tenant want the landlord to pay for a hotel or new apartment while they fix the problems?
+      % endif
+    field: complaint_ask_for_relocation
     datatype: yesnoradio    
 ---
 id: getting money
@@ -308,25 +347,88 @@ variable name: verified_complaint_claims_terms
 use objects: True
 data:
   illegal lockout: 
-    question: My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
-    document: locked me out of my home or removed my belongings without lawful authority
-    direct: locked you out of your home or removed your belongings
+    question: |
+      % if person_answering == "tenant":
+        My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
+      % else:
+        The tenant's landlord illegally locked them out of the apartment or moved their belongings out, or threatened to do so
+      % endif
+    document: | 
+      % if person_answering == "tenant":
+        locked me out of my home or removed my belongings without lawful authority 
+      % else:
+        locked the tenant out of their home or removed their belongings without lawful authority
+      % endif
+    direct: |
+      % if person_answering == "tenant":
+        locked you out of your home or removed your belongings
+      % else:
+        locked the tenant out of their home or removed their belongings without lawful authority
+      % endif
+      
   entered without permission: 
-    question: Went into my home without permission
-    document: entered my home without permission
-    direct: entered your home without permission
+    question: |
+      % if person_answering == "tenant":
+        Went into my home without permission
+      % else:
+        Went into the tenant's home without permission
+      % endif
+    document: |
+      % if person_answering == "tenant":
+        entered my home without permission
+      % else:
+        entered the tenant's home without permission
+      % endif
+    direct: |
+      % if person_answering == "tenant":
+        entered your home without permission 
+      % else:
+        entered the tenant's home without permission
+      % endif
+      
   utility shutoff: 
     question: Turned off the gas, electricity or oil service or did not turn it back on
     document: turned off or failed to restore a utility service
     direct: turned off or failed to restore a utility service
+    
   utility no agreement:
-    question: Made me pay for utilities without a written agreement
-    document: required me to pay for utilities without a written agreement
-    direct: required you to pay for utilities without a written agreement
+    question: |
+      % if person_answering == "tenant":
+        Made me pay for utilities without a written agreement
+      % else:
+        Made the tenant pay for utilities without a written agreement
+      % endif
+    document: |
+      % if person_answering == "tenant":
+        required me to pay for utilities without a written agreement
+      % else: 
+        required the tenant to pay for utilities without a written agreement
+      % endif
+    direct: |
+     % if person_answering == "tenant":
+       required you to pay for utilities without a written agreement
+     % else:
+       required the tenant to pay for utilities without a written agreement
+     % endif
+     
   insufficient notice: 
-    question: Made repairs without giving me reasonable warning of the time and day they would come
-    document: did not give me reasonable notice to make repairs
-    direct: did not give you reasonable notice to make repairs
+    question: |
+      % if person_answering == "tenant":
+        Made repairs without giving me reasonable warning of the time and day they would come"       % else:
+        Made repairs without giving the tenant reasonable warning of the time and day they would come
+      % endif
+    document: |
+      % if person_answering == "tenant":
+        did not give me reasonable notice to make repairs
+      % else:
+        did not give the tenant reasonable notice to make repairs
+      % endif
+    direct: |
+      % if person_answering == "tenant":
+        did not give you reasonable notice to make repairs 
+      % else:
+        did not give the tenant reasonable notice to make repairs
+      % endif
   other:
     question: other
     document: other
@@ -344,7 +446,7 @@ subquestion: |
   You have already told us about the housing problems that your landlord did not repair.
   % endif
   % if include_conditions_in_complaint:
-    The tenant already told us about the housing problems that their landlord did not repair.
+    You have already told us about the housing problems that the tenant's landlord did not repair.
   % endif
 
   % if person_answering == "tenant":
@@ -418,32 +520,52 @@ fields:
 ---
 id: claim i details
 question: |
-  % if i == "other":
-  More information about your landlord's **violation of landlord-tenant law**.
-  % else:
-  More information about when your landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
-  % endif
+    % if i == "other" and person_answering == "tenant":
+      More information about your landlord's **violation of landlord-tenant law**.
+    % elif person_answering == "tenant":
+      More information about when your landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
+    % elif i == "other":
+      More information about the landlord's **violation of landlord-tenant law**.
+    % else:
+      More information about when the tenant's landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
+    % endif
+    
 subquestion: |
   % if i == "other":
-  Tell us more about what happened with the **other violation of landlord-tenant law**.
+    Tell us more about what happened with the **other violation of landlord-tenant law**.
+  % elif i == "utility no agreement" and person_answering == "tenant":
+    Tell us a little more about what happened when your landlord required you to pay for
+  **${ complaint_utility_not_paid.true_values() }** without a written agreement.
   % elif i == "utility no agreement":
-  Tell us a little more about what happened when your landlord required you to pay for
+    Tell us a little more about what happened when the tenant's landlord required the tenant to pay for
   **${ complaint_utility_not_paid.true_values() }** without a written agreement.
   % elif i == "utility shutoff":
-  % if len(complaint_utility_shutoff.true_values()) > 1: 
+  % if len(complaint_utility_shutoff.true_values()) > 1 and person_answering == "tenant": 
   Tell us a little more about what happened when your **${ complaint_utility_shutoff.true_values() }**
   were turned off. 
-  % else:
+  % elif len(complaint_utility_shutoff.true_values()) > 1:
+    Tell us a little more about what happened when the tenant's **${ complaint_utility_shutoff.true_values() }**
+  were turned off. 
+  % elif person_answering == "tenant":
   Tell us a little more about what happened when your **${ complaint_utility_shutoff.true_values() }**
   was turned off. 
+  % else: 
+   Tell us a little more about what happened when the tenant's **${ complaint_utility_shutoff.true_values() }**
+   was turned off
   % endif
   % else:
-  Tell us a little more about what happened when your landlord **${ verified_complaint_claims_terms[i]["direct"] }.**
+  Tell us a little more about what happened when the landlord **${ verified_complaint_claims_terms[i]["direct"] }.**
   % endif
   
+  % if person_answering == "tenant":
   The information you share on this screen will appear on your 
   final documents for the judge. You can edit and explain more
   details later.
+  % else:
+  The information the tenant shares on this screen will appear on the 
+  final documents for the judge. You can edit and explain more
+  details later.
+  % endif
 fields:  
   - label above field: True
     label: |
@@ -482,17 +604,40 @@ fields:
 ---
 id: is tenant voucher at risk?
 question: |
+  % if person_answering == "tenant":
   Is your housing subsidy at risk?
+  % else:
+  Is the tenant's housing subsidy at risk?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   If you have a mobile voucher, like a Section 8, your housing authority
   might put you on a "clock" to move to a new apartment when your landlord
   refuses to fix serious housing problems.
+  % else:
+  If the tenant has a mobile voucher, like a Section 8, their housing authority
+  might put them on a "clock" to move to a new apartment when their landlord
+  refuses to fix serious housing problems.
+  % endif
 fields:
-  - Do you have a mobile voucher (Section 8 or MRVP)?: tenant_subsidy_is_voucher
+  - label: |
+      % if person_answering == "tenant":
+      Do you have a mobile voucher (Section 8 or MRVP)?
+      % else:
+      Does the tenant have a mobile voucher (Section 8 or MRVP)?
+      % endif
+    field: tenant_subsidy_is_voucher
     datatype: yesnoradio
-  - Are you at risk of being forced to move by your housing authority?: verified_complaint_tenant_voucher_at_risk
+  - label: |
+      % if person_answering == "tenant":
+      Are you at risk of being forced to move by your housing authority?: verified_complaint_tenant_voucher_at_risk
+      % else:
+      Is the tenant at risk of being forced to move by their housing authority?
+      % endif
+    field: verified_complaint_tenant_voucher_at_risk
     datatype: yesnomaybe
     show if: tenant_subsidy_is_voucher
+    
 ---
 id: Did you send the landlord a demand letter?
 question: |
@@ -575,21 +720,41 @@ id: wants fee waiver
 question: |
   Filing for free
 subquestion: |
+  % if person_answering == "tenant":
   The court may charge you a fee to file these forms.
-
+  % else:
+  The court may charge the tenant a fee to file the forms.
+  % endif
+  
   The cost can include:
 
   - ${ currency(verified_complaint_tro_fee) } to get an emergency order, and
   - ${ currency(verified_complaint_entry_of_action_Fee) } to file the case in court.
-
+  
+  % if person_answering == "tenant":
   But most tenants do not pay anything. You can file for free if:
-
+  
   1. You get certain benefits, like Mass Health, or
   1. You earn less than 125% of the Federal Poverty Level for Massachusetts, or
   1. You cannot afford to pay the fee.
+  
+  % else:
+  But most tenants do not pay anything. The tenant can file for free if:
+  
+  1. They get certain benefits, like Mass Health, or
+  1. They earn less than 125% of the Federal Poverty Level for Massachusetts, or
+  1. They cannot afford to pay the fee.
+  
+  % endif
 
 fields:
-  - Would you like to find out if you qualify to file for free?: verified_complaint_wants_fee_waiver
+  - label: |
+      % if person_answering == "tenant":
+      Would you like to find out if you qualify to file for free?
+      % else:
+      Would the tenant like to find out if they qualify to file for free?
+      % endif
+    field: verified_complaint_wants_fee_waiver
     datatype: yesnoradio
 ---
 only sets:
