@@ -79,7 +79,7 @@ subquestion: |
   also usually the name you write on a rent check. 
   % else: 
   Write the name of tenant's landlord, not the tenant's property manager. The landlord
-  is the person who owns the building. You can find out who owns the building
+  is the person who owns the building. The tenant can find out who owns the building
   at [masslandrecords.com](https://www.masslandrecords.com/). The landlord is 
   also usually the name the tenant writes on a rent check. 
   % endif

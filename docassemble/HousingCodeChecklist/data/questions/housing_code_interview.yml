@@ -1026,7 +1026,7 @@ subquestion: |
     % if person_answering == "tenant":
     "Retaliation" is illegal. Your landlord cannot evict you <b>or</b> raise your rent just because you complain about problems in your home. 
     % else:
-    "Retaliation" is illegal. The tenant's landlord cannot evict them or raise their rent just because they complain about problems in the tenant's home. 
+    "Retaliation" is illegal. The tenant's landlord cannot evict them or raise their rent just because they complain about problems in their home. 
     % endif
     <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction" target="_blank" rel="noopener noreferrer">Read more</a>.
     </p>
@@ -1110,13 +1110,25 @@ fields:
 ---
 template: how_far_back_should_i_go_template
 subject: |
+  % if person_answering == "tenant":
   What problems should I list?
+  % else:
+  What problems should the tenant list?
+  % endif
 content: |
+  % if person_answering == "tenant":
   You can list any problems in this apartment that:
   
   1. still need to be fixed and 
   2. you have had over the last 6 years (since ${ today().minus(years=6) }), even
   if they are fixed now.
+  % else:
+  The tenant can list any problems in the apartment that:
+  
+  1. still need to be fixed and 
+  2. they have had over the last 6 years (since ${ today().minus(years=6) }), even
+  if they are fixed now.
+  % endif
 ---
 id: review simple conditions
 question: |
@@ -1137,23 +1149,23 @@ subquestion: |
   * Get repairs
   % elif basis == "past_repair_needs":
     % if person_answering == "tenant":
-      * Get paid because of repairs I needed in the last 6 years
+    * Get paid because of repairs I needed in the last 6 years
     % else: 
-      * Get paid because of repairs the tenant needed in the last 6 years
+    * Get paid because of repairs the tenant needed in the last 6 years
     % endif
     
   % elif basis == "illegal_lockout":
     % if person_answering == "tenant":
-      * Landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
+    * Landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
     % else:
-      * Landlord illegally locked the tenant out of the apartment or moved the tenant's belongings out, or threatened to do so
+    * Landlord illegally locked the tenant out of the apartment or moved the tenant's belongings out, or threatened to do so
     % endif
     
   % elif basis == "entered_without_permission":
     % if person_answering == "tenant":
-      * Landlord entered my home without permission
+    * Landlord entered my home without permission
     % else:
-      * Landlord entered the tenant's home without permission
+    * Landlord entered the tenant's home without permission
     % endif
     
   % elif basis == "insufficient_notice":
@@ -1524,7 +1536,7 @@ fields:
       **Make sure you respond to the eviction.** You can use [MADE](https://gbls.org/MADE) to 
       stop the eviction case. You shouldn't start a new court case with UpToCode.
       % else:
-      **Make sure the tenant responds to the eviction.**You can use [MADE](https://gbls.org/MADE) to 
+      **Make sure the tenant responds to the eviction. **They can use [MADE](https://gbls.org/MADE) to 
       stop the eviction case. The tenant shouldn't start a new court case with UpToCode.
       % endif
     show if: screen_tenant_facing_eviction
@@ -1572,7 +1584,7 @@ fields:
       
       If the tenant has not given their landlord enough time to fix the problem yet,
       the tenant may want to wait before the tenant gets help from a court. But it is up
-      to you.
+      to them.
       % endif
     show if: screen_ll_already_fixing
   - label: |
@@ -1589,10 +1601,11 @@ fields:
       **${ users.familiar() }, you and your neighbors are stronger together**. You have the right to **organize**
       with other tenants to fight the bad housing conditions.
       else:
-      **The tenant, you and your neighbors are stronger together**. You have the right to **organize**
-      % endif
-      with other tenants to fight the bad housing conditions.
+      **The tenant, and their neighbors are stronger together**. They have the right to **organize** 
+      with other tenants to fight the bad housing conditions    
+      % endif 
     show if: screen_other_tenants_with_problem
+#this note is not showing up if screen_other_tenants_with_problem
   - label: |
       % if person_answering == "tenant":
       Have you reported all of the problems to a city housing inspector? 
@@ -1616,8 +1629,8 @@ fields:
       variable: screen_contacted_housing_inspector
       is: False
   - note: |
-      **What would you like to do?**    
-      Remember, you have the right not to be {retaliated} against.
+      **What would the tenant like to do?**    
+      Remember, the tenant has the right not to be {retaliated} against.
     show if: screen_ll_knows_problem      
   - no label: document_choice
     required: False
@@ -2145,12 +2158,13 @@ subquestion: |
   
   At the end, you will have a chance to download and email the documents for
   yourself or send them to someone else.
+  
   % else:
   On the next screens, we will ask whatever questions are needed to finish
   creating the documents for the tenant. 
   
-  At the end, you will have a chance to download and email the documents for
-  yourself or send them to someone else.
+  At the end, the tenant will have a chance to download and email the documents for
+  themselves or send them to someone else.
   % endif
 ---
 continue button field: explain_sharing
