@@ -228,7 +228,11 @@ generic object: ALIndividual
 question: |
   How can ${ other_parties } be contacted?
 subquestion: |
+  % if person_answering == "tenant":
   If you do not know, you can leave this screen blank.  
+  % else:
+  If the tenant does not know, you can leave this screen blank.
+  % endif
 
   ${ collapse_template(why_need_ll_contact_information_template) }
 fields:
@@ -241,13 +245,25 @@ fields:
 ---
 template: why_need_ll_contact_information_template
 subject: |
+  % if person_answering == "tenant":
   Why do you need my landlord's contact information?
+  % else:
+  Why do you need the contact information of the tenant's landlord
+  % endif
 content: |
+  % if person_answering == "tenant":
   Your landlord's contact information will be written
   on the documents that this website creates.
 
   The court may use the number or email to pick a time
   for you and your landlord to come into court.
+  % else:
+  The landlord's contact information will be written
+  on the documents that this website creates.
+
+  The court may use the number or email to pick a time
+  for the tenant and their landlord to come into court.
+  % endif
 ---
 id: your name
 question:  |
@@ -925,10 +941,18 @@ fields:
 ---
 template: housing_how_to_pick_court_help_template
 subject: |
+  % if person_answering == "tenant":
   How do I pick a court?
+  % else:
+  How does the tenant pick a court?
+  % endif
 content: |
+  % if person_answering == "tenant":
   How do you know which court to choose?
-
+  % else:
+  How does the tenant know which court to choose?
+  % endif
+  
   Housing cases can be filed in one of 4 kinds of courts:
 
   * Housing Court  
@@ -936,19 +960,29 @@ content: |
   * Boston Municipal Court (BMC)
   * Superior Court
 
+  % if person_answering == "tenant":
   Most tenants choose the Housing Court. If your Housing Court is
   far away or hard to get to, you may decide to file in the District
   Court or Boston Municipal Court.
 
   Unless you have talked to an attorney and have a special reason, you should
   not file in the Superior Court.
+  % else:
+  Most tenants choose the Housing Court. If the tenant's Housing Court is
+  far away or hard to get to, they may decide to file in the District
+  Court or Boston Municipal Court.
+
+  Unless they have talked to an attorney and have a special reason, they should
+  not file in the Superior Court.
+  % endif
   
   The District Court, BMC, and Superior Court are all courts that can hear
   any type of case. Housing Court is a
     **specialist** court that hears only housing cases.
   They have judges with special training as well as special 
   resources available.
-    
+  
+  % if person_answering == "tenant":
   Depending on where you live, different courts may be further or closer to
   your address. There are about 100 district courts all over the state,
   but each county has only one or a few Superior Courts or specialty
@@ -960,6 +994,20 @@ content: |
   Only you know the right choice.
   
   You can also view the court selection guidance at [mass.gov](https://www.mass.gov/courthouse-locator).
+  % else:
+  Depending on where the tenant lives, different courts may be further or closer to
+  their address. There are about 100 district courts all over the state,
+  but each county has only one or a few Superior Courts or specialty
+  courts.
+  
+  Choosing a court means thinking about what kind of help the tenant needs, as well
+  as which court they can get transportation to on the day of their hearing.
+  
+  Only they know the right choice.
+  
+  The tenant can also view the court selection guidance at [mass.gov](https://www.mass.gov/courthouse-locator).
+  % endif
+  
 ---
 sets:
   - users[0].attorney.address.address

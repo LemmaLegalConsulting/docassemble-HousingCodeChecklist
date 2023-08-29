@@ -748,6 +748,44 @@ subquestion: |
   details about their finances, which the court needs to determine if they qualify.
   % endif
 ---
+template: fee_waiver_help_template
+subject: |
+  What are the rules for a fee waiver?
+content: |
+  % if person_answering == "tenant":
+  If you get certain public benefits, or if you earn less than 125% of 
+  the federal poverty level${ "," if need_income else ""}
+  % if need_income:
+  (${ currency(household_income_limit)} a year for a household of ${ nice_number(household_size) }),
+  % endif
+  the law says that you qualify for a fee waiver.
+  If you earn more than that but still cannot afford to pay the costs
+  of going to court, you need to give the court more information. If the 
+  court agrees, they may waive your court costs. It is up to a judge to 
+  decide.
+  
+  % else:
+  If the tenant gets certain public benefits, or if they earn less than 125% of 
+  the federal poverty level${ "," if need_income else ""}
+  % if need_income:
+  (${ currency(household_income_limit)} a year for a household of ${ nice_number(household_size) }),
+  % endif
+  the law says that they qualify for a fee waiver.
+  If they earn more than that but still cannot afford to pay the costs
+  of going to court, they need to give the court more information. If the 
+  court agrees, they may waive their court costs. It is up to a judge to 
+  decide.
+  % endif
+  
+  % if person_answering == "tenant":
+  * [What if the clerk does not approve my affidavit right away?](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-)
+  * [What if the clerk denies my affidavit?](https://www.masslegalhelp.org/what-if-the-clerk-denies-my-affidavit-of-indigency-)
+  
+  % else:
+  * [What if the clerk does not approve the tenant's affidavit right away?](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-)
+  * [What if the clerk denies the tenant's affidavit?](https://www.masslegalhelp.org/what-if-the-clerk-denies-my-affidavit-of-indigency-)
+  % endif
+---
 id: select fees waived
 question: |
   % if person_answering == "tenant":
@@ -1213,11 +1251,21 @@ fields:
 ---
 template: how_many_problems_are_there_template
 subject: |
+  % if person_answering == "tenant":
   How many problems can you help me with?
+  % else:
+  How many problems can you help the tenant with?
+  % endif
 content: |
+  % if person_answering == "tenant":
   If you explore by room and category, you can pick from a list of about
   150 problems. Some may be problems you did not know your
   landlord needs to fix.
+  % else:
+  If the tenant explores by room and category, the tenant can pick from a 
+  list of about 150 problems. Some may be problems that the tenant did 
+  not know their landlord needs to fix.
+  % endif
 
   The list of problems comes from the State Sanitary Code. We have
   translated the Sanitary Code into easier to understand sentences

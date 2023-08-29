@@ -266,8 +266,13 @@ fields:
 ---
 template: complaint_right_to_get_money_template
 subject: |
+  % if person_answering == "tenant":
   What money can I get?
+  % else:
+  What money can the tenant get?
+  % endif
 content: |
+  % if person_answering == "tenant":
   You have a right to ask for money from your landlord because of the problems
   that your landlord did not fix.
 
@@ -275,17 +280,30 @@ content: |
 
   1. A percentage off of your rent for each month you had the problem, or
   1. A flat 3 times your monthly rent for a **serious** problem.
+  
+  % else:
+  The tenant has a right to ask for money from their landlord because of the problems
+  that their landlord did not fix.
 
+  In most cases, the money can either be:
+
+  1. A percentage off of their rent for each month they had the problem, or
+  1. A flat 3 times their monthly rent for a **serious** problem.
+  % endif
   [Read more](https://www.masslegalhelp.org/housing/problems/deciding-to-go-to-court/civil-lawsuit).
 ---
 template: complaint_right_to_get_money_should_i
 subject: |
+  % if person_answering == "tenant":
   Should I ask for money from my landlord?
+  % else:
+  Should the tenant ask for more money from their landlord?
+  % endif
 content: |
   Deciding to sue for money can be complicated.
-
+  % if person_answering == "tenant":
   You may **not** want to ask for money from your landlord in this lawsuit if:
-
+  
   1. You think your landlord may file an eviction case against you.
   1. You think you may be able to hire a lawyer later.
 
@@ -300,6 +318,25 @@ content: |
   off asking for money in this lawsuit.
 
   If you are not sure, you may want to try to [find a lawyer using the Mass Legal Resource Finder](https://masslrf.org/en/triage/start/housing).
+  
+  % else:
+  The tenant may **not** want to ask for money from their landlord in this lawsuit if:
+  
+  1. They think their landlord may file an eviction case against them.
+  1. They think they may be able to hire a lawyer later.
+
+  If their landlord files an eviction case against them, the tenant may want to "save" their claim
+  for money as part of the eviction case. Their claim may be able to stop the eviction if
+  the eviction is for "no fault" or for not paying rent.
+
+  [Read the article about defenses on the MassLegalHelp website](https://www.masslegalhelp.org/housing/lt1-chapter-12-legal-defenses-counterclaims-article).
+
+  But if their landlord evicts them for a "fault" reason (something other than being behind
+  in the rent), they cannot use their other claims to stop the eviction. They may be better 
+  off asking for money in this lawsuit.
+
+  If the tenant is not sure, they may want to try to [find a lawyer using the Mass Legal Resource Finder](https://masslrf.org/en/triage/start/housing).
+  % endif
 ---
 #id: 93a screening
 #question: |
@@ -414,7 +451,8 @@ data:
   insufficient notice: 
     question: |
       % if person_answering == "tenant":
-        Made repairs without giving me reasonable warning of the time and day they would come"       % else:
+        Made repairs without giving me reasonable warning of the time and day they would come"       
+      % else:
         Made repairs without giving the tenant reasonable warning of the time and day they would come
       % endif
     document: |
@@ -516,7 +554,7 @@ fields:
       ${ kind_of_lawsuit["other_landlord_tenant"] if initial_action_selection == "help_in_court" else False}
   - None of the above: verified_complaint_nota
     datatype: yesno
-    uncheck others: True      
+    uncheck others: True       
 ---
 id: claim i details
 question: |
@@ -527,7 +565,8 @@ question: |
     % elif i == "other":
       More information about the landlord's **violation of landlord-tenant law**.
     % else:
-      More information about when the tenant's landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
+      More information about when the tenant's landlord 
+      **${ verified_complaint_claims_terms[i]["direct"] }**.
     % endif
     
 subquestion: |
