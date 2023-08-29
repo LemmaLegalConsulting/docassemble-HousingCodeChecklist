@@ -561,9 +561,10 @@ question: |
   % if i == "other" and person_answering == "tenant":
   More information about your landlord's **violation of landlord-tenant law**.
   % elif person_answering == "tenant":
-  More information about when your landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
+  More information about when your landlord 
+  ${ bold(verified_complaint_claims_terms[i]["direct"]) }.
   % elif i == "other":
-  More information about when the tenant's landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
+  More information about when the tenant's landlord ${ bold(verified_complaint_claims_terms[i]["direct"]) }.
   % else: 
   More information about the landlord's **violation of landlord-tenant law**. 
   % endif
@@ -668,7 +669,7 @@ fields:
     datatype: yesnoradio
   - label: |
       % if person_answering == "tenant":
-      Are you at risk of being forced to move by your housing authority?: verified_complaint_tenant_voucher_at_risk
+      Are you at risk of being forced to move by your housing authority?
       % else:
       Is the tenant at risk of being forced to move by their housing authority?
       % endif
