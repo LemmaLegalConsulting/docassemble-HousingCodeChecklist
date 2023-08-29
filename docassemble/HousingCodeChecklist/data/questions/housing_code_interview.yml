@@ -1684,7 +1684,7 @@ fields:
       % if person_answering == "tenant":
       Are other tenants in your building also having housing problems?
       % else:
-      Are other tenants in the tenant's building also having housing problems?
+      Are other tenants in ${ users.familiar() }'s building also having housing problems?
       % endif
     field: screen_other_tenants_with_problem
     datatype: yesnomaybe
@@ -1693,10 +1693,10 @@ fields:
       % if person_answering == "tenant":
       **${ users.familiar() }, you and your neighbors are stronger together**. You have the right to **organize**
       with other tenants to fight the bad housing conditions.
-      else:
-      **The tenant, and their neighbors are stronger together**. They have the right to **organize** 
-      with other tenants to fight the bad housing conditions    
-      % endif 
+      % else:
+      The tenant, and their neighbors are stronger together**. They have the right to **organize**
+      with other tenants to fight the bad housing conditions.
+      % endif
     show if: screen_other_tenants_with_problem
 #this note is not showing up if screen_other_tenants_with_problem
   - label: |

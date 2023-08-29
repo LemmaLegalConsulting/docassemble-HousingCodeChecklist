@@ -388,7 +388,7 @@ data:
       % if person_answering == "tenant":
         My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
       % else:
-        The tenant's landlord illegally locked them out of the apartment or moved their belongings out, or threatened to do so
+        The tenant's landlord illegally locked the tenant out of the apartment or moved their belongings out, or threatened to do so
       % endif
     document: | 
       % if person_answering == "tenant":
@@ -482,9 +482,9 @@ question: |
 subquestion: |
   % if include_conditions_in_complaint and person_answering == "tenant":
   You have already told us about the housing problems that your landlord did not repair.
-  % endif
-  % if include_conditions_in_complaint:
-    You have already told us about the housing problems that the tenant's landlord did not repair.
+  
+  % elif include_conditions_in_complaint:
+  You have already told us about the housing problems that the tenant's landlord did not repair.
   % endif
 
   % if person_answering == "tenant":
@@ -558,16 +558,15 @@ fields:
 ---
 id: claim i details
 question: |
-    % if i == "other" and person_answering == "tenant":
-      More information about your landlord's **violation of landlord-tenant law**.
-    % elif person_answering == "tenant":
-      More information about when your landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
-    % elif i == "other":
-      More information about the landlord's **violation of landlord-tenant law**.
-    % else:
-      More information about when the tenant's landlord 
-      **${ verified_complaint_claims_terms[i]["direct"] }**.
-    % endif
+  % if i == "other" and person_answering == "tenant":
+  More information about your landlord's **violation of landlord-tenant law**.
+  % elif person_answering == "tenant":
+  More information about when your landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
+  % elif i == "other":
+  More information about when the tenant's landlord **${ verified_complaint_claims_terms[i]["direct"] }**.
+  % else: 
+  More information about the landlord's **violation of landlord-tenant law**. 
+  % endif
     
 subquestion: |
   % if i == "other":

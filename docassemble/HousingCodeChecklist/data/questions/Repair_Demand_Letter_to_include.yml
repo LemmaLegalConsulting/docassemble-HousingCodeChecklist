@@ -540,8 +540,12 @@ template: what_if_problem_over_multiple_periods
 subject: |
   What if the problems happened at different times?
 content: |
+  % if person_answering == "tenant":
   Use this tool to come up with your best estimate of the
   amount to ask for. It does not need to be exact.
+  % else:
+  Use this tool to come up with the tenant's best estimate of the amount to as for. It does not need to be exact.
+  % endif
 ---
 depends on:
   - damage_calculation_method
@@ -610,6 +614,7 @@ subject: |
 content: |
   You told us the following information:
   
+  % if person_answering == "tenant":
   * The total rent for your home is ${ currency(tenant_unit_rent) }
   % if damage_tenant_severity_estimate == "bqe_total":
   * Your home was not livable
@@ -641,6 +646,40 @@ content: |
   % endif  
   the "[warranty of habitability](https://www.masslegalhelp.org/housing/problems/deciding-to-go-to-court/civil-lawsuit#bad_conditions)" number is  ${ bold(currency(tenant_warranty_estimate)) } based on getting a 
   ${ tenant_percentage_estimate }% reduction in your rent.
+  
+  % else:
+  * The total rent for the tenant's home is ${ currency(tenant_unit_rent) }
+  % if damage_tenant_severity_estimate == "bqe_total":
+  * The tenant's home was not livable
+  % else:
+  * The tenant's home was livable despite the serious problems
+  % endif
+  * The tenant had the problem for about ${ f"{tenant_time_estimate:g}" }
+  % if tenant_time_estimate_denominator == 365:
+  days
+  % elif tenant_time_estimate_denominator == 52:
+  weeks
+  % elif tenant_time_estimate_denominator == 12:
+  months
+  % else:
+  years
+  % endif  
+  % if tenant_time_estimate / tenant_time_estimate_denominator >= 6:
+  
+  **Note**: the tenant can usually only ask their landlord to pay them back for a problem that happened in the 
+  last **6** years. Our estimate will assume the tenant had the problem for exactly 6 years.
+  % endif
+  
+  Based on the information that the tenant told us, 
+  
+  % if damage_tenant_severity_estimate == "bqe_total":
+  the "[breach of quiet enjoyment](https://www.masslegalhelp.org/housing/problems/deciding-to-go-to-court/civil-lawsuit#breach)" number is 3 times the monthly rent, or ${ bold(currency(three_times_rent_amount)) }.
+  
+  and 
+  % endif  
+  the "[warranty of habitability](https://www.masslegalhelp.org/housing/problems/deciding-to-go-to-court/civil-lawsuit#bad_conditions)" number is  ${ bold(currency(tenant_warranty_estimate)) } based on getting a 
+  ${ tenant_percentage_estimate }% reduction in the tenant's rent.
+  % endif
 ---
 depends on:
   - tenant_unit_rent
@@ -679,9 +718,9 @@ content: |
     
   For example, if you had a problem for a whole month and your rent was $2,000/month, and:
   % else:
-  Pick the number that is higher. You cannot get both.
+  Pick the number that is higher. The tenant cannot get both.
     
-  For example, if you had a problem for a whole month and your rent was $2,000/month, and:
+  For example, if the tenant had a problem for a whole month and their rent was $2,000/month, and:
   % endif
 
   % if person_answering == "tenant":

@@ -601,22 +601,29 @@ question: |
 subquestion: |
   % if person_answering == "tenant":
   You are stronger together!
-  % else:
-  Tenants are stronger together!
-  % endif
   
   A tenant's union is a group of tenants working together. Your local tenant's
   union may have:
+  % else:
+  Tenants are stronger together!
+  
+  A tenant's union is a group of tenants working together. A local tenant's union may have:
+  % endif
   
   1. Regular meetings to talk about problems with neighbors.
   1. Organizers who will negotiate with your landlord.
   1. Protests to help defend tenant's rights.
     
   % if hasattr(users[0].address, 'norm_long') and hasattr(users[0].address.norm_long, 'city'):
-  % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham', 'Lynn', 'East Boston', 'Springfield']:
+  % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham', 'Lynn', 'East Boston', 'Springfield'] and person_answering == "tenant":
   Here are some tenant unions that cover the city you live in:
   
+  % elif users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham', 'Lynn', 'East Boston', 'Springfield']:
+  Here are some tenant unions that cover the city the tenant lives in:
+  
   % endif
+  
+  
   % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham']:
   #### [City Life/Vida Urbana](https://www.clvu.org/)
   
