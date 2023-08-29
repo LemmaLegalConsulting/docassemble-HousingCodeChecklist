@@ -843,7 +843,13 @@ fields:
     datatype: currency
     required: False
     show if:  fees['Depositions'].waive    
-  - Who do you want to take a deposition of?:  fees['Depositions'].description
+  - label: |
+      % if person_answering == "tenant":
+      Who do you want to take a deposition of?
+      % else:
+      Who does the tenant want to take a deposition of?
+      % endif
+    field:  fees['Depositions'].description
     datatype: area
     rows: 2
     show if:  fees['Depositions'].waive    
@@ -862,8 +868,13 @@ fields:
   - CD or cassette recordings of trial or hearing: fees['recordings'].waive
     datatype: yesno
   - note: |
+      % if person_answering == "tenant":
       You do not need to tell the court the amount to waive for
       the cost of recordings.
+      % else:
+      The tenant does not need to tell the court the amount to waive for 
+      the cost of recordings.
+      % endif
     show if: fees['recordings'].waive      
   - Written transcript of trial or hearing: fees['transcript'].waive
     datatype: yesno
@@ -892,6 +903,40 @@ fields:
 validation code: |
   if len([fee for fee in fees if fees[fee].waive]) < 1:
     validation_error("You need to choose at least one.", field="fees['Other cost'].waive")
+---
+template: what_fee_amount_should_i_write_template
+subject: |
+  % if person_answering == "tenant":
+  What amount should I write in?
+  % else:
+  What amount should the tenant write in?
+  % endif
+content: |
+  % if person_answering == "tenant":
+  If you are not sure of the exact amount yet, it is OK to leave it blank. You can 
+  also write your best guess. For common fees, the court clerk may know the amount and 
+  can fill it in for you.
+
+  You may also be able to find the fee by visiting the court's website:
+  % else:
+  If the tenant is not sure of the exact amount yet, it is OK to leave it blank. You can 
+  also write the tenant's best guess. For common fees, the court clerk may know the amount and 
+  can fill it in for the tenant.
+
+  The tenant may also be able to find the fee by visiting the court's website:
+  % endif
+  * [List of filing fees in Massachusetts](https://www.mass.gov/info-details/uniform-schedule-of-fees).
+
+  It usually costs about $40 to serve a document on the opposing party, either by using the sheriff or
+  a constable.
+
+  % if person_answering == "tenant":
+  If you are asking for something special to your circumstances, researching the exact fee amount
+  yourself may help the court decide.
+  % else:
+  If the tenant is asking for something special to their circumstances, researching the exact fee amount
+  themselves may help the court decide.
+  % endif
 ---
 id: confirm notice
 question: |
