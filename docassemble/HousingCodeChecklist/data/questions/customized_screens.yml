@@ -534,7 +534,7 @@ subquestion: |
   % endif
 fields:
   - Earliest date: tenant_repair_issue_date
-    datatype: ThreePartsDate
+    datatype: date
     default: ${ tenant_repair_default_date }
 ---
 id: issue description
@@ -803,7 +803,8 @@ subquestion: |
 fields:
   - 'When did the issue start?': incident_date
     datatype: ThreePartsDate
-    default: ${ tenant_repair_default_date }
+    default: |
+      ${ tenant_repair_default_date }
   - 'My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so': incident_locked_out
     datatype: yesno
   - 'My utilities were shut off': incident_utility

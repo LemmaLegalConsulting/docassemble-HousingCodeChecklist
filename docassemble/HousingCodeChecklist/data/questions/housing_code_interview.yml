@@ -1322,18 +1322,25 @@ id: room chooser
 question: |
   Explore problems by room and category
 subquestion: |
-  % if len(bad_conditions) > 1:
+  % if len(bad_conditions) > 1 and person_answering == "tenant":
   You have already listed problems in these rooms and categories:
+  % elif len(bad_conditions) > 1:
   
   % for button in bad_conditions:
   * [:pencil-alt: ${ str(button).capitalize() }](${ url_action('bad_conditions["' + button + '"].claims') } )
   % endfor
-  % else:
+  % elif person_answering == "tenant":
   Your home is protected by the [State Sanitary 
+  Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
+  % else:
+  The tenant's home is protected by the [State Sanitary 
   Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download).
   
   Select a room or category to add a problem.
   % endif
+  
+  
+  
 field: bad_conditions.new_item_name
 buttons:
   code: |
@@ -1341,8 +1348,13 @@ buttons:
 back button label: |
   Back
 under: |
+  % if person_answering == "tenant":
   You can keep exploring problems by room and category, or skip ahead
   to start working on a solution.
+  % else:
+  The tenant can keep exploring problems by room and category, or skip ahead
+  to start working on a solution.
+  % endif
   
   % if len(bad_conditions.elements):
   ${ action_button_html(url_ask('set_gathered'), label="Skip and continue", color="primary", size="md") }
@@ -1504,36 +1516,55 @@ id: review conditions
 question: |
   Here is what you told us so far
 subquestion: |  
-  % if initial_action_selection == "help_in_court":
+  % if initial_action_selection == "help_in_court" and person_answering == "tenant":
   You need to sue your landlord because:
+  % elif initial_action_selection == "help_in_court":
+  The tenant needs to sue their landlord because:
 
   % for basis in kind_of_lawsuit.true_values():
   % if basis == "get_emergency_repairs":
   * Get repairs
-  % elif basis == "past_repair_needs":
+  % elif basis == "past_repair_needs" and person_answering == "tenant":
   * Get paid because of repairs I needed in the last 6 years
-  % elif basis == "illegal_lockout":
+  % elif basis == "past_repair_needs":
+  * Get paid because of repairs the tenant needed in the last 6 years
+  % elif basis == "illegal_lockout" and person_answering == "tenant":
   * Landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
-  % elif basis == "entered_without_permission":
+  % elif basis == "illegal_lockout":
+  * Landlord illegally locked the tenant out of the apartment or moved their belongings out, or threatened to do so
+  % elif basis == "entered_without_permission" and person_answering == "tenant":
   * Landlord entered my home without permission
+  % elif basis == "entered_without_permission":
+  * Landlord entered the tenant's home without permission
   % elif basis == "insufficient_notice":
   * Landlord entered without notice
-  % elif basis == "utilities_no_agreement":
+  % elif basis == "utilities_no_agreement" and person_answering == "tenant":
   * Landlord made me pay for utilities without a written agreement
-  % elif basis == "utility_shutoff":
+  % elif basis == "utilities_no_agreement":
+  * Landlord made the tenant pay for utilities without a written agreement
+  % elif basis == "utility_shutoff" and person_answering == "tenant":
   * My utilities were shutoff
+  % elif basis == "utility_shutoff":
+  * The tenant's utilities were shutoff
   % elif basis == "other_landlord_tenant":
   * Other
-  % elif basis == "file_contempt_complaint":
+  % elif basis == "file_contempt_complaint" and person_answering == "tenant":
   * My landlord is ignoring a court order
+  % elif basis == "file_contempt_complaint":
+  * The tenant's landlord is ignoring a court order
   % endif
   % endfor
 
   [:pencil: Change my answers](${ url_action('kind_of_lawsuit') })
   % endif
-  % if initial_action_selection != "help_in_court" or kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+  % if person_answering == "tenant" and initial_action_selection != "help_in_court" or kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
   <h2 class="h4"> Problems in your home</h2>
-
+  
+  ${ review_conditions_template }
+  
+  % elif initial_action_selection != "help_in_court" or kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+  <h2 class="h4"> Problems in the tenant'shome</h2>
+  
   ${ review_conditions_template }
   % endif
 ---
