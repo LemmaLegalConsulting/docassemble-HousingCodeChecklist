@@ -687,7 +687,7 @@ question: |
   % endif
 subquestion: |
   % if public_assistance_kinds.any_true() and person_answering == "tenant":
-  Based on the information you gave us so far, you should qualify for a free
+  Based on the information you gave us so far, you should qualify for a fee
   waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
   
   You receive these public benefits: ${public_assistance_kinds.true_values()}
