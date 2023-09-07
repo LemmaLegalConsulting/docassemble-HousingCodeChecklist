@@ -230,6 +230,12 @@ question: |
   % else:
   What is ${ users.familiar() }'s address?
   % endif
+subquestion: |
+  % if person_answering == "tenant":
+  Write the address where you are having the problems you want to report.
+  % else:
+  Write the address where the tenant is having the problems you want to report.
+  % endif
 fields:
   - Street Address: users[0].address.address
     address autocomplete: True
@@ -239,9 +245,41 @@ fields:
   - State: users[0].address.state
     default: MA   
     code: |
-      states_list()   
+      states_list()
+    validate: |
+      lambda y: y == "MA" or validation_error("Write an address in Massachusetts")    
   - Zip Code: users[0].address.zip
-    required: False    
+    required: False
+  - label: |
+      % if person_answering == "tenant":
+      I have another address where I get mail
+      % else:
+      The tenant has a separate mailing address
+      % endif
+    field: users[0].has_separate_mailing_address
+    datatype: yesno
+validation code: |
+  if not users[0].has_separate_mailing_address:
+    users[0].mailing_address = users[0].address
+---
+id: your mailing address
+question: |
+  What is your mailing address?
+fields:
+  - ${ users[0].address.address_label}: users[0].mailing_address.address
+    address autocomplete: True
+  - ${ users[0].address.unit_label}: users[0].mailing_address.unit
+    required: False
+  - ${ users[0].address.city_label}: users[0].mailing_address.city
+  - ${ users[0].address.state_label}: users[0].mailing_address.state
+    code: |
+      states_list(country_code=AL_DEFAULT_COUNTRY)
+    default: ${ AL_DEFAULT_STATE }
+  - ${ users[0].address.zip_label}: users[0].mailing_address.zip
+    required: False      
+  - ${ users[0].address.country_label}: users[0].mailing_address.country
+    code: countries_list()
+    default: ${ AL_DEFAULT_COUNTRY }
 ---
 id: attorneys name
 question: |
