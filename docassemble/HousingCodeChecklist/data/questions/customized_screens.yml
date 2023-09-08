@@ -164,18 +164,6 @@ validation code: |
   if ll_name_unknown:
     other_parties[0].name.first = "[ Landlord's Name ]"
 ---
-sets:
-  - other_parties[i].name.first
-  - other_parties[i].name.last
-  - other_parties[i].name.middle
-  - other_parties[i].name.suffix
-id: names of opposing parties
-question: |
-  TestWhat is the name of your ${ ordinal(i) } landlord?
-fields:
-  - code: |
-      other_parties[i].name_fields(person_or_business='unsure')
----
 id: tenant contact information
 question: |
   % if person_answering == "tenant":
@@ -184,11 +172,11 @@ question: |
   What is the tenant's contact information
   % endif
 subquestion: |
-  % if screen_ll_knows_problem and document_choice['sue_landlord'] and person_answering == "tenant":
+  % if person_answering == "tenant" and screen_ll_knows_problem and document_choice['sue_landlord']:
   The court may need to call you to set up a hearing. If you
   do not have your own phone number or email, consider using
   a phone number that belongs to a trusted friend or family member.
-  % else:
+  % elif person_answering == "attorney" or person_answering == "tenant_helper" and screen_ll_knows_problem and document_choice['sue_landlord']:
   The court may need to call the tenant to set up a hearing. If the tenant
   does not have their own phone number or email, they can consider using
   a phone number that belongs to a trusted friend or family member.
@@ -286,54 +274,27 @@ question: |
   % if person_answering == "tenant":
   Did anyone else file with you?
   % else:
-  Did anyone else file with the defendant?
+  Did anyone else file with the tenant?
   % endif
 subquestion: |
   % if len(users.elements) > 1:
   You have already told us about ${comma_and_list(users.complete_elements())}.
   % else:
-  
   We need the name of each person who is part of this case so that
   the court clerk can waive fees for the right file.
   
   We will ask for the name of each person on the "other side"
   next.
   % endif
-  
 fields:
-  - Is anyone else on your side of the case?: users.there_is_another
-    datatype: yesnoradio
----
-id: any other users
-question: |
-  % if person_answering == "tenant":
-       Did anyone else file with you?
+  - label: |
+      % if person_answering == "tenant":
+      Is anyone else on your side of the case?
       % else:
-       Did anyone else file with the tenant?
+      Is anyone else on the tenant's side of the case?
       % endif
-subquestion: |
-  % if len(users.elements) > 1:
-  You have already told us about ${comma_and_list(users.complete_elements())}.
-  % else:
-  
-  We need the name of each person who is part of this case so that
-  the court clerk can waive fees for the right file.
-  
-  We will ask for the name of each person on the "other side"
-  next.
-  % endif
-fields:
-  - Is anyone else on your side of the case?: users.there_is_another
-    datatype: yesnoradio 
-#fields:
-#  - label: |
-#      % if person_answering == "tenant":
-#      Is anyone else on your side of the case?
-#      % else:
-#      Is anyone else on the tenant's side of the case?
-#      % endif
-#    field: users.there_is_another
-#    datatype: yesnoradio
+    field: users.there_is_another
+    datatype: yesnoradio
 ---
 id: persons address
 generic object: Individual
@@ -480,7 +441,7 @@ subquestion: |
   % if person_answering == "tenant":
   If you want, you can include a citation to the Sanitary Code next to each condition in your letter.
   % else:
-  If the tenant wants, include a citation to the Sanitary Code next to each condition in the letter.
+  If the tenant wants, they can include a citation to the Sanitary Code next to each condition in the letter.
   % endif
   Example:
   
@@ -529,11 +490,11 @@ subquestion: |
   % else:
   The date below will be the date of any problems in the tenant's apartment when they first moved in.
   
-  Make a change if tenant needs to.
+  The tenant can change it if they need to.
   % endif
 fields:
   - Earliest date: tenant_repair_issue_date
-    datatype: date
+    datatype: ThreePartsDate
     default: ${ tenant_repair_default_date }
 ---
 id: issue description
@@ -595,7 +556,7 @@ question: |
   % if person_answering == "tenant":
   Work together with your neighbors
   % else:
-  The tenant should work together with their neighbors
+  The tenant can work together with their neighbors
   % endif
 subquestion: |
   % if person_answering == "tenant":
@@ -614,14 +575,13 @@ subquestion: |
   1. Protests to help defend tenant's rights.
     
   % if hasattr(users[0].address, 'norm_long') and hasattr(users[0].address.norm_long, 'city'):
-  % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham', 'Lynn', 'East Boston', 'Springfield'] and person_answering == "tenant":
+  % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham', 'Lynn', 'East Boston', 'Springfield']:
+  % if person_answering == "tenant":
   Here are some tenant unions that cover the city you live in:
-  
-  % elif users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham', 'Lynn', 'East Boston', 'Springfield']:
+  % else: 
   Here are some tenant unions that cover the city the tenant lives in:
-  
   % endif
-  
+  % endif
   
   % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham']:
   #### [City Life/Vida Urbana](https://www.clvu.org/)
@@ -1064,7 +1024,7 @@ fields:
     field: damage_calculation_method
     datatype: radio
     choices:
-      - ${"Let me do my own math" if person_answering == "tenant" else " The tenant would like to do their own math"}: tenant_calculation
+      - ${"Let me do my own math" if person_answering == "tenant" else "The tenant would like to do their own math"}: tenant_calculation
       - ${"Help me with the math" if person_answering == "tenant" else "The tenant would like help with the math"}: uptocode_calculation
       - ${"Do not ask for a specific settlement amount" if person_answering == "tenant" else "The tenant does not want to ask for a specific settlement amount"}: skip_amount
   - How serious were the problems?: damage_tenant_severity_estimate
