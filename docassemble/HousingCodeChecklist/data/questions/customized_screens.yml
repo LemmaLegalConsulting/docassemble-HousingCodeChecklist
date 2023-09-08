@@ -91,11 +91,10 @@ fields:
       Is the tenant's home owned by an individual or a business?
       % endif
     field: other_parties[0].person_type
-    datatype: yesnoradio
+    input type: radio
     choices:
       - Business or organization: business
       - Individual: individual
-      
   - Landlord's first name: other_parties[0].name.first
     show if:
       variable: other_parties[0].person_type

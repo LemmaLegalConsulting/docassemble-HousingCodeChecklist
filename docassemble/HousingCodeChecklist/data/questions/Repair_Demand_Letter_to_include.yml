@@ -44,7 +44,7 @@ code: |
   users[0].address.address
   other_parties.gather()
   other_parties[0].address.address
-  tenant_movein_date
+  users[0].move_in_date
   notification_date
   if written_notification == True:
      letter_date
@@ -578,8 +578,17 @@ subquestion: |
   Look at the calculation below. Make any changes that you need to the amount you
   want to ask your landlord to pay you.
   % else:
-  Look at the calculation below. Make any changes that the tenant needs to the amount the tenant
-  wants to ask their landlord to pay them.
+  Look at the calculation below. Make any changes that the tenant needs to the amount the tenant wants to ask their landlord to pay them.
+  % endif
+
+  % if person_answering == "tenant" and tenant_time_estimate / tenant_time_estimate_denominator >= 6: 
+  **We limited the time period for your rent reduction because it was more than 6 years.**
+  
+  This estimate depends on the information that you gave us. Remember, you should only ask for the amount that you could get by going to court.  
+  % elif person_answering == "attorney" or person_answering == "tenant_helper" and tenant_time_estimate / tenant_time_estimate_denominator >= 6: 
+  **We limited the time period for the tenant's rent reduction because it was more than 6 years.**
+      
+  This estimate depends on the information that the tenant gave us. Remember, the tenant should only ask for the amount that they could get by going to court.
   % endif
 fields:
   - label: |
@@ -592,21 +601,6 @@ fields:
     datatype: currency
     default: |
       ${ max(three_times_rent_amount, tenant_warranty_estimate) if damage_tenant_severity_estimate == "bqe_total" else tenant_warranty_estimate }
-    help: |
-      % if tenant_time_estimate / tenant_time_estimate_denominator >= 6 and person_answering == "tenant":
-      **We limited the time period for your rent reduction because it was more than 6 years.**
-      % endif
-      % if tenant_time_estimate / tenant_time_estimate_denominator >= 6:
-      **We limited the time period for the tenant's rent reduction because it was more than 6 years.**
-      % endif
-      
-      % if person_answering == "tenant":
-      This estimate depends on the information that you gave us. Remember, you should only ask for 
-      the amount that you could get by going to court.   
-      % else:
-      This estimate depends on the information that the tenant gave us. Remember, the tenant should only ask for 
-      the amount that they could get by going to court.
-      % endif
 ---
 template: damage_calculation_template
 subject: |
