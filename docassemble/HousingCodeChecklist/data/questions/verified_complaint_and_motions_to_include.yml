@@ -391,11 +391,7 @@ data:
         The tenant's landlord illegally locked the tenant out of the apartment or moved their belongings out, or threatened to do so
       % endif
     document: | 
-      % if person_answering == "tenant":
         locked me out of my home or removed my belongings without lawful authority 
-      % else:
-        locked the tenant out of their home or removed their belongings without lawful authority
-      % endif
     direct: |
       % if person_answering == "tenant":
         locked you out of your home or removed your belongings
@@ -411,11 +407,7 @@ data:
         Went into the tenant's home without permission
       % endif
     document: |
-      % if person_answering == "tenant":
         entered my home without permission
-      % else:
-        entered the tenant's home without permission
-      % endif
     direct: |
       % if person_answering == "tenant":
         entered your home without permission 
@@ -436,11 +428,7 @@ data:
         Made the tenant pay for utilities without a written agreement
       % endif
     document: |
-      % if person_answering == "tenant":
         required me to pay for utilities without a written agreement
-      % else: 
-        required the tenant to pay for utilities without a written agreement
-      % endif
     direct: |
      % if person_answering == "tenant":
        required you to pay for utilities without a written agreement
@@ -456,11 +444,7 @@ data:
         Made repairs without giving the tenant reasonable warning of the time and day they would come
       % endif
     document: |
-      % if person_answering == "tenant":
         did not give me reasonable notice to make repairs
-      % else:
-        did not give the tenant reasonable notice to make repairs
-      % endif
     direct: |
       % if person_answering == "tenant":
         did not give you reasonable notice to make repairs 
@@ -554,7 +538,7 @@ fields:
       ${ kind_of_lawsuit["other_landlord_tenant"] if initial_action_selection == "help_in_court" else False}
   - None of the above: verified_complaint_nota
     datatype: yesno
-    uncheck others: True       
+    uncheck others: True
 ---
 id: claim i details
 question: |
@@ -576,7 +560,7 @@ subquestion: |
     Tell us a little more about what happened when your landlord required you to pay for
   **${ complaint_utility_not_paid.true_values() }** without a written agreement.
   % elif i == "utility no agreement":
-    Tell us a little more about what happened when the tenant's landlord required the tenant to pay for
+    Tell us a little more about what happened when the tenant's landlord required them to pay for
   **${ complaint_utility_not_paid.true_values() }** without a written agreement.
   % elif i == "utility shutoff":
   % if len(complaint_utility_shutoff.true_values()) > 1 and person_answering == "tenant": 
