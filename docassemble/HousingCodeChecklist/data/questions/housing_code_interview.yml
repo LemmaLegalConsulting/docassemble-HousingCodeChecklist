@@ -1654,10 +1654,10 @@ subquestion: |
   When you are ready, click "next" to add your signature.
   
   % else:
-  If the tenant needs to make any changes, select the navigation labels on the left
+  If you need to make any changes for the tenant, select the navigation labels on the left
   to revisit the section or sections they want to change.
   
-  When the tenant is ready, click "next" to add a signature.
+  When you are ready, click "next" to add a signature.
   % endif
   
   % if screen_ll_knows_problem:

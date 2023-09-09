@@ -1861,3 +1861,410 @@ fields:
       times_per_year_list
   - Amount of income: users[0].nonemployment[i].value
     datatype: currency
+---
+id: special training
+question: |
+  % if person_answering == "tenant":
+  Do you have any special job training?
+  % else:
+  Does the tenant have any special job training?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  For example, do you have any trade or professional certifications and licenses?
+  % else:
+  For example, does the tenant have any trade or professional certifications and licenses?
+  % endif
+fields:
+  - Any special job training?: has_special_training
+    datatype: yesnoradio
+  - Tell us about the training: user_training
+    show if: has_special_training
+    required: False
+    maxlength: 140
+---
+id: income review
+question: |
+  % if person_answering == "tenant":
+  Review your incomes 
+  % else:
+  Review the tenant's incomes 
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  % if has_household_members:
+  Here is what you've told us about your sources of income in your household.
+  % else:
+  Here is what you've told us about your sources of income.
+  % endif
+  % else:
+  % if has_household_members:
+  Here is what you've told us about the tenant's sources of income in their household.
+  % else:
+  Here is what you've told us about the tenant's sources of income.
+  % endif
+  % endif
+  
+  % if person_answering == "tenant":
+  <h2 class="h4">Your jobs</h2>
+  % else:
+  <h2 class="h4">The tenant's jobs</h2>
+  % endif
+  
+  ${ users[0].jobs.table }
+
+  ${ users[0].jobs.add_action() }
+
+  % if person_answering == "tenant":
+  <h2 class="h4">Your sources of income, not from employment</h2>
+  % else:
+  <h2 class="h4">The tenant's sources of income, not from employment</h2>
+  % endif
+
+  ${ users[0].nonemployment.table }
+
+  ${ users[0].nonemployment.add_action() }
+
+  % if has_household_members:
+  <h2 class="h4">Household member's jobs</h2>
+
+  ${ household.table }
+
+  ${ household.add_action() }
+  <h2 class="h4">Total monthly household income</h2>
+  % else:
+  <h2 class="h4">Total monthly income</h2>
+  % endif
+
+  ${ currency(full_household_income()) }
+
+field: review_income_screen
+---
+question: |
+  % if person_answering == "tenant":
+  You might not need to complete this supplement
+  % else:
+  The tenant might not need to complete this supplement
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  Earlier, you said that your household income was ${ currency(hh_income.total(times_per_year=12)) } per month.
+  However, you've given us more details about your income since then.
+  We think your household income is ${ currency(full_household_income()) } per month.
+  With this income, you automatically qualify for a waiver of court costs.
+  % else:
+  Earlier, you said that the tenant's household income was ${ currency(hh_income.total(times_per_year=12)) } per month.
+  However, you've given us more details about the tenant's income since then.
+  We think the tenant's household income is ${ currency(full_household_income()) } per month.
+  With this income, the tenany automatically qualifies for a waiver of court costs.
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Is your monthly household income ${ currency(full_household_income()) }
+      % else:
+      Is the tenant's monthly household income ${ currency(full_household_income()) }
+      % endif
+    field: confirm_can_skip_supplement
+    datatype: yesnoradio
+  - note: |
+      % if person_answering == "tenant":
+      Edit your income so it matches your situation on the next screen.
+      % else:
+      Edit the tenant's income so it matches their situation on the next screen.
+      % endif
+    show if:
+      variable: confirm_can_skip_supplement
+      is: false
+---
+generic object: ALItemizedJob 
+continue button field: x.to_subtract.revisit 
+question: | 
+  Edit deductions from ${ x.source } 
+subquestion: | 
+  % if person_answering == "tenant":
+  These are amounts that are taken out of your pay. 
+  % else:
+  These are amounts that are taken out of the tenant's pay. 
+  % endif
+  
+  ${ x.to_subtract.table } 
+ 
+  ${ x.to_subtract.add_action() } 
+---
+generic object: ALExpenseList
+id: expenses types
+question: |
+  % if person_answering == "tenant":
+  What kind of expenses do you have?
+  % else:
+  What kind of expenses does the tenant have?
+  % endif
+fields:
+  - no label: x.selected_types
+    datatype: checkboxes
+    code: |
+      expense_terms_ordered
+---
+generic object: ALExpenseList
+need:
+  - x[i].source
+  - x[i].display_name
+id: expense information, prefilled
+question: |
+  % if person_answering == "tenant":
+  How much do you spend on ${ x[i].display_name.lower() }?
+  % else:
+  How much does the tenant spend on ${ x[i].display_name.lower() }?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  If you have more than one ${ x[i].display_name.lower() }
+  expense in your household, you'll have a chance to add another later on.
+  % else:
+  If the tenant has more than one ${ x[i].display_name.lower() }
+  expense in their household, you'll have a chance to add another later on.
+  % endif
+fields:
+  - Amount: x[i].value
+    datatype: currency
+  - label: |
+      % if person_answering == "tenant":
+      How often do you pay this amount?
+      % else:
+      How often does the tenant pay this amount?
+      % endif
+    field: x[i].times_per_year
+    default: 12
+    code: |
+      times_per_year_list
+---
+id: expenses review
+question: |
+  % if person_answering == "tenant":
+  Review your expenses
+  % else:
+  Review the tenant's expenses
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  Here is what you've told us about your monthly expenses. You can add more or continue
+  to the next question.
+  % else:
+  Here is what you've told us about the tenant's monthly expenses. You can add more or continue
+  to the next question.
+  % endif
+  ${ users[0].expenses.table }
+
+  Total monthly expenses: ${ currency(users[0].expenses.total(times_per_year=12))}
+
+  ${ users[0].expenses.add_action() }
+field: review_expenses_screen
+---
+id: home ownership
+question: |
+  % if person_answering == "tenant":
+  Do you own a home?
+  % else: 
+  Does the tenant own a home?
+  % endif
+fields:
+  - no label: user_owns_home
+    datatype: yesnoradio
+  - What is the value of the home?: user_home_value
+    show if: user_owns_home
+    datatype: currency
+    min: 0
+  - Are there any remaining loans on the home?: user_has_home_debt
+    show if: user_owns_home
+    datatype: yesnoradio
+  - label: |
+      % if person_answering == "tenant":
+      How much do you have to pay on the remaining loans?
+      % else:
+      How much does the tenant have to pay on the remaining loans?
+      % endif
+    field: user_home_debt
+    show if: user_has_home_debt
+    datatype: currency
+    min: 0
+---
+id: car ownership
+question: |
+  % if person_answering == "tenant":
+  Do you own a car?
+  % else:
+  Does the tenant own a car?
+  % endif
+fields:
+  - no label: user_owns_car
+    datatype: yesnoradio
+  - "Car year": user_car_year
+    show if: user_owns_car
+    maxlength: 50
+  - "Car make": user_car_make
+    help: |
+      For example, Ford, Chevy, or Honda
+    show if: user_owns_car
+    maxlength: 50
+  - "Car value": user_car_value
+    show if: user_owns_car
+    datatype: currency
+    min: 0
+  - label: |
+      % if person_answering == "tenant":
+      Do you have a car loan?
+      % else:
+      Does the tenant have a car loan?
+      % endif
+    field: user_car_loan
+    datatype: yesnoradio
+    show if: user_owns_car
+  - label: |
+      % if person_answering == "tenant":
+      How much do you have to pay on the remaining loan?
+      % else:
+      How much does the tenant have to pay on the remaining loan?
+      % endif
+    field: user_car_debt
+    show if: user_car_loan
+    datatype: currency
+    min: 0
+---
+id: loop start bank accounts
+question: |
+  % if person_answering == "tenant":
+  Do you have any bank accounts that you wish to disclose?
+  % else:
+  Does the tenant have any bank accounts that they wish to disclose?
+  % endif
+subquestion: |
+  For example: money market accounts, investment accounts etc.
+fields:
+  - no label: users[0].accounts.there_are_any
+    datatype: yesnoradio
+---
+id: loop bank accounts
+question: |
+  % if person_answering == "tenant":
+  Tell us about your ${ ordinal(i) } account
+  % else:
+  Tell us about the tenant's ${ ordinal(i) } account
+  % endif
+fields:
+  - Account Type: users[0].accounts[i].source
+    datatype: dropdown
+    code: |
+        account_terms_ordered
+  - Account Balance: users[0].accounts[i].balance
+    datatype: currency
+---
+id: another account
+question: |
+  % if person_answering == "tenant":
+  Are there any other accounts that you wish to disclose? 
+  % else: 
+  Are there any other accounts that the tenant wishes to disclose? 
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  You have already told us about your ${ list_accounts_full(users[0].accounts.complete_elements()) }.
+  % else: 
+  You have already told us about the tenant's ${ list_accounts_full(users[0].accounts.complete_elements()) }.
+  % endif
+fields:
+  - no label: users[0].accounts.there_is_another
+    datatype: yesnoradio
+---
+question: |
+  % if person_answering == "tenant":
+  Do you own any property you haven't told us about?
+  % else:
+  Does the tenant own any property you haven't told us about?
+  % endif
+subquestion: |
+  This includes physical property or real estate that you have not already told us about.
+  For example, a boat, or land.
+  
+  % if person_answering == "tenant":
+  % if user_owns_car or user_owns_home:
+  You have already said that you own ${ comma_and_list(filter(lambda y: bool(y), [
+      f"a house worth {currency(user_home_value)}" if user_owns_home else "",
+      f"a car worth {currency(user_car_value)}" if user_owns_car else ""
+  ])) }.
+  % endif
+  % else: 
+  % if user_owns_car or user_owns_home:
+  You have already said that the tenant owns ${ comma_and_list(filter(lambda y: bool(y), [
+      f"a house worth {currency(user_home_value)}" if user_owns_home else "",
+      f"a car worth {currency(user_car_value)}" if user_owns_car else ""
+  ])) }.
+  % endif
+  % endif
+fields:
+  - no label: user_owns_property
+    input type: radio
+    choices:
+      - ${"Yes, I own additional property" if person_answering == "tenant" else "Yes, the tenant owns additional property"}: True
+      - ${"No, I do not own any additional property" if person_answering == "tenant" else "No, the tenant does not own additional property"}: False
+  - label: |
+      % if person_answering == "tenant":
+      List the property that you own
+      % else:
+      List the property that the tenant owns
+      % endif
+    field: user_property_type
+    input type: area
+    show if: user_owns_property
+  - Combined value of the property: user_property_value
+    datatype: currency
+    show if: user_owns_property
+---
+id: debts
+question: |
+  % if person_answering == "tenant":
+  Do you have any other unpaid debts?
+  % else:
+  Does the tenant have any other unpaid debts?
+  % endif
+subquestion: |
+  % if (user_owns_car and user_car_loan) or (user_owns_home and user_has_home_debt):
+  % if person_answering == "tenant":
+  You have already told us about your:
+  % else:
+  You have already told us about the tenant's:
+  % endif
+
+  % if user_owns_car and user_car_loan:
+  * car loan for ${ currency(user_car_debt) }
+  % endif
+  % if user_owns_home and user_has_home_debt:
+  * home loan for ${ currency(user_home_debt) }
+  % endif
+  % endif
+fields:
+  - no label: user_has_debts
+    input type: radio
+    choices:
+      - ${"Yes, I have other unpaid debts" if person_answering == "tenant" else "Yes, the tenant has other unpaid debts"}: True
+      - ${"No, I do not have other unpaid debts" if person_answering == "tenant" else "No, the tenant does not have other unpaid debts"}: False
+  - note: Enter debt type and amount
+    show if: user_has_debts
+  - 'Specify all debts': user_debts
+    input type: area
+    maxlength: 336
+    show if: user_has_debts
+---
+id: miscellaneous facts
+question: |
+  % if person_answering == "tenant":
+  Is there anything else you want to tell the judge about your situation?
+  % else: 
+  Is there anything else you want to tell the judge about the tenant's situation?
+  % endif
+fields:
+  - no label: miscellaneous_facts
+    input type: area
+    required: False
+    rows: 4
+    maxlength: 420
