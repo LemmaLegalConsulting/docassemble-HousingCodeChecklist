@@ -188,7 +188,7 @@ fields:
   - Other phone number: users[0].phone_number
     required: False
     datatype: al_international_phone
-  - Email address: users[0].email    
+  - Email: users[0].email    
     datatype: email
     required: False
   - label: |
@@ -2260,3 +2260,33 @@ fields:
     required: False
     rows: 4
     maxlength: 420
+---
+id: collect employed household members
+question: |
+  % if person_answering == "tenant":
+  How many of your household members are employed?
+  % else: 
+  How many of the tenant's household members are employed?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  A household member is someone you live and share expenses with.
+  % else:
+  A household member is someone the tenant lives and shares expenses with.
+  % endif
+fields:
+  - no label: household.target_number
+    datatype: integer
+---
+id: employed household members
+sets:
+  - household[i].name.first
+  - household[i].name.last
+question: |
+  % if person_answering == "tenant":
+  What is the name of your ${ ordinal(i) } household member?
+  % else:
+  What is the name of the tenant's ${ ordinal(i) } household member?
+  % endif
+fields:
+  code: household[i].name_fields()

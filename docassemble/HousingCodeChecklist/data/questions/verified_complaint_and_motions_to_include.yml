@@ -383,14 +383,14 @@ fields:
 variable name: verified_complaint_claims_terms
 use objects: True
 data:
-  illegal lockout: 
+  illegal lockout:
     question: |
       % if person_answering == "tenant":
       My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so
       % else:
       The tenant's landlord illegally locked the tenant out of the apartment or moved their belongings out, or threatened to do so
       % endif
-    document: | 
+    document: |
       locked me out of my home or removed my belongings without lawful authority
     direct: |
       % if person_answering == "tenant":
@@ -542,9 +542,9 @@ question: |
   More information about your landlord's **violation of landlord-tenant law**.
   % elif person_answering == "tenant":
   More information about when your landlord 
-  ${ bold(verified_complaint_claims_terms[i]["direct"]) }.
+  ${ bold(verified_complaint_claims_terms[i]["direct"].strip()) }.
   % elif i == "other":
-  More information about when the tenant's landlord ${ bold(verified_complaint_claims_terms[i]["direct"]) }.
+  More information about when the tenant's landlord ${ bold(verified_complaint_claims_terms[i]["direct"].strip()) }.
   % else: 
   More information about the landlord's **violation of landlord-tenant law**. 
   % endif
@@ -572,7 +572,7 @@ subquestion: |
   % endif
   % else:
   Tell us a little more about what happened when the landlord 
-  ${ bold(verified_complaint_claims_terms[i]["direct"]) }
+  ${ bold(verified_complaint_claims_terms[i]["direct"].strip()) }.
   % endif
   
   % if person_answering == "tenant":
@@ -592,7 +592,7 @@ fields:
       **"My landlord also violated the law when they"**
       % else:
       Complete the sentence
-      **"My landlord ${ verified_complaint_claims_terms[i]["document"] }. Specifically, "**
+      **"My landlord ${ verified_complaint_claims_terms[i]["document"].strip() }. Specifically, "**
       % endif
     field: verified_complaint_claims[i].details
     datatype: area
