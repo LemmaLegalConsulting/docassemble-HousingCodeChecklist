@@ -43,6 +43,7 @@ code: |
   nav.set_section('review_Contempt_Complaint')
   user_role = "plaintiff"
   users.gather()
+  users.there_is_another
   set_parts(subtitle=str(users))
   users[0].address.address
   other_parties.gather()
@@ -88,7 +89,11 @@ continue button field: Contempt_Complaint_intro
 ---
 id: preview Contempt_Complaint
 question: |
+  % if person_answering == "tenant":
   Preview your Contempt Complaint before you sign it
+  % else:
+  Preview the tenant's Contempt Complaint before you sign it
+  % endif
 subquestion: |
   Here is a preview of the form you will sign on the next page.   
   
@@ -101,6 +106,86 @@ subquestion: |
   
   Remember to come back to this window to continue and sign your form.
 continue button field: Contempt_Complaint_preview_question    
+
+---
+id: any other users
+question: |
+  % if person_answering == "tenant":
+  Did anyone else file with you?
+  % else:
+  Did anyone else file with the tenant?
+  % endif
+subquestion: |
+  % if len(users.elements) > 1:
+  You have already told us about ${comma_and_list(users.complete_elements())}.
+  % else:
+  
+  We need the name of each person who is part of this case so that
+  the court clerk can waive fees for the right file.
+  
+  We will ask for the name of each person on the "other side"
+  next.
+  % endif
+  
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Is anyone else on your side of the case?
+      % else:
+      Is anyone else on the tenant's side of the case?
+      % endif
+    field: users.there_is_another
+    datatype: yesnoradio
+---
+sets:
+  - other_parties[i].name.first
+  - other_parties[i].name.last
+  - other_parties[i].name.middle
+  - other_parties[i].name.suffix
+id: names of opposing parties
+question: |
+  % if person_answering == "tenant":
+  What is the name of your ${ ordinal(i) } landlord?
+  % else: 
+  What is the name of the tenant's ${ ordinal(i) } landlord?
+  % endif
+fields:
+  - code: |
+      other_parties[i].name_fields(person_or_business='unsure')
+---
+id: information about the landlord
+question: |
+  % if person_answering == "tenant":
+  What did the judge order your landlord to correct or stop doing?
+  % else:
+  What did the judge order the tenant's landlord to correct or stop doing?
+  % endif
+fields:
+  - no label: tro_order_text
+    input type: area
+---
+id: landlord following orders
+question: |
+  % if person_answering == "tenant":
+  Did your landlord ever follow the judge's order?
+  % else:
+  Did the tenant's landlord ever follow the judge's order?
+  % endif
+fields: 
+  - no label: ll_once_followed_tro
+    datatype: yesnoradio
+
+---
+id: landlord shortcomings
+question: |
+  % if person_answering == "tenant":
+  How has your landlord failed to follow the judge's order?
+  % else:
+  How has the tenant's landlord failed to follow the judge's order?
+  % endif
+fields:
+  - no label: ll_failed_order_by_text
+    input type: area
 ---
 id: download Contempt_Complaint
 event: Contempt_Complaint_download
