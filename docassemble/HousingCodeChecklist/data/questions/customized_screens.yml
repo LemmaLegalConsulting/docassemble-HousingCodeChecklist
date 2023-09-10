@@ -505,22 +505,14 @@ question: |
   Describe the problems that the tenant wants their landlord to fix
   % endif
 subquestion: |
-  % if person_answering == "tenant":
   We used the problems that you selected to start a draft.
-  % else:
-  We used the problems that the tenant selected to start a draft.
-  % endif
   
   % if sanitary_code_citation_style == "detailed_cites":
   We also included a link to the Sanitary Code section that applies.
   % endif
 fields:
   - label: |
-      % if person_answering == "tenant":
-      Describe the problem you want your landlord to fix
-      % else:
-      Describe the problem that the tenant wants the landlord to fix
-      % endif
+      Describe the problems
     field: tenant_repair_issue_description
     label above field: True
     datatype: area

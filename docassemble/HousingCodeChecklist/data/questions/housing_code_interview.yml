@@ -1059,13 +1059,8 @@ buttons:
 back button label: |
   Back
 under: |
-  % if person_answering == "tenant":
   You can keep exploring problems by room and category, or skip ahead
   to start working on a solution.
-  % else:
-  The tenant can keep exploring problems by room and category, or skip ahead
-  to start working on a solution.
-  % endif
   
   % if len(bad_conditions.elements):
   ${ action_button_html(url_ask('set_gathered'), label="Skip and continue", color="primary", size="md") }
@@ -1268,14 +1263,12 @@ subquestion: |
 
   [:pencil: Change answers](${ url_action('kind_of_lawsuit') })
   % endif
-  % if person_answering == "tenant" and initial_action_selection != "help_in_court" or kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+  % if initial_action_selection != "help_in_court" or kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+  % if person_answering == "tenant":
   <h2 class="h4"> Problems in your home</h2>
-  
-  ${ review_conditions_template }
-  
-  % elif person_answering == "attorney" or person_answering == "tenant_helper" and initial_action_selection != "help_in_court" or kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs"):
+  % else: 
   <h2 class="h4"> Problems in the tenant'shome</h2>
-  
+  % endif
   ${ review_conditions_template }
   % endif
 ---
@@ -1360,6 +1353,7 @@ fields:
       - the tenant has a "Summons and Complaint" from the landlord with a court date coming up
       
       Answer "no" if:
+      
       - there is no eviction case
       - the eviction case is already over, or
       - the tenant only has a "Notice to Quit" or "Notice to Terminate Tenancy"

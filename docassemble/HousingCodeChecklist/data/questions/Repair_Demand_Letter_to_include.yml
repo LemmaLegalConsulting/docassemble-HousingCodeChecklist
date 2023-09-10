@@ -251,10 +251,10 @@ question: |
   % endif
 subquestion: |
   % if person_answering == "tenant":
-  State the best date that you know. You can say an exact date or an estimate, like
+  Put the best date that you know. You can say an exact date or an estimate, like
   "June of 2020".
   % else: 
-  State the best date that the tenant knows. The tenant can say an exact date or an estimate, like
+  Put the best date that the tenant knows. The tenant can say an exact date or an estimate, like
   "June of 2020".
   % endif
 fields:
