@@ -105,7 +105,8 @@ code: |
   reconsider('snapshot_interview_state')
   nav.set_section('provide_details')
   
-  include_conditions_in_complaint # Evaluate so it is available in complaint template
+  if not kind_of_lawsuit["file_contempt_complaint"] and not len(kind_of_lawsuit) == 1:
+    include_conditions_in_complaint # Evaluate so it is available in complaint template
   
   if not screen_ll_knows_problem:
     update_sections_with_selected_documents
@@ -162,10 +163,13 @@ code: |
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
+    nav.set_section('preview_and_sign')
+    preview_docs
+    basic_questions_signature_flow
   if screen_ll_knows_problem and {'get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
-     nav.set_section('preview_and_sign')
-     preview_docs
-     basic_questions_signature_flow
+    nav.set_section('preview_and_sign')
+    preview_docs
+    basic_questions_signature_flow
   reached_download_screen = True
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
@@ -1452,6 +1456,12 @@ fields:
     show if:
       variable: screen_contacted_housing_inspector
       is: False
+  - Did a judge already order your landlord to do something about your case?: has_tro
+    datatype: yesnoradio
+    show if: screen_ll_knows_problem
+  - note: |
+      **You may want to tell a judge if your landlord is ignoring the judge's order.** This is called a Contempt Complaint. You have the option to get one below.
+    show if: has_tro
   - note: |
       % if person_answering == "tenant":
       **What would you like to do?**
@@ -1465,22 +1475,15 @@ fields:
     required: False
     datatype: checkboxes
     js show if: |
-      val("screen_ll_knows_problem") && val("screen_contacted_housing_inspector")
+      val("screen_ll_knows_problem") && !val("has_tro")
     choices:
       - ${"Save or print a copy of my checklist for later" if person_answering == "tenant" else "Save or print a copy of the tenant's checklist for later"}: get_report
       - ${"Tell my landlord about the problems" if person_answering == "tenant" else "Tell the tenant's landlord about the problems"}: tell_landlord
       - ${"Organize with my neighbors or other tenants in my city" if person_answering == "tenant" else "Organize with the tenant's neighbors or other tenants in their city"}: organize_tenants
-      #- Let other tenants know about my bad landlord: share_with_tenants
-      #  help: |
-      #    This will share your address and landlord's name, but not your name
-      #    or apartment number.
       - Get a city inspection: get_inspection
-      # - Withhold rent: withhold_rent
-      #- Fix the problems myself and deduct money from my rent: fix_problems
-      # TODO(41): low priority
       - Ask for a fair settlement (consumer protection demand letter or settlement letter): demand_letter_93a
       - ${"Ask a judge to order my landlord to fix a problem or sue my landlord for money" if person_answering == "tenant" else "Ask a judge to order the tenant's landlord to fix a problem or sue the tenant's landlord for money"}: sue_landlord
-      - ${"Tell a judge that my landlord is ignoring the judge's order" if person_answering == "tenant" else "Tell a judge that the tenant's landlord is ignoring the judge's order"}: contempt_complaint
+    none of the above: False
     default:
       code: |
         ["get_report"] if kind_of_lawsuit.all_false() else ["get_report", "sue_landlord"]
@@ -1488,25 +1491,19 @@ fields:
     required: False
     datatype: checkboxes
     js show if: |
-      val("screen_ll_knows_problem") && !val("screen_contacted_housing_inspector")
+      val("screen_ll_knows_problem") && val("has_tro")
     choices:
       - ${"Save or print a copy of my checklist for later" if person_answering == "tenant" else "Save or print a copy of the tenant's checklist for later"}: get_report
       - ${"Tell my landlord about the problems" if person_answering == "tenant" else "Tell the tenant's landlord about the problems"}: tell_landlord
       - ${"Organize with my neighbors or other tenants in my city" if person_answering == "tenant" else "Organize with the tenant's neighbors or other tenants in their city"}: organize_tenants
-      #- Let other tenants know about my bad landlord: share_with_tenants
-      #  help: |
-      #    This will share your address and landlord's name, but not your name
-      #    or apartment number.
       - Get a city inspection: get_inspection
-      # - Withhold rent: withhold_rent
-      #- Fix the problems myself and deduct money from my rent: fix_problems
       - Ask for a fair settlement (consumer demand letter): demand_letter_93a
-      -  ${"Ask a judge to order my landlord to fix a problem or sue my landlord for money" if person_answering == "tenant" else "Ask a judge to order the tenant's landlord to fix a problem or sue the tenant's landlord for money"}: sue_landlord
+      - ${"Ask a judge to order my landlord to fix a problem or sue my landlord for money" if person_answering == "tenant" else "Ask a judge to order the tenant's landlord to fix a problem or sue the tenant's landlord for money"}: sue_landlord
+      - ${"Tell a judge that my landlord is ignoring the judge's order" if person_answering == "tenant" else "Tell a judge that the tenant's landlord is ignoring the judge's order"}: contempt_complaint
     none of the above: False
     default:
       code: |
-        ["get_report"] if kind_of_lawsuit.all_false() else ["get_report", "sue_landlord"]
-
+        ["get_report", "contempt_complaint"] if kind_of_lawsuit["file_contempt_complaint"] else ["get_report"] if kind_of_lawsuit.all_false() else ["get_report", "sue_landlord"]
 validation code: |
   if screen_ll_knows_problem and len(document_choice.true_values()) < 1:
     validation_error("Select at least one.", field="document_choice")
