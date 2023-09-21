@@ -5,44 +5,43 @@ include:
   - verified_complaint_and_motions_to_include.yml
 ---
 code: |
-  if has_tro:
-    date_issued
-    tro_order_text
-    if ll_once_followed_tro:
-      date_ll_stopped_following_tro
-    ll_failed_order_by_text
+  trial_court
+  date_issued
+  tro_order_text
+  if ll_once_followed_tro:
+    date_ll_stopped_following_tro
+  ll_failed_order_by_text
   interview_order_contempt_complaint = True
 ---
-question: |
-  Did did the judge already order your landlord to do something about your case?
-fields: 
-  - A judge already ordered my landlord to do something: has_tro
-    datatype: yesnoradio
----
+id: date issued
 question: |
   When did the judge make their order?
 fields: 
   - Date: date_issued
     datatype: ThreePartsDate
 ---
+id: tro order text
 question: |
   What did the judge order your landlord to correct or stop doing?
 fields:
   - no label: tro_order_text
     input type: area
 ---
+id: ll once followed tro
 question: |
   Did your landlord ever follow the judge's order?
 fields: 
   - no label: ll_once_followed_tro
     datatype: yesnoradio
 ---
+id: date ll stopped following tro
 question: |
   When did your landlord stop following the judge's order?
 fields: 
   - Date: date_ll_stopped_following_tro
     datatype: ThreePartsDate
 ---
+id: ll failed order by text
 question: |
   How has your landlord failed to follow the judge's order?
 fields:

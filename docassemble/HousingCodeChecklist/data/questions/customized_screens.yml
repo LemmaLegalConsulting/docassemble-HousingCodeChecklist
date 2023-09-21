@@ -66,14 +66,31 @@ if: |
   not landlord_name_is_optional
 id: names of opposing parties name required
 question: |
+  % if person_answering == "tenant":
   What is your landlord's name?
+  % else:
+  What is the name of the tenant's landlord?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   Write the name of your landlord, not your property manager. The landlord
   is the person who owns the building. You can find out who owns the building
   at [masslandrecords.com](https://www.masslandrecords.com/). The landlord is 
   also usually the name you write on a rent check. 
+  % else: 
+  Write the name of tenant's landlord, not the tenant's property manager. The landlord
+  is the person who owns the building. The tenant can find out who owns the building
+  at [masslandrecords.com](https://www.masslandrecords.com/). The landlord is 
+  also usually the name the tenant writes on a rent check. 
+  % endif
 fields:
-  - Is your home owned by an individual or a business?: other_parties[0].person_type
+  - label: |
+      % if person_answering == "tenant":
+      Is your home owned by an individual or a business?
+      % else: 
+      Is the tenant's home owned by an individual or a business?
+      % endif
+    field: other_parties[0].person_type
     input type: radio
     choices:
       - Business or organization: business
@@ -149,11 +166,19 @@ validation code: |
 ---
 id: tenant contact information
 question: |
+  % if person_answering == "tenant":
   What is your contact information?
+  % else:
+  What is the tenant's contact information
+  % endif
 subquestion: |
-  % if screen_ll_knows_problem and document_choice['sue_landlord']:
+  % if person_answering == "tenant" and screen_ll_knows_problem and document_choice['sue_landlord']:
   The court may need to call you to set up a hearing. If you
   do not have your own phone number or email, consider using
+  a phone number that belongs to a trusted friend or family member.
+  % elif person_answering == "attorney" or person_answering == "tenant_helper" and screen_ll_knows_problem and document_choice['sue_landlord']:
+  The court may need to call the tenant to set up a hearing. If the tenant
+  does not have their own phone number or email, they can consider using
   a phone number that belongs to a trusted friend or family member.
   % endif
 fields:  
@@ -163,10 +188,16 @@ fields:
   - Other phone number: users[0].phone_number
     required: False
     datatype: al_international_phone
-  - Email address: users[0].email    
+  - Email: users[0].email    
     datatype: email
     required: False
-  - I do not have any of these: users[0].no_contact_method
+  - label: |
+      % if person_answering == "tenant":
+      I do not have any of these
+      % else:
+      The tenant does not have any of these
+      % endif
+    field: users[0].no_contact_method
     datatype: yesno
     disable others: True
 validation code: |
@@ -184,7 +215,11 @@ generic object: ALIndividual
 question: |
   How can ${ other_parties } be contacted?
 subquestion: |
+  % if person_answering == "tenant":
   If you do not know, you can leave this screen blank.  
+  % else:
+  If the tenant does not know, you can leave this screen blank.
+  % endif
 
   ${ collapse_template(why_need_ll_contact_information_template) }
 fields:
@@ -197,13 +232,25 @@ fields:
 ---
 template: why_need_ll_contact_information_template
 subject: |
+  % if person_answering == "tenant":
   Why do you need my landlord's contact information?
+  % else:
+  Why do you need the contact information of the tenant's landlord
+  % endif
 content: |
+  % if person_answering == "tenant":
   Your landlord's contact information will be written
   on the documents that this website creates.
 
   The court may use the number or email to pick a time
   for you and your landlord to come into court.
+  % else:
+  The landlord's contact information will be written
+  on the documents that this website creates.
+
+  The court may use the number or email to pick a time
+  for the tenant and their landlord to come into court.
+  % endif
 ---
 id: your name
 question:  |
@@ -221,6 +268,33 @@ fields:
     code: |
       name_suffix()
     required: False
+---
+id: any other users
+question: |
+  % if person_answering == "tenant":
+  Did anyone else file with you?
+  % else:
+  Did anyone else file with the tenant?
+  % endif
+subquestion: |
+  % if len(users.elements) > 1:
+  You have already told us about ${comma_and_list(users.complete_elements())}.
+  % else:
+  We need the name of each person who is part of this case so that
+  the court clerk can waive fees for the right file.
+  
+  We will ask for the name of each person on the "other side"
+  next.
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Is anyone else on your side of the case?
+      % else:
+      Is anyone else on the tenant's side of the case?
+      % endif
+    field: users.there_is_another
+    datatype: yesnoradio
 ---
 id: persons address
 generic object: Individual
@@ -376,7 +450,11 @@ continue button field: saw_signature_choice
 ---
 id: move in date
 question: |
+  % if person_answering == "tenant":
   When did you move in to ${ users[0].address.on_one_line() }?
+  % else:
+  When did the tenant move in to ${ users[0].address.on_one_line() }?
+  % endif
 fields:
   - Date: users[0].move_in_date
     datatype: ThreePartsDate
@@ -392,10 +470,17 @@ code: |
 ---
 id: include citations?
 question: |
+  % if person_answering == "tenant":
   Do you want to include a citation to the Sanitary Code?
+  % else:
+  Does the tenant want to include a citation to the Sanitary Code?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   If you want, you can include a citation to the Sanitary Code next to each condition in your letter.
-
+  % else:
+  If the tenant wants, they can include a citation to the Sanitary Code next to each condition in the letter.
+  % endif
   Example:
   
   > ${ bad_conditions.active_conditions().item(0).description or bad_conditions.active_conditions().item(0).original_description } (${ bad_conditions.active_conditions().item(0).code })
@@ -428,12 +513,23 @@ code: |
 ---
 id: tenant_repair_issue_date
 question: |
+  % if person_answering == "tenant":
   When did you first experience the problems that you want to tell
   ${ other_parties } about?
+  % else:
+  When did the tenant first experience the problems that they want to tell
+  ${ other_parties } about?
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   The date below will be the date of any problems in your apartment when you first moved in.
   
   Make a change if you need to.
+  % else:
+  The date below will be the date of any problems in the tenant's apartment when they first moved in.
+  
+  The tenant can change it if they need to.
+  % endif
 fields:
   - Earliest date: tenant_repair_issue_date
     datatype: ThreePartsDate
@@ -441,7 +537,11 @@ fields:
 ---
 id: issue description
 question: |
+  % if person_answering == "tenant":
   Describe the problems that you want your landlord to fix
+  % else:
+  Describe the problems that the tenant wants their landlord to fix
+  % endif
 subquestion: |
   We used the problems that you selected to start a draft.
   
@@ -449,7 +549,9 @@ subquestion: |
   We also included a link to the Sanitary Code section that applies.
   % endif
 fields:
-  - Describe the problem you want your landlord to fix: tenant_repair_issue_description
+  - label: |
+      Describe the problems
+    field: tenant_repair_issue_description
     label above field: True
     datatype: area
     rows: 6
@@ -481,11 +583,22 @@ fields:
 continue button field: organizing_interstitial
 id: organizing
 question: |
+  % if person_answering == "tenant":
   Work together with your neighbors
+  % else:
+  The tenant can work together with their neighbors
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   You are stronger together!
+  
   A tenant's union is a group of tenants working together. Your local tenant's
   union may have:
+  % else:
+  Tenants are stronger together!
+  
+  A tenant's union is a group of tenants working together. A local tenant's union may have:
+  % endif
   
   1. Regular meetings to talk about problems with neighbors.
   1. Organizers who will negotiate with your landlord.
@@ -493,9 +606,13 @@ subquestion: |
     
   % if hasattr(users[0].address, 'norm_long') and hasattr(users[0].address.norm_long, 'city'):
   % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham', 'Lynn', 'East Boston', 'Springfield']:
+  % if person_answering == "tenant":
   Here are some tenant unions that cover the city you live in:
-  
+  % else: 
+  Here are some tenant unions that cover the city the tenant lives in:
   % endif
+  % endif
+  
   % if users[0].address.norm_long.city in ['Saugus', 'Revere', 'Everett', 'Chelsea', 'Winthrop', 'Boston', 'Milton', 'Quincy', 'Braintree', 'Hingham', 'Weymouth', 'Somerville', 'Cambridge', 'Watertown', 'Arlington', 'Medford', 'Newton', 'Framingham']:
   #### [City Life/Vida Urbana](https://www.clvu.org/)
   
@@ -675,7 +792,8 @@ subquestion: |
 fields:
   - 'When did the issue start?': incident_date
     datatype: ThreePartsDate
-    default: ${ tenant_repair_default_date }
+    default: |
+      ${ tenant_repair_default_date }
   - 'My landlord illegally locked me out of the apartment or moved my belongings out, or threatened to do so': incident_locked_out
     datatype: yesno
   - 'My utilities were shut off': incident_utility
@@ -772,7 +890,11 @@ if: |
   len(all_matches) and all_courts.filter_courts(allowed_courts) 
 id: choose a court (courts matching provided address were found)
 question: |
+  % if person_answering == "tenant":
   What court do you want to file in?
+  % else:
+  What court does the tenant want to file in?
+  % endif
 subquestion: |
   Most tenants file in the Housing Court.
 
@@ -794,7 +916,7 @@ fields:
   - no label: trial_court
     datatype: object_radio
     choices: all_matches
-    none of the above: My court is not listed
+    none of the above: ${"My court is not listed" if person_answering == "tenant" else "The tenant's court is not listed"}
     disable others: True
     object labeler: court_short_description
     show if: 
@@ -816,10 +938,18 @@ fields:
 ---
 template: housing_how_to_pick_court_help_template
 subject: |
+  % if person_answering == "tenant":
   How do I pick a court?
+  % else:
+  How does the tenant pick a court?
+  % endif
 content: |
+  % if person_answering == "tenant":
   How do you know which court to choose?
-
+  % else:
+  How does the tenant know which court to choose?
+  % endif
+  
   Housing cases can be filed in one of 4 kinds of courts:
 
   * Housing Court  
@@ -827,19 +957,29 @@ content: |
   * Boston Municipal Court (BMC)
   * Superior Court
 
+  % if person_answering == "tenant":
   Most tenants choose the Housing Court. If your Housing Court is
   far away or hard to get to, you may decide to file in the District
   Court or Boston Municipal Court.
 
   Unless you have talked to an attorney and have a special reason, you should
   not file in the Superior Court.
+  % else:
+  Most tenants choose the Housing Court. If the tenant's Housing Court is
+  far away or hard to get to, they may decide to file in the District
+  Court or Boston Municipal Court.
+
+  Unless they have talked to an attorney and have a special reason, they should
+  not file in the Superior Court.
+  % endif
   
   The District Court, BMC, and Superior Court are all courts that can hear
   any type of case. Housing Court is a
     **specialist** court that hears only housing cases.
   They have judges with special training as well as special 
   resources available.
-    
+  
+  % if person_answering == "tenant":
   Depending on where you live, different courts may be further or closer to
   your address. There are about 100 district courts all over the state,
   but each county has only one or a few Superior Courts or specialty
@@ -851,6 +991,20 @@ content: |
   Only you know the right choice.
   
   You can also view the court selection guidance at [mass.gov](https://www.mass.gov/courthouse-locator).
+  % else:
+  Depending on where the tenant lives, different courts may be further or closer to
+  their address. There are about 100 district courts all over the state,
+  but each county has only one or a few Superior Courts or specialty
+  courts.
+  
+  Choosing a court means thinking about what kind of help the tenant needs, as well
+  as which court they can get transportation to on the day of their hearing.
+  
+  Only they know the right choice.
+  
+  The tenant can also view the court selection guidance at [mass.gov](https://www.mass.gov/courthouse-locator).
+  % endif
+  
 ---
 sets:
   - users[0].attorney.address.address
@@ -875,31 +1029,55 @@ fields:
 ---
 id: How much compensation would you like to claim from the landlord with bad_conditions defined
 question: |
+  % if person_answering == "tenant":
   What amount of money would be fair for your landlord to pay you?
+  % else:
+  What amount of money would be fair for the landlord to pay the tenant?
+  % endif
 subquestion: |
   ${ collapse_template(settlement_offer_93a_explanation) }
   
   ${ collapse_template(what_if_problem_over_multiple_periods) }
 
-  The amount that you list here will be your "settlement offer".    
+  % if person_answering == "tenant":
+  The amount that you list here will be your "settlement offer". 
+  % else:
+  The amount that is listed here will be the "settlement offer."
+  % endif
 fields:
-  - How do you want to decide the amount to ask for?: damage_calculation_method
+  - label: |
+      % if person_answering == "tenant":
+      How do you want to decide the amount to ask for?
+      % else:
+      How does the tenant want to decide the amount to ask for?
+      % endif
+    field: damage_calculation_method
     datatype: radio
     choices:
-      - Let me do my own math: tenant_calculation
-      - Help me with the math: uptocode_calculation
-      - Do not ask for a specific settlement amount: skip_amount
+      - ${"Let me do my own math" if person_answering == "tenant" else "The tenant would like to do their own math"}: tenant_calculation
+      - ${"Help me with the math" if person_answering == "tenant" else "The tenant would like help with the math"}: uptocode_calculation
+      - ${"Do not ask for a specific settlement amount" if person_answering == "tenant" else "The tenant does not want to ask for a specific settlement amount"}: skip_amount
   - How serious were the problems?: damage_tenant_severity_estimate
     datatype: radio
     choices:
       - The apartment was unlivable: bqe_total
         help: |
+          % if person_answering == "tenant":
           You can choose this answer even if you did not move out.
+          % else:
+          The tenant can choose this answer even if they did not move out.
+          % endif
       - The problems were serious but not unlivable: bqe_partial
     show if:      
       variable: damage_calculation_method
       is: uptocode_calculation
-  - How long did you have the problems (in days)?: tenant_time_estimate
+  - label: |
+      % if person_answering == "tenant":
+      How long did you have the problems (in days)?
+      % else:
+      How long did the tenant have the problems (in days)?
+      % endif
+    field: tenant_time_estimate
     datatype: number
     show if:
       variable: damage_calculation_method
@@ -908,7 +1086,13 @@ fields:
     help: |
       The default number, ${ bad_conditions.conditions_days(default_date=users[0].move_in_date) }, was calculated from the oldest and
       newest problems you listed earlier.
-  - What **percentage** do you think is fair to get off of the rent for each month that you had the problems?: tenant_percentage_estimate
+  - label: |
+      % if person_answering == "tenant":
+      What **percentage** do you think is fair to get off of the rent for each month that you had the problems?
+      % else:
+      What **percentage** does the tenant think is fair to get off of the rent for each month that they had the problems?
+      % endif
+    field: tenant_percentage_estimate
     datatype: range
     min: 0
     max: 100
@@ -918,9 +1102,15 @@ fields:
       variable: damage_calculation_method
       is: uptocode_calculation
     help: |
+      % if person_answering == "tenant":
       It is up to you to ask for a percentage you think is fair. A less serious problem might 
       be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
       The percentage will be multiplied by the number of days, weeks or months you had the problem.
+      % else:
+      It is up to the tenant to ask for a percentage they think is fair. A less serious problem might 
+      be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
+      The percentage will be multiplied by the number of days, weeks or months the tenant had the problem.
+      % endif
     validate: |
       lambda y: y > 0 or validation_error("Select a number greater than 0.")
   - Settlement offer amount: tenant_self_estimated_damages_amount
@@ -1002,3 +1192,1139 @@ content: |
   Greater Boston Legal Services  
   197 Friend Street  
   Boston, MA 02114
+---
+####################################
+### FEE WAIVER CUSTOM QUESTIONS
+####################################
+id: user benefits
+question: |
+  % if person_answering == "tenant":
+  Do you get any of these benefits?
+  % else:
+  Does the tenant get any of these benefits?
+  % endif
+subquestion: |
+  Check any that apply
+fields:
+  - no label: public_assistance_kinds
+    datatype: checkboxes
+    choices:
+      - Transitional Aid to Families with Dependent Children (TAFDC): TAFDC
+      - Medicaid (MassHealth): Medicaid
+      - Emergency Aid to Elderly, Disabled or Children (EAEDC): EAEDC
+      - Massachusetts Veterans Benefits Programs: VA Benefits
+      - Supplemental Security Income (SSI): SSI
+    required: False
+---
+id: qualify on face
+continue button field: qualify_interstitial
+question: |
+  % if need_supplement and person_answering == "tenant":
+  You need to submit a supplemental affidavit to learn if you qualify
+  % elif person_answering == "tenant":
+  Based on your answers, it looks like you qualify for a fee waiver
+  % elif need_supplement:
+  The tenant needs to submit a supplemental affidavit to learn if they qualify
+  % else:
+  Based on the tenant's answers, it looks like they qualify for a fee waiver
+  % endif
+subquestion: |
+  % if public_assistance_kinds.any_true() and person_answering == "tenant":
+  Based on the information you gave us so far, you should qualify for a fee
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  
+  You receive these public benefits: ${public_assistance_kinds.true_values()}
+  
+  % elif public_assistance_kinds.any_true():
+  Based on the information you gave us so far, the tenant should qualify for a free
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  
+  The tenant receives these public benefits: ${public_assistance_kinds.true_values()}
+  
+  % elif household_income_qualifies and person_answering == "tenant":
+  Based on the information you gave us so far, you should qualify for a fee
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  
+  **You earn less than the income limit.**
+
+  You said that your ${times_per_year(times_per_year_list, hh_income.times_per_year).lower()} income
+  is ${currency(hh_income.total(times_per_year=hh_income.times_per_year))}.
+  
+  The limit for a household of ${nice_number(household_size)} is 125% of
+  the poverty level, or ${currency(household_income_limit/hh_income.times_per_year)}.
+  
+  % elif household_income_qualifies:
+  Based on the information you gave us so far, you should qualify for a fee
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  
+  **You earn less than the income limit.**
+
+  You said that your ${times_per_year(times_per_year_list, hh_income.times_per_year).lower()} income
+  is ${currency(hh_income.total(times_per_year=hh_income.times_per_year))}.
+  
+  The limit for a household of ${nice_number(household_size)} is 125% of
+  the poverty level, or ${currency(household_income_limit/hh_income.times_per_year)}.
+
+  % elif not can_afford and person_answering == "tenant":
+  You told us that you can't afford to pay the fees and pay for the necessities
+  of life. A judge will take a closer look at your income and expenses and decide
+  if you qualify for sure.
+  
+  % elif not can_afford:
+  You told us that the tenant can't afford to pay the fees and pay for the necessities
+  of life. A judge will take a closer look at the tenant's income and expenses and decide
+  if they qualify for sure.
+  % endif
+  
+  ${ collapse_template(fee_waiver_help_template) }
+
+  % if (person_answering == "tenant") and (public_assistance_kinds.any_true() or household_income_qualifies):
+  On the next screen, we'll ask you about the specific fees you want waived.
+  
+  % elif public_assistance_kinds.any_true() or household_income_qualifies:
+  On the next screen, we'll ask about the specific fees the tenant wants waived.
+  % elif person_answering == "tenant":
+  Next, you will complete the supplemental affidavit. This will ask for more
+  details about your finances, which the court needs to determine if you qualify.
+  % else:
+  Next, the tenant will complete the supplemental affidavit. This will ask for more
+  details about their finances, which the court needs to determine if they qualify.
+  % endif
+---
+template: fee_waiver_help_template
+subject: |
+  What are the rules for a fee waiver?
+content: |
+  % if person_answering == "tenant":
+  If you get certain public benefits, or if you earn less than 125% of 
+  the federal poverty level${ "," if need_income else ""}
+  % if need_income:
+  (${ currency(household_income_limit)} a year for a household of ${ nice_number(household_size) }),
+  % endif
+  the law says that you qualify for a fee waiver.
+  If you earn more than that but still cannot afford to pay the costs
+  of going to court, you need to give the court more information. If the 
+  court agrees, they may waive your court costs. It is up to a judge to 
+  decide.
+  
+  % else:
+  If the tenant gets certain public benefits, or if they earn less than 125% of 
+  the federal poverty level${ "," if need_income else ""}
+  % if need_income:
+  (${ currency(household_income_limit)} a year for a household of ${ nice_number(household_size) }),
+  % endif
+  the law says that they qualify for a fee waiver.
+  If they earn more than that but still cannot afford to pay the costs
+  of going to court, they need to give the court more information. If the 
+  court agrees, they may waive their court costs. It is up to a judge to 
+  decide.
+  % endif
+  
+  % if person_answering == "tenant":
+  * [What if the clerk does not approve my affidavit right away?](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-)
+  * [What if the clerk denies my affidavit?](https://www.masslegalhelp.org/what-if-the-clerk-denies-my-affidavit-of-indigency-)
+  
+  % else:
+  * [What if the clerk does not approve the tenant's affidavit right away?](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-)
+  * [What if the clerk denies the tenant's affidavit?](https://www.masslegalhelp.org/what-if-the-clerk-denies-my-affidavit-of-indigency-)
+  % endif
+---
+id: select fees waived
+question: |
+  % if person_answering == "tenant":
+  What fees do you need the court to waive or pay?
+  % else:
+  What fees does the tenant need the court to waive or pay?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  You do not need to list every cost right now. You can file a separate fee waiver request for
+  fees that come up later in your case.
+
+  ${ collapse_template(what_fee_amount_should_i_write_template) }
+  
+  Check the boxes that you need below.
+  
+  % else:
+   The tenant does not need to list every cost right now. The tenant can file a separate fee waiver request for
+  fees that come up later in their case.
+
+  ${ collapse_template(what_fee_amount_should_i_write_template) }
+  
+  Check the boxes that the tenant needs below.
+  % endif
+fields:
+  # - Electronic filing fee (about $6/document): fees['E-filing'].waive
+  #   datatype: yesno
+  #   default: True
+  #   help: |
+  #     We've checked this by default because it applies in every case.
+  - Filing fee or e-filing fee: fees['Filing fee'].waive
+    datatype: yesno
+  - Amount (if known): fees['Filing fee'].amount
+    datatype: currency
+    required: False
+    show if: fees['Filing fee'].waive    
+  - Costs of serving the other party: fees['Service'].waive
+    datatype: yesno
+  - Amount (if known): fees['Service'].amount
+    datatype: currency
+    required: False
+    show if: fees['Service'].waive          
+  - Expert witness services, including examinations and testimony: fees['Costs of an expert witness'].waive
+    datatype: yesno
+  - Amount (if known):  fees['Costs of an expert witness'].amount
+    datatype: currency
+    required: False
+    show if:  fees['Costs of an expert witness'].waive    
+  - Describe the need for expert testimony/exams:  fees['Costs of an expert witness'].description
+    datatype: area
+    show if:  fees['Costs of an expert witness'].waive    
+  - Deposition-related costs: fees['Depositions'].waive
+    datatype: yesno
+  - Amount (if known):  fees['Depositions'].amount
+    datatype: currency
+    required: False
+    show if:  fees['Depositions'].waive    
+  - label: |
+      % if person_answering == "tenant":
+      Who do you want to take a deposition of?
+      % else:
+      Who does the tenant want to take a deposition of?
+      % endif
+    field:  fees['Depositions'].description
+    datatype: area
+    rows: 2
+    show if:  fees['Depositions'].waive    
+  - Fee for filing appeal: fees['Appeal cost'].waive
+    datatype: yesno
+  - Amount (if known): fees['Appeal cost'].amount
+    datatype: currency
+    required: False
+    show if: fees['Appeal cost'].waive
+  - Appeal bond: fees['Appeal bond'].waive
+    datatype: yesno
+  - Amount (if known): fees['Appeal bond'].amount
+    datatype: currency
+    required: False
+    show if: fees['Appeal bond'].waive    
+  - CD or cassette recordings of trial or hearing: fees['recordings'].waive
+    datatype: yesno
+  - note: |
+      % if person_answering == "tenant":
+      You do not need to tell the court the amount to waive for
+      the cost of recordings.
+      % else:
+      The tenant does not need to tell the court the amount to waive for 
+      the cost of recordings.
+      % endif
+    show if: fees['recordings'].waive      
+  - Written transcript of trial or hearing: fees['transcript'].waive
+    datatype: yesno
+  - Amount (if known): fees['transcript'].amount    
+    datatype: currency
+    required: False
+    show if: fees['transcript'].waive        
+  - Other fee paid to the court: fees['Other'].waive    
+    datatype: yesno
+  - Amount (if known):  fees['Other'].amount
+    datatype: currency
+    required: False
+    show if:  fees['Other'].waive    
+  - Describe the other fee/cost:  fees['Other'].description
+    datatype: area
+    show if:  fees['Other'].waive    
+  - Other special fees or costs: fees['Other cost'].waive    
+    datatype: yesno
+  - Amount (if known):  fees['Other cost'].amount
+    datatype: currency
+    required: False
+    show if:  fees['Other cost'].waive    
+  - Describe the other fee/cost:  fees['Other cost'].description
+    datatype: area
+    show if:  fees['Other cost'].waive       
+validation code: |
+  if len([fee for fee in fees if fees[fee].waive]) < 1:
+    validation_error("You need to choose at least one.", field="fees['Other cost'].waive")
+---
+template: what_fee_amount_should_i_write_template
+subject: |
+  % if person_answering == "tenant":
+  What amount should I write in?
+  % else:
+  What amount should the tenant write in?
+  % endif
+content: |
+  % if person_answering == "tenant":
+  If you are not sure of the exact amount yet, it is OK to leave it blank. You can 
+  also write your best guess. For common fees, the court clerk may know the amount and 
+  can fill it in for you.
+
+  You may also be able to find the fee by visiting the court's website:
+  % else:
+  If the tenant is not sure of the exact amount yet, it is OK to leave it blank. You can 
+  also write the tenant's best guess. For common fees, the court clerk may know the amount and 
+  can fill it in for the tenant.
+
+  The tenant may also be able to find the fee by visiting the court's website:
+  % endif
+  * [List of filing fees in Massachusetts](https://www.mass.gov/info-details/uniform-schedule-of-fees).
+
+  It usually costs about $40 to serve a document on the opposing party, either by using the sheriff or
+  a constable.
+
+  % if person_answering == "tenant":
+  If you are asking for something special to your circumstances, researching the exact fee amount
+  yourself may help the court decide.
+  % else:
+  If the tenant is asking for something special to their circumstances, researching the exact fee amount
+  themselves may help the court decide.
+  % endif
+---
+id: user income and household size
+question: |
+  % if person_answering == "tenant":
+  About your income and household
+  % else:
+  About the tenant's income and household
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  Tell us about **how much** and **how often** you and your
+  household are paid.
+  % else:
+  Tell us about **how much** and **how often** the tenant and the tenant's
+  household are paid.
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Does anyone else live with you as part of your household?
+      % else:
+      Does anyone else live with the tenant as part of their household?
+      % endif
+    field: has_household_members
+    datatype: yesnoradio
+    help: |
+      % if person_answering == "tenant":
+      Answer "Yes" if you have children, a spouse, or other family member
+      you take care of or who helps take care of you.
+      % else: 
+      Answer "Yes" if the tenant has children, a spouse, or other family
+      member they take care of or who helps take care of them.
+      % endif
+  - label: |
+      % if person_answering == "tenant":
+      How many people? Don't count yourself.
+      % else:
+      How many people? Don't count the tenant.
+      % endif
+    field: household_additional_size
+    datatype: integer
+    show if: has_household_members
+    help: |
+      % if person_answering == "tenant":
+      For example, count your children, spouse, or other family member
+      you take care of or who helps take care of you.
+      % else: 
+      For example, count the tenant's children, spouse, or other family
+      member they take care of or who helps take care of them.
+      % endif
+  - label: |
+      % if person_answering == "tenant":
+      What is the total (after tax) income for your household?
+      % else:
+      What is the total (after tax) income for the tenant's household?
+      % endif
+    field: hh_income.value
+    # step: 1
+    datatype: currency
+    validation messages:
+      number: |
+        Enter a number. Do not include commas.
+    help: |
+      % if person_answering == "tenant":
+      Put in the amount you earn after taxes. This is
+      also called your "net" income.
+      % else:
+      Put in the amount the tenant earns after taxes. This is
+      also called their "net" income.
+      % endif
+  - label: |
+      % if person_answering == "tenant":
+      How often do you earn that amount?
+      % else:
+      How often does the tenant earn that amount?
+      % endif
+    field: hh_income.times_per_year
+    input type: radio
+    code: times_per_year_list
+    datatype: integer
+---
+id: user ability to pay
+question: |
+  % if person_answering == "tenant":
+  Can you afford to pay the court costs?
+  % else:
+  Can the tenant afford to pay the court costs?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  Answer "Yes" if you can afford the costs. Answer "No" if you either can't afford the costs, or can't
+  afford to do so without depriving yourself
+  or your dependents of the necessities of life, including food, shelter and clothing.
+  % else:
+  Answer "Yes" if the tenant can afford the costs. Answer "No" if the tenant either can't afford the costs, or can't
+  afford to do so without depriving themself
+  or their dependents of the necessities of life, including food, shelter and clothing.
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      I can afford the costs
+      % else:
+      The tenant can afford the costs
+      % endif
+    field: can_afford
+    datatype: yesnoradio
+---
+id: you birthdate question
+question: |
+  % if person_answering == "tenant":
+  When were you born?
+  % else:
+  When was the tenant born?
+  % endif
+fields:
+  - Birthdate: users[0].birthdate
+    datatype: BirthDate
+---
+id: education level
+question: |
+  % if person_answering == "tenant":
+  What is your highest level of education completed?
+  % else:
+  What is the tenant's highest level of education completed?
+  % endif
+fields:
+  - "Grade school completed": user_grade_school_completed
+    input type: dropdown
+    choices:
+      - No formal schooling
+      - 1st grade
+      - 2nd grade
+      - 3rd grade
+      - 4th grade
+      - 5th grade
+      - 6th grade
+      - 7th grade
+      - 8th grade
+      - 9th grade
+      - 10th grade
+      - 11th grade
+      - 12th grade
+      - High School Diploma or GED
+      - Some college
+      - Associates degree
+      - Bachelor degree
+      - Graduate degree
+      - Doctorate degree
+      - Other
+  - Describe the highest level of education: user_grade_school_completed
+    show if:
+      variable: user_grade_school_completed
+      is: Other
+---
+id: disabilities
+question: |
+  % if person_answering == "tenant":
+  Do you have mental or physical disabilities which affect your income?
+  % else:
+  Does the tenant have mental or physical disabilities which affect their income?
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Do you have any disabilities?
+      % else:
+      Does the tenant have any disabilities?
+      % endif
+    field: has_disabilities
+    datatype: yesnoradio
+  - note: |
+      % if person_answering == "tenant":
+      List them and explain how they affect your earning capacity and living expenses.
+      % else:
+      List them and explain how they affect the tenant's earning capacity and living expenses.
+      % endif
+    show if: has_disabilities
+  - label: |
+      % if person_answering == "tenant":
+      Your disabilities
+      % else:
+      The tenant's disabilities
+      % endif
+    field: user_disabilities
+    input type: area
+    maxlength: 336
+    show if: has_disabilities 
+---
+id: how many jobs do you have
+question: |
+  % if person_answering == "tenant":
+  How many jobs do you have?
+  % else:
+  How many jobs does the tenant have?
+  % endif
+fields:
+  - no label: users[0].jobs.target_number
+    datatype: integer
+---
+id: name of one itemized job in list
+question: |
+  % if person_answering == "tenant":
+  What is the the job title of your ${ 'primary' if i == 0 else ordinal(i)} job?
+  % else:
+  What is the the job title of the tenant's ${ 'primary' if i == 0 else ordinal(i)} job?
+  % endif
+subquestion: |
+  % if len(users[0].jobs.complete_elements()) > 0:
+  % if person_answering == "tenant":
+  You've already told us about being a ${ comma_and_list([job.source for job in users[0].jobs.complete_elements()]) }.
+  % else:
+  You've already told us that the tenant is a ${ comma_and_list([job.source for job in users[0].jobs.complete_elements()]) }.
+  % endif
+  % endif
+fields:
+  - Job title: users[0].jobs[i].source
+---
+sets:
+  - users[0].jobs[i].is_self_employed
+id: employer
+question: |
+  % if person_answering == "tenant":
+  Tell us who employs you as a ${ users[0].jobs[i].source }
+  % else:
+  Tell us who employs the tenant as a ${ users[0].jobs[i].source }
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      I am self employed
+      % else:
+      The tenant is self employed
+      % endif
+    field: users[0].jobs[i].is_self_employed
+    datatype: yesno
+  - code: |
+      users[0].jobs[i].employer.name_fields(person_or_business='unsure', show_if={'variable': 'users[0].jobs[i].is_self_employed', 'is': 'False'})
+  - code: |
+      users[0].jobs[i].employer.address.address_fields(show_if={'variable': 'users[0].jobs[i].is_self_employed', 'is': 'False'})
+  - Phone number: users[0].jobs[i].employer.phone_number
+    required: False
+    show if:
+      variable: users[0].jobs[i].is_self_employed
+      is: False
+---
+id: itemized job period
+question: |
+  % if person_answering == "tenant":
+  Tell us about your hours when working as a ${ users[0].jobs[i].source }
+  % else:
+  Tell us about the tenant's hours when working as a ${ users[0].jobs[i].source }
+  % endif
+fields:
+  - Is this a part time job: users[0].jobs[i].is_part_time
+    datatype: yesnoradio
+  - Hourly or salary?: users[0].jobs[i].is_hourly
+    input type: radio
+    choices:
+      - Hourly: True
+      - Salary: False
+  - label: |
+      % if person_answering == "tenant":
+      How often do you get paid?
+      % else:
+      How often does the tenant get paid?
+      % endif
+    field: users[0].jobs[i].times_per_year
+    input type: radio
+    code: |
+      times_per_year_list
+    datatype: integer
+  - label: |
+      % if person_answering == "tenant":
+      How many hours do you work during that time?
+      % else:
+      How many hours does the tenant work during that time?
+      % endif
+    field: users[0].jobs[i].hours_per_period
+    input type: number
+    show if: users[0].jobs[i].is_hourly
+---
+id: itemized job line items
+generic object: ALItemizedJob
+question: |
+    ${ x.source } Pay
+subquestion: |
+    % if person_answering == "tenant":
+    Enter info from your paystub for your job as a ${ x.source }
+    % else:
+    Enter info from the tenant's paystub for their job as a ${ x.source }
+    % endif
+    ---
+fields:
+    - ${ word("What is the hourly pay for this job?") if x.is_hourly else word("What are the wages for this job?") }: x.to_add['full time'].value
+      datatype: currency
+      show if:
+        code: x.is_part_time is False
+    - ${ word("What is the hourly pay for this job?") if x.is_hourly else word("What are the wages for this job?") }: x.to_add['part time'].value
+      datatype: currency
+      show if:
+        code: x.is_part_time is True
+    - note: |
+        % if person_answering == "tenant":
+        How much do you pay per pay period (${ times_per_year(times_per_year_list=times_per_year_list, times_per_year=x.times_per_year) }) for:
+        % else: 
+        How much does the tenant pay per pay period (${ times_per_year(times_per_year_list=times_per_year_list, times_per_year=x.times_per_year) }) for:
+        % endif
+    - Federal taxes: x.to_subtract['federal_taxes'].value
+      datatype: currency
+      required: False
+    - State taxes: x.to_subtract['state_taxes'].value
+      datatype: currency
+      required: False
+    - Social security: x.to_subtract['social_security'].value
+      datatype: currency
+      required: False
+    - Medicare: x.to_subtract['medicare'].value
+      datatype: currency
+      required: False
+---
+generic object: ALItemizedJob
+question: |
+  % if person_answering == "tenant":
+  Does your job as a ${ x.source } have other incomes or deductions?
+  % else: 
+  Does the tenant's job as a ${ x.source } have other incomes or deductions?
+  % endif
+fields:
+    - Does the job have other incomes?: x.to_add.there_is_another
+      help: |
+        For example, tips, yearly bonuses, or commission.
+      datatype: yesnoradio
+    - Does the job have other deductions?: x.to_subtract.there_is_another
+      datatype: yesnoradio
+---
+#id: other itemized job income name
+generic object: ALItemizedJob
+question: |
+  Other incomes
+subquestion: |
+  % if person_answering == "tenant":
+  You have already told us about your income from **${comma_and_list( [job_items_names.get(key, key).lower() for key in x.to_add.complete_elements().keys()] )}**.
+  % else: 
+  You have already told us about the tenant's income from **${comma_and_list( [job_items_names.get(key, key).lower() for key in x.to_add.complete_elements().keys()] )}**.
+  % endif
+fields:
+  - Type of income: x.to_add.new_item_name
+validation code: |
+  if x.to_add.new_item_name in x.to_add.complete_elements().keys():
+    validation_error(f'You already told us about <strong>{ job_items_names.get(x.to_add.new_item_name, x.to_add.new_item_name) }</strong> that pays { currency( x.to_add[ x.to_add.new_item_name ].value )}. Pick a different name.')
+---
+id: other itemized job reduction value
+generic object: ALItemizedJob
+question: |
+  % if person_answering == "tenant":
+  What amount is taken out of your paycheck for ${ job_items_names.get(i, i) } in your job as a ${ x.source }?
+  % else:
+  What amount is taken out of the tenant's paycheck for ${ job_items_names.get(i, i) } in their job as a ${ x.source }?
+  % endif
+fields:
+  - Amount: x.to_subtract[i].value
+    datatype: currency
+  - Is there other money being taken out?: x.to_subtract.there_is_another
+    datatype: yesnoradio
+---
+id: any non-employment incomes
+question: |
+  % if person_answering == "tenant":
+  Do you get money from any of the below sources, not from employment?
+  % else:
+  Does the tenant get money from any of the below sources, not from employment?
+  % endif
+fields:
+  - no label: users[0].nonemployment.selected_types
+    datatype: checkboxes
+    code: |
+      nonemployment_income_terms_ordered
+---
+id: about non-employment incomes
+question: |
+  % if person_answering == "tenant":
+  Tell us about your ${ nonemployment_income_terms.get(users[0].nonemployment[i].source, users[0].nonemployment[i].source.replace("_", " ")).lower() } income
+  % else:
+  Tell us about thee tenant's ${ nonemployment_income_terms.get(users[0].nonemployment[i].source, users[0].nonemployment[i].source.replace("_", " ")).lower() } income
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  For example, you might recieve disability benefits (SSDI) for $1000 once a month.
+  % if i > 0:
+  You have already told us about your ${ users[0].nonemployment.complete_elements().as_noun("income") } from ${ list_incomes(users[0].nonemployment) }.
+  % endif
+  % else:
+  For example, the tenant might recieve disability benefits (SSDI) for $1000 once a month.
+  % if i > 0:
+  You have already told us about the tenant's ${ users[0].nonemployment.complete_elements().as_noun("income") } from ${ list_incomes(users[0].nonemployment) }.
+  % endif
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Times per year you receive this income
+      % else:
+      Times per year the tenant receives this income
+      % endif
+    field: users[0].nonemployment[i].times_per_year
+    input type: radio
+    code: |
+      times_per_year_list
+  - Amount of income: users[0].nonemployment[i].value
+    datatype: currency
+---
+id: special training
+question: |
+  % if person_answering == "tenant":
+  Do you have any special job training?
+  % else:
+  Does the tenant have any special job training?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  For example, do you have any trade or professional certifications and licenses?
+  % else:
+  For example, does the tenant have any trade or professional certifications and licenses?
+  % endif
+fields:
+  - Any special job training?: has_special_training
+    datatype: yesnoradio
+  - Tell us about the training: user_training
+    show if: has_special_training
+    required: False
+    maxlength: 140
+---
+id: income review
+question: |
+  % if person_answering == "tenant":
+  Review your incomes 
+  % else:
+  Review the tenant's incomes 
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  % if has_household_members:
+  Here is what you've told us about your sources of income in your household.
+  % else:
+  Here is what you've told us about your sources of income.
+  % endif
+  % else:
+  % if has_household_members:
+  Here is what you've told us about the tenant's sources of income in their household.
+  % else:
+  Here is what you've told us about the tenant's sources of income.
+  % endif
+  % endif
+  
+  % if person_answering == "tenant":
+  <h2 class="h4">Your jobs</h2>
+  % else:
+  <h2 class="h4">The tenant's jobs</h2>
+  % endif
+  
+  ${ users[0].jobs.table }
+
+  ${ users[0].jobs.add_action() }
+
+  % if person_answering == "tenant":
+  <h2 class="h4">Your sources of income, not from employment</h2>
+  % else:
+  <h2 class="h4">The tenant's sources of income, not from employment</h2>
+  % endif
+
+  ${ users[0].nonemployment.table }
+
+  ${ users[0].nonemployment.add_action() }
+
+  % if has_household_members:
+  <h2 class="h4">Household member's jobs</h2>
+
+  ${ household.table }
+
+  ${ household.add_action() }
+  <h2 class="h4">Total monthly household income</h2>
+  % else:
+  <h2 class="h4">Total monthly income</h2>
+  % endif
+
+  ${ currency(full_household_income()) }
+
+field: review_income_screen
+---
+question: |
+  % if person_answering == "tenant":
+  You might not need to complete this supplement
+  % else:
+  The tenant might not need to complete this supplement
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  Earlier, you said that your household income was ${ currency(hh_income.total(times_per_year=12)) } per month.
+  However, you've given us more details about your income since then.
+  We think your household income is ${ currency(full_household_income()) } per month.
+  With this income, you automatically qualify for a waiver of court costs.
+  % else:
+  Earlier, you said that the tenant's household income was ${ currency(hh_income.total(times_per_year=12)) } per month.
+  However, you've given us more details about the tenant's income since then.
+  We think the tenant's household income is ${ currency(full_household_income()) } per month.
+  With this income, the tenany automatically qualifies for a waiver of court costs.
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Is your monthly household income ${ currency(full_household_income()) }
+      % else:
+      Is the tenant's monthly household income ${ currency(full_household_income()) }
+      % endif
+    field: confirm_can_skip_supplement
+    datatype: yesnoradio
+  - note: |
+      % if person_answering == "tenant":
+      Edit your income so it matches your situation on the next screen.
+      % else:
+      Edit the tenant's income so it matches their situation on the next screen.
+      % endif
+    show if:
+      variable: confirm_can_skip_supplement
+      is: false
+---
+generic object: ALItemizedJob 
+continue button field: x.to_subtract.revisit 
+question: | 
+  Edit deductions from ${ x.source } 
+subquestion: | 
+  % if person_answering == "tenant":
+  These are amounts that are taken out of your pay. 
+  % else:
+  These are amounts that are taken out of the tenant's pay. 
+  % endif
+  
+  ${ x.to_subtract.table } 
+ 
+  ${ x.to_subtract.add_action() } 
+---
+generic object: ALExpenseList
+id: expenses types
+question: |
+  % if person_answering == "tenant":
+  What kind of expenses do you have?
+  % else:
+  What kind of expenses does the tenant have?
+  % endif
+fields:
+  - no label: x.selected_types
+    datatype: checkboxes
+    code: |
+      expense_terms_ordered
+---
+generic object: ALExpenseList
+need:
+  - x[i].source
+  - x[i].display_name
+id: expense information, prefilled
+question: |
+  % if person_answering == "tenant":
+  How much do you spend on ${ x[i].display_name.lower() }?
+  % else:
+  How much does the tenant spend on ${ x[i].display_name.lower() }?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  If you have more than one ${ x[i].display_name.lower() }
+  expense in your household, you'll have a chance to add another later on.
+  % else:
+  If the tenant has more than one ${ x[i].display_name.lower() }
+  expense in their household, you'll have a chance to add another later on.
+  % endif
+fields:
+  - Amount: x[i].value
+    datatype: currency
+  - label: |
+      % if person_answering == "tenant":
+      How often do you pay this amount?
+      % else:
+      How often does the tenant pay this amount?
+      % endif
+    field: x[i].times_per_year
+    default: 12
+    code: |
+      times_per_year_list
+---
+id: expenses review
+question: |
+  % if person_answering == "tenant":
+  Review your expenses
+  % else:
+  Review the tenant's expenses
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  Here is what you've told us about your monthly expenses. You can add more or continue
+  to the next question.
+  % else:
+  Here is what you've told us about the tenant's monthly expenses. You can add more or continue
+  to the next question.
+  % endif
+  ${ users[0].expenses.table }
+
+  Total monthly expenses: ${ currency(users[0].expenses.total(times_per_year=12))}
+
+  ${ users[0].expenses.add_action() }
+field: review_expenses_screen
+---
+id: home ownership
+question: |
+  % if person_answering == "tenant":
+  Do you own a home?
+  % else: 
+  Does the tenant own a home?
+  % endif
+fields:
+  - no label: user_owns_home
+    datatype: yesnoradio
+  - What is the value of the home?: user_home_value
+    show if: user_owns_home
+    datatype: currency
+    min: 0
+  - Are there any remaining loans on the home?: user_has_home_debt
+    show if: user_owns_home
+    datatype: yesnoradio
+  - label: |
+      % if person_answering == "tenant":
+      How much do you have to pay on the remaining loans?
+      % else:
+      How much does the tenant have to pay on the remaining loans?
+      % endif
+    field: user_home_debt
+    show if: user_has_home_debt
+    datatype: currency
+    min: 0
+---
+id: car ownership
+question: |
+  % if person_answering == "tenant":
+  Do you own a car?
+  % else:
+  Does the tenant own a car?
+  % endif
+fields:
+  - no label: user_owns_car
+    datatype: yesnoradio
+  - "Car year": user_car_year
+    show if: user_owns_car
+    maxlength: 50
+  - "Car make": user_car_make
+    help: |
+      For example, Ford, Chevy, or Honda
+    show if: user_owns_car
+    maxlength: 50
+  - "Car value": user_car_value
+    show if: user_owns_car
+    datatype: currency
+    min: 0
+  - label: |
+      % if person_answering == "tenant":
+      Do you have a car loan?
+      % else:
+      Does the tenant have a car loan?
+      % endif
+    field: user_car_loan
+    datatype: yesnoradio
+    show if: user_owns_car
+  - label: |
+      % if person_answering == "tenant":
+      How much do you have to pay on the remaining loan?
+      % else:
+      How much does the tenant have to pay on the remaining loan?
+      % endif
+    field: user_car_debt
+    show if: user_car_loan
+    datatype: currency
+    min: 0
+---
+id: loop start bank accounts
+question: |
+  % if person_answering == "tenant":
+  Do you have any bank accounts that you wish to disclose?
+  % else:
+  Does the tenant have any bank accounts that they wish to disclose?
+  % endif
+subquestion: |
+  For example: money market accounts, investment accounts etc.
+fields:
+  - no label: users[0].accounts.there_are_any
+    datatype: yesnoradio
+---
+id: loop bank accounts
+question: |
+  % if person_answering == "tenant":
+  Tell us about your ${ ordinal(i) } account
+  % else:
+  Tell us about the tenant's ${ ordinal(i) } account
+  % endif
+fields:
+  - Account Type: users[0].accounts[i].source
+    datatype: dropdown
+    code: |
+        account_terms_ordered
+  - Account Balance: users[0].accounts[i].balance
+    datatype: currency
+---
+id: another account
+question: |
+  % if person_answering == "tenant":
+  Are there any other accounts that you wish to disclose? 
+  % else: 
+  Are there any other accounts that the tenant wishes to disclose? 
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  You have already told us about your ${ list_accounts_full(users[0].accounts.complete_elements()) }.
+  % else: 
+  You have already told us about the tenant's ${ list_accounts_full(users[0].accounts.complete_elements()) }.
+  % endif
+fields:
+  - no label: users[0].accounts.there_is_another
+    datatype: yesnoradio
+---
+question: |
+  % if person_answering == "tenant":
+  Do you own any property you haven't told us about?
+  % else:
+  Does the tenant own any property you haven't told us about?
+  % endif
+subquestion: |
+  This includes physical property or real estate that you have not already told us about.
+  For example, a boat, or land.
+  
+  % if person_answering == "tenant":
+  % if user_owns_car or user_owns_home:
+  You have already said that you own ${ comma_and_list(filter(lambda y: bool(y), [
+      f"a house worth {currency(user_home_value)}" if user_owns_home else "",
+      f"a car worth {currency(user_car_value)}" if user_owns_car else ""
+  ])) }.
+  % endif
+  % else: 
+  % if user_owns_car or user_owns_home:
+  You have already said that the tenant owns ${ comma_and_list(filter(lambda y: bool(y), [
+      f"a house worth {currency(user_home_value)}" if user_owns_home else "",
+      f"a car worth {currency(user_car_value)}" if user_owns_car else ""
+  ])) }.
+  % endif
+  % endif
+fields:
+  - no label: user_owns_property
+    input type: radio
+    choices:
+      - ${"Yes, I own additional property" if person_answering == "tenant" else "Yes, the tenant owns additional property"}: True
+      - ${"No, I do not own any additional property" if person_answering == "tenant" else "No, the tenant does not own additional property"}: False
+  - label: |
+      % if person_answering == "tenant":
+      List the property that you own
+      % else:
+      List the property that the tenant owns
+      % endif
+    field: user_property_type
+    input type: area
+    show if: user_owns_property
+  - Combined value of the property: user_property_value
+    datatype: currency
+    show if: user_owns_property
+---
+id: debts
+question: |
+  % if person_answering == "tenant":
+  Do you have any other unpaid debts?
+  % else:
+  Does the tenant have any other unpaid debts?
+  % endif
+subquestion: |
+  % if (user_owns_car and user_car_loan) or (user_owns_home and user_has_home_debt):
+  % if person_answering == "tenant":
+  You have already told us about your:
+  % else:
+  You have already told us about the tenant's:
+  % endif
+
+  % if user_owns_car and user_car_loan:
+  * car loan for ${ currency(user_car_debt) }
+  % endif
+  % if user_owns_home and user_has_home_debt:
+  * home loan for ${ currency(user_home_debt) }
+  % endif
+  % endif
+fields:
+  - no label: user_has_debts
+    input type: radio
+    choices:
+      - ${"Yes, I have other unpaid debts" if person_answering == "tenant" else "Yes, the tenant has other unpaid debts"}: True
+      - ${"No, I do not have other unpaid debts" if person_answering == "tenant" else "No, the tenant does not have other unpaid debts"}: False
+  - note: Enter debt type and amount
+    show if: user_has_debts
+  - 'Specify all debts': user_debts
+    input type: area
+    maxlength: 336
+    show if: user_has_debts
+---
+id: miscellaneous facts
+question: |
+  % if person_answering == "tenant":
+  Is there anything else you want to tell the judge about your situation?
+  % else: 
+  Is there anything else you want to tell the judge about the tenant's situation?
+  % endif
+fields:
+  - no label: miscellaneous_facts
+    input type: area
+    required: False
+    rows: 4
+    maxlength: 420
+---
+id: collect employed household members
+question: |
+  % if person_answering == "tenant":
+  How many of your household members are employed?
+  % else: 
+  How many of the tenant's household members are employed?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  A household member is someone you live and share expenses with.
+  % else:
+  A household member is someone the tenant lives and shares expenses with.
+  % endif
+fields:
+  - no label: household.target_number
+    datatype: integer
+---
+id: employed household members
+sets:
+  - household[i].name.first
+  - household[i].name.last
+question: |
+  % if person_answering == "tenant":
+  What is the name of your ${ ordinal(i) } household member?
+  % else:
+  What is the name of the tenant's ${ ordinal(i) } household member?
+  % endif
+fields:
+  code: household[i].name_fields()
