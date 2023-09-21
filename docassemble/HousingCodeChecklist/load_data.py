@@ -250,20 +250,28 @@ class ConditionsDict(DADict):
                 default_date = as_datetime(default_date)
             except:
                 default_date = today()
-        return min([
-            condition.start_date
-            for condition
-            in self.as_list()
-            if hasattr(condition, "start_date")
-        ], default=default_date)
+        try:
+            return min([
+                condition.start_date
+                for condition
+                in self.as_list()
+                if hasattr(condition, "start_date") and condition.start_date
+            ], default=default_date) or default_date
+        except:
+            return default_date
 
     def conditions_end(self, default_date:Optional[Union[DADateTime,str]]=None) -> DADateTime:
-        return max([
-            condition.end_date
-            for condition
-            in self.as_list()
-            if hasattr(condition, "end_date")
-        ], default=default_date)
+        if not default_date:
+            default_date = today()
+        try:
+            return max([
+                condition.end_date
+                for condition
+                in self.as_list()
+                if hasattr(condition, "end_date") and condition.end_date
+            ], default=default_date) or default_date
+        except:
+            return default_date
 
     def conditions_days(self,default_date:Optional[Union[DADateTime,str]]=None) -> int:
         return abs( (self.conditions_end(default_date) - self.conditions_start(default_date)).days )
