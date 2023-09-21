@@ -34,7 +34,7 @@
 
 /* === All nav items === */
 .danav-vertical .nav-link {
-  padding: .55em 1em;
+  padding: .2em 1em;
 }
 
 .danav-vertical .danavlink::before {
