@@ -122,6 +122,7 @@ code: |
   if screen_ll_knows_problem and document_choice['get_report']:
     nav.set_section(sub_documents['get_report'].get('section_link'))
     users[0].address.address
+    users[0].mailing_address.address
     other_parties.gather()
     other_parties[0].address.address
   if screen_ll_knows_problem and document_choice['tell_landlord']:
@@ -134,6 +135,7 @@ code: |
   if screen_ll_knows_problem and document_choice['organize_tenants']:
     nav.set_section(sub_documents['organize_tenants'].get('section_link'))
     users[0].address.address
+    users[0].mailing_address.address
     try:
       users[0].address.geocode()
     except:
@@ -1570,6 +1572,7 @@ id: interview_order_request_housing_inspection
 code: |
   users[0].name.first
   users[0].address.address
+  users[0].mailing_address.address
   try:
     users[0].address.geocode()
   except:
