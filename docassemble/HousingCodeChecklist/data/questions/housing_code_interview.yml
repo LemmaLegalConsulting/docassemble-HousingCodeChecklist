@@ -306,7 +306,7 @@ subquestion: |
         <div class="card-body">
           <h5 class="card-title">Explore problems and solutions</h5>
           <p class="card-text">Explore problems by room and category and get your landlord to fix them.</p>
-          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start exploring</a>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button" id="start_exploring">Start exploring</a>
         </div>
       </div>
     </div>
