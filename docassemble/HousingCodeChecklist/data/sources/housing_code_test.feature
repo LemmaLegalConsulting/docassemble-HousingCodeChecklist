@@ -67,7 +67,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
   And the maximum seconds for each Step in this Scenario is 10
   Then I tap the "#start_exploring" element
-  And I get to the question id "rent subsidy" with this data:
+  And I get to the question id "persons signature" with this data:
     | var | value | trigger |
     | acknowledged_information_use['I accept the terms of use.'] | True | |
     | person_answering | attorney | |
@@ -126,8 +126,6 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | verified_complaint_claims[i].date | 2023 | | 
     | tenant_gets_rent_subsidy | True | |
     | tenant_subsidy_is_voucher | False | |
-  
-  
     | landlord_is_government | False | landlord_is_housing_authority | 
     | landlord_lives_in_building | True | landlord_is_government |
     | building_larger_than_4_units | True | landlord_lives_in_building | 
