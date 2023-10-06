@@ -338,7 +338,11 @@ validation code: |
 ---
 id: your mailing address
 question: |
+  % if person_answering == "tenant":
   What is your mailing address?
+  % else:
+  What is ${ users.familiar() }'s mailing address?
+  % endif
 fields:
   - ${ users[0].address.address_label}: users[0].mailing_address.address
     address autocomplete: True
