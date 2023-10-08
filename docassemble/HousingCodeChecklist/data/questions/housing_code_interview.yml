@@ -162,16 +162,20 @@ code: |
       ask_affidavit_questions
     nav.set_section('preview_and_sign')
     preview_docs
+    uptocode_review
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
     nav.set_section('preview_and_sign')
     preview_docs
+    uptocode_review
     basic_questions_signature_flow
   if screen_ll_knows_problem and {'get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
     nav.set_section('preview_and_sign')
     preview_docs
+    uptocode_review
     basic_questions_signature_flow
+  
   reached_download_screen = True
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
@@ -658,6 +662,7 @@ fields:
     validation messages:
       minlength: |
         You need to choose at least one problem to continue.
+
 ---
 id: confirm notice
 question: |
@@ -895,12 +900,12 @@ fields:
   - Choose any that apply: kind_of_lawsuit
     datatype: checkboxes
     choices:
-      - ${"My landlord changed my locks, moved my things or threatened to do so" if person_answering == "tenant" else "The tenant's landlord changed their locks, moved their things or threatened to do so"}: "illegal_lockout"     
-      - ${"My landlord went into my home without my permission" if person_answering == "tenant" else "The tenant's landlord went into the tenant's home without permission"}: "entered_without_permission"
-      - ${"My landlord went into my home without giving me enough notice" if person_answering == "tenant" else "The tenant's landlord went into the tenant's home without giving them enough notice"}: "insufficient_notice"
-      - ${"My landlord made me pay for utilities, but we did not have a written agreement" if person_answering == "tenant" else "The tenant's landlord made the tenant pay for utilities, but they did not have a written agreement"}: "utilities_no_agreement"
-      - ${"My utilities were shutoff" if person_answering == "tenant" else "The tenant's utilities were shutoff"}: "utility_shutoff"
-      - ${"My landlord is ignoring a court order" if person_answering == "tenant" else "The landlord is ignoring a court order"}: "file_contempt_complaint"
+      - ${kind_of_lawsuit_text["illegal_lockout"]}: illegal_lockout     
+      - ${kind_of_lawsuit_text["entered_without_permission"]}: entered_without_permission
+      - ${kind_of_lawsuit_text["insufficient_notice"]}: insufficient_notice
+      - ${kind_of_lawsuit_text["utilities_no_agreement"]}: utilities_no_agreement
+      - ${kind_of_lawsuit_text["utility_shutoff"]}: utility_shutoff
+      - ${kind_of_lawsuit_text["file_contempt_complaint"]}: file_contempt_complaint
     show if:
       code: |
         initial_action_selection != "help_in_court"
@@ -910,6 +915,93 @@ fields:
       % else:
       If the problem the tenant needs help with is not on this list, go to the next screen to see more.
       % endif     
+---
+variable name: kind_of_lawsuit_text
+use objects: True
+data:
+  utilities_no_agreement:
+    question: |
+      % if person_answering == "tenant":
+      My landlord made me pay for utilities, but we did not have a written agreement
+      % else:
+      The tenant's landlord made the tenant pay for utilities, but they did not have a written agreement
+      % endif
+    document: |
+      % if person_answering == "tenant":
+      My landlord made me pay for utilities, but we did not have a written agreement
+      % else:
+      The tenant's landlord made the tenant pay for utilities, but they did not have a written agreement
+      % endif
+  illegal_lockout:
+    question: |
+       % if person_answering == "tenant":
+       My landlord changed my locks, moved my things or threatened to do so 
+       % else:
+       The tenant's landlord changed their locks, moved their things or threatened to do so
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My landlord changed my locks, moved my things or threatened to do so  
+       % else:
+       The tenant's landlord changed their locks, moved their things or threatened to do so
+       % endif
+       
+  entered_without_permission:
+    question: |
+       % if person_answering == "tenant":
+       My landlord went into my home without my permission
+       % else:
+       The tenant's landlord went into the tenant's home without permission
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My landlord went into my home without my permission
+       % else:
+       The tenant's landlord went into the tenant's home without permission
+       % endif
+       
+  insufficient_notice:
+    question: |
+       % if person_answering == "tenant":
+       My landlord went into my home without giving me enough notice
+       % else:
+       The tenant's landlord went into the tenant's home without giving them enough notice
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My landlord went into my home without giving me enough notice
+       % else:
+       The tenant's landlord went into the tenant's home without giving them enough notice
+       % endif
+   
+  utility_shutoff:   
+    question: |
+       % if person_answering == "tenant":
+       My utilities were shutoff 
+       % else:
+       The tenant's utilities were shutoff
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My utilities were shutoff 
+       % else:
+       The tenant's utilities were shutoff
+       % endif
+       
+  file_contempt_complaint:
+    question: |
+       % if person_answering == "tenant":
+       My landlord is ignoring a court order"  
+       % else:
+       The landlord is ignoring a court order
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My landlord is ignoring a court order"  
+       % else:
+       The landlord is ignoring a court order
+       % endif
+     
 ---
 template: how_far_back_should_i_go_template
 subject: |
@@ -2039,6 +2131,11 @@ review:
       % if users.there_are_any:
       % for item in users:
       **${ item }**
+      
+        - **Address:** ${ item.address }
+        % if users[0].mailing_address:
+        - **Mailing address:** ${item.mailing_address}
+        % endif
       % endfor
       % else:
       **None**
@@ -2049,7 +2146,9 @@ review:
       % if users[0].attorney:
       **Your attorney**
       % for item in users[0].attorney:
-      ${ item }
+      **${ item }**
+      
+        - **Address:** ${users[0].attorney.address}
       % endfor
       % endif
   - note: | 
@@ -2060,6 +2159,8 @@ review:
       % if other_parties.there_are_any:
       % for item in other_parties:
       **${ item }**
+      
+        - **Address:** ${other_parties[0].address}
       % endfor
       % else:
       **None**
@@ -2070,8 +2171,8 @@ review:
       % else:
       ##The tenant's lawsuit##
       % endif
-  - Edit: |
-      kind_of_lawsuit
+  - Edit: 
+      - kind_of_lawsuit
     button: |
       % if person_answering == "tenant":
       **Why you need to take your landlord to court:**
@@ -2081,7 +2182,7 @@ review:
       % if kind_of_lawsuit.any_true():
       % for item in kind_of_lawsuit.true_values():
       
-       - **${ item }**
+       - **${ kind_of_lawsuit_text[item] }**
       
       % endfor
       % else:
