@@ -240,13 +240,13 @@ subject: |
 content: |
   % if person_answering == "tenant":
   Your landlord's contact information will be written
-  on the documents that this website creates.
+  on the documents that UpToCode creates.
 
   The court may use the number or email to pick a time
   for you and your landlord to come into court.
   % else:
   The landlord's contact information will be written
-  on the documents that this website creates.
+  on the documents that UpToCode creates.
 
   The court may use the number or email to pick a time
   for the tenant and their landlord to come into court.
@@ -673,9 +673,9 @@ content: |
   you need to be able to tell your landlord and the court where the problem
   is.
   
-  You can use this website to record problems and upload pictures.
+  You can use UpToCode to record problems and upload pictures.
   
-  You could also:
+  You can also:
   
   * Use your phone or a camera to take pictures of the problems.
   * Use a thermometer or a photo of your thermostat and write down the
@@ -688,18 +688,16 @@ template: how_to_notify_landlord_template
 subject: |
   Notify your landlord
 content: |
-  Your landlord is only responsible to fix problems that they know about.
-  Make sure your landlord knows about problems in your house by telling them,
-  even if you think that they should already know.
+  Your landlord is responsible for fixing only the problems they know about.
+  Make sure you tell your landlord about problems in your home, even if you think they should already know.
   
-  Use a way to tell your landlord that you can track and prove.
+  Tell your landlord about the problems in a way that you can prove you told them.
   
-  * Write your landlord a text message.
-  * Write a letter on paper, and keep a copy for yourself. Make sure the date
-    is on the letter.
-  * Write an email.
+  * Text your landlord. Keep the text or a screenshot of the text on your phone.
+  * Write a letter. Make sure to put the date on the letter. Keep a copy for yourself. 
+  * Email your landlord.
   
-  You can use this website to tell your landlord about the problems in your
+  You can use UpToCode to tell your landlord about the problems in your
   home.
 ---
 template: get_inspection_template
@@ -722,8 +720,8 @@ content: |
   
   In other cities and towns, call the Board of Health.
   
-  Before calling the inspector, use this website to create and print a list of 
-  the problems that you have identified. This will help make sure that the
+  Before you call the inspector, use UpToCode to create and print a list of 
+  the problems that you have identified. This will help make sure the
   inspector does not miss any problems.
 
   [Learn more](https://www.masslegalhelp.org/housing/lt1-chapter-8-getting-inspection).
@@ -1138,10 +1136,10 @@ content: |
 
   <h3 class="h5">You need to know</h3>
 
-  * **This website does not provide legal advice**. If you need legal advice, you can use the [Massachusetts Legal Resource Finder](https://masslrf.org) to find a lawyer.
-  * The information and documents on this website have no warranty. We provide the information “as-is.” By using the site, you agree not to hold GBLS or the information providers on this site liable.
-  * We work hard to keep the information on the site up to date. Lawyers drafted and reviewed the documents this site uses. But laws and local rules change over time. These changes can make a document unenforceable when you use it.
-  * We do our best to keep the site working! To do that, we allow you to submit feedback so we can track problems on the site. But we cannot provide individual technical support.
+  * **UpToCode does not provide legal advice**. If you need legal advice, you can use the [Massachusetts Legal Resource Finder](https://masslrf.org) to find a lawyer.
+  * The information and documents on UpToCode have no warranty. We provide the information “as-is.” By using UpToCode, you agree not to hold GBLS or the information providers on UpToCode liable.
+  * We work hard to keep the information on UpToCode up to date. Lawyers drafted and reviewed the documents UpToCode uses. But laws and local rules change over time. These changes can make a document unenforceable when you use it.
+  * We do our best to keep UpToCode working! To do that, we allow you to submit feedback so we can track problems on UpToCode. But we cannot provide individual technical support.
 
   <h3 class="h5">To use this site</h3>
 
@@ -1155,8 +1153,8 @@ content: |
   * We collect the information that you type to help you complete your forms. We delete all information 180 days after you last update it. You can also delete information immediately.
   * We log information including IP addresses and web browsers from all visitors. We use this information to keep our site secure. We keep logs for up to 180 days.
   * We use Google Maps to help fill in addresses automatically. This feature sends your IP address to Google Maps to get your approximate location.
-  * We use Google Analytics to learn how people use our website. This helps us understand which pages are hardest to use. Google may use this information to show you better advertisements.
-  * We use email and text message delivery services that may keep their own records of any messages you send. If you choose to log in with your phone number, this may include a record of the times you log in to the site.
+  * We use Google Analytics to learn how people use UpToCode. The analytics help us understand which pages are hardest to use. Google may use this information to show you better advertisements.
+  * We use email and text message delivery services that may keep their own records of any messages you send. If you choose to log in with your phone number, this may include a record of the times you log in to UpToCode.
 
   <h3 class="h5">We keep your information safe</h3>
 

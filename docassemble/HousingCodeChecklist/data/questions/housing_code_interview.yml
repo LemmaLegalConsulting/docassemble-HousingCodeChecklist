@@ -452,7 +452,7 @@ question: |
   Find ways to get the problems in your home fixed
 subquestion: |
   <div class="alert alert-secondary h-100 mh-100" role="alert">
-    <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this tool works</h2>
+    <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How UpToCode works</h2>
     <p class="h-100 overflow-visible mb-0">
 
   On the next few screens you can:
@@ -710,23 +710,18 @@ template: when_does_8a_apply
 subject: |
   When can a problem stop my eviction?
 content: |
-  If you are being evicted only because:
+  If your landlord owes you at least $1 because of a repair they did not make or they broke another landlord-tenant law.[239 &sect; 8A](https://www.masslegalhelp.org/housing/lt1-chapter-12-legal-defenses-counterclaims-article) gives you the right to "buy back" your home.
+  
+  239 &sect; 8A may protect you if you are being evicted only because:
 
-  * you owe rent, or
-  * your landlord only wants you to move out and is not saying it is your fault
+  * You owe rent. Or
+  * Your landlord wants you to move out, but not because of anything you did wrong.
 
-  you may be protected from eviction by [239 &sect; 8A](https://www.masslegalhelp.org/housing/lt1-chapter-12-legal-defenses-counterclaims-article).
+  You do not have this right if your landlord is evicting you because of a "fault" reason, like breaking any other rule in your lease. 
 
-  239 &sect; 8A gives you the right to "buy back" your home if your landlord owes you
-  at least $1 because of a repair that they did not make or they violated another 
-  landlord-tenant law.
-
-  You cannot use this right if your landlord is evicting you because of a "fault" reason,
-  such as breaking a rule in your lease other than being behind in the rent.
-
-  You can use the "buy back" right to stop an eviction if you raise it in your eviction
-  case. You need to file an eviction answer using [MADE](https://gbls.org/MADE) to claim
-  it instead of using this website.
+  You can use your "buy back" right to stop an eviction if you raise it in your eviction case. 
+  
+  Use [MADE](https://gbls.org/MADE) to claim this right in your eviction answer. UpToCode does not help with writing an answer.
 ---
 id: warn against suing
 question: |
@@ -739,7 +734,7 @@ subquestion: |
 
   - If the problem is in a public part of your building, or
   - The problem existed before you moved in, or
-  - Your landlord came to your apartment for another reason and had a chance to see the problem
+  - Your landlord came to your apartment for another reason and had a chance to see the problem.
 fields:
   - What do you want to do?: confirm_suing_choice
     datatype: radio
@@ -752,13 +747,13 @@ question: |
   Calling an inspector
 subquestion: |
   It is usually a good idea to call a housing inspector if you sue your
-  landlord. The court will pay attention to the problems that the inspector
-  found. The report that the inspector writes may be evidence in your case.
+  landlord. The court will pay attention to the problems the inspector
+  finds. The report the inspector writes may be evidence in your case.
 
-  You do not have to call an inspector before you use this website but you may want to
-  get the inspection before you deliver the papers to court.
+  You do not have to call an inspector before you use UpToCode. But you may want to
+  get an inspection report before you file your papers at court.
 
-  If it is an emergency you do not have to wait.
+  If it is an emergency you do not have to wait for an inspection report.
 fields:
   - Do you want to include a letter to your city or town inspector?: add_inspection_letter
     datatype: yesnoradio
@@ -842,7 +837,7 @@ id: track conditions intro
 question: |
   List your housing problems
 subquestion: |
-  This website will help you make your list.
+  UpToCode will help you make your list.
 continue button field: track_conditions_intro  
 ---
 id: learn more
@@ -1679,9 +1674,9 @@ subquestion: |
   % endif
   1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call the court for instructions at ${ tel(trial_court.phone_number) }.
   % if person_answering == "tenant":
-  1. You can come back to this website later to take additional steps.
+  1. You can come back to UpToCode later to take additional steps.
   % else:
-  1. The tenant can come back to this website later to take additional steps.
+  1. The tenant can come back to UpToCode later to take additional steps.
   % endif
   % if showifdef("interview_order_request_housing_inspection") and person_answering == "tenant":
 
@@ -1941,11 +1936,11 @@ fields:
   - note: |
       % if person_answering == "tenant":
       **Okay**. You need your landlord's address for many of the forms on
-      this website. You can still finish this form but you will need to add
+      UpToCode. You can finish this form but you will need to add
       your landlord's address before you deliver the form.
       % else:
       **Okay**. The tenant needs their landlord's address for many of the forms on
-      this website. You can still finish this form but the tenant will need to add
+      UpToCode. You can finish this form but the tenant will need to add
       their landlord's address before the tenant delivers the form.
       % endif
     show if: ll_address_unknown       
@@ -2161,18 +2156,18 @@ back button label: |
 template: about_this_interview_version_info
 content: |
   UpToCode is a free website that gives tenants the power to solve
-  landlord problems. It's funded by the national Legal Services Corporation and
+  landlord problems. It is funded by the national Legal Services Corporation and
   Massachusetts nonprofits.
   
   UpToCode does not share any personal identifying information with the government or any other entity. 
 
-  UpToCode includes a translated and easy to read English version of the Massachusetts
-  Sanitary Code, the law that lists the requirements that Massachusetts landlords
-  must follow. It helps tenants:
+  UpToCode includes a translated and easy-to-read English version of the Massachusetts
+  Sanitary Code, the law that lists the requirements Massachusetts landlords
+  must follow. UpToCode helps tenants:
   
-  1. discover their rights under the law,
-  1. report problems to their landlord, a city housing inspector, or the court,
-  1. get a court order to enforce repairs or to get compensation for illegal landlord
+  1. Discover their rights under the law.
+  1. Report problems to their landlord, a city housing inspector, or the court,
+  1. Ask a court for an order to enforce repairs or get compensation for illegal landlord
   actions.
 
   UpToCode was originally authored by Quinten Steenhuis in 2021 in
@@ -2187,7 +2182,7 @@ content: |
   
   Community organizations [La Colaborativa](https://la-colaborativa.org) and
   [Lynn United for Change](https://lynnunited.org) played a special role in
-  co-design of this website.
+  co-design of UpToCode.
 
   &copy; 2022 Northeast Legal Aid, Quinten Steenhuis and open source
   contributors under an [MIT license](https://opensource.org/licenses/MIT).  
