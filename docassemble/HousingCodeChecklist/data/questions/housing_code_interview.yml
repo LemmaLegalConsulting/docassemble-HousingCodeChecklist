@@ -823,9 +823,27 @@ subquestion: |
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
     % if person_answering == "tenant":
-    "Retaliation" is illegal. Your landlord cannot evict you <b>or</b> raise your rent just because you complain about problems in your home. 
+    "Retaliation" is illegal.
+    If you complain about problems in your home and your landlord tries to get back at you, they are breaking the law. It is against the law to 
+    <ul>
+    <li>evict you, <strong>or</strong></li>
+    <li>raise your rent, </li> 
+    </ul>
+     because you complained.
+     <br> <br>   
+     Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction#retaliatoryevictions" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link"href="https://www.masslegalhelp.org/housing/lt1-chapter-5-retaliatory-rent-increase target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
+    </p>
     % else:
-    "Retaliation" is illegal. The tenant's landlord cannot evict them or raise their rent just because they complain about problems in their home. 
+    "Retaliation" is illegal. 
+    If the tenant complains about problems in their home and their landlord tries to get back at them, the landlord is breaking the law. It is against the law to 
+    <ul>
+    <li>evict a tenant, <strong>or</strong></li>
+    <li>raise their rent, </li> 
+    </ul>
+     because they complained.
+     <br> <br>   
+     Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction#retaliatoryevictions" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link"href="https://www.masslegalhelp.org/housing/lt1-chapter-5-retaliatory-rent-increase target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
+    </p>
     % endif
     <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction" target="_blank" rel="noopener noreferrer">Read more</a>.
     </p>
@@ -1507,9 +1525,8 @@ validation code: |
     document_choice["contempt_complaint"] = False
 terms:
   retaliated: |
-    Retaliation could include evicting you or raising your rent because you
-    complained about housing problems. Retaliation is illegal and you have
-    protections in a court.
+    Retaliation includes evicting you or raising your rent because you
+    complained about housing problems. Retaliation is against the law. The court can protect you from retaliation.
 ---
 # Set a default value for all document choices
 variable name: document_choice
