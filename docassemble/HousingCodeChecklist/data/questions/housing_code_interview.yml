@@ -480,15 +480,15 @@ subquestion: |
 
   ${ display_template(about_page_contents, scrollable=True, collapse=True) }
 fields:
-  - To continue, you must accept the terms of use: acknowledged_information_use
+  - To continue, you must accept the Terms of Use: acknowledged_information_use
     datatype: checkboxes
     none of the above: False    
     minlength: 1
     choices:
-      - I accept the terms of use.
+      - I accept the Terms of Use.
     validation messages:
       minlength: |
-        You can only continue if you agree to the terms of use.
+        You can only continue if you agree to the Terms of Use.
 ---
 event: initial_action
 code: |

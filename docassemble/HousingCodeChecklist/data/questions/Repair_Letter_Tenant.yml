@@ -83,15 +83,15 @@ subquestion: |
   % endif
 
 fields:
-  - To continue, you must accept the [terms of use](https://massaccess.suffolklitlab.org/privacy/): acknowledged_information_use
+  - To continue, you must accept the [Terms of Use](https://massaccess.suffolklitlab.org/privacy/): acknowledged_information_use
     datatype: checkboxes
     none of the above: False    
     minlength: 1
     choices:
-      - I accept the terms of use.
+      - I accept the Terms of Use.
     validation messages:
       minlength: |
-        You cannot continue unless you agree to the terms of use.        
+        You cannot continue unless you agree to the Terms of Use.        
 continue button field: custom_intro
 terms:
   green words: |
