@@ -830,8 +830,6 @@ subquestion: |
     <li>raise your rent, </li> 
     </ul>
      because you complained.
-     <br> <br>   
-     Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction#retaliatoryevictions" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link"href="https://www.masslegalhelp.org/housing/lt1-chapter-5-retaliatory-rent-increase target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
     </p>
     % else:
     "Retaliation" is illegal. 
@@ -840,12 +838,10 @@ subquestion: |
     <li>evict a tenant, <strong>or</strong></li>
     <li>raise their rent, </li> 
     </ul>
-     because they complained.
-     <br> <br>   
-     Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction#retaliatoryevictions" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link"href="https://www.masslegalhelp.org/housing/lt1-chapter-5-retaliatory-rent-increase target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
+     because they complained.     
     </p>
     % endif
-    <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction" target="_blank" rel="noopener noreferrer">Read more</a>.
+    Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction#retaliatoryevictions" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link"href="https://www.masslegalhelp.org/housing/lt1-chapter-5-retaliatory-rent-increase target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
     </p>
   </div>
 continue button field: intro_terms_of_use  
