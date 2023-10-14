@@ -2128,43 +2128,110 @@ review:
   - Edit:
       - users.revisit
     button: |
+      Plaintiffs:
       % if users.there_are_any:
-      % for item in users:
-      **${ item }**
-      
-        - **Address:** ${ item.address }
-        % if users[0].mailing_address:
-        - **Mailing address:** ${item.mailing_address}
-        % endif
-      % endfor
+        - **Name:** ${users[0].name}
+        - **Address:** ${ users[0].address }
+      % if users[0].mobile_number:
+        - **Contact:**  ${users[0].mobile_number}
+      % endif
+      % if users[0].phone_number:
+        - **Contact:**  ${users[0].phone_number}
+      % endif
+      % if users[0].email:
+          ${users[0].email}
+      % endif
+      % if users[0].mailing_address:
+        - **Mailing address:** ${users[0].mailing_address}
+      % endif
       % else:
       **None**
       % endif
-  - Edit: |
-      users[0].attorney.revisit
+  - note: |
+      % if person_answering == "attorney":
+      ##Information about the attorney##
+      % endif
+  - Edit: 
+      - users[0].attorney.name.first
     button: |
-      % if users[0].attorney:
-      **Your attorney**
-      % for item in users[0].attorney:
-      **${ item }**
-      
-        - **Address:** ${users[0].attorney.address}
-      % endfor
+      % if person_answering == "attorney":
+      **${ users[0].attorney.name }**
+        - **Law firm or organization name**: ${ users[0].attorney.organization }
+        - **Address:** ${ users[0].attorney.address } since ${users[0].move_in_date}
       % endif
   - note: | 
+      % if other_parties.there_are_any:
       ##Information about the other party##
+      % endif
   - Edit:
       - other_parties.revisit
     button: |
+      Defendants: 
       % if other_parties.there_are_any:
-      % for item in other_parties:
-      **${ item }**
-      
+        - **Name**: ${ other_parties.name }
+        - **Person or Business:** ${other_parties[0].person_type}
+        % if other_parties[0].phone_number:
+        - **Phone number:** ${users[0].phone_number}
+        % endif
+        % if other_parties[0].email:
+        **Email:** ${other_parties[0].email}
+        % endif
         - **Address:** ${other_parties[0].address}
-      % endfor
       % else:
       **None**
       % endif
+
+  - note: |
+      % if person_answering == "tenant":
+      ##When did you first notice the problems##
+      % else:
+      ##When did the tenant first notice the problems##
+      % endif
+  - Edit: 
+      - tenant_repair_issue_date
+    button: |
+      **Date:** ${tenant_repair_issue_date}
+      
+  - note: |
+      ##Effect of the problems##
+  - Edit:
+      - notification_date
+      - effect_of_conditions
+    button: |
+      **Date notified:** ${notification_date} 
+      **Effect**: ${effect_of_conditions}
+      
+  - note: |
+      Describe the problems
+  - Edit:
+      - tenant_repair_issue_description
+    button: |
+      **Description:** ${tenant_repair_issue_description}
+      
+  - note: |
+      ##Compensation##
+  - Edit:
+      - damage_calculation_method
+    button: |
+      **Calculation method:** ${damage_calculation_method}
+      **How serious were the problems:** ${damage_tenant_severity_estimate}
+      % if person_answering == "tenant":
+      **How long did you have the problems:** ${tenant_time_estimate}
+      % else:
+      **How long did the tenant have the problems:** ${tenant_time_estimate}
+      % endif
+      **Percentage off:** ${tenant_percentage_estimate}
+  - note: |
+      % if person_answering == "tenant":
+      Introduce your letter
+      % else:
+      Introduce the tenant’s letter
+      % endif
+  - Edit:
+      - tenant_repair_introduction
+    button: |
+      **Introduction:** ${tenant_repair_introduction}
+    
   - note: | 
       % if person_answering == "tenant":
       ##Your lawsuit##
@@ -2198,6 +2265,7 @@ review:
       % endif
       % for item in bad_conditions:
       - ${ item }
+      - ${ item.details.description }
       % endfor
   - note: | 
       % if person_answering == "tenant":
@@ -2235,6 +2303,52 @@ review:
       **Include a letter to the tenant's city or town inspector:**
       % endif
       - ${ word(yesno(add_inspection_letter)) }
+  - note: |
+      ##Subsidies##
+  - Edit: 
+      - tenant_gets_rent_subsidy
+    button: |
+      % if person_answering == "tenant":
+      **Do you get a rent subsidy:** ${tenant_gets_rent_subsidy}
+      **Do you have a mobile voucher (Section 8 or MRVP)?:** ${tenant_gets_rent_subsidy} 
+        % if tenant_subsidy_is_voucher:
+        **Is the tenant at risk of being forced to move by their housing authority?:**  ${verified_complaint_tenant_voucher_at_risk}
+        % endif
+      **Do you need an emergency order?** ${complaint_ask_for_tro}
+      **Do you want the landlord to pay for a hotel or new apartment while they fix the problems?:** ${complaint_ask_for_relocation}
+      % else:
+      **Does the tenant get a rent subsidy:** ${tenant_gets_rent_subsidy}
+      **Does the tenant have a mobile voucher (Section 8 or MRVP)?:** ${tenant_subsidy_is_voucher}
+        % if tenant_subsidy_is_voucher:
+        **Are you at risk of being forced to move by your housing authority?:**  ${verified_complaint_tenant_voucher_at_risk}
+        % endif
+      **Does the tenant need an emergency order?:** ${complaint_ask_for_tro}
+      **Does the tenant want the landlord to pay for a hotel or new apartment while they fix the problems?:** ${complaint_ask_for_relocation} 
+      % endif
+      
+  - note: |
+      ##Settlement calculation##
+  - Edit: 
+      - tenant_rent_share
+    button: |
+      % if person_answering == "tenant":
+      **What is your share of the rent?** ${tenant_rent_share}
+      % else:
+      **What is the tenant’s share of the rent?** ${tenant_rent_share}
+      % endif
+      **What is the total rent the landlord gets:** ${tenant_unit_rent}
+      **Settlement Request:** ${tenant_confirmed_uptocode_damages_estimate}
+      **Is the landlord a housing authority:** ${landlord_is_housing_authority}
+  - note: |
+      % if person_answering == "tenant":
+      ##What court do you want to file in?##
+      % else:
+      What court does the tenant want to file in?
+      % endif
+  - Edit:
+      - trial_court
+    button: |
+      **Court:** ${trial_court} 
   - Edit: |
       screen_tenant_facing_eviction
     button: |
