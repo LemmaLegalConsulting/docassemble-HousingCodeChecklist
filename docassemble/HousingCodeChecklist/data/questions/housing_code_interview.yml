@@ -2251,9 +2251,9 @@ review:
       
   - note: |
       % if person_answering == "tenant":
-      Introduce your letter
+      ##Introduction of your letter##
       % else:
-      Introduce the tenant’s letter
+      ##Introduction of the tenant’s letter##
       % endif
   - Edit:
       - tenant_repair_introduction
@@ -2277,7 +2277,7 @@ review:
       % if kind_of_lawsuit.any_true():
       % for item in kind_of_lawsuit.true_values():
       
-       - **${ kind_of_lawsuit_text[item] }**
+       - **${ item }**
       
       % endfor
       % else:
@@ -2301,29 +2301,29 @@ review:
       % else:
       ##Before the tenant takes their landlord to court##
       % endif
-  - Edit: |
-      initial_screen_tenant_facing_eviction
+  - Edit: 
+      - initial_screen_tenant_facing_eviction
     button: |
       % if person_answering == "tenant":
       **You have an active eviction case in court:**
       % else:
       **The tenant has an active eviction case in court:**
       % endif
-      - ${ word(yesno(initial_screen_tenant_facing_eviction)) }
+      - ${yesno(initial_screen_tenant_facing_eviction) }
       % if person_answering == "tenant":
       **Your landlord knows about the problems that you need them to fix:**
       % else:
       **The tenant landlord knows about the problems that they need fixed:**
       % endif
-      - ${ word(yesno(tenant_sent_ll_notice)) }
+      - ${ yesno(tenant_sent_ll_notice) }
       % if person_answering == "tenant":
       **You called a town or city inspector about the problem:**
       % else:
       **The tenant called a town or city inspector about the problem:**
       % endif
-      - ${ word(yesno(tenant_called_inspector)) }
-  - Edit: |
-      add_inspection_letter
+      - ${ yesno(tenant_called_inspector) }
+  - Edit: 
+      - add_inspection_letter
     button: |
       % if person_answering == "tenant":
       **Include a letter to your city or town inspector:**
@@ -2337,48 +2337,77 @@ review:
       - tenant_gets_rent_subsidy
     button: |
       % if person_answering == "tenant":
-      **Do you get a rent subsidy:** ${tenant_gets_rent_subsidy}
-      **Do you have a mobile voucher (Section 8 or MRVP)?:** ${tenant_gets_rent_subsidy} 
-        % if tenant_subsidy_is_voucher:
-        **Is the tenant at risk of being forced to move by their housing authority?:**  ${verified_complaint_tenant_voucher_at_risk}
-        % endif
-      **Do you need an emergency order?** ${complaint_ask_for_tro}
-      **Do you want the landlord to pay for a hotel or new apartment while they fix the problems?:** ${complaint_ask_for_relocation}
+      Do you get a rent subsidy: **${yesno(tenant_gets_rent_subsidy)}**
       % else:
-      **Does the tenant get a rent subsidy:** ${tenant_gets_rent_subsidy}
-      **Does the tenant have a mobile voucher (Section 8 or MRVP)?:** ${tenant_subsidy_is_voucher}
-        % if tenant_subsidy_is_voucher:
-        **Are you at risk of being forced to move by your housing authority?:**  ${verified_complaint_tenant_voucher_at_risk}
-        % endif
-      **Does the tenant need an emergency order?:** ${complaint_ask_for_tro}
-      **Does the tenant want the landlord to pay for a hotel or new apartment while they fix the problems?:** ${complaint_ask_for_relocation} 
+      Does the tenant get a rent subsidy: **${yesno(tenant_gets_rent_subsidy)}**
       % endif
-      
+  - Edit: 
+      - tenant_subsidy_is_voucher
+    button: |      
+      % if person_answering == "tenant":
+      Do you have a mobile voucher (Section 8 or MRVP)?: **${yesno(tenant_subsidy_is_voucher)}** 
+      % else:
+      Does the tenant have a mobile voucher (Section 8 or MRVP)?: **${yesno(tenant_subsidy_is_voucher)}**
+      % endif     
+  - Edit: 
+      - verified_complaint_tenant_voucher_at_risk
+    button: | 
+        % if person_answering == "tenant":
+        Is the tenant at risk of being forced to move by their housing authority?:  **${yesno(verified_complaint_tenant_voucher_at_risk)}**
+        % else:
+        Are you at risk of being forced to move by your housing authority?:  **${yesno(verified_complaint_tenant_voucher_at_risk)}**
+        % endif
+        
+  - Edit: 
+      - complaint_ask_for_tro
+    button: | 
+      % if person_answering == "tenant":
+      Do you need an emergency order?: **${yesno(complaint_ask_for_tro)}**
+      % else:
+      Does the tenant need an emergency order?: **${yesno(complaint_ask_for_tro)}**
+      % endif
+  - Edit: 
+      - complaint_ask_for_relocation
+    button: |  
+      % if person_answering == "tenant":
+      Do you want the landlord to pay for a hotel or new apartment while they fix the problems?: **${yesno(complaint_ask_for_relocation)}**
+      % else:
+      Does the tenant want the landlord to pay for a hotel or new apartment while they fix the problems?: **${yesno(complaint_ask_for_relocation)}** 
+      % endif
+
   - note: |
       ##Settlement calculation##
   - Edit: 
       - tenant_rent_share
     button: |
       % if person_answering == "tenant":
-      **What is your share of the rent?** ${tenant_rent_share}
+      What is your share of the rent? **$${tenant_rent_share}**
       % else:
-      **What is the tenant’s share of the rent?** ${tenant_rent_share}
+      What is the tenant’s share of the rent? **$${tenant_rent_share}**
       % endif
-      **What is the total rent the landlord gets:** ${tenant_unit_rent}
-      **Settlement Request:** ${tenant_confirmed_uptocode_damages_estimate}
-      **Is the landlord a housing authority:** ${landlord_is_housing_authority}
-  - note: |
-      % if person_answering == "tenant":
-      ##What court do you want to file in?##
-      % else:
-      What court does the tenant want to file in?
-      % endif
+  - Edit: 
+      - tenant_unit_rent
+    button: |
+      What is the total rent the landlord gets: **$${tenant_unit_rent}**
+  - Edit: 
+      - tenant_confirmed_uptocode_damages_estimate
+    button: |     
+      Settlement Request: **$${tenant_confirmed_uptocode_damages_estimate}**
+  - Edit: 
+      - landlord_is_housing_authority
+    button: |           
+      Is the landlord a housing authority: **${yesno(landlord_is_housing_authority)}**    
   - Edit:
       - trial_court
     button: |
-      **Court:** ${trial_court} 
-  - Edit: |
-      screen_tenant_facing_eviction
+      % if person_answering == "tenant":
+      What court do you want to file in?: **${trial_court}**
+      % else:
+      What court does the tenant want to file in?: **${trial_court}**
+      % endif
+       
+  - Edit: 
+      - screen_tenant_facing_eviction
     button: |
       % if person_answering == "tenant":
       **You have an active eviction case in court:**
