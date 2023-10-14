@@ -2129,17 +2129,18 @@ review:
       - users.revisit
     button: |
       Plaintiffs:
+      
       % if users.there_are_any:
-        - **Name:** ${users[0].name}
+        - **${users[0].name}**
         - **Address:** ${ users[0].address }
       % if users[0].mobile_number:
-        - **Contact:**  ${users[0].mobile_number}
+        - **Mobile number:**  ${users[0].mobile_number}
       % endif
       % if users[0].phone_number:
-        - **Contact:**  ${users[0].phone_number}
+        - **Phone number:**  ${users[0].phone_number}
       % endif
       % if users[0].email:
-          ${users[0].email}
+        - **Email:**  ${users[0].email}
       % endif
       % if users[0].mailing_address:
         - **Mailing address:** ${users[0].mailing_address}
@@ -2154,8 +2155,10 @@ review:
   - Edit: 
       - users[0].attorney.name.first
     button: |
+      Attorney: 
+      
       % if person_answering == "attorney":
-      **${ users[0].attorney.name }**
+        - **${ users[0].attorney.name }**
         - **Law firm or organization name**: ${ users[0].attorney.organization }
         - **Address:** ${ users[0].attorney.address } since ${users[0].move_in_date}
       % endif
@@ -2164,63 +2167,88 @@ review:
       ##Information about the other party##
       % endif
   - Edit:
-      - other_parties.revisit
+      - other_parties[0].name.first
     button: |
       Defendants: 
+      
       % if other_parties.there_are_any:
-        - **Name**: ${ other_parties.name }
+        - **${ other_parties[0].name }**
         - **Person or Business:** ${other_parties[0].person_type}
         % if other_parties[0].phone_number:
         - **Phone number:** ${users[0].phone_number}
         % endif
         % if other_parties[0].email:
-        **Email:** ${other_parties[0].email}
+        - **Email:** ${other_parties[0].email}
         % endif
         - **Address:** ${other_parties[0].address}
       % else:
       **None**
       % endif
+      
 
   - note: |
-      % if person_answering == "tenant":
-      ##When did you first notice the problems##
-      % else:
-      ##When did the tenant first notice the problems##
-      % endif
+      ##Problems##
   - Edit: 
       - tenant_repair_issue_date
     button: |
-      **Date:** ${tenant_repair_issue_date}
+      % if person_answering == "tenant":
+      When did you first notice the problems: **${tenant_repair_issue_date}**
+      % else:
+      When did the tenant first notice the problems: **${tenant_repair_issue_date}**
+      % endif
       
-  - note: |
-      ##Effect of the problems##
-  - Edit:
+  - Edit: 
       - notification_date
-      - effect_of_conditions
     button: |
-      **Date notified:** ${notification_date} 
-      **Effect**: ${effect_of_conditions}
-      
-  - note: |
-      Describe the problems
+      % if person_answering == "tenant":
+      When did you first notify the landlord about the problems: **${notification_date}**
+      % else:
+      When did the tenant first notify the landlord about the problems: **${notification_date}**
+      % endif
   - Edit:
       - tenant_repair_issue_description
     button: |
       **Description:** ${tenant_repair_issue_description}
+  - Edit: 
+      - written_notification
+    button: |
+      % if person_answering == "tenant":
+      Did you notify your landlord about the problem in writing?: **${yesno(written_notification)}**
+      % else:
+      Did the tenant notify the landlord about the problem in writing?: **${yesno(written_notification)}**
+      % endif
+  - Edit: 
+      - effect_of_conditions
+    button: |
+      % if person_answering == "tenant":
+      How have the conditions affected you and your property: **${effect_of_conditions}**
+      % else:
+      How have the conditions affected the tenant and their property: **${effect_of_conditions}**
+      % endif
       
   - note: |
-      ##Compensation##
+      ##Determining Compensation##
   - Edit:
-      - damage_calculation_method
+      - damage_tenant_severity_estimate
     button: |
-      **Calculation method:** ${damage_calculation_method}
-      **How serious were the problems:** ${damage_tenant_severity_estimate}
+      How serious were the problems: **${damage_tenant_severity_estimate}**
+  - Edit: 
+      - tenant_time_estimate
+    button: |
       % if person_answering == "tenant":
-      **How long did you have the problems:** ${tenant_time_estimate}
+      How long did you have the problems: **${tenant_time_estimate}**
       % else:
-      **How long did the tenant have the problems:** ${tenant_time_estimate}
+      How long did the tenant have the problems: **${tenant_time_estimate}**
       % endif
-      **Percentage off:** ${tenant_percentage_estimate}
+  - Edit:
+      - tenant_percentage_estimate
+    button: |
+      % if person_answering == "tenant":
+      What percentage do you think is fair to get off?: **${tenant_percentage_estimate}**
+      % else:
+      What percentage does the tenant think is fair to get off?: **${tenant_percentage_estimate}**
+      % endif
+      
   - note: |
       % if person_answering == "tenant":
       Introduce your letter
