@@ -1000,8 +1000,7 @@ data:
        My landlord is ignoring a court order"  
        % else:
        The landlord is ignoring a court order
-       % endif
-     
+       % endif     
 ---
 template: how_far_back_should_i_go_template
 subject: |
@@ -2276,7 +2275,7 @@ review:
   - Edit:
       - damage_tenant_severity_estimate
     button: |
-      How serious were the problems: **${damage_tenant_severity_estimate}**
+      How serious were the problems: **${damage_tenant_severity_estimate_text[damage_tenant_severity_estimate]}**
   - Edit: 
       - tenant_time_estimate
     button: |
@@ -2315,18 +2314,16 @@ review:
       - kind_of_lawsuit
     button: |
       % if person_answering == "tenant":
-      **Why you need to take your landlord to court:**
+      Reasons you need to take your landlord to court:
       % else:
-      **Why the tenant needs to take their landlord to court:**
+      Reasons the tenant needs to take their landlord to court:
       % endif
       % if kind_of_lawsuit.any_true():
       % for item in kind_of_lawsuit.true_values():
       
-       - **${ item }**
+      - **${ kind_of_lawsuit_text[item] }**
       
       % endfor
-      % else:
-      **None**
       % endif
   - Edit: |
       bad_conditions.revisit
