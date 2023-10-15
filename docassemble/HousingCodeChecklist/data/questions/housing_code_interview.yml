@@ -2225,7 +2225,52 @@ review:
       % else:
       How have the conditions affected the tenant and their property: **${effect_of_conditions}**
       % endif
-      
+  - note: |
+      % if person_answering == "tenant":
+      ## Your next steps ##
+      % else:
+      ## Tenant's next steps ##
+      % endif
+  - Edit: 
+      - screen_tenant_facing_eviction
+    button: |
+      % if person_answering == "tenant":
+      You have an active eviction case in court: **${ yesno(screen_tenant_facing_eviction) }**
+      % else:
+      The tenant has an active eviction case in court: **${ yesno(screen_tenant_facing_eviction) }**
+      % endif
+  - Edit: 
+      - screen_ll_knows_problem
+    button: |      
+      % if person_answering == "tenant":
+      Your landlord already knows about at least one of the problems in your home: **${ yesno(screen_ll_knows_problem) }**
+      % else:
+      The tenant's landlord already knows about at least one of the problems in their home: **${ yesno(screen_ll_knows_problem) }**
+      % endif
+  - Edit: 
+      - screen_ll_already_fixing
+    button: |    
+      % if person_answering == "tenant":
+      Your landlord is already fixing all of the problems: **${ yesno(screen_ll_already_fixing) }**
+      % else:
+      The tenant's landlord is already fixing all of the problems: **${ yesno(screen_ll_already_fixing) }**
+      % endif
+  - Edit: 
+      - screen_other_tenants_with_problem
+    button: |       
+      % if person_answering == "tenant":
+      Other tenants in your building are also having housing problems: **${ showifdef('screen_other_tenants_with_problem') }**
+      % else:
+      Other tenants in the tenant's building are also having housing problems: **${ showifdef('screen_other_tenants_with_problem') }**
+      % endif
+  - Edit: 
+      - screen_other_tenants_with_problem
+    button: |      
+      % if person_answering == "tenant":
+      You have reported all of the problems to a city housing inspector: **${ yesno(screen_contacted_housing_inspector) }**
+      % else:
+      The tenant has reported all of the problems to a city housing inspector: **${ yesno(screen_contacted_housing_inspector) }**
+      % endif    
   - note: |
       ##Determining Compensation##
   - Edit:
@@ -2298,39 +2343,25 @@ review:
   - note: | 
       % if person_answering == "tenant":
       ##Before you take your landlord to court##
-      % else:
-      ##Before the tenant takes their landlord to court##
       % endif
   - Edit: 
-      - initial_screen_tenant_facing_eviction
+      - tenant_sent_ll_notice
     button: |
-      % if person_answering == "tenant":
-      **You have an active eviction case in court:**
-      % else:
-      **The tenant has an active eviction case in court:**
-      % endif
-      - ${yesno(initial_screen_tenant_facing_eviction) }
-      % if person_answering == "tenant":
-      **Your landlord knows about the problems that you need them to fix:**
-      % else:
-      **The tenant landlord knows about the problems that they need fixed:**
-      % endif
-      - ${ yesno(tenant_sent_ll_notice) }
-      % if person_answering == "tenant":
-      **You called a town or city inspector about the problem:**
-      % else:
-      **The tenant called a town or city inspector about the problem:**
-      % endif
-      - ${ yesno(tenant_called_inspector) }
+      Your landlord knows about the problems that you need them to fix: **${ yesno(tenant_sent_ll_notice) }**
+  - Edit:
+      - tenant_called_inspector
+    button: |
+      You called a town or city inspector about the problem: **${ yesno(tenant_called_inspector) }**
+      
   - Edit: 
       - add_inspection_letter
     button: |
       % if person_answering == "tenant":
-      **Include a letter to your city or town inspector:**
+      **Include a letter to your city or town inspector:** ${yesno(add_inspection_letter) }
       % else:
-      **Include a letter to the tenant's city or town inspector:**
+      **Include a letter to the tenant's city or town inspector:** ${yesno(add_inspection_letter) }
       % endif
-      - ${ word(yesno(add_inspection_letter)) }
+      
   - note: |
       ##Subsidies##
   - Edit: 
@@ -2405,41 +2436,8 @@ review:
       % else:
       What court does the tenant want to file in?: **${trial_court}**
       % endif
-       
-  - Edit: 
-      - screen_tenant_facing_eviction
-    button: |
-      % if person_answering == "tenant":
-      **You have an active eviction case in court:**
-      % else:
-      **The tenant has an active eviction case in court:**
-      % endif
-      - ${ word(yesno(screen_tenant_facing_eviction)) }
+  
       
-      % if person_answering == "tenant":
-      **Your landlord already knows about at least one of the problems in your home:**
-      % else:
-      **The tenant's landlord already knows about at least one of the problems in their home:**
-      % endif
-      - ${ word(yesno(screen_ll_knows_problem)) }
-      % if person_answering == "tenant":
-      **Your landlord is already fixing all of the problems:**
-      % else:
-      **The tenant's landlord is already fixing all of the problems:**
-      % endif
-      - ${ word(yesno(screen_ll_already_fixing)) }
-      % if person_answering == "tenant":
-      **Other tenants in your building are also having housing problems:**
-      % else:
-      **Other tenants in the tenant's building are also having housing problems:**
-      % endif
-      - ${ showifdef('screen_other_tenants_with_problem') }
-      % if person_answering == "tenant":
-      **You have reported all of the problems to a city housing inspector:**
-      % else:
-      **The tenant has reported all of the problems to a city housing inspector:**
-      % endif
-      - ${ word(yesno(screen_contacted_housing_inspector)) }
 ---
 event: |
   users[0].attorney.revisit
