@@ -447,9 +447,10 @@ fields:
         You cannot continue unless you agree to the Terms of Use.
 
 ---
+id: How UpToCode works
 continue button field: intro_and_terms_of_use
 question: |
-  Find ways to get the problems in your home fixed
+  Get the problems in your home fixed
 subquestion: |
   <div class="alert alert-secondary h-100 mh-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this tool works</h2>
@@ -459,7 +460,7 @@ subquestion: |
 
   <ol>
   <li>
-    List the problems in each room of your home. You can add dates and photos, too.
+    Make a list the problems in each room of your home. You can add dates and photos too.
   </li>
   <li>
   Answer questions to help you:
