@@ -2159,7 +2159,7 @@ review:
       % if person_answering == "attorney":
         - **${ users[0].attorney.name }**
         - **Law firm or organization name**: ${ users[0].attorney.organization }
-        - **Address:** ${ users[0].attorney.address } since ${users[0].move_in_date}
+        - **Address:** ${ users[0].attorney.address } **since** ${users[0].move_in_date}
       % endif
   - note: | 
       % if other_parties.there_are_any:
@@ -2204,10 +2204,6 @@ review:
       % else:
       When did the tenant first notify the landlord about the problems: **${notification_date}**
       % endif
-  - Edit:
-      - tenant_repair_issue_description
-    button: |
-      **Description:** ${tenant_repair_issue_description}
   - Edit: 
       - written_notification
     button: |
@@ -2216,6 +2212,12 @@ review:
       % else:
       Did the tenant notify the landlord about the problem in writing?: **${yesno(written_notification)}**
       % endif
+  - Edit:
+      - letter_date
+    button: |  
+      % if written_notification:
+      When?: **${letter_date}**
+      % endif
   - Edit: 
       - effect_of_conditions
     button: |
@@ -2223,6 +2225,16 @@ review:
       How have the conditions affected you and your property: **${effect_of_conditions}**
       % else:
       How have the conditions affected the tenant and their property: **${effect_of_conditions}**
+      % endif
+  - Edit: 
+      - verified_complaint_claims[i].details
+    button: |
+      % if person_answering == "tenant":
+      My landlord also violated the law when they: **${verified_complaint_claims[i].details}**
+      When did this happen?: **${verified_complaint_claims[i].date}**
+      % else:
+      The tenant's landlord also violated the law when they: **${verified_complaint_claims[i].details}**
+      When did this happen?: **${verified_complaint_claims[i].date}**
       % endif
   - note: |
       % if person_answering == "tenant":
@@ -2295,14 +2307,19 @@ review:
       
   - note: |
       % if person_answering == "tenant":
-      ##Introduction of your letter##
+      ##Your letter##
       % else:
-      ##Introduction of the tenant’s letter##
+      ##The tenant's letter##
       % endif
   - Edit:
       - tenant_repair_introduction
-    button: |
+    button: |      
       **Introduction:** ${tenant_repair_introduction}
+  - Edit:
+      - tenant_repair_issue_description
+    button: |
+      **Description:** ${tenant_repair_issue_description}
+  
     
   - note: | 
       % if person_answering == "tenant":
@@ -2321,7 +2338,7 @@ review:
       % if kind_of_lawsuit.any_true():
       % for item in kind_of_lawsuit.true_values():
       
-      - **${ kind_of_lawsuit_text[item] }**
+       - **${ kind_of_lawsuit_text[item] }**
       
       % endfor
       % endif
@@ -2424,7 +2441,31 @@ review:
   - Edit: 
       - landlord_is_housing_authority
     button: |           
-      Is the landlord a housing authority: **${yesno(landlord_is_housing_authority)}**    
+      Is the landlord a housing authority: **${yesno(landlord_is_housing_authority)}**  
+  - Edit:
+      - landlord_is_government
+    button: |
+      % if person_answering == "tenant":
+      Is your landlord the city or state?: **${yesno(landlord_is_government)}**
+      % else:
+      Is the tenant’s landlord the city or state?: **${yesno(landlord_is_government)}**
+      % endif
+  - Edit: 
+      - landlord_lives_in_building
+    button: |
+      % if person_answering == "tenant":
+      Does your landlord live in an apartment or room in your building?: **${yesno(landlord_lives_in_building)}**
+      % else:
+      Does the tenant's landlord live in an apartment or room in the tenant's building?: **${yesno(landlord_lives_in_building)}**
+      % endif
+  - Edit:
+      - building_larger_than_4_units
+    button: |
+      % if person_answering == "tenant":
+      Does the building your landlord owns have at least 5 apartments?: **${yesno(building_larger_than_4_units)}**
+      % else:
+      Does the building the tenant's landlord own have at least 5 apartments?: **${yesno(building_larger_than_4_units)}**
+      % endif
   - Edit:
       - trial_court
     button: |
