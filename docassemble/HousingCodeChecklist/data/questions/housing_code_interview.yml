@@ -161,19 +161,19 @@ code: |
       docket_numbers
       ask_affidavit_questions
     nav.set_section('preview_and_sign')
-    preview_docs
     uptocode_review
+    preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
     nav.set_section('preview_and_sign')
-    preview_docs
     uptocode_review
+    preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and {'get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
     nav.set_section('preview_and_sign')
-    preview_docs
     uptocode_review
+    preview_docs
     basic_questions_signature_flow
   
   reached_download_screen = True
@@ -991,13 +991,13 @@ data:
   file_contempt_complaint:
     question: |
        % if person_answering == "tenant":
-       My landlord is ignoring a court order"  
+       My landlord is ignoring a court order
        % else:
        The landlord is ignoring a court order
        % endif
     document: |
        % if person_answering == "tenant":
-       My landlord is ignoring a court order"  
+       My landlord is ignoring a court order
        % else:
        The landlord is ignoring a court order
        % endif     
@@ -2243,7 +2243,7 @@ review:
       ## Tenant's next steps ##
       % endif
   - Edit: 
-      - screen_tenant_facing_eviction
+      - main_triage_screen
     button: |
       % if person_answering == "tenant":
       You have an active eviction case in court: **${ yesno(screen_tenant_facing_eviction) }**
@@ -2251,7 +2251,7 @@ review:
       The tenant has an active eviction case in court: **${ yesno(screen_tenant_facing_eviction) }**
       % endif
   - Edit: 
-      - screen_ll_knows_problem
+      - main_triage_screen
     button: |      
       % if person_answering == "tenant":
       Your landlord already knows about at least one of the problems in your home: **${ yesno(screen_ll_knows_problem) }**
@@ -2259,7 +2259,7 @@ review:
       The tenant's landlord already knows about at least one of the problems in their home: **${ yesno(screen_ll_knows_problem) }**
       % endif
   - Edit: 
-      - screen_ll_already_fixing
+      - main_triage_screen
     button: |    
       % if person_answering == "tenant":
       Your landlord is already fixing all of the problems: **${ yesno(screen_ll_already_fixing) }**
@@ -2267,15 +2267,15 @@ review:
       The tenant's landlord is already fixing all of the problems: **${ yesno(screen_ll_already_fixing) }**
       % endif
   - Edit: 
-      - screen_other_tenants_with_problem
+      - main_triage_screen
     button: |       
       % if person_answering == "tenant":
-      Other tenants in your building are also having housing problems: **${ showifdef('screen_other_tenants_with_problem') }**
+      Other tenants in your building are also having housing problems: **${ yesno(showifdef('screen_other_tenants_with_problem')) }**
       % else:
-      Other tenants in the tenant's building are also having housing problems: **${ showifdef('screen_other_tenants_with_problem') }**
+      Other tenants in the tenant's building are also having housing problems: **${ yesno(showifdef('screen_other_tenants_with_problem')) }**
       % endif
   - Edit: 
-      - screen_other_tenants_with_problem
+      - main_triage_screen
     button: |      
       % if person_answering == "tenant":
       You have reported all of the problems to a city housing inspector: **${ yesno(screen_contacted_housing_inspector) }**
@@ -2284,6 +2284,8 @@ review:
       % endif    
   - note: |
       ##Determining Compensation##
+  
+    show if: damage_calculation_method == "uptocode_calculation"
   - Edit:
       - damage_tenant_severity_estimate
     button: |
@@ -2330,52 +2332,21 @@ review:
   - Edit: 
       - kind_of_lawsuit
     button: |
+      % if kind_of_lawsuit.any_true():
       % if person_answering == "tenant":
       Reasons you need to take your landlord to court:
       % else:
       Reasons the tenant needs to take their landlord to court:
       % endif
-      % if kind_of_lawsuit.any_true():
       % for item in kind_of_lawsuit.true_values():
       
-       - **${ kind_of_lawsuit_text[item] }**
+       - ${ kind_of_lawsuit_text[item] }
       
       % endfor
       % endif
-  - Edit: |
-      bad_conditions.revisit
+  - Edit: review_conditions
     button: |
-      % if person_answering == "tenant":
-      **Bad conditions in your home:**
-      % else:
-      **Bad conditions in the tenant's home:**
-      % endif
-      % for item in bad_conditions:
-      - ${ item }
-      - ${ item.details.description }
-      % endfor
-  - note: | 
-      % if person_answering == "tenant":
-      ##Before you take your landlord to court##
-      % endif
-  - Edit: 
-      - tenant_sent_ll_notice
-    button: |
-      Your landlord knows about the problems that you need them to fix: **${ yesno(tenant_sent_ll_notice) }**
-  - Edit:
-      - tenant_called_inspector
-    button: |
-      You called a town or city inspector about the problem: **${ yesno(tenant_called_inspector) }**
-      
-  - Edit: 
-      - add_inspection_letter
-    button: |
-      % if person_answering == "tenant":
-      **Include a letter to your city or town inspector:** ${yesno(add_inspection_letter) }
-      % else:
-      **Include a letter to the tenant's city or town inspector:** ${yesno(add_inspection_letter) }
-      % endif
-      
+      ${ review_conditions_template }
   - note: |
       ##Subsidies##
   - Edit: 
@@ -2485,15 +2456,6 @@ question: |
   Edit your answers about users[0].Attorney
 subquestion: |
   ${ users[0].attorney.table }
----
-event: |
-  bad_conditions.revisit
-id: |
-  revisit bad_conditions
-question: |
-  Edit your answers about Bad Conditions
-subquestion: |
-  ${ bad_conditions.table }
 ---
 columns:
   - Describe the problem using your own words (write about 1 sentence; optional): |-
