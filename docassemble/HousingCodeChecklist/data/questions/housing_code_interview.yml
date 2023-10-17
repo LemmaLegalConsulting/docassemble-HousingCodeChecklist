@@ -2108,8 +2108,7 @@ review:
     button: |
       Your landlord's address: ${ other_parties[0].address.address }
 ---
-id: |
-  review screen
+id: review screen
 continue button field: uptocode_review
 question: |
   % if person_answering == "tenant":

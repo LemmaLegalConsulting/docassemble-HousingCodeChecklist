@@ -12,7 +12,7 @@ Want to disable the tests? Want to learn more? See ALKiln's docs: https://suffol
 @1
 Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
-  And the maximum seconds for each Step in this Scenario is 50
+  And the maximum seconds for each Step in this Scenario is 25
   Then I tap the "#start_exploring" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
@@ -31,7 +31,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | screen_contacted_housing_inspector | True | screen_ll_knows_problem |
     | has_tro | False | screen_ll_knows_problem |
     | document_choice['get_report'] | True | |
-     | users[0].address.address | Commonwealth Avenue | |
+    | users[0].address.address | Commonwealth Avenue | |
     | users[0].address.city | Boston | |
     | other_parties[0].person_type | business | |
     | other_parties[0].name.first | ll_business | other_parties[0].person_type | 
@@ -57,15 +57,16 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | other_parties[0].email | test@example.com | |
     | users[0].email | test@example.com | | 
     | verified_complaint_wants_fee_waiver | False | |
-    | signature_choice | this_device | |
+    | signature_choice | this_device | signature_choice |
     | users[0].states_above_true['states_true'] | True | signature_choice |
+    | users[0].signature | | users[0].signature |
   Then I take a screenshot
   
   
 @2
 Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
-  And the maximum seconds for each Step in this Scenario is 10
+  And the maximum seconds for each Step in this Scenario is 25
   Then I tap the "#start_exploring" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
@@ -134,5 +135,4 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | signature_choice | this_device | |
     | users[0].states_above_true['states_true'] | True | signature_choice |
     | users[0].attorney.signature | | users[0].attorney.signature |
-    | users[0].signature |  | users[0].signature |
   Then I take a screenshot
