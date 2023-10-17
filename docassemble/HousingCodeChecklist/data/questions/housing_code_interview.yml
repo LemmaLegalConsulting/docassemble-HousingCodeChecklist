@@ -379,7 +379,6 @@ css: |
     max-width: 100rem;
   }
   </style>
-
 ---  
 comment: |
   #   <div class="col">
