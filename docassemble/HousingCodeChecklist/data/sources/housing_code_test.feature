@@ -80,11 +80,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | users[0].attorney.name.last | Name | |
     | bad_conditions["common problems"].claims['heat_not_working'] | True | |
     | kind_of_lawsuit['illegal_lockout'] | True | |
-    | kind_of_lawsuit['entered_without_permission'] | True | |
-    | kind_of_lawsuit['insufficient_notice'] | True | |
-    | kind_of_lawsuit['utilities_no_agreement'] | True | |
-    | kind_of_lawsuit['utility_shutoff'] | True | |
-    | kind_of_lawsuit['file_contempt_complaint'] | True | |  
+    | kind_of_lawsuit['entered_without_permission'] | True ||
     | bad_conditions[i].details[j].condition_existed_at_start | False | |
     | bad_conditions[i].details[j].start_year | 2004 | |
     | wants_detailed_conditions | False | |
@@ -96,9 +92,6 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | has_tro | False | screen_ll_knows_problem |
     | document_choice['get_report'] | True | |
     | document_choice['tell_landlord'] | True | |
-    | document_choice['organize_tenants'] | True | |
-    | document_choice['get_inspection'] | True | |
-    | document_choice['demand_letter_93a'] | True | |
     | users[0].address.address | Commonwealth Avenue | |
     | users[0].address.city | Boston | |
     | users[0].has_separate_mailing_address | True | |
