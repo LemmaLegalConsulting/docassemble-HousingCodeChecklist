@@ -338,7 +338,11 @@ validation code: |
 ---
 id: your mailing address
 question: |
+  % if person_answering == "tenant":
   What is your mailing address?
+  % else:
+  What is ${ users.familiar() }'s mailing address?
+  % endif
 fields:
   - ${ users[0].address.address_label}: users[0].mailing_address.address
     address autocomplete: True
@@ -1060,14 +1064,14 @@ fields:
   - How serious were the problems?: damage_tenant_severity_estimate
     datatype: radio
     choices:
-      - The apartment was unlivable: bqe_total
+      - ${ damage_tenant_severity_estimate_text["bqe_total"] }: bqe_total
         help: |
           % if person_answering == "tenant":
           You can choose this answer even if you did not move out.
           % else:
           The tenant can choose this answer even if they did not move out.
           % endif
-      - The problems were serious but not unlivable: bqe_partial
+      - ${damage_tenant_severity_estimate_text["bqe_partial"] }: bqe_partial
     show if:      
       variable: damage_calculation_method
       is: uptocode_calculation
@@ -1124,6 +1128,16 @@ validation code: |
     tenant_time_estimate_denominator = 365
     if tenant_percentage_estimate < 5:
       validation_error("Select a percentage that is greater than 0", field="tenant_percentage_estimate")
+---
+variable name: damage_tenant_severity_estimate_text
+use objects: True
+data:
+  bqe_total:
+    question: The apartment was unlivable
+    document: The apartment was unlivable
+  bqe_partial:
+    question: The problems were serious but not unlivable
+    document: The problems were serious but not unlivable
 ---
 template: about_page_contents
 subject: Terms of Use and Privacy Policy
