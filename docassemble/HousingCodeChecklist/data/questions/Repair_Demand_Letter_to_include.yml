@@ -541,10 +541,10 @@ subject: |
   What if the problems happened at different times?
 content: |
   % if person_answering == "tenant":
-  Use this tool to come up with your best estimate of the
+  Use UpToCode to come up with your best estimate of the
   amount to ask for. It does not need to be exact.
   % else:
-  Use this tool to come up with the tenant's best estimate of the amount to as for. It does not need to be exact.
+  Use UpToCode to come up with the tenant's best estimate of the amount to as for. It does not need to be exact.
   % endif
 ---
 depends on:

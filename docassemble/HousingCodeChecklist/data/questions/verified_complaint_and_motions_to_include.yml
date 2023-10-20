@@ -173,17 +173,13 @@ question: |
 subquestion: |
   % if person_answering == "tenant":
   If you need help right away, a judge can give you an emergency order.
-  The emergency order is supposed to last for 10 days.
-
-  Later, the judge can make the order permanent if the landlord does not
-  fix the problem right away.
+  
   % else:
   If the tenant needs help right away, a judge can give them an emergency order.
-  The emergency order is supposed to last for 10 days.
-
-  Later, the judge can make the order permanent if the landlord does not
-  fix the problem right away.
+ 
   % endif
+  
+  The emergency order should last 10 days.
 fields:
   - label: | 
       % if person_answering == "tenant": 

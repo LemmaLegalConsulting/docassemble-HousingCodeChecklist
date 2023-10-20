@@ -36,11 +36,11 @@ code: |
 #    <div data-variable="${ encode_name(str( user_info().variable )) }" id="sought_variable" aria-hidden="true" style="display: none;"></div>
 #    % endif  
 ---
-default screen parts:
-    pre: |
-     % if not defined('acknowledged_information_use'):
-     ${ docassemble.AssemblyLine.language.get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
-     % endif
+  default screen parts:
+      pre: |
+       % if not defined('acknowledged_information_use'):
+       ${ docassemble.AssemblyLine.language.get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
+       % endif
 ---
 depends on:
   - user_language
