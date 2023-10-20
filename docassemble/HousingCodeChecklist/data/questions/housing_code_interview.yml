@@ -234,7 +234,7 @@ id: landing-page
 question: |
   You deserve a safe and decent home
 subquestion: |
-  Need help with repairs or stopping landlord harassment? Select a task to get started.
+  Need help to get repairs or stop your landlord from harassing you? Pick a task.
   
   % if device() and hasattr(device(), "is_mobile") and device().is_mobile:
 
@@ -244,9 +244,9 @@ subquestion: |
     <div class="row g-0">
       <div class="col-md-8">
         <div class="card-body bg-info">
-          <h5 class="card-title"><i class="fa-solid fa-magnifying-glass"></i> Explore problems and solutions</h5>
-          <p class="card-text">Explore problems by room and category and get your landlord to fix them.</p>
-          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button" id="start_exploring">Start exploring</a>
+          <h5 class="card-title"><i class="fa-solid fa-magnifying-glass"></i> Describe problems and find solutions</h5>
+          <p class="card-text">List problems by room and category and get your landlord to fix them.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start your list</a>
         </div>
       </div>
     </div>
@@ -309,9 +309,9 @@ subquestion: |
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">Explore problems and solutions</h5>
-          <p class="card-text">Explore problems by room and category and get your landlord to fix them.</p>
-          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button" id="start_exploring">Start exploring</a>
+          <h5 class="card-title">Describe problems and find solutions</h5>
+          <p class="card-text">List problems by room and category and get your landlord to fix them.</p>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start your list</a>
         </div>
       </div>
     </div>
@@ -451,9 +451,10 @@ fields:
         You cannot continue unless you agree to the Terms of Use.
 
 ---
+id: How UpToCode works
 continue button field: intro_and_terms_of_use
 question: |
-  Explore solutions to the problems in your home
+  Get the problems in your home fixed
 subquestion: |
   <div class="alert alert-secondary h-100 mh-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-signs-post"></i> How this tool works</h2>
@@ -463,14 +464,14 @@ subquestion: |
 
   <ol>
   <li>
-    Track the problems in each room of your home. You can add dates and photos, too.
+    Make a list of the problems in each room of your home. You can add dates and photos too.
   </li>
   <li>
   Answer questions to help you:
   <ul>
-  <li>write your landlord a letter,</li>
-  <li>ask the city for an inspection, or</li>
-  <li>ask a judge to order your landlord to fix the problem.</li>
+  <li>Write a letter to your landlord.</li>
+  <li>Ask the city for an inspection. Or</li>
+  <li>Ask a judge to order your landlord to fix the problem.</li>
   </ul>
   </li>
   <li>
@@ -845,9 +846,9 @@ continue button label: Get started
 ---
 id: track conditions intro
 question: |
-  Track your housing problems
+  List your housing problems
 subquestion: |
-  This website will help you track.
+  This website will help you make your list.
 continue button field: track_conditions_intro  
 ---
 id: learn more
@@ -1099,10 +1100,10 @@ subquestion: |
   ${ collapse_template(how_many_problems_are_there_template)}
 
 fields:
-  - Keep exploring problems?: wants_detailed_conditions
+  - Add more problems?: wants_detailed_conditions
     datatype: radio
     choices:
-      - ${"Yes, explore problems I may have in each room" if person_answering == "tenant" else "Yes, explore problems the tenant may have in each room"}: True
+      - ${"Yes, see more problems I may have in each room" if person_answering == "tenant" else "Yes, see more problems the tenant may have in each room"}: True
       - No, go straight to a solution: False
 ---
 template: how_many_problems_are_there_template
@@ -1114,24 +1115,23 @@ subject: |
   % endif
 content: |
   % if person_answering == "tenant":
-  If you explore by room and category, you can pick from a list of about
-  150 problems. Some may be problems you did not know your
+  You can pick from a list of about
+  150 problems organized by room and category. Some problems you may not know your
   landlord needs to fix.
   % else:
-  If the tenant explores by room and category, the tenant can pick from a 
-  list of about 150 problems. Some may be problems that the tenant did 
+  The tenant can pick from a 
+  list of about 150 problems organized by room and category. Some problems the tenant may
   not know their landlord needs to fix.
   % endif
 
-  The list of problems comes from the State Sanitary Code. We have
-  translated the Sanitary Code into easier to understand sentences
-  with short explanations.
+  The list of problems comes from the State Sanitary Code. We put the Code into sentences
+  with short explanations so it is easier to understand.
 ---  
 # WARNING: This page id needs to stay the same or the selectors for
 # the button styles in styles.css will need to be updated to match
 id: room chooser
 question: |
-  Explore problems by room and category
+  Look at problems by room and category
 subquestion: |
   % if len(bad_conditions) > 1 and person_answering == "tenant":
   You have already listed problems in these rooms and categories:
@@ -1156,7 +1156,7 @@ buttons:
 back button label: |
   Back
 under: |
-  You can keep exploring problems by room and category, or skip ahead
+  Keep looking at problems by room and category, or skip ahead
   to start working on a solution.
   
   % if len(bad_conditions.elements):
@@ -1216,10 +1216,10 @@ id: Claims
 question: |
   Emergency problems
 subquestion: |
-  Your landlord should start fixing any problem listed below within 24 hours
-  of learning about the problem.
+  Your landlord should start to fix these problems within 24 hours from the time they 
+  learn about the problem.
   
-  If you do not see your problem listed below, try a different room or category.
+  If you do not see the problem you are looking for, try a different room or category.
 
   ${ collapse_template(emergency_sanitary_code_template) }
 fields:
@@ -1236,7 +1236,7 @@ template: emergency_sanitary_code_template
 subject: |
   Related Sanitary Code
 content: |
-  The problems listed below are cited in the following sections of the
+  These problems are listed in the following sections of the
   [Sanitary Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
       
   Problem | Sanitary Code
