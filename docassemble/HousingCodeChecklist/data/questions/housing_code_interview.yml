@@ -41,6 +41,7 @@ metadata:
     - David Colarusso
     - Sofija Belacjic
     - Mia Bonardi
+    - Stavros Constantinou
   title url: |
     https://getuptocode.org
   tags:
@@ -161,17 +162,21 @@ code: |
       docket_numbers
       ask_affidavit_questions
     nav.set_section('preview_and_sign')
+    uptocode_review
     preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
     nav.set_section('preview_and_sign')
+    uptocode_review
     preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and {'get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
     nav.set_section('preview_and_sign')
+    uptocode_review
     preview_docs
     basic_questions_signature_flow
+  
   reached_download_screen = True
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
@@ -241,7 +246,7 @@ subquestion: |
         <div class="card-body bg-info">
           <h5 class="card-title"><i class="fa-solid fa-magnifying-glass"></i> Explore problems and solutions</h5>
           <p class="card-text">Explore problems by room and category and get your landlord to fix them.</p>
-          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start exploring</a>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button" id="start_exploring">Start exploring</a>
         </div>
       </div>
     </div>
@@ -306,7 +311,7 @@ subquestion: |
         <div class="card-body">
           <h5 class="card-title">Explore problems and solutions</h5>
           <p class="card-text">Explore problems by room and category and get your landlord to fix them.</p>
-          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button">Start exploring</a>
+          <a class="btn btn-primary stretched-link align-self-end" href="${ url_action("initial_action", selection="document_by_room") }" role="button" id="start_exploring">Start exploring</a>
         </div>
       </div>
     </div>
@@ -374,7 +379,6 @@ css: |
     max-width: 100rem;
   }
   </style>
-
 ---  
 comment: |
   #   <div class="col">
@@ -658,6 +662,7 @@ fields:
     validation messages:
       minlength: |
         You need to choose at least one problem to continue.
+
 ---
 id: confirm notice
 question: |
@@ -895,12 +900,12 @@ fields:
   - Choose any that apply: kind_of_lawsuit
     datatype: checkboxes
     choices:
-      - ${"My landlord changed my locks, moved my things or threatened to do so" if person_answering == "tenant" else "The tenant's landlord changed their locks, moved their things or threatened to do so"}: "illegal_lockout"     
-      - ${"My landlord went into my home without my permission" if person_answering == "tenant" else "The tenant's landlord went into the tenant's home without permission"}: "entered_without_permission"
-      - ${"My landlord went into my home without giving me enough notice" if person_answering == "tenant" else "The tenant's landlord went into the tenant's home without giving them enough notice"}: "insufficient_notice"
-      - ${"My landlord made me pay for utilities, but we did not have a written agreement" if person_answering == "tenant" else "The tenant's landlord made the tenant pay for utilities, but they did not have a written agreement"}: "utilities_no_agreement"
-      - ${"My utilities were shutoff" if person_answering == "tenant" else "The tenant's utilities were shutoff"}: "utility_shutoff"
-      - ${"My landlord is ignoring a court order" if person_answering == "tenant" else "The landlord is ignoring a court order"}: "file_contempt_complaint"
+      - ${kind_of_lawsuit_text["illegal_lockout"]}: illegal_lockout     
+      - ${kind_of_lawsuit_text["entered_without_permission"]}: entered_without_permission
+      - ${kind_of_lawsuit_text["insufficient_notice"]}: insufficient_notice
+      - ${kind_of_lawsuit_text["utilities_no_agreement"]}: utilities_no_agreement
+      - ${kind_of_lawsuit_text["utility_shutoff"]}: utility_shutoff
+      - ${kind_of_lawsuit_text["file_contempt_complaint"]}: file_contempt_complaint
     show if:
       code: |
         initial_action_selection != "help_in_court"
@@ -910,6 +915,92 @@ fields:
       % else:
       If the problem the tenant needs help with is not on this list, go to the next screen to see more.
       % endif     
+---
+variable name: kind_of_lawsuit_text
+use objects: True
+data:
+  utilities_no_agreement:
+    question: |
+      % if person_answering == "tenant":
+      My landlord made me pay for utilities, but we did not have a written agreement
+      % else:
+      The tenant's landlord made the tenant pay for utilities, but they did not have a written agreement
+      % endif
+    document: |
+      % if person_answering == "tenant":
+      My landlord made me pay for utilities, but we did not have a written agreement
+      % else:
+      The tenant's landlord made the tenant pay for utilities, but they did not have a written agreement
+      % endif
+  illegal_lockout:
+    question: |
+       % if person_answering == "tenant":
+       My landlord changed my locks, moved my things or threatened to do so 
+       % else:
+       The tenant's landlord changed their locks, moved their things or threatened to do so
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My landlord changed my locks, moved my things or threatened to do so  
+       % else:
+       The tenant's landlord changed their locks, moved their things or threatened to do so
+       % endif
+       
+  entered_without_permission:
+    question: |
+       % if person_answering == "tenant":
+       My landlord went into my home without my permission
+       % else:
+       The tenant's landlord went into the tenant's home without permission
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My landlord went into my home without my permission
+       % else:
+       The tenant's landlord went into the tenant's home without permission
+       % endif
+       
+  insufficient_notice:
+    question: |
+       % if person_answering == "tenant":
+       My landlord went into my home without giving me enough notice
+       % else:
+       The tenant's landlord went into the tenant's home without giving them enough notice
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My landlord went into my home without giving me enough notice
+       % else:
+       The tenant's landlord went into the tenant's home without giving them enough notice
+       % endif
+   
+  utility_shutoff:   
+    question: |
+       % if person_answering == "tenant":
+       My utilities were shutoff 
+       % else:
+       The tenant's utilities were shutoff
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My utilities were shutoff 
+       % else:
+       The tenant's utilities were shutoff
+       % endif
+       
+  file_contempt_complaint:
+    question: |
+       % if person_answering == "tenant":
+       My landlord is ignoring a court order
+       % else:
+       The landlord is ignoring a court order
+       % endif
+    document: |
+       % if person_answering == "tenant":
+       My landlord is ignoring a court order
+       % else:
+       The landlord is ignoring a court order
+       % endif     
 ---
 template: how_far_back_should_i_go_template
 subject: |
@@ -2016,6 +2107,378 @@ review:
   - Edit: other_parties[0].address.address
     button: |
       Your landlord's address: ${ other_parties[0].address.address }
+---
+id: review screen
+continue button field: uptocode_review
+question: |
+  % if person_answering == "tenant":
+  Review your answers
+  % else: 
+  Review the answers
+  % endif
+review:
+  - note: | 
+      % if person_answering == "tenant":
+      ##Information about you##
+      % else:
+      ##Information about the tenant##
+      % endif
+  - Edit:
+      - users.revisit
+    button: |
+      Plaintiffs:
+      
+      % if users.there_are_any:
+        - **${users[0].name}**
+        - **Address:** ${ users[0].address }
+      % if users[0].mobile_number:
+        - **Mobile number:**  ${users[0].mobile_number}
+      % endif
+      % if users[0].phone_number:
+        - **Phone number:**  ${users[0].phone_number}
+      % endif
+      % if users[0].email:
+        - **Email:**  ${users[0].email}
+      % endif
+      % if users[0].mailing_address:
+        - **Mailing address:** ${users[0].mailing_address}
+      % endif
+      % else:
+      **None**
+      % endif
+  - note: |
+      % if person_answering == "attorney":
+      ##Information about the attorney##
+      % endif
+  - Edit: 
+      - users[0].attorney.name.first
+    button: |
+      Attorney: 
+      
+      % if person_answering == "attorney":
+        - **${ users[0].attorney.name }**
+        - **Law firm or organization name**: ${ users[0].attorney.organization }
+        - **Address:** ${ users[0].attorney.address } **since** ${users[0].move_in_date}
+      % endif
+  - note: | 
+      % if other_parties.there_are_any:
+      ##Information about the other party##
+      % endif
+  - Edit:
+      - other_parties[0].name.first
+    button: |
+      Defendants: 
+      
+      % if other_parties.there_are_any:
+        - **${ other_parties[0].name }**
+        - **Person or Business:** ${other_parties[0].person_type}
+        % if other_parties[0].phone_number:
+        - **Phone number:** ${users[0].phone_number}
+        % endif
+        % if other_parties[0].email:
+        - **Email:** ${other_parties[0].email}
+        % endif
+        - **Address:** ${other_parties[0].address}
+      % else:
+      **None**
+      % endif
+      
+
+  - note: |
+      % if tenant_repair_issue_date:
+      ##Problems##
+      % endif
+  - Edit: 
+      - tenant_repair_issue_date
+    button: |
+      % if person_answering == "tenant":
+      When did you first notice the problems: **${tenant_repair_issue_date}**
+      % else:
+      When did the tenant first notice the problems: **${tenant_repair_issue_date}**
+      % endif
+      
+  - Edit: 
+      - notification_date
+    button: |
+      % if person_answering == "tenant":
+      When did you first notify the landlord about the problems: **${notification_date}**
+      % else:
+      When did the tenant first notify the landlord about the problems: **${notification_date}**
+      % endif
+  - Edit: 
+      - written_notification
+    button: |
+      % if person_answering == "tenant":
+      Did you notify your landlord about the problem in writing?: **${yesno(written_notification)}**
+      % else:
+      Did the tenant notify the landlord about the problem in writing?: **${yesno(written_notification)}**
+      % endif
+  - Edit:
+      - letter_date
+    button: |  
+      % if written_notification:
+      When?: **${letter_date}**
+      % endif
+  - Edit: 
+      - effect_of_conditions
+    button: |
+      % if person_answering == "tenant":
+      How have the conditions affected you and your property: **${effect_of_conditions}**
+      % else:
+      How have the conditions affected the tenant and their property: **${effect_of_conditions}**
+      % endif
+  - Edit: 
+      - verified_complaint_claims[i].details
+    button: |
+      % if person_answering == "tenant":
+      My landlord also violated the law when they: **${verified_complaint_claims[i].details}**
+      When did this happen?: **${verified_complaint_claims[i].date}**
+      % else:
+      The tenant's landlord also violated the law when they: **${verified_complaint_claims[i].details}**
+      When did this happen?: **${verified_complaint_claims[i].date}**
+      % endif
+  - note: |
+      % if person_answering == "tenant":
+      ## Your next steps ##
+      % else:
+      ## Tenant's next steps ##
+      % endif
+  - Edit: 
+      - main_triage_screen
+    button: |
+      % if person_answering == "tenant":
+      You have an active eviction case in court: **${ yesno(screen_tenant_facing_eviction) }**
+      % else:
+      The tenant has an active eviction case in court: **${ yesno(screen_tenant_facing_eviction) }**
+      % endif
+  - Edit: 
+      - main_triage_screen
+    button: |      
+      % if person_answering == "tenant":
+      Your landlord already knows about at least one of the problems in your home: **${ yesno(screen_ll_knows_problem) }**
+      % else:
+      The tenant's landlord already knows about at least one of the problems in their home: **${ yesno(screen_ll_knows_problem) }**
+      % endif
+  - Edit: 
+      - main_triage_screen
+    button: |    
+      % if person_answering == "tenant":
+      Your landlord is already fixing all of the problems: **${ yesno(screen_ll_already_fixing) }**
+      % else:
+      The tenant's landlord is already fixing all of the problems: **${ yesno(screen_ll_already_fixing) }**
+      % endif
+  - Edit: 
+      - main_triage_screen
+    button: |       
+      % if person_answering == "tenant":
+      Other tenants in your building are also having housing problems: **${ yesno(showifdef('screen_other_tenants_with_problem')) }**
+      % else:
+      Other tenants in the tenant's building are also having housing problems: **${ yesno(showifdef('screen_other_tenants_with_problem')) }**
+      % endif
+  - Edit: 
+      - main_triage_screen
+    button: |      
+      % if person_answering == "tenant":
+      You have reported all of the problems to a city housing inspector: **${ yesno(screen_contacted_housing_inspector) }**
+      % else:
+      The tenant has reported all of the problems to a city housing inspector: **${ yesno(screen_contacted_housing_inspector) }**
+      % endif    
+  - note: |
+      ##Determining Compensation##
+  
+    show if: damage_calculation_method == "uptocode_calculation"
+  - Edit:
+      - damage_tenant_severity_estimate
+    button: |
+      How serious were the problems: **${damage_tenant_severity_estimate_text[damage_tenant_severity_estimate]}**
+  - Edit: 
+      - tenant_time_estimate
+    button: |
+      % if person_answering == "tenant":
+      How long did you have the problems: **${tenant_time_estimate}**
+      % else:
+      How long did the tenant have the problems: **${tenant_time_estimate}**
+      % endif
+  - Edit:
+      - tenant_percentage_estimate
+    button: |
+      % if person_answering == "tenant":
+      What percentage do you think is fair to get off?: **${tenant_percentage_estimate}**
+      % else:
+      What percentage does the tenant think is fair to get off?: **${tenant_percentage_estimate}**
+      % endif
+      
+  - note: |
+      % if tenant_repair_introduction:
+        % if person_answering == "tenant":
+        ##Your letter##
+        % else:
+        ##The tenant's letter##
+        % endif
+      % endif
+  - Edit:
+      - tenant_repair_introduction
+    button: |      
+      **Introduction:** ${tenant_repair_introduction}
+  - Edit:
+      - tenant_repair_issue_description
+    button: |
+      **Description:** ${tenant_repair_issue_description}
+  
+    
+  - note: | 
+      % if person_answering == "tenant":
+      ##Your lawsuit##
+      % else:
+      ##The tenant's lawsuit##
+      % endif
+  - Edit: 
+      - kind_of_lawsuit
+    button: |
+      % if kind_of_lawsuit.any_true():
+      % if person_answering == "tenant":
+      Reasons you need to take your landlord to court:
+      % else:
+      Reasons the tenant needs to take their landlord to court:
+      % endif
+      % for item in kind_of_lawsuit.true_values():
+      
+       - ${ kind_of_lawsuit_text[item] }
+      
+      % endfor
+      % endif
+  - Edit: review_conditions
+    button: |
+      ${ review_conditions_template }
+  - note: |
+      ##Subsidies##
+  - Edit: 
+      - tenant_gets_rent_subsidy
+    button: |
+      % if person_answering == "tenant":
+      Do you get a rent subsidy: **${yesno(tenant_gets_rent_subsidy)}**
+      % else:
+      Does the tenant get a rent subsidy: **${yesno(tenant_gets_rent_subsidy)}**
+      % endif
+  - Edit: 
+      - tenant_subsidy_is_voucher
+    button: |      
+      % if person_answering == "tenant":
+      Do you have a mobile voucher (Section 8 or MRVP)?: **${yesno(tenant_subsidy_is_voucher)}** 
+      % else:
+      Does the tenant have a mobile voucher (Section 8 or MRVP)?: **${yesno(tenant_subsidy_is_voucher)}**
+      % endif     
+  - Edit: 
+      - verified_complaint_tenant_voucher_at_risk
+    button: | 
+        % if person_answering == "tenant":
+        Is the tenant at risk of being forced to move by their housing authority?:  **${yesno(verified_complaint_tenant_voucher_at_risk)}**
+        % else:
+        Are you at risk of being forced to move by your housing authority?:  **${yesno(verified_complaint_tenant_voucher_at_risk)}**
+        % endif
+        
+  - Edit: 
+      - complaint_ask_for_tro
+    button: | 
+      % if person_answering == "tenant":
+      Do you need an emergency order?: **${yesno(complaint_ask_for_tro)}**
+      % else:
+      Does the tenant need an emergency order?: **${yesno(complaint_ask_for_tro)}**
+      % endif
+  - Edit: 
+      - complaint_ask_for_relocation
+    button: |  
+      % if person_answering == "tenant":
+      Do you want the landlord to pay for a hotel or new apartment while they fix the problems?: **${yesno(complaint_ask_for_relocation)}**
+      % else:
+      Does the tenant want the landlord to pay for a hotel or new apartment while they fix the problems?: **${yesno(complaint_ask_for_relocation)}** 
+      % endif
+
+  - note: |
+      ##Settlement calculation##
+  - Edit: 
+      - tenant_rent_share
+    button: |
+      % if person_answering == "tenant":
+      What is your share of the rent? **$${tenant_rent_share}**
+      % else:
+      What is the tenant’s share of the rent? **$${tenant_rent_share}**
+      % endif
+  - Edit: 
+      - tenant_unit_rent
+    button: |
+      What is the total rent the landlord gets: **$${tenant_unit_rent}**
+  - Edit: 
+      - tenant_confirmed_uptocode_damages_estimate
+    button: |     
+      Settlement Request: **$${tenant_confirmed_uptocode_damages_estimate}**
+  - Edit: 
+      - landlord_is_housing_authority
+    button: |           
+      Is the landlord a housing authority: **${yesno(landlord_is_housing_authority)}**  
+  - Edit:
+      - landlord_is_government
+    button: |
+      % if person_answering == "tenant":
+      Is your landlord the city or state?: **${yesno(landlord_is_government)}**
+      % else:
+      Is the tenant’s landlord the city or state?: **${yesno(landlord_is_government)}**
+      % endif
+  - Edit: 
+      - landlord_lives_in_building
+    button: |
+      % if person_answering == "tenant":
+      Does your landlord live in an apartment or room in your building?: **${yesno(landlord_lives_in_building)}**
+      % else:
+      Does the tenant's landlord live in an apartment or room in the tenant's building?: **${yesno(landlord_lives_in_building)}**
+      % endif
+  - Edit:
+      - building_larger_than_4_units
+    button: |
+      % if person_answering == "tenant":
+      Does the building your landlord owns have at least 5 apartments?: **${yesno(building_larger_than_4_units)}**
+      % else:
+      Does the building the tenant's landlord own have at least 5 apartments?: **${yesno(building_larger_than_4_units)}**
+      % endif
+  - Edit:
+      - trial_court
+    button: |
+      % if person_answering == "tenant":
+      What court do you want to file in?: **${trial_court}**
+      % else:
+      What court does the tenant want to file in?: **${trial_court}**
+      % endif
+  
+      
+---
+event: |
+  users[0].attorney.revisit
+id: |
+  revisit users[0].attorney
+question: |
+  Edit your answers about users[0].Attorney
+subquestion: |
+  ${ users[0].attorney.table }
+---
+columns:
+  - Describe the problem using your own words (write about 1 sentence; optional): |-
+      row_item.description if hasattr(row_item, 'description') else ''
+  - Was the problem there when you moved in?: |-
+      row_item.condition_existed_at_start if hasattr(row_item, 'condition_existed_at_start') else ''
+  - Month: |
+      row_item.start_month if hasattr(row_item, 'start_month') else ''
+  - The problem is fixed: |
+      row_item.condition_ended if hasattr(row_item, 'condition_ended') else ''
+  - Date problem ended (optional): |
+      row_item.end_date if hasattr(row_item, 'end_date') else ''
+  - Take or upload a photo: |
+      row_item.has_file_to_upload if hasattr(row_item, 'has_file_to_upload') else ''
+  - Add a photo or other proof of the problem, if you have it: |
+      row_item.files if hasattr(row_item, 'files') else ''
+rows: |
+  bad_conditions
+table: |
+  bad_conditions.table
 ---
 code: |
   package_name = "docassemble-HousingCodeChecklist"
