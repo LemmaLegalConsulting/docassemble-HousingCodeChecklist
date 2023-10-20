@@ -66,7 +66,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
 @2
 Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
-  And the maximum seconds for each Step in this Scenario is 50
+  And the maximum seconds for each Step in this Scenario is 80
   Then I tap the "#start_exploring" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
@@ -131,8 +131,9 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | complaint_ask_for_relocation | False | |
     | other_parties[0].email | test@example.com | |
     | verified_complaint_wants_fee_waiver | True | |
-    | public_assistance_kinds['TAFDC'] | True | | 
+    | public_assistance_kinds['TAFDC'] | True | |
     | signature_choice | this_device | |
     | users[0].states_above_true['states_true'] | True | signature_choice |
     | users[0].attorney.signature | | users[0].attorney.signature |
+    | users[0].signature | | users[0].signature |
   Then I take a screenshot

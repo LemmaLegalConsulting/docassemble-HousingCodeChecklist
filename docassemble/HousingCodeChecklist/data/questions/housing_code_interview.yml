@@ -2185,7 +2185,9 @@ review:
       
 
   - note: |
+      % if tenant_repair_issue_date:
       ##Problems##
+      % endif
   - Edit: 
       - tenant_repair_issue_date
     button: |
@@ -2307,10 +2309,12 @@ review:
       % endif
       
   - note: |
-      % if person_answering == "tenant":
-      ##Your letter##
-      % else:
-      ##The tenant's letter##
+      % if tenant_repair_introduction:
+        % if person_answering == "tenant":
+        ##Your letter##
+        % else:
+        ##The tenant's letter##
+        % endif
       % endif
   - Edit:
       - tenant_repair_introduction
