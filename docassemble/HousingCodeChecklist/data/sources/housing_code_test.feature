@@ -13,10 +13,10 @@ Want to disable the tests? Want to learn more? See ALKiln's docs: https://suffol
 Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
   And the maximum seconds for each Step in this Scenario is 25
-  Then I tap the "#start_exploring" element
+  Then I tap the "#start_your_list" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
-    | acknowledged_information_use['I accept the terms of use.'] | True | |
+    | acknowledged_information_use['I accept the terms of use.'] | True | acknowledged_information_use |
     | person_answering | tenant | |
     | users[0].name.first | Joe | |
     | users[0].name.last | Carpenter | |
@@ -67,7 +67,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
 Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
   And the maximum seconds for each Step in this Scenario is 80
-  Then I tap the "#start_exploring" element
+  Then I tap the "#start_your_list" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
     | acknowledged_information_use['I accept the terms of use.'] | True | |
@@ -135,7 +135,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
 Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
   And the maximum seconds for each Step in this Scenario is 80
-  Then I tap the "#start_exploring" element
+  Then I tap the "#start_your_list" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
     | acknowledged_information_use['I accept the terms of use.'] | True | |
