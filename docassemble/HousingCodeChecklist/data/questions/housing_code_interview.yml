@@ -440,7 +440,7 @@ subquestion: |
 
   ${ display_template(about_page_contents, scrollable=True, collapse=True) }
 fields:
-  - "To continue, you must accept the Terms of Use.": acknowledged_information_use
+  - To continue, you must accept the [Terms of Use](https://massaccess.suffolklitlab.org/privacy/): acknowledged_information_use
     datatype: checkboxes
     none of the above: False    
     minlength: 1

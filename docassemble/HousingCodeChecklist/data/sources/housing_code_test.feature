@@ -16,7 +16,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Then I tap the "#start_your_list" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
-    | acknowledged_information_use['I accept the terms of use.'] | True | acknowledged_information_use |
+    | acknowledged_information_use['I accept the Terms of Use.'] | True | acknowledged_information_use |
     | person_answering | tenant | |
     | users[0].name.first | Joe | |
     | users[0].name.last | Carpenter | |
@@ -24,7 +24,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | kind_of_lawsuit['illegal_lockout'] | True | |
     | bad_conditions[i].details[j].condition_existed_at_start | True | |
     | wants_detailed_conditions | False | |
-    | screen_tenant_facing_eviction | False | |
+    | screen_tenant_facing_eviction | notice only | screen_tenant_facing_eviction |
     | screen_ll_knows_problem | True | |
     | screen_ll_already_fixing | False | screen_ll_knows_problem | 
     | screen_other_tenants_with_problem | False | screen_ll_knows_problem |
@@ -62,7 +62,6 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | users[0].signature | | users[0].signature |
   Then I take a screenshot
   
-  
 @2
 Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
@@ -70,7 +69,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Then I tap the "#start_your_list" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
-    | acknowledged_information_use['I accept the terms of use.'] | True | |
+    | acknowledged_information_use['I accept the Terms of Use.'] | True | |
     | person_answering | attorney | |
     | representation_type| entering_appearance | person_answering |
     | users[0].name.first | Joe | |
@@ -84,7 +83,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | bad_conditions[i].details[j].condition_existed_at_start | False | |
     | bad_conditions[i].details[j].start_year | 2004 | |
     | wants_detailed_conditions | False | |
-    | screen_tenant_facing_eviction | False | |
+    | screen_tenant_facing_eviction | has case | screen_tenant_facing_eviction |
     | screen_ll_knows_problem | True | |
     | screen_ll_already_fixing | True | screen_ll_knows_problem | 
     | screen_other_tenants_with_problem | True | screen_ll_knows_problem |
@@ -138,7 +137,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Then I tap the "#start_your_list" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
-    | acknowledged_information_use['I accept the terms of use.'] | True | |
+    | acknowledged_information_use['I accept the Terms of Use.'] | True | |
     | person_answering | attorney | |
     | representation_type| entering_appearance | person_answering |
     | users[0].name.first | Joe | |
@@ -152,7 +151,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | bad_conditions[i].details[j].condition_existed_at_start | False | |
     | bad_conditions[i].details[j].start_year | 2004 | |
     | wants_detailed_conditions | False | |
-    | screen_tenant_facing_eviction | False | |
+    | screen_tenant_facing_eviction | pending | screen_tenant_facing_eviction |
     | screen_ll_knows_problem | True | |
     | screen_ll_already_fixing | True | screen_ll_knows_problem | 
     | screen_other_tenants_with_problem | True | screen_ll_knows_problem |
