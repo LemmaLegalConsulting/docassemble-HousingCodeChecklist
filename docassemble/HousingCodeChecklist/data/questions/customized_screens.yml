@@ -157,7 +157,7 @@ fields:
       Deeds for your city or town.
       % else:
       **Okay**. You can still fill in this form, but the tenant will need
-      to write in the name of the their landlord on every form before they deliver
+      to write in the name of their landlord on every form before they deliver
       it. You may be able to find the name of the tenant's landlord by visiting the Registry
       of Deeds for the tenant's city or town.
       % endif
