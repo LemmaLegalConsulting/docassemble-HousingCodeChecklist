@@ -145,9 +145,9 @@ fields:
       % endif
   - label: |
       % if person_answering == "tenant":
-      Is your landlord the city or state?
+      Is the city or state your landlord?
       % else:
-      Is the tenant's landlord the city or state?
+      Is the city or state the tenant's landlord?
       % endif
     field: landlord_is_government
     datatype: yesnoradio
@@ -402,6 +402,8 @@ question: |
   How much is the tenant's rent?
   % endif
 subquestion: |
+  Please enter the rent amount as a number without any symbols below.
+  
   ${ collapse_template(why_do_you_need_my_rent_amount_template) }
 fields:
   - label: |

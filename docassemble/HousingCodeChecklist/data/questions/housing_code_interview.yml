@@ -2407,9 +2407,9 @@ review:
       - landlord_is_government
     button: |
       % if person_answering == "tenant":
-      Is your landlord the city or state?: **${yesno(landlord_is_government)}**
+      Is the city or the state your landlord?: **${yesno(landlord_is_government)}**
       % else:
-      Is the tenant’s landlord the city or state?: **${yesno(landlord_is_government)}**
+      Is the city or the state the tenant’s landlord?: **${yesno(landlord_is_government)}**
       % endif
   - Edit: 
       - landlord_lives_in_building
