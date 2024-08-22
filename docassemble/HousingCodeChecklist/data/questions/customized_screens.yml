@@ -36,7 +36,7 @@ fields:
   - note: |
       This custom option is mainly for legal aid organizations with a standard practice of inserting their organization's name in the footer of the document. Example: "Prepared with assistance of [legal aid organization name]".
   
-      Lawyers should not customize the footer and must put "Prepared with assistance of counsel". See [Trial Court Rule XVI]( https://www.mass.gov/trial-court-rules/trial-court-rule-xvi-uniform-rule-on-limited-assistance-representation#9-assisting-a-party-to-prepare-court-documents).
+      Lawyers should not customize the footer and must put "Prepared with assistance of counsel". See [Trial Court Rule XVI](https://www.mass.gov/trial-court-rules/trial-court-rule-xvi-uniform-rule-on-limited-assistance-representation#9-assisting-a-party-to-prepare-court-documents).
     show if:
       variable: representation_type
       is: ghostwriting
@@ -755,7 +755,7 @@ content: |
   the problems that you have identified. This will help make sure the
   inspector does not miss any problems.
 
-  [Learn more](https://www.masslegalhelp.org/housing/lt1-chapter-8-getting-inspection).
+  [Learn more](https://www.masslegalhelp.org/housing-apartments-shelter/repairs-bad-conditions/getting-inspection).
 ---
 template: how_to_defend_eviction_template
 subject: |
@@ -766,7 +766,7 @@ content: |
   
   In Massachusetts, evicting a tenant because they complain
   about bad housing conditions or other housing problems is called
-  "retaliation". [Law about retaliation](https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction). Retaliation is against the law.
+  "retaliation". [Law about retaliation](https://www.masslegalhelp.org/housing-apartments-shelter/eviction/when-eviction-illegal). Retaliation is against the law.
   
   Even if your landlord is not evicting you **because** you complained about
   problems in your house, the problems may be a defense to your eviction.
@@ -805,7 +805,7 @@ content: |
   * Breach of the Warranty of Habitability, which may entitle you to a
     percentage of your rent for every month that the problem existed.
     
-  [Read MassLegalHelp.org's article about suing your landlord](https://www.masslegalhelp.org/housing/lt1-pullout-13-taking-landlord-to-court).
+  [Read MassLegalHelp.org's article about suing your landlord](https://www.masslegalhelp.org/sites/default/files/documents/housing/lt1-chapter-13-taking-landlord-to-court.pdf).
 ---
 ############################################
 # Housing TRO
@@ -859,7 +859,7 @@ help: |
   working from home, permitted construction may still be allowed)
   * Unsafe living conditions that your landlord isn't fixing
   
-  [Read more](https://www.masslegalhelp.org/housing/lt1-chapter-8-rights-decent-place-live)
+  [Read more](https://www.masslegalhelp.org/housing-apartments-shelter/repairs-bad-conditions/your-right-decent-place-live)
 ---
 #########################################
 ## Petition to enforce Sanitary Code
@@ -1269,19 +1269,19 @@ question: |
 subquestion: |
   % if public_assistance_kinds.any_true() and person_answering == "tenant":
   Based on the information you gave us so far, you should qualify for a fee
-  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/courts-hearings-language-rights/courts-massachusetts/affidavit-indigency-if-you-cant-afford).
   
   You receive these public benefits: ${public_assistance_kinds.true_values()}
   
   % elif public_assistance_kinds.any_true():
   Based on the information you gave us so far, the tenant should qualify for a free
-  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/courts-hearings-language-rights/courts-massachusetts/affidavit-indigency-if-you-cant-afford).
   
   The tenant receives these public benefits: ${public_assistance_kinds.true_values()}
   
   % elif household_income_qualifies and person_answering == "tenant":
   Based on the information you gave us so far, you should qualify for a fee
-  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/courts-hearings-language-rights/courts-massachusetts/affidavit-indigency-if-you-cant-afford).
   
   **You earn less than the income limit.**
 
@@ -1293,7 +1293,7 @@ subquestion: |
   
   % elif household_income_qualifies:
   Based on the information you gave us so far, you should qualify for a fee
-  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-).
+  waiver. Learn more at [MassLegalHelp.org](https://www.masslegalhelp.org/courts-hearings-language-rights/courts-massachusetts/affidavit-indigency-if-you-cant-afford).
   
   **You earn less than the income limit.**
 
@@ -1357,15 +1357,16 @@ content: |
   court agrees, they may waive their court costs. It is up to a judge to 
   decide.
   % endif
-  
-  % if person_answering == "tenant":
-  * [What if the clerk does not approve my affidavit right away?](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-)
-  * [What if the clerk denies my affidavit?](https://www.masslegalhelp.org/what-if-the-clerk-denies-my-affidavit-of-indigency-)
-  
-  % else:
-  * [What if the clerk does not approve the tenant's affidavit right away?](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-)
-  * [What if the clerk denies the tenant's affidavit?](https://www.masslegalhelp.org/what-if-the-clerk-denies-my-affidavit-of-indigency-)
-  % endif
+### Commenting out until these can be directly linked on the Mass Legal Help site again #### 
+#  % if person_answering == "tenant":
+#  * [What if the clerk does not approve my affidavit right away?](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-)
+#  * [What if the clerk denies my affidavit?](https://www.masslegalhelp.org/what-if-the-clerk-denies-my-affidavit-of-indigency-)
+#  
+#  % else:
+#  * [What if the clerk does not approve the tenant's affidavit right away?](https://www.masslegalhelp.org/what-if-the-clerk-does-not-approve-my-affidavit-of-indigency-right-away-)
+#  * [What if the clerk denies the tenant's affidavit?](https://www.masslegalhelp.org/what-if-the-clerk-denies-my-affidavit-of-indigency-)
+#  % endif
+#############################################################################################
 ---
 id: select fees waived
 question: |

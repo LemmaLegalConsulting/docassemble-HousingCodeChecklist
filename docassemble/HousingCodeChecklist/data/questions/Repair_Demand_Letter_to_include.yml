@@ -18,7 +18,7 @@ code: |
       "title": "Repair Demand Letter",
       "short title": "Repair Demand Letter",
       "description": "A letter of demand for relief under the Consumer Protection Act, Chapter 93A",
-      "original_form": "https://www.masslegalhelp.org/housing/lt1-form-10-repair-demand.pdf",
+      "original_form": "https://www.masslegalhelp.org/sites/default/files/2024-01/lt1-form-10-repair-demand.pdf",
       "allowed courts": [
       ],
       "categories": [
@@ -116,7 +116,7 @@ question: |
   % endif
 subquestion: |
   The [consumer protection
-  law](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law)
+  law](https://www.mass.gov/info-details/the-massachusetts-consumer-protection-law)
   only protects tenants from landlords acting as a **business**.
   
   % if person_answering == "tenant":
@@ -225,7 +225,7 @@ subquestion: |
 
   You cannot sue them or ask for money using the
   [Consumer Protection Law
-  (M.G.L. c. 93A)](https://www.mass.gov/service-details/the-massachusetts-consumer-protection-law).
+  (M.G.L. c. 93A)](https://www.mass.gov/info-details/the-massachusetts-consumer-protection-law).
 
   You cannot ask for treble damages.
 
