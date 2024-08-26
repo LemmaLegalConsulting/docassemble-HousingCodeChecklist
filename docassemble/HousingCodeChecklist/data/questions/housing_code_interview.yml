@@ -236,6 +236,10 @@ question: |
 subquestion: |
   Need help to get repairs or stop your landlord from harassing you? Pick a task.
   
+  <div class="alert alert-danger h-20 mh-20" role="alert">
+    <p class="h6 alert-danger"><i class="fa-solid fa-triangle-exclamation fa-xl"></i> In order to use UpToCode your rental unit must be located in Massachusetts.</p>
+  </div>
+  
   % if device() and hasattr(device(), "is_mobile") and device().is_mobile:
 
   <div class="row g-3 mb-2">
@@ -822,7 +826,7 @@ subquestion: |
   Start with the repairs ${ users.familiar() }'s home needs. 
   % endif
   % endif
-  <div class="alert alert-secondary h-100" role="alert">
+  <div class="alert alert-secondary h-100 mh-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
     % if person_answering == "tenant":
@@ -1710,22 +1714,24 @@ question: |
   % if person_answering == "tenant":
   Review your documents before you sign
   % else:
-  Review the tenant's documents
+  Review the tenant's documents before they sign
   % endif
 subquestion: |
-  Open the document below in a new window.
-  
   % if person_answering == "tenant":
+  The next step is to sign your documents. Before you sign, you can **review** what the documents will look like by opening the document below in a new browser tab.
+  
   If you need to make any changes, select the navigation labels on the left
   to revisit the section or sections you want to change.
   
   When you are ready, click "next" to add your signature.
   
   % else:
-  If you need to make any changes for the tenant, select the navigation labels on the left
-  to revisit the section or sections they want to change.
+  The next step is to sign the documents. Before the tenant signs, you can **review** what the documents will look like by opening the document below in a new browser tab.
   
-  When you are ready, click "next" to add a signature.
+  If you need to make any changes, select the navigation labels on the left
+  to revisit the section or sections you want to change.
+  
+  When you are ready, click "next" to add the tenant's signature.
   % endif
   
   % if screen_ll_knows_problem:
@@ -2103,6 +2109,15 @@ question: |
   % else: 
   Review the answers
   % endif
+subquestion: |
+  <div class="alert alert-secondary h-100 mh-100" role="alert">
+    <p class="h6 alert-heading"><i class="fa-solid fa-signs-post"></i>
+    % if person_answering == "tenant":
+    If you need to change any information you entered you can edit your answers by clicking the <strong>Edit</strong> buttons below.
+    % else:
+    If you need to change any information entered you can edit the answers by clicking the **Edit** buttons below.
+    % endif
+    </p>
 review:
   - note: | 
       % if person_answering == "tenant":
