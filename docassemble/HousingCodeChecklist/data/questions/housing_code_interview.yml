@@ -234,11 +234,8 @@ id: landing-page
 question: |
   You deserve a safe and decent home
 subquestion: |
-  Need help to get repairs or stop your landlord from harassing you? Pick a task.
+  Need help to get repairs or stop your **Massachusetts** landlord from harassing you? Pick a task.
   
-  <div class="alert alert-danger h-20 mh-20" role="alert">
-    <p class="h6 alert-danger"><i class="fa-solid fa-triangle-exclamation fa-xl"></i> In order to use UpToCode your rental unit must be located in Massachusetts.</p>
-  </div>
   
   % if device() and hasattr(device(), "is_mobile") and device().is_mobile:
 
