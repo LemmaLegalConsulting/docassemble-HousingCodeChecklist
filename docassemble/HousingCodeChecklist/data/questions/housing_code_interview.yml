@@ -2112,7 +2112,7 @@ subquestion: |
     % if person_answering == "tenant":
     If you need to change any information you entered you can edit your answers by clicking the <strong>Edit</strong> buttons below.
     % else:
-    If you need to change any information entered you can edit the answers by clicking the **Edit** buttons below.
+    If you need to change any information entered you can edit the answers by clicking the <strong>Edit</strong> buttons below.
     % endif
     </p>
 review:
