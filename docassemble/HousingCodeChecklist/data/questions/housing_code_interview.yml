@@ -234,7 +234,8 @@ id: landing-page
 question: |
   You deserve a safe and decent home
 subquestion: |
-  Need help to get repairs or stop your landlord from harassing you? Pick a task.
+  Need help to get repairs or stop your **Massachusetts** landlord from harassing you? Pick a task.
+  
   
   % if device() and hasattr(device(), "is_mobile") and device().is_mobile:
 
@@ -713,7 +714,7 @@ template: when_does_8a_apply
 subject: |
   When can a problem stop my eviction?
 content: |
-  If your landlord owes you at least $1 because of a repair they did not make or they broke another landlord-tenant law.[239 &sect; 8A](https://www.masslegalhelp.org/housing/lt1-chapter-12-legal-defenses-counterclaims-article) gives you the right to "buy back" your home.
+  If your landlord owes you at least $1 because of a repair they did not make or they broke another landlord-tenant law.[239 &sect; 8A](https://www.masslegalhelp.org/housing-apartments-shelter/eviction/legal-defenses-and-counterclaims) gives you the right to "buy back" your home.
   
   239 &sect; 8A may protect you if you are being evicted only because:
 
@@ -822,7 +823,7 @@ subquestion: |
   Start with the repairs ${ users.familiar() }'s home needs. 
   % endif
   % endif
-  <div class="alert alert-secondary h-100" role="alert">
+  <div class="alert alert-secondary h-100 mh-100" role="alert">
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
     % if person_answering == "tenant":
@@ -844,7 +845,7 @@ subquestion: |
      because they complained.     
     </p>
     % endif
-    Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing/lt1-chapter-12-illegal-eviction#retaliatoryevictions" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link"href="https://www.masslegalhelp.org/housing/lt1-chapter-5-retaliatory-rent-increase target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
+    Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing-apartments-shelter/eviction/when-eviction-illegal" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link" href="https://www.masslegalhelp.org/housing-apartments-shelter/rent/illegal-retaliatory-rent-increases" target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
     </p>
   </div>
 continue button field: intro_terms_of_use  
@@ -1238,7 +1239,7 @@ subject: |
   Related Sanitary Code
 content: |
   These problems are listed in the following sections of the
-  [Sanitary Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
+  [Sanitary Code](https://www.mass.gov/doc/105-cmr-410-minimum-standards-of-fitness-for-human-habitation-state-sanitary-code-chapter-ii/download):
       
   Problem | Sanitary Code
   --------|------------------
@@ -1274,7 +1275,7 @@ subject: |
   Related Sanitary Code
 content: |
   The problems listed below are cited in the following sections of the
-  [Sanitary Code](https://www.mass.gov/doc/105-cmr-410-state-sanitary-code-chapter-ii-minimum-standards-of-fitness-for-human-habitation/download):
+  [Sanitary Code](https://www.mass.gov/doc/105-cmr-410-minimum-standards-of-fitness-for-human-habitation-state-sanitary-code-chapter-ii/download):
       
   Problem | Sanitary Code
   --------|------------------
@@ -1710,22 +1711,24 @@ question: |
   % if person_answering == "tenant":
   Review your documents before you sign
   % else:
-  Review the tenant's documents
+  Review the tenant's documents before they sign
   % endif
 subquestion: |
-  Open the document below in a new window.
-  
   % if person_answering == "tenant":
+  The next step is to sign your documents. Before you sign, you can **review** what the documents will look like by opening the document below in a new browser tab.
+  
   If you need to make any changes, select the navigation labels on the left
   to revisit the section or sections you want to change.
   
   When you are ready, click "next" to add your signature.
   
   % else:
-  If you need to make any changes for the tenant, select the navigation labels on the left
-  to revisit the section or sections they want to change.
+  The next step is to sign the documents. Before the tenant signs, you can **review** what the documents will look like by opening the document below in a new browser tab.
   
-  When you are ready, click "next" to add a signature.
+  If you need to make any changes, select the navigation labels on the left
+  to revisit the section or sections you want to change.
+  
+  When you are ready, click "next" to add the tenant's signature.
   % endif
   
   % if screen_ll_knows_problem:
@@ -2103,6 +2106,15 @@ question: |
   % else: 
   Review the answers
   % endif
+subquestion: |
+  <div class="alert alert-secondary h-100 mh-100" role="alert">
+    <p class="h6 alert-heading"><i class="fa-solid fa-signs-post"></i>
+    % if person_answering == "tenant":
+    If you need to change any information you entered you can edit your answers by clicking the <strong>Edit</strong> buttons below.
+    % else:
+    If you need to change any information entered you can edit the answers by clicking the <strong>Edit</strong> buttons below.
+    % endif
+    </p>
 review:
   - note: | 
       % if person_answering == "tenant":
@@ -2407,9 +2419,9 @@ review:
       - landlord_is_government
     button: |
       % if person_answering == "tenant":
-      Is your landlord the city or state?: **${yesno(landlord_is_government)}**
+      Is the city or the state your landlord?: **${yesno(landlord_is_government)}**
       % else:
-      Is the tenant’s landlord the city or state?: **${yesno(landlord_is_government)}**
+      Is the city or the state the tenant’s landlord?: **${yesno(landlord_is_government)}**
       % endif
   - Edit: 
       - landlord_lives_in_building

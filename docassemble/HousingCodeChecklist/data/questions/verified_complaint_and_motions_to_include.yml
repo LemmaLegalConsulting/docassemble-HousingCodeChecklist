@@ -18,7 +18,7 @@ data:
   description: |-
     You may use this form to ask the court to order the landlord to stop behaving illegally
   original_form: >-
-    https://www.masslegalhelp.org/housing/lt1-form-15-tro.pdf
+    https://www.masslegalhelp.org/sites/default/files/2024-01/lt1-form-15-tro.pdf
   allowed courts: 
     - "Boston Municipal Court"
     - "District Court"
@@ -286,7 +286,7 @@ content: |
   1. A percentage off of their rent for each month they had the problem, or
   1. A flat 3 times their monthly rent for a **serious** problem.
   % endif
-  [Read more](https://www.masslegalhelp.org/housing/problems/deciding-to-go-to-court/civil-lawsuit).
+  [Read more](https://www.masslegalhelp.org/housing-apartments-shelter/taking-your-landlord-court/grounds-filing-civil-lawsuit).
 ---
 template: complaint_right_to_get_money_should_i
 subject: |
@@ -307,7 +307,7 @@ content: |
   for money as part of the eviction case. Your claim may be able to stop the eviction if
   the eviction is for "no fault" or for not paying rent.
 
-  [Read the article about defenses on the MassLegalHelp website](https://www.masslegalhelp.org/housing/lt1-chapter-12-legal-defenses-counterclaims-article).
+  [Read the article about defenses on the MassLegalHelp website](https://www.masslegalhelp.org/housing-apartments-shelter/eviction/legal-defenses-and-counterclaims).
 
   But if your landlord evicts you for a "fault" reason (something other than being behind
   in the rent), you cannot use your other claims to stop the eviction. You may be better 
@@ -325,7 +325,7 @@ content: |
   for money as part of the eviction case. Their claim may be able to stop the eviction if
   the eviction is for "no fault" or for not paying rent.
 
-  [Read the article about defenses on the MassLegalHelp website](https://www.masslegalhelp.org/housing/lt1-chapter-12-legal-defenses-counterclaims-article).
+  [Read the article about defenses on the MassLegalHelp website](https://www.masslegalhelp.org/housing-apartments-shelter/eviction/legal-defenses-and-counterclaims).
 
   But if their landlord evicts them for a "fault" reason (something other than being behind
   in the rent), they cannot use their other claims to stop the eviction. They may be better 
