@@ -162,7 +162,13 @@ fields:
       of Deeds for the tenant's city or town.
       % endif
     show if: ll_name_unknown
-  - ${"Is your landlord an individual or a business?" if person_answering == "tenant" else "Is the tenant's landlord an individual or a business?"}: other_parties[0].person_type
+  - label: |
+      % if person_answering =="tenant":
+      Is your landlord an individual or a business?
+      % else:
+      Is the tenant's landlord an individual or a business?
+      %endif
+    field: other_parties[0].person_type
     input type: radio
     choices:
       - Business or organization: business
