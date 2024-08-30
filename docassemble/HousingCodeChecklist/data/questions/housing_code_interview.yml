@@ -1749,12 +1749,12 @@ question: |
   % endif
 subquestion: |
   % if person_answering == "tenant":
-  1. Download and print your documents below. You can also send yourself
+  1. Download and **print** your documents below. You can also send yourself
   or someone else a copy of the documents in an email.
   1. Read the instructions to learn how to file and deliver your
   documents.
   % else: 
-  1. Download and print the tenant's documents below. The tenant can also send themselves
+  1. Download and **print** the tenant's documents below. The tenant can also send themselves
   or someone else a copy of the documents in an email.
   1. Read the instructions to learn how to file and deliver the tenant's
   documents.
@@ -1788,11 +1788,11 @@ subquestion: |
   % endif
 
   % if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0 and person_answering == "tenant":
-  <h2 class="h4">Documents for you to print and deliver or keep for your records</h2>
+  <h2 class="h4">Documents for you to <stong>print</strong> and deliver or keep for your records</h2>
   ${ housing_code_bundle.download_list_html(format="docx") }
   
   % elif screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
-  <h2 class="h4">Documents for the tenant to print and deliver or keep for their records</h2>
+  <h2 class="h4">Documents for the tenant to <strong>print</strong> and deliver or keep for their records</h2>
   ${ housing_code_bundle.download_list_html(format="docx") }
   
   % elif len(tenant_repair_letter_bundle.enabled_documents()) > 0: 
@@ -1802,9 +1802,9 @@ subquestion: |
   % if screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"]:
   [BR]
   % if person_answering == "tenant":
-  <h2 class="h4">Documents for you to print and file in court</h2>
+  <h2 class="h4">Documents for you to <strong>print</strong> and file in court</h2>
   % else: 
-  <h2 class="h4">Documents for the tenant to print and file in court</h2>
+  <h2 class="h4">Documents for the tenant to <strong>print</strong> and file in court</h2>
   % endif
   
   ${ affirmative_complaint_bundle.download_list_html(format="docx") }
@@ -2055,21 +2055,27 @@ validation code: |
 id: explain_documents
 continue button field: explain_documents
 question: |
-  We may have a few more questions
+  We have a few more questions
 subquestion: |
   % if person_answering == "tenant":
-  On the next screens, we will ask whatever questions are needed to finish
-  creating the documents that you asked for. 
+  We need to ask you some more questions before we can finish creating the documents that you asked for.
+  
+  Once the documents are finished you will need to **print** them. You will need to follow the instructions provided to you at the end which describe what to do with the documents you have asked for.
+  
+  A copy of all of the documents should be kept for your own records. Some of the documents may need to be sent to your landlord. Some of the documents may need to be sent to your city inspector. And you may need to send some of the documents to the court.
   
   At the end, you will have a chance to download and email the documents for
-  yourself or send them to someone else.
+  yourself or to send them to someone else. You should download and email a copy of each document to yourself or a trusted friend or family member so that you always have a copy and can **print** them if you need to in the future.
   
   % else:
-  On the next screens, we will ask whatever questions are needed to finish
-  creating the documents for the tenant. 
+  We need to ask you some more questions before we can finish creating the documents that the tenant has asked for.
+  
+  Once the documents are finished the tenant will need to **print** them. The tenant will need to follow the instructions provided at the end which describe what to do with the documents they have asked for.
+  
+  A copy of all of the documents should be kept for the tenant's own records. Some of the documents may need to be sent to the tenant's landlord. Some of the documents may need to be sent to the tenant's city inspector. And the tenant may need to send some of the documents to the court.
   
   At the end, the tenant will have a chance to download and email the documents for
-  themselves or send them to someone else.
+  themself or to send them to someone else. The tenant should download and email a copy of each document to themself or a trusted friend or family member so that they always have a copy and can **print** them if they need to in the future.
   % endif
 ---
 continue button field: explain_sharing

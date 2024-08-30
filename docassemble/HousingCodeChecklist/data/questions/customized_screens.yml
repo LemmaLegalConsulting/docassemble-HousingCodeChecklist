@@ -434,9 +434,21 @@ if: |
   'sue_landlord' in document_choice.true_values()
 decoration: file-signature
 question: |
-  Your documents are almost ready
+  % if person_answering == "tenant":
+  Your documents are almost ready to **print**
+  % else:
+  The tenant's documents are almost ready to **print**
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
+  You can sign your documents before or after you **print** them.
+
   How do you want to sign them?
+  % else:
+  The tenant can sign their documents before or after they **print** them.
+
+  How does the tenant want to sign them?
+  % endif
 fields: 
   - I will sign: signature_choice
     input type: radio
@@ -463,9 +475,21 @@ if: |
   not 'sue_landlord' in document_choice.true_values()
 decoration: file-signature
 question: |
-  Your documents are almost ready
+  % if person_answering == "tenant":
+  Your documents are almost ready to **print**
+  % else:
+  The tenant's documents are almost ready to **print**
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
+  You can sign your documents before or after you **print** them.
+
   How do you want to sign them?
+  % else:
+  The tenant can sign their documents before or after they **print** them.
+
+  How does the tenant want to sign them?
+  % endif
 fields: 
   - I will sign: signature_choice
     input type: radio
