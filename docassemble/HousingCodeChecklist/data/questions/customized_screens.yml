@@ -101,13 +101,9 @@ fields:
     choices:
       - Business or organization: business
       - Individual: individual
-  - Landlord's first name: other_parties[0].name.first
+  - Landlord's full name: other_parties[0].name.first
     show if:
       variable: other_parties[0].person_type
-      is: "individual"
-  - Last name: other_parties[0].name.last
-    show if:
-      variable: other_parties[0].person_type      
       is: "individual"
   - Suffix: other_parties[0].name.suffix
     code: |
@@ -174,13 +170,9 @@ fields:
       - Business or organization: business
       - Individual: individual
     hide if: ll_name_unknown      
-  - Landlord's first name: other_parties[0].name.first
+  - Landlord's full name: other_parties[0].name.first
     show if:
       variable: other_parties[0].person_type
-      is: "individual"
-  - Last name: other_parties[0].name.last
-    show if:
-      variable: other_parties[0].person_type      
       is: "individual"
   - Suffix: other_parties[0].name.suffix
     code: |
