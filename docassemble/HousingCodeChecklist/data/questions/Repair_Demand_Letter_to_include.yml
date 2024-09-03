@@ -44,7 +44,7 @@ code: |
   users[0].address.address
   other_parties.gather()
   other_parties[0].address.address
-  users[0].move_in_date
+  tenant_movein_date
   notification_date
   if written_notification == True:
      letter_date
