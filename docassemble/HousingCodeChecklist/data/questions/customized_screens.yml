@@ -449,15 +449,39 @@ subquestion: |
 
   How does the tenant want to sign them?
   % endif
-fields: 
-  - I will sign: signature_choice
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      I will sign
+      % else:
+      They will sign
+      % endif
+    field: signature_choice
     input type: radio
     choices:
-      - On a phone with my finger: phone
+      - label: |
+          % if person_answering == "tenant":
+          On a phone with my finger
+          % else:
+          On a phone with their finger
+          % endif
+        value: phone
         help: |
           We can text or share a link with your phone on the next screen
-      - On a computer with my mouse: this_device
-      - On the paper with a pen after I print the documents: sign_after_printing
+      - label: |
+          % if person_answering == "tenant":
+          On a computer with my mouse
+          % else:
+          On a computer with the mouse
+          % endif
+        value: this_device
+      - label: |
+          % if person_answering == "tenant":
+          On the paper with a pen after I print the documents
+          % else:
+          On the paper with a pen after they print the documents
+          % endif
+        value: sign_after_printing
   - no label: users[0].states_above_true
     datatype: checkboxes
     minlength: 1
@@ -490,15 +514,39 @@ subquestion: |
 
   How does the tenant want to sign them?
   % endif
-fields: 
-  - I will sign: signature_choice
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      I will sign
+      % else:
+      They will sign
+      % endif
+    field: signature_choice
     input type: radio
     choices:
-      - On a phone with my finger: phone
+      - label: |
+          % if person_answering == "tenant":
+          On a phone with my finger
+          % else:
+          On a phone with their finger
+          % endif
+        value: phone
         help: |
           We can text or share a link with your phone on the next screen
-      - On a computer with my mouse: this_device
-      - On the paper with a pen after I print the documents: sign_after_printing
+      - label: |
+          % if person_answering == "tenant":
+          On a computer with my mouse
+          % else:
+          On a computer with the mouse
+          % endif
+        value: this_device
+      - label: |
+          % if person_answering == "tenant":
+          On the paper with a pen after I print the documents
+          % else:
+          On the paper with a pen after they print the documents
+          % endif
+        value: sign_after_printing
 continue button field: saw_signature_choice        
 ---
 id: move in date
