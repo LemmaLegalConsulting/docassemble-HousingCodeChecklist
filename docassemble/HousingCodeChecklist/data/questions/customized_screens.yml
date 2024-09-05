@@ -1104,9 +1104,27 @@ fields:
     field: damage_calculation_method
     datatype: radio
     choices:
-      - ${"Let me do my own math" if person_answering == "tenant" else "The tenant would like to do their own math"}: tenant_calculation
-      - ${"Help me with the math" if person_answering == "tenant" else "The tenant would like help with the math"}: uptocode_calculation
-      - ${"Do not ask for a specific settlement amount" if person_answering == "tenant" else "The tenant does not want to ask for a specific settlement amount"}: skip_amount
+      - label: |
+          % if person_answering == "tenant":
+          Let me do my own math
+          % else:
+          The tenant would like to do their own math
+          % endif
+        value: tenant_calculation
+      - label: |
+          % if person_answering == "tenant":
+          Help me with the math
+          % else:
+          The tenant would like help with the math
+          % endif
+        value: uptocode_calculation
+      - label: |
+          % if person_answering == "tenant":
+          Do not ask for a specific settlement amount
+          % else:
+          The tenant does not want to ask for a specific settlement amount
+          % endif
+        value: skip_amount
   - How serious were the problems?: damage_tenant_severity_estimate
     datatype: radio
     choices:
@@ -1134,8 +1152,7 @@ fields:
       is: uptocode_calculation
     default: ${ bad_conditions.conditions_days(default_date=users[0].move_in_date) }
     help: |
-      The default number, ${ bad_conditions.conditions_days(default_date=users[0].move_in_date) }, was calculated from the oldest and
-      newest problems you listed earlier.
+      The default number, ${ bad_conditions.conditions_days(default_date=users[0].move_in_date) }, was calculated from the oldest and newest problems you listed earlier.
   - label: |
       % if person_answering == "tenant":
       What **percentage** do you think is fair to get off of the rent for each month that you had the problems?
@@ -2296,8 +2313,20 @@ fields:
   - no label: user_owns_property
     input type: radio
     choices:
-      - ${"Yes, I own additional property" if person_answering == "tenant" else "Yes, the tenant owns additional property"}: True
-      - ${"No, I do not own any additional property" if person_answering == "tenant" else "No, the tenant does not own additional property"}: False
+      - label: |
+          % if person_answering == "tenant":
+          Yes, I own additional property
+          % else:
+          Yes, the tenant owns additional property
+          % endif
+        value: True
+      - label: |
+          % if person_answering == "tenant":
+          No, I do not own any additional property
+          % else:
+          No, the tenant does not own additional property
+          % endif
+        value: False
   - label: |
       % if person_answering == "tenant":
       List the property that you own
@@ -2337,8 +2366,20 @@ fields:
   - no label: user_has_debts
     input type: radio
     choices:
-      - ${"Yes, I have other unpaid debts" if person_answering == "tenant" else "Yes, the tenant has other unpaid debts"}: True
-      - ${"No, I do not have other unpaid debts" if person_answering == "tenant" else "No, the tenant does not have other unpaid debts"}: False
+      - label: |
+          % if person_answering == "tenant":
+          Yes, I have other unpaid debts
+          % else:
+          Yes, the tenant has other unpaid debts
+          % endif
+        value: True
+      - label: |
+          % if person_answering == "tenant":
+          No, I do not have other unpaid debts
+          % else:
+          No, the tenant does not have other unpaid debts
+          % endif
+        value: False
   - note: Enter debt type and amount
     show if: user_has_debts
   - 'Specify all debts': user_debts

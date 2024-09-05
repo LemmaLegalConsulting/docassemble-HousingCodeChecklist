@@ -644,22 +644,80 @@ subquestion: |
 continue button field: review_conditions
 id: choose a sue your landlord action
 question: |
+  % if person_answering == "tenant":
   Why do you need to take your landlord to court?
+  % else:
+  Why does the tenant need to take their landlord to court?
+  % endif
 fields:
   - Choose any that apply: kind_of_lawsuit
     datatype: checkboxes
     choices:
-      - I need repairs to my home now: get_emergency_repairs
-      - I needed repairs to my home in the past 6 years: past_repair_needs
+      - label: |
+          % if person_answering == "tenant":
+          I need repairs to my home now
+          % else:
+          The tenant needs repairs to their home now
+          % endif
+        value: get_emergency_repairs
+      - label: |
+          % if person_answering == "tenant":
+          I needed repairs to my home in the past 6 years
+          % else:
+          The tenant needed repairs to their home in the past 6 years
+          % endif
+        value: past_repair_needs
         help: |
           You can choose this even if some or all of the problems are fixed now.
-      - My landlord changed my locks or moved my things or threatened to do so: illegal_lockout          
-      - My landlord went into my home without permission: entered_without_permission
-      - My landlord went into my home without giving me enough notice: insufficient_notice
-      - My landlord made me pay for utilities but we did not have a written agreement: utilities_no_agreement
-      - My utilities were shutoff: utility_shutoff
-      - I need help with something else: other_landlord_tenant
-      - My landlord is ignoring a court order: file_contempt_complaint
+      - label: |
+          % if person_answering == "tenant":
+          My landlord changed my locks or moved my things or threatened to do so
+          % else:
+          The landlord changed the tenant's locks or moved their things or threatened to do so
+          % endif
+        value: illegal_lockout          
+      - label: |
+          % if person_answering == "tenant":
+          My landlord went into my home without permission
+          % else:
+          The landlord went into the tenant's home without permission
+          % endif
+        value: entered_without_permission
+      - label: |
+          % if person_answering == "tenant":
+          My landlord went into my home without giving me enough notice
+          % else:
+          The landlord went into the tenant's home without giving them enough notice
+          % endif
+        value: insufficient_notice
+      - label: |
+          % if person_answering == "tenant":
+          My landlord made me pay for utilities but we did not have a written agreement
+          % else:
+          The landlord made the tenant pay for utilities but they did not have a written agreement
+          % endif
+        value: utilities_no_agreement
+      - label: |
+          % if person_answering == "tenant":
+          My utilities were shutoff
+          % else:
+          The tenant's utilities were shutoff
+          % endif
+        value: utility_shutoff
+      - label: |
+          % if person_answering == "tenant":
+          I need help with something else
+          % else:
+          The tenant needs help with something else
+          % endif
+        value: other_landlord_tenant
+      - label: |
+          % if person_answering == "tenant":
+          My landlord is ignoring a court order
+          % else:
+          The tenant's landlord is ignoring a court order
+          % endif
+        value: file_contempt_complaint
     minlength: 1
     validation messages:
       minlength: |
@@ -668,24 +726,75 @@ fields:
 ---
 id: confirm notice
 question: |
+  % if person_answering == "tenant":
   Before you take your landlord to court
+  % else:
+  Before the tenant takes their landlord to court
+  % endif
 fields:
-  - Do you have an active eviction case in court?: initial_screen_tenant_facing_eviction
+  - label: | 
+      % if person_answering == "tenant":
+      Do you have an active eviction case in court?
+      % else:
+      Does the tenant have an active eviction case in court?
+      % endif
+    field: initial_screen_tenant_facing_eviction
     input type: radio
     choices:
-      - 'There is no eviction case.': no case
-      - 'I got a "Notice to Quit" or a "Notice to Terminate Tenancy", but nothing more.': notice only
-      - 'I got a "Summons and Complaint" from my landlord and I have a court date coming up.': pending
-      - 'I am in an eviction court case now.': has case
-      - 'My eviction case is already over.': closed
+      - label: There is no eviction case.
+        value: no case
+      - label: |
+          % if person_answering == "tenant":
+          I got a "Notice to Quit" or a "Notice to Terminate Tenancy", but nothing more.
+          % else:
+          The tenant got a "Notice to Quit" or a "Notice to Terminate Tenancy", but nothing more.
+          % endif
+        value: notice only
+      - label: |
+          % if person_answering == "tenant":
+          I got a "Summons and Complaint" from my landlord and I have a court date coming up.
+          % else:
+          The tenant got a "Summons and Complaint" from their landlord and they have a court date coming up.
+          % endif
+        value: pending
+      - label: |
+          % if person_answering == "tenant":
+          I am in an eviction court case now.
+          % else:
+          The tenant is in an eviction court case now.
+          % endif
+        value: has case
+      - label: |
+          % if person_answering == "tenant":
+          My eviction case is already over.
+          % else:
+          The tenant's eviction case is already over.
+          % endif
+        value: closed
   - note: |
-      **Respond with your Answer to the eviction.** Use [MADE](https://gbls.org/MADE) to help you build your Answer. Do not start a new court case with UpToCode.
-  - Does your landlord already know about the problems in your home?: tenant_sent_ll_notice
+     % if person_answering == "tenant":
+     **Respond with your Answer to the eviction.** Use [MADE](https://gbls.org/MADE) to help you build your Answer. Do not start a new court case with UpToCode.
+     % else:
+     **Respond with the tenant's Answer to the eviction.** Use [MADE](https://gbls.org/MADE) to help the tenant build their Answer. Do not start a new court case with UpToCode.
+     % endif
+  - label: |
+      % if person_answering == "tenant":
+      Does your landlord already know about the problems in your home?
+      % else:
+      Does the tenant's landlord already know about the problems in the tenant's home?
+      % endif
+    field: tenant_sent_ll_notice
     datatype: yesnoradio
     show if:
       code: |
         kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs")
-  - Did you report any problems to your town or city inspector?: tenant_called_inspector
+  - label: |
+      % if person_answering == "tenant":
+      Did you report any problems to your town or city inspector?
+      % else:
+      Did the tenant report any problems to their town or city inspector?
+      % endif
+    field: tenant_called_inspector
     datatype: yesnoradio
     show if:
       code: |
@@ -729,8 +838,13 @@ content: |
 ---
 id: warn against suing
 question: |
+  % if person_answering == "tenant":
   You may want to wait to take your landlord to court
+  % else:
+  The tenant may want to wait to take their landlord to court
+  % endif
 subquestion: |
+  % if person_answering == "tenant":
   Before you take your landlord to court, you should make sure that they know about the problem.
 
   Even if you did not tell your landlord about the problem, there may be another way
@@ -738,18 +852,48 @@ subquestion: |
 
   - If the problem is in a public part of your building, or
   - The problem existed before you moved in, or
-  - Your landlord came to your apartment for another reason and had a chance to see the problem.
+  - Your landlord came to your apartment for another reason and had a chance to see the problem. 
+  
+  % else:
+  Before the tenant takes their landlord to court, they should make sure that their landlord knows about the problem.
+
+  Even if they did not tell their landlord about the problem, there may be another way
+  that the landlord knows. For example:
+
+  - If the problem is in a public part of the tenant's building, or
+  - The problem existed before the tenant moved in, or
+  - The tenant's landlord came to their apartment for another reason and had a chance to see the problem.  
+  % endif
 fields:
-  - What do you want to do?: confirm_suing_choice
+  - label: |
+      % if person_answering == "tenant":
+      What do you want to do?
+      % else:
+      What does the tenant want to do?
+      % endif
+    field: confirm_suing_choice
     datatype: radio
     choices:
-      - Take my landlord to court now: sue_now
-      - Give my landlord notice first: give_notice_first
+      - label: |
+          % if person_answering == "tenant":
+          Take my landlord to court now
+          % else:
+          Take their landlord to court now
+          % endif
+        value: sue_now
+      - label: |
+          % if person_answering == "tenant":
+          Give my landlord notice first
+          % else:
+          Give their landlord notice first
+          % endif
+        value: give_notice_first
 ---
 id: add inspection letter to suit
 question: |
   Calling an inspector
 subquestion: |
+  % if person_answering == "tenant":
   It is usually a good idea to call a housing inspector if you sue your
   landlord. The court will pay attention to the problems the inspector
   finds. The report the inspector writes may be evidence in your case.
@@ -758,8 +902,25 @@ subquestion: |
   get an inspection report before you file your papers at court.
 
   If it is an emergency you do not have to wait for an inspection report.
+  
+  % else:
+  It is usually a good idea to call a housing inspector if a tenant sues their
+  landlord. The court will pay attention to the problems the inspector
+  finds. The report the inspector writes may be evidence in the tenant's case.
+
+  A tenant does not have to call an inspector before they use UpToCode. But they may want to
+  get an inspection report before they file their papers at court.
+
+  If it is an emergency they do not have to wait for an inspection report.
+  % endif
 fields:
-  - Do you want to include a letter to your city or town inspector?: add_inspection_letter
+  - label: |
+      % if person_answering == "tenant":
+      Do you want to include a letter to your city or town inspector?
+      % else:
+      Does the tenant want to include a letter to their city or town inspector?
+      % endif
+    field: add_inspection_letter
     datatype: yesnoradio
 ---
 features:
@@ -1110,7 +1271,13 @@ fields:
   - Add more problems?: wants_detailed_conditions
     datatype: radio
     choices:
-      - ${"Yes, see more problems I may have in each room." if person_answering == "tenant" else "Yes, see more problems the tenant may have in each room."}: True
+      - label: |
+          % if person_answering == "tenant":
+          Yes, see more problems I may have in each room.
+          % else:
+          Yes, see more problems the tenant may have in each room.
+          % endif
+        value: True
       - No, go straight to a solution.: False
 ---
 template: how_many_problems_are_there_template
@@ -1434,9 +1601,27 @@ fields:
     input type: radio
     choices:
       - There is no eviction case.: no case
-      - ${'I got a "Notice to Quit" or a "Notice to Terminate Tenancy", but nothing more.' if person_answering == "tenant" else 'The tenant got a "Notice to Quit" or a "Notice to Terminate Tenancy", but nothing more.'}: notice only
-      - ${'I got a "Summons and Complaint" from my landlord and I have a court date coming up.' if person_answering == "tenant" else 'The tenant got a "Summons and Complaint" from their landlord and they have a court date coming up.'}: pending
-      - ${"I have a case that is already in court." if person_answering == "tenant" else "The tenant has a case that is already in court."}: has case
+      - label: |
+          % if person_answering == "tenant":
+          I got a "Notice to Quit" or a "Notice to Terminate Tenancy", but nothing more.
+          % else:
+          The tenant got a "Notice to Quit" or a "Notice to Terminate Tenancy", but nothing more.
+          % endif
+        value: notice only
+      - label: |
+          % if person_answering == "tenant":
+          I got a "Summons and Complaint" from my landlord and I have a court date coming up.
+          % else:
+          The tenant got a "Summons and Complaint" from their landlord and they have a court date coming up.
+          % endif
+        value: pending
+      - label: |
+          % if person_answering == "tenant":
+          I have a case that is already in court.
+          % else:
+          The tenant has a case that is already in court.
+          % endif
+        value: has case
       - The eviction case is finished.: closed
   - note: |
       % if person_answering == "tenant":
@@ -1558,12 +1743,36 @@ fields:
     js show if: |
       val("screen_ll_knows_problem") && !val("has_tro")
     choices:
-      - ${"Save or print a copy of my checklist for later." if person_answering == "tenant" else "Save or print a copy of the tenant's checklist for later."}: get_report
-      - ${"Tell my landlord about the problems." if person_answering == "tenant" else "Tell the tenant's landlord about the problems."}: tell_landlord
-      - ${"Organize with my neighbors or other tenants in my city." if person_answering == "tenant" else "Organize with the tenant's neighbors or other tenants in their city."}: organize_tenants
+      - label: |
+          % if person_answering == "tenant":
+          Save or print a copy of my checklist for later.
+          % else:
+          Save or print a copy of the tenant's checklist for later.
+          % endif
+        value: get_report
+      - label: |
+          % if person_answering == "tenant":
+          Tell my landlord about the problems.
+          % else:
+          Tell the tenant's landlord about the problems.
+          % endif
+        value: tell_landlord
+      - label: |
+          % if person_answering == "tenant":
+          Organize with my neighbors or other tenants in my city.
+          % else:
+          Organize with the tenant's neighbors or other tenants in their city.
+          % endif
+        value: organize_tenants
       - Get a city inspection: get_inspection
       - Ask for a fair settlement. Use a consumer protection demand letter or a settlement letter.: demand_letter_93a
-      - ${"Ask the court to order my landlord to fix a problem or sue my landlord for money." if person_answering == "tenant" else "Ask the court to order the tenant's landlord to fix a problem or sue the tenant's landlord for money."}: sue_landlord
+      - label: |
+          % if person_answering == "tenant":
+          Ask the court to order my landlord to fix a problem or sue my landlord for money.
+          % else:
+          Ask the court to order the tenant's landlord to fix a problem or sue the tenant's landlord for money.
+          % endif
+        value: sue_landlord
     none of the above: False
     default:
       code: |
@@ -1575,13 +1784,43 @@ fields:
     js show if: |
       val("screen_ll_knows_problem") && val("has_tro")
     choices:
-      - ${"Save or print a copy of my checklist for later." if person_answering == "tenant" else "Save or print a copy of the tenant's checklist for later."}: get_report
-      - ${"Tell my landlord about the problems." if person_answering == "tenant" else "Tell the tenant's landlord about the problems."}: tell_landlord
-      - ${"Organize with my neighbors or other tenants in my city." if person_answering == "tenant" else "Organize with the tenant's neighbors or other tenants in their city."}: organize_tenants
+      - label: |
+          % if person_answering == "tenant":
+          Save or print a copy of my checklist for later.
+          % else:
+          Save or print a copy of the tenant's checklist for later.
+          % endif
+        value: get_report
+      - label: |
+          % if person_answering == "tenant":
+          Tell my landlord about the problems.
+          % else:
+          Tell the tenant's landlord about the problems.
+          % endif
+        value: tell_landlord
+      - label: |
+          % if person_answering == "tenant":
+          Organize with my neighbors or other tenants in my city.
+          % else:
+          Organize with the tenant's neighbors or other tenants in their city.
+          % endif
+        value: organize_tenants
       - Get a city inspection.: get_inspection
       - Ask for a fair settlement, use a consumer demand letter or a settlement letter.: demand_letter_93a
-      - ${"Ask the court to order my landlord to fix a problem or sue my landlord for money." if person_answering == "tenant" else "Ask the court to order the tenant's landlord to fix a problem or sue the tenant's landlord for money."}: sue_landlord
-      - ${"Tell a judge my landlord is ignoring the court order." if person_answering == "tenant" else "Tell a judge the tenant's landlord is ignoring the court order."}: contempt_complaint
+      - label: |
+          % if person_answering == "tenant":
+          Ask the court to order my landlord to fix a problem or sue my landlord for money.
+          % else:
+          Ask the court to order the tenant's landlord to fix a problem or sue the tenant's landlord for money.
+          % endif
+        value: sue_landlord
+      - label: |
+          % if person_answering == "tenant":
+          Tell a judge my landlord is ignoring the court order.
+          % else:
+          Tell a judge the tenant's landlord is ignoring the court order.
+          % endif
+        value: contempt_complaint
     none of the above: False
     default:
       code: |
