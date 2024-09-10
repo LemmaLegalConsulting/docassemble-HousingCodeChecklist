@@ -2064,7 +2064,7 @@ subquestion: |
   Earlier, you said that the tenant's household income was ${ currency(hh_income.total(times_per_year=12)) } per month.
   However, you've given us more details about the tenant's income since then.
   We think the tenant's household income is ${ currency(full_household_income()) } per month.
-  With this income, the tenany automatically qualifies for a waiver of court costs.
+  With this income, the tenant automatically qualifies for a waiver of court costs.
   % endif
 fields:
   - label: |
