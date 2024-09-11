@@ -470,31 +470,67 @@ content: |
 ---
 id: How much compensation would you like to claim from the landlord?
 question: |
+  % if person_answering == "tenant":
   What amount of money would be fair for your landlord to pay you?
+  % else:
+  What amount of money would be fair for the tenant's landlord to pay them?
+  % endif
 subquestion: |
   ${ collapse_template(settlement_offer_93a_explanation) }
   
   ${ collapse_template(what_if_problem_over_multiple_periods) }
 
-  The amount that you list here will be your "settlement offer".    
+  % if person_answering == "tenant":
+  The amount that you list here will be your "settlement offer".
+  % else:
+  The amount that you list here will be the tenant's "settlement offer".
+  % endif
 fields:
-  - How do you want to decide the amount to ask for?: damage_calculation_method
+  - label: |
+      % if person_answering == "tenant":
+      How do you want to decide the amount to ask for?
+      % else:
+      How does the tenant want to decide the amount to ask for?
+      % endif
+    field: damage_calculation_method
     datatype: radio
     choices:
-      - Let me do my own math: tenant_calculation
-      - Help me with the math: uptocode_calculation
+      - label: |
+          % if person_answering == "tenant":
+          Let me do my own math
+          % else:
+          Let the tenant do their own math
+          % endif
+        value: tenant_calculation
+      - label: |
+          % if person_answering == "tenant":
+          Help me with the math
+          % else:
+          Help the tenant with the math
+          % endif
+        value: uptocode_calculation
       - Do not ask for a specific settlement amount: skip_amount
   - How serious were the problems?: damage_tenant_severity_estimate
     datatype: radio
     choices:
       - The apartment was unlivable: bqe_total
         help: |
+          % if person_answering == "tenant":
           You can choose this answer even if you did not move out.
+          % else:
+          The tenant can choose this answer even if they did not move out.
+          % endif
       - The problems were serious but not unlivable: bqe_partial
     show if:      
       variable: damage_calculation_method
       is: uptocode_calculation
-  - How long did you have the problems? (Write a number and say if it happened over days, weeks, months or years): tenant_time_estimate
+  - label: |
+      % if person_answering == "tenant":
+      How long did you have the problems? (Write a number and say if it happened over days, weeks, months or years)
+      % else:
+      How long did the tenant have the problems? (Write a number and say if it happened over days, weeks, months or years)
+      % endif
+    field: tenant_time_estimate
     datatype: number
     show if:      
       variable: damage_calculation_method
@@ -506,13 +542,18 @@ fields:
       - Months: 12
       - Years: 1
     help: |
-      Choose the **time period** that goes with the **number** you wrote above so that it makes
-      a complete sentence.
+      Choose the **time period** that goes with the **number** you wrote above so that it makes a complete sentence.
     datatype: integer
     show if:      
       variable: damage_calculation_method
       is: uptocode_calculation
-  - What **percentage** do you think is fair to get off of the rent for each month that you had the problems?: tenant_percentage_estimate
+  - label: |
+      % if person_answering == "tenant":
+      What **percentage** do you think is fair to get off of the rent for each month that you had the problems?
+      % else:
+      What **percentage** does the tenant think is fair to get off of the rent for each month that they had the problems?
+      % endif
+    field: tenant_percentage_estimate
     datatype: range
     min: 0
     max: 100
@@ -522,9 +563,15 @@ fields:
       variable: damage_calculation_method
       is: uptocode_calculation
     help: |
+      % if person_answering == "tenant":
       It is up to you to ask for a percentage you think is fair. A less serious problem might 
       be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
       The percentage will be multiplied by the number of days, weeks or months you had the problem.
+      % else:
+      It is up to the tenant to ask for a percentage they think is fair. A less serious problem might 
+      be 5% and a very serious problem might be 100%. The total amount cannot be more than 100%.
+      The percentage will be multiplied by the number of days, weeks or months the tenant had the problem.
+      % endif
     validate: |
       lambda y: y > 0 or validation_error("Select a number greater than 0.")
   - Settlement offer amount: tenant_self_estimated_damages_amount
@@ -732,7 +779,7 @@ content: |
   % else:
   If | And a fair percentage to take off of the rent was | Then the amount the tenant can ask for would be
   ---|---------------------------|-----------------------------------
-  The teannt had a minor problem with mice | 10% | $200
+  The tenant had a minor problem with mice | 10% | $200
   The tenant had no heat during a mild part of the winter | 50% | $1000
   The tenant could not lock their doors | 25% | $500
 

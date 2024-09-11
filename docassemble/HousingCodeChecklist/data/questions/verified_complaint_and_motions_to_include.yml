@@ -700,30 +700,70 @@ fields:
 ---
 id: confirm ask for damages
 question: |
+  % if person_answering == "tenant":
   You said you did not send a demand letter yet
+  % else:
+  You said the tenant did not send a demand letter yet
+  % endif
 subquestion: |
   Most tenants send their landlord a demand letter
   before they sue their landlord for money.
 
+  % if person_answering == "tenant":
   Sending your landlord a demand letter means:
 
   - Your landlord may need to pay for your attorney if you win
   - You may get up to 3 times the total amount of money
+  
+  % else:
+  Sending the tenant's landlord a demand letter means:
+
+  - The tenant's landlord may need to pay for their attorney if the tenant wins
+  - The tenant may get up to 3 times the total amount of money
+  % endif
 fields:
-  - What do you want to do?: confirm_ask_for_damages
+  - label: |
+      % if person_answering == "tenant":
+      What do you want to do?
+      % else:
+      What does the tenant want to do?
+      % endif
+    field: confirm_ask_for_damages
     datatype: radio
     choices:
-      - Ask only for emergency repairs now. I will sue my landlord for money later, after I send a demand letter: postpone_damages
-      - Ask for both repairs and money now. I understand I may get less total money.: keep_on_suing
+      - label: |
+          % if person_answering == "tenant":
+          Ask only for emergency repairs now. I will sue my landlord for money later, after I send a demand letter
+          % else:
+          Ask only for emergency repairs now. The tenant will sue their landlord for money later, after they send a demand letter
+          % endif
+        value: postpone_damages
+      - label: |
+          % if person_answering == "tenant":
+          Ask for both repairs and money now. I understand I may get less total money.
+          % else:
+          Ask for both repairs and money now. The tenant understands they may get less total money.
+          % endif
+        value: keep_on_suing
   - note: |
+      % if person_answering == "tenant":
       **Okay**. After you finish this complaint, we will help you complete a
       demand letter. We can also remind you to come back and ask for money in
       about 30 days.
+      % else:
+      **Okay**. After the tenant finishes this complaint, we will help them complete a
+      demand letter. We can also remind them to come back and ask for money in
+      about 30 days.
+      % endif
     show if:
       variable: confirm_ask_for_damages
       is: postpone_damages
   - note: |
+      % if person_answering == "tenant":
       **Okay**. Your complaint will include a demand that your landlord must respond to within 30 days. We can remind you to come back and amend your complaint after 30 days.
+      % else:
+      **Okay**. The tenant's complaint will include a demand that their landlord must respond to within 30 days. We can remind the tenant to come back and amend their complaint after 30 days.
+      % endif
     show if:
       variable: confirm_ask_for_damages
       is: keep_on_suing
