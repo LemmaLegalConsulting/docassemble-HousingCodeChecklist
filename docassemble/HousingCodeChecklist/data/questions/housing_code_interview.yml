@@ -2129,16 +2129,6 @@ question: |
 fields:
   - label: |
       % if person_answering == "tenant":
-      Describe the problem using your own words (write about 1 sentence; optional) 
-      % else: 
-      Describe the problem (write about 1 sentence; optional)
-      % endif
-    field: bad_conditions[i].details[j].description
-    datatype: area
-    rows: 2
-    required: False
-  - label: |
-      % if person_answering == "tenant":
       Was the problem there when you moved in? 
       % else: 
       Was the problem there when the tenant moved in?
@@ -2189,8 +2179,9 @@ fields:
     show if: 
       variable: bad_conditions[i].details[j].condition_existed_at_start
       is: False
-  - The problem is fixed: bad_conditions[i].details[j].condition_ended
-    datatype: yesno
+  - Is the problem fixed?: bad_conditions[i].details[j].condition_ended
+    datatype: yesnoradio
+    required: False
   - note: |
       Problems fixed before ${ today().minus(years=6) } should not be listed.
     show if: bad_conditions[i].details[j].condition_ended
@@ -2212,6 +2203,16 @@ fields:
       1. still need to be fixed and 
       2. the tenant had over the last 6 years (since ${ today().minus(years=6) }), even if they are fixed now.
       % endif
+  - label: |
+      % if person_answering == "tenant":
+      If you would like, you can describe the problem using your own words (write about 1 sentence) 
+      % else: 
+      If you would like, you can describe the problem (write about 1 sentence)
+      % endif
+    field: bad_conditions[i].details[j].description
+    datatype: area
+    rows: 2
+    required: False
   - Take or upload a photo: bad_conditions[i].details[j].has_file_to_upload
     datatype: yesno
   - Add a photo or other proof of the problem, if you have it: bad_conditions[i].details[j].files
