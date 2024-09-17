@@ -205,6 +205,20 @@ subquestion: |
   The court may need to call the tenant to set up a hearing. If the tenant
   does not have their own phone number or email, they can consider using
   a phone number that belongs to a trusted friend or family member.
+  % elif person_answering == "tenant" and document_choice['get_inspection']:
+  The inspector may need to contact you to set up an inspection of your unit. If you
+  do not have your own phone number or email, consider using
+  a phone number or email that belongs to a trusted friend or family member.
+  % elif person_answering == "attorney" or person_answering == "tenant_helper" and document_choice['get_inspection']:
+  The inspector may need to contact the tenant to set up an inspection of their unit. If the tenant does not have their own phone number or email, they can consider using a phone number or email that belongs to a trusted friend or family member.
+  % elif person_answering == "tenant":
+  Your landlord may need to contact you to set up a time for repairs. If you
+  do not have your own phone number or email, consider using
+  a phone number or email that belongs to a trusted friend or family member.
+  % else:
+  The tenant's landlord may need to contact them to set up a time for repairs. If the tenant
+  does not have their own phone number or email, they can consider using
+  a phone number or email that belongs to a trusted friend or family member.
   % endif
 fields:  
   - Mobile number: users[0].mobile_number
