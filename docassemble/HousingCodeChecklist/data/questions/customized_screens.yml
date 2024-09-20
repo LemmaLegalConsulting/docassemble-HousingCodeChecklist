@@ -544,10 +544,14 @@ question: |
   % endif
 subquestion: |
   % if person_answering == "tenant":
-  If you want, you can include a citation to the Sanitary Code next to each condition in your letter.
+  If you want, you can include a citation to the **Sanitary Code** next to each condition in your letter. That means you add a reference to the part of the law that your landlord needs to follow.
+  
   % else:
-  If the tenant wants, they can include a citation to the Sanitary Code next to each condition in the letter.
+  If the tenant wants, they can include a citation to the **Sanitary Code** next to each condition in their letter. That means that they add a reference to the part of the law that their landlord needs to follow.
   % endif
+  
+  Including a citation to the Sanitory Code is often a good idea.
+  
   Example:
   
   > ${ bad_conditions.active_conditions().item(0).description or bad_conditions.active_conditions().item(0).original_description } (${ bad_conditions.active_conditions().item(0).code })
