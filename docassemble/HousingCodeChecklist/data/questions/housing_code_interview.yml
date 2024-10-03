@@ -2034,7 +2034,9 @@ subquestion: |
   1. Read the instructions to learn how to file and deliver the tenant's
   documents.
   % endif
+  % if document_choice["sue_landlord"] or document_choice["contempt_complaint"]:
   1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call the court for instructions at ${ tel(trial_court.phone_number) }.
+  % endif
   % if person_answering == "tenant":
   1. You can come back to UpToCode later to take additional steps.
   % else:
