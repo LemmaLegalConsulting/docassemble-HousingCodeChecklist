@@ -964,21 +964,22 @@ question: |
   What court does the tenant want to file in?
   % endif
 subquestion: |
+  % if len(all_matches) > 0:
+  Select an option from the list of court(s) serving the address you gave us,
+    % if isinstance(addresses_to_search, Iterable):
+    ${comma_and_list([address.on_one_line() for address in addresses_to_search],comma_string='; ')}.
+    % else:
+    ${addresses_to_search.on_one_line()}
+    % endif
+  % endif
+  
   Most tenants file in the Housing Court.
 
   ${ collapse_template(housing_how_to_pick_court_help_template) }
-
-  % if len(all_matches) > 0:
-  Below is a map of the court(s) that serve
-  the address you gave us, 
-  % if isinstance(addresses_to_search, Iterable):
-  ${comma_and_list([address.on_one_line() for address in addresses_to_search],comma_string='; ')}.
-  % else:
-  ${addresses_to_search.on_one_line()}
-  % endif
   
+under: |    
+  Below is a map of the court(s) that serve the address you gave us.
   ${map_of(combined_locations(all_matches))}
-  % endif
   
 fields:
   - no label: trial_court
@@ -1003,6 +1004,7 @@ fields:
     show if:
       variable: trial_court
       is: None
+      
 ---
 template: housing_how_to_pick_court_help_template
 subject: |
