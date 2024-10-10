@@ -966,11 +966,11 @@ question: |
 subquestion: |
   % if len(all_matches) > 0:
   Select an option from the list of court(s) serving the address you gave us,
-    % if isinstance(addresses_to_search, Iterable):
-    ${comma_and_list([address.on_one_line() for address in addresses_to_search],comma_string='; ')}.
-    % else:
-    ${addresses_to_search.on_one_line()}
-    % endif
+  % if isinstance(addresses_to_search, Iterable):
+  ${comma_and_list([address.on_one_line() for address in addresses_to_search],comma_string='; ')}.
+  % else:
+  ${addresses_to_search.on_one_line()}
+  % endif
   % endif
   
   Most tenants file in the Housing Court.
