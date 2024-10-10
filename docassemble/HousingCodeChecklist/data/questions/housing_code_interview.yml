@@ -1387,6 +1387,8 @@ data:
     image: utensils        
   - Bedroom: Bedroom    
     image: bed    
+  - Basement/Cellar: Basement/Cellar
+    image: stairs
   - Porch and balcony: Porch and balcony
     image: store    
   - Exits: Exits
