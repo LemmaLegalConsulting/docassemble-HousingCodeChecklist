@@ -2530,9 +2530,9 @@ review:
       - main_triage_screen
     button: |
       % if person_answering == "tenant":
-      You have an active eviction case in court: **${ yesno(screen_tenant_facing_eviction) }**
+      You have an active eviction case in court: **${ "Yes" if screen_tenant_facing_eviction == "pending" or screen_tenant_facing_eviction == "has case" else "No" }**
       % else:
-      The tenant has an active eviction case in court: **${ yesno(screen_tenant_facing_eviction) }**
+      The tenant has an active eviction case in court: **${ "Yes" if screen_tenant_facing_eviction == "pending" or screen_tenant_facing_eviction == "has case" else "No" }**
       % endif
   - Edit: 
       - main_triage_screen
