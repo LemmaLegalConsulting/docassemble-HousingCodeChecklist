@@ -16,6 +16,7 @@ include:
   - language.yml
   - simple_conditions.yml
   - orders_and_contempt_complaint.yml
+  - autoterms.yml
 ---
 features:
   bootstrap theme: uptocode.bootstrap.css
@@ -1868,10 +1869,6 @@ validation code: |
     validation_error("Pick at least one.", field="document_choice")
   if screen_ll_knows_problem and "contempt_complaint" not in document_choice:
     document_choice["contempt_complaint"] = False
-terms:
-  retaliation: |
-    Retaliation includes evicting you or raising your rent because you
-    complained about housing problems. Retaliation is against the law. The court can protect you from retaliation.
 ---
 # Set a default value for all document choices
 variable name: document_choice
@@ -1937,6 +1934,7 @@ code: |
   # display_inspector_information
   other_parties[0].name.first
   other_parties[0].address.address
+  condemn_warning
   interview_order_request_housing_inspection = True
 ---
 code: |
@@ -2045,6 +2043,16 @@ subquestion: |
   1. The tenant can come back to UpToCode later to take additional steps.
   % endif
   % if showifdef("interview_order_request_housing_inspection") and person_answering == "tenant":
+  
+  <h2 class="h4">Before submitting your request to inspectional services, please seek legal help if you believe that:</h2>
+  
+  1. You live in an {illegal unit}.
+  1. Your unit is {overcrowded}.
+  1. Your unit is {uninhabitable}.
+  
+  A unit can be {condemned} in these circumstances.
+  
+  Find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
 
   <h2 class="h4">To call the housing inspector for your city or town</h2>
   You can call the inspector at ${ tel(inspector_information["Telephone"]) }.
@@ -2055,6 +2063,16 @@ subquestion: |
   ${ collapse_template(detailed_inspector_information_template)}  
   
   % elif showifdef("interview_order_request_housing_inspection"): 
+  
+  <h2 class="h4">Before submitting the tenant's request to inspectional services, please seek legal help if they believe that:</h2>
+  
+  1. They live in an {illegal unit}.
+  1. Their unit is {overcrowded}.
+  1. Their unit is {uninhabitable}.
+  
+  A unit can be {condemned} in these circumstances.
+  
+  Find legal aid organizations in the tenant's area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
   
   <h2 class="h4">To call the housing inspector for your city or town</h2>
   You can call the inspector at ${ tel(inspector_information["Telephone"]) }.
@@ -2961,3 +2979,30 @@ content: |
   <a href="https://www.lsc.gov/"><img src="${ lsc_logo.url_for() }" style="max-width: 80%" alt="Legal Services Corporation logo"/></a>
 
   <a href="https://www.mlac.org/"><img src="${ mlac_logo.url_for() }" alt="Massachusetts Legal Assistance Corporation logo"/></a>
+---
+id: condemn_warning
+continue button field: condemn_warning
+question: |
+  You may want to wait to submit a request to inspectional services
+subquestion: |
+  % if person_answering == "tenant":
+  A unit can be {condemned} in certain circumstances.
+  
+  **Before submitting your request to inspectional services, please seek legal help if you believe that:**
+  
+  1. You live in an {illegal unit}.
+  1. Your unit is {overcrowded}.
+  1. Your unit is {uninhabitable}.
+  
+  Find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+  % else:
+  A unit can be {condemned} in certain circumstances.
+  
+  **Before submitting a request to inspectional services, please seek legal help if the tenant thinks that:**
+  
+  1. They live in an {illegal unit}.
+  1. Their unit is {overcrowded}.
+  1. Their unit is {uninhabitable}.
+  
+  Find legal aid organizations in the tenant's area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+  % endif
