@@ -1,0 +1,14 @@
+id: terms
+terms:
+  condemned: |
+    If a unit is condemned the tenants must move out. A unit can be condemned if it is considered to be an illegal unit, is overcrowded, or is found to be uninhabitable by Inspectors or the Board of Health.
+  green words: |
+    Green words are legal terms or a short explanation. The definition or explanation pops up when you click the green words.
+  illegal unit: |
+    An illegal unit is a unit that hasn’t been properaly registered with the City or Town. Illegal units are often in converted attics or basements of the building that do not meet basic safety or sanitary code standards.
+  overcrowded: |
+    A rental unit is considered overcrowded if there is not enough space for all of the tenants. Generally, having more than two people per bedroom can be considered overcrowding if the room is not large enough as defined in the MA State Sanitary Code (105 CMR 410.420(D)).
+  retaliation: |
+    Retaliation includes evicting you or raising your rent because you complained about housing problems. Retaliation is against the law. The court can protect you from retaliation.
+  uninhabitable: |
+    If a housing inspector finds that all or a part of the building you live in is unsuitable to live in and/or repairs cannot be made while you are living in the property, the Board of Health may issue a finding that the dwelling or a portion of the dwelling is unfit for human habitation.
