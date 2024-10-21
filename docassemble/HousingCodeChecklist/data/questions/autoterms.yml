@@ -1,0 +1,18 @@
+id: terms
+terms:
+  condemned: |
+    If a unit is condemned the tenants must move out. A unit can be condemned if it is considered to be an illegal unit, is overcrowded, or is found to be uninhabitable by City Inspectors or the Board of Health.
+  illegal unit: |
+    An illegal unit is a unit that the landlord doesn’t have a certificate of occupancy for or a unit that hasn’t been properaly registered with the City or Town.
+  overcrowded: |
+    A rental unit is considered overcrowded if there is not enough space as defined in the MA State Sanitary Code.
+    <br>
+    <br>
+    1. The first person in a unit needs 150 square feet of living space, and each additional person needs 100 square feet of living space. For example, a unit with four people needs 450 square feet of living space.
+    <br>
+    <br>
+    2. The first person in a bedroom needs 70 square feet of bedroom space, and each additional person needs 50 square feet. For example, a bedroom with two people needs 120 square feet of bedroom space.
+  retaliation: |
+    Retaliation includes evicting you or raising your rent because you complained about housing problems. Retaliation is against the law. The court can protect you from retaliation.
+  uninhabitable: |
+    If a housing inspector finds that all or a part of the building you live in is unsuitable to live in and/or repairs cannot be made while you are living in the property, the Board of Health may issue a finding that the dwelling or a portion of the dwelling is unfit for human habitation.
