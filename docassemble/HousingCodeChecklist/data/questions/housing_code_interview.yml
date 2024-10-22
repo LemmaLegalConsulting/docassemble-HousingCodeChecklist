@@ -1805,6 +1805,18 @@ fields:
         value: organize_tenants
       - Get a city inspection: get_inspection
       - Ask for a fair settlement. Use a consumer protection demand letter or a settlement letter.: demand_letter_93a
+        help: |
+          % if person_answering == "tenant":
+          A **demand letter** is a special letter that counts as a legal request for money. This is sometimes called a 93A demand letter, a 30-day demand letter, or a request for settlement.
+          <br>
+          <br>
+          You need to send the demand letter at least **30 days** before you file any papers with the court. You should also send it by certified mail so that you have a record of it being recieved your landlord.
+          % else:
+          A **demand letter** is a special letter that counts as a legal request for money. This is sometimes called a 93A demand letter, a 30-day demand letter, or a request for settlement. 
+          <br>
+          <br>
+          The tenant needs to send the demand letter at least **30 days** before they file any papers with the court. A tenant should also send it by certified mail so that they have a record of it being recieved by their landlord.
+          % endif
       - label: |
           % if person_answering == "tenant":
           Ask the court to order my landlord to fix a problem or sue my landlord for money.
