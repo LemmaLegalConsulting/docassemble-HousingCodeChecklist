@@ -1996,27 +1996,34 @@ id: preview_docs
 continue button field: preview_docs
 question: |
   % if person_answering == "tenant":
-  Review your documents before you sign
+  Preview your documents before you sign
   % else:
-  Review the tenant's documents before they sign
+  Preview the tenant's documents before they sign
   % endif
 subquestion: |
-  % if person_answering == "tenant":
-  The next step is to sign your documents. Before you sign, you can **review** what the documents will look like by opening the document below in a new browser tab.
-  
-  If you need to make any changes, select the navigation labels on the left
-  to revisit the section or sections you want to change.
-  
-  When you are ready, click "next" to add your signature.
-  
-  % else:
-  The next step is to sign the documents. Before the tenant signs, you can **review** what the documents will look like by opening the document below in a new browser tab.
-  
-  If you need to make any changes, select the navigation labels on the left
-  to revisit the section or sections you want to change.
-  
-  When you are ready, click "next" to add the tenant's signature.
-  % endif
+  <div class="alert alert-secondary h-100 mh-100" role="alert">
+    <p class="h6 alert-heading"><i class="fa-solid fa-signs-post"></i>
+    % if person_answering == "tenant":
+    The next step is to sign your documents. Before you sign, you can <strong>preview</strong> what the documents will look like by opening the document below in a new browser tab.
+    <br>
+    <br>
+    If you need to make any changes, select the navigation labels on the left to revisit the section or sections you want to change.
+    <br>
+    <br>
+    When you are ready, click "next" to add your signature.
+    
+    % else:
+    The next step is to sign the documents. Before the tenant signs, you can <strong>preview</strong> what the documents will look like by opening the document below in a new browser tab.
+    <br>
+    <br>
+    If you need to make any changes, select the navigation labels on the left to revisit the section or sections you want to change.
+    <br>
+    <br>
+    When you are ready, click "next" to add the tenant's signature.
+    
+    % endif
+    </p>
+  </div>
   
   % if screen_ll_knows_problem:
   ${ everything_for_emailing_bundle.as_pdf(key='preview') }
@@ -2097,7 +2104,7 @@ subquestion: |
   % endif
 
   % if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0 and person_answering == "tenant":
-  <h2 class="h4">Documents for you to <stong>print</strong> and deliver or keep for your records</h2>
+  <h2 class="h4">Documents for you to <strong>print</strong> and deliver or keep for your records</h2>
   ${ housing_code_bundle.download_list_html(format="docx") }
   
   % elif screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
