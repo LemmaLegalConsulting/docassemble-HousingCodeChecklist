@@ -50,6 +50,7 @@ code: |
   set_progress(25.0)
   other_parties[0].name.first
   other_parties[0].address.address
+  other_parties[0].phone_number
   tenant_repair_issue_date
   tenant_repair_issue_description
   tenant_repair_introduction

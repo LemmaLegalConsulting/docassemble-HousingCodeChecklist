@@ -116,7 +116,7 @@ code: |
     interview_order_tenant_repair_request
     nav.set_section(sub_documents['organize_tenants'].get('section_link'))
     organizing_interstitial
-    nav.set_section("preview_and_sign")
+    nav.set_section("review_and_sign")
     basic_questions_signature_flow
   else:
     explain_documents
@@ -162,22 +162,23 @@ code: |
       case_name
       docket_numbers
       ask_affidavit_questions
-    nav.set_section('preview_and_sign')
+    nav.set_section('review_and_sign')
     uptocode_review
-    preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
-    nav.set_section('preview_and_sign')
+    nav.set_section('review_and_sign')
     uptocode_review
-    preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and {'get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
-    nav.set_section('preview_and_sign')
+    nav.set_section('review_and_sign')
     uptocode_review
-    preview_docs
     basic_questions_signature_flow
-  
+    if users[0].address.city.lower() == "chelsea":
+      direct_inspection_email
+    else:
+      direct_inspection_email = False
+    
   reached_download_screen = True
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
@@ -601,7 +602,7 @@ sections:
   - review_conditions: List problems
   - main_triage_screen: Choose a solution
   - provide_details: Answer questions
-  - preview_and_sign: Preview and sign
+  - review_and_sign: Review and sign
   - download_conditions_checklist_docs: Download
 auto open: True  
 ---
@@ -1938,6 +1939,7 @@ code: |
   users[0].name.first
   users[0].address.address
   users[0].mailing_address.address
+  users[0].email
   try:
     users[0].address.geocode()
   except:
@@ -1946,6 +1948,7 @@ code: |
   # display_inspector_information
   other_parties[0].name.first
   other_parties[0].address.address
+  other_parties[0].email
   condemn_warning
   interview_order_request_housing_inspection = True
 ---
@@ -1992,6 +1995,8 @@ content: |
   % endif
 
 ---
+comment: |
+  ### No longer used due to timeouts and issues with conditional logic for docx files. ###
 id: preview_docs
 continue button field: preview_docs
 question: |
@@ -2033,6 +2038,47 @@ subquestion: |
   
   % endif
 ---
+id: direct_inspection_email
+question: |
+  % if person_answering == "tenant":
+  You can send your inspection request directly to Chelsea Inspectional Services
+  % else:
+  The tenant can send their inspection request directly to Chelsea Inspectional Services
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  The address you gave is in the City of Chelsea. Chelsea can receive inspection requests by email.
+  
+  Would you like to send your inspection request directly to Chelsea Inspectional Services?
+  
+  If you click yes, we will email your request to Chelsea Inspectional Services now.
+  % else:
+  The address the tenant provided is in the City of Chelsea. Chelsea can receive inspection requests by email.
+  
+  Would you like to send the tenant's inspection request directly to Chelsea Inspectional Services?
+  
+  If you click yes, we will email their request to Chelsea Inspectional Services now.
+  % endif
+
+yesno: direct_inspection_email
+---
+id: direct_inspection_email_success
+code: |
+  if direct_inspection_email == True:
+      direct_inspection_email_success = send_email(to="#", template=chelsea_inspection_email_template, attachments=request_housing_inspection_attachment.as_pdf())
+---
+template: chelsea_inspection_email_template
+subject: |
+  Request for inspection through UpToCode
+content: |
+  Hello Chelsea Inspectional Services,
+  
+  Attached is my request for an inspection of my rental unit.
+  
+  Sincerely,
+  
+  ${ users[0].name }
+---
 id: download_conditions_checklist_docs
 event: download_conditions_checklist_docs
 question: |
@@ -2047,11 +2093,21 @@ subquestion: |
   or someone else a copy of the documents in an email.
   1. Read the instructions to learn how to file and deliver your
   documents.
+    % if direct_inspection_email == True and direct_inspection_email_success:
+    1. The email to Chelsea Inspectional Services was sent successfully. You do not need to send your inspection request seperately. You can wait for the inspector to reach out to you, but their contact info is also available below.
+    % elif direct_inspection_email == True:
+    1. The email to Chelsea Inspectional Services failed to send, follow the instructions on how to contact Chelsea Inspectional Services below.
+    % endif
   % else: 
   1. Download and **print** the tenant's documents below. The tenant can also send themselves
   or someone else a copy of the documents in an email.
   1. Read the instructions to learn how to file and deliver the tenant's
   documents.
+    % if direct_inspection_email == True and direct_inspection_email_success:
+    1. The email to Chelsea Inspectional Services was sent successfully. The tenant does not need to send their inspection request seperately. They can wait for the inspector to reach out to them, but the inspector's contact info is also available below.
+    % elif direct_inspection_email == True:
+    1. The email to Chelsea Inspectional Services failed to send, follow the instructions on how to contact Chelsea Inspectional Services below.
+    % endif
   % endif
   % if document_choice["sue_landlord"] or document_choice["contempt_complaint"]:
   1. Deliver the court forms to the ${ trial_court } at ${ trial_court.address.on_one_line() }. You can call the court for instructions at ${ tel(trial_court.phone_number) }.
@@ -2061,17 +2117,20 @@ subquestion: |
   % else:
   1. The tenant can come back to UpToCode later to take additional steps.
   % endif
+    
+  
   % if showifdef("interview_order_request_housing_inspection") and person_answering == "tenant":
+    % if direct_inspection_email == False:
+    <h2 class="h4">Before submitting your request to inspectional services, please seek legal help if you believe that:</h2>
+
+    1. You live in an {illegal unit}.
+    1. Your unit is {overcrowded}.
+    1. Your unit is {uninhabitable}.
   
-  <h2 class="h4">Before submitting your request to inspectional services, please seek legal help if you believe that:</h2>
+    A unit can be {condemned} in these circumstances.
   
-  1. You live in an {illegal unit}.
-  1. Your unit is {overcrowded}.
-  1. Your unit is {uninhabitable}.
-  
-  A unit can be {condemned} in these circumstances.
-  
-  Find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+    Find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+    % endif
 
   <h2 class="h4">To call the housing inspector for your city or town</h2>
   You can call the inspector at ${ tel(inspector_information["Telephone"]) }.
@@ -2081,18 +2140,19 @@ subquestion: |
 
   ${ collapse_template(detailed_inspector_information_template)}  
   
-  % elif showifdef("interview_order_request_housing_inspection"): 
+  % elif showifdef("interview_order_request_housing_inspection"):
+    % if direct_inspection_email == False:
+    <h2 class="h4">Before submitting the tenant's request to inspectional services, please seek legal help if they believe that:</h2>
   
-  <h2 class="h4">Before submitting the tenant's request to inspectional services, please seek legal help if they believe that:</h2>
+    1. They live in an {illegal unit}.
+    1. Their unit is {overcrowded}.
+    1. Their unit is {uninhabitable}.
   
-  1. They live in an {illegal unit}.
-  1. Their unit is {overcrowded}.
-  1. Their unit is {uninhabitable}.
+    A unit can be {condemned} in these circumstances.
   
-  A unit can be {condemned} in these circumstances.
-  
-  Find legal aid organizations in the tenant's area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
-  
+    Find legal aid organizations in the tenant's area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+    % endif
+    
   <h2 class="h4">To call the housing inspector for your city or town</h2>
   You can call the inspector at ${ tel(inspector_information["Telephone"]) }.
   
