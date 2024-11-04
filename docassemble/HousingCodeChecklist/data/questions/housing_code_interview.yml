@@ -43,6 +43,7 @@ metadata:
     - Sofija Belacjic
     - Mia Bonardi
     - Stavros Constantinou
+    - Kelly McGuire
   title url: |
     https://getuptocode.org
   tags:
@@ -2065,7 +2066,7 @@ yesno: direct_inspection_email
 id: direct_inspection_email_success
 code: |
   if direct_inspection_email == True:
-      direct_inspection_email_success = send_email(to="#", template=chelsea_inspection_email_template, attachments=request_housing_inspection_attachment.as_pdf())
+      direct_inspection_email_success = send_email(to="housingcomplaints@chelseama.gov", template=chelsea_inspection_email_template, attachments=request_housing_inspection_attachment.as_pdf())
 ---
 template: chelsea_inspection_email_template
 subject: |
