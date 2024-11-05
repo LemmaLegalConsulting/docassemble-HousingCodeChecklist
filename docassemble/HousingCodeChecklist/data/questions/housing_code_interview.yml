@@ -164,23 +164,35 @@ code: |
       ask_affidavit_questions
     nav.set_section('preview_and_sign')
     uptocode_review
-    preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
     nav.set_section('preview_and_sign')
     uptocode_review
-    preview_docs
     basic_questions_signature_flow
   if screen_ll_knows_problem and {'get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
     nav.set_section('preview_and_sign')
     uptocode_review
-    preview_docs
     basic_questions_signature_flow
   
   reached_download_screen = True
   reconsider('snapshot_interview_state')
   nav.set_section('download_conditions_checklist_docs')
+
+  # Kick off the background assembly tasks
+  tasks_to_monitor = []
+  if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
+    housing_code_bundle.generate_downloads_with_docx_task
+    tasks_to_monitor.append(housing_code_bundle.generate_downloads_with_docx_task)
+  tenant_repair_letter_bundle.generate_downloads_with_docx_task
+  tasks_to_monitor.append(tenant_repair_letter_bundle.generate_downloads_with_docx_task)
+  if screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"]:
+    affirmative_complaint_bundle.generate_downloads_with_docx_task
+    tasks_to_monitor.append(affirmative_complaint_bundle.generate_downloads_with_docx_task)
+  
+  if not all(task.ready() for task in tasks_to_monitor):
+    al_download_waiting_screen
+
   download_conditions_checklist_docs
 ---
 code: |
@@ -1990,48 +2002,6 @@ content: |
   % if inspector_information["Special Contact"]:
   Other report method | ${ inspector_information["Special Contact"] }
   % endif
-
----
-id: preview_docs
-continue button field: preview_docs
-question: |
-  % if person_answering == "tenant":
-  Preview your documents before you sign
-  % else:
-  Preview the tenant's documents before they sign
-  % endif
-subquestion: |
-  <div class="alert alert-secondary h-100 mh-100" role="alert">
-    <p class="h6 alert-heading"><i class="fa-solid fa-signs-post"></i>
-    % if person_answering == "tenant":
-    The next step is to sign your documents. Before you sign, you can <strong>preview</strong> what the documents will look like by opening the document below in a new browser tab.
-    <br>
-    <br>
-    If you need to make any changes, select the navigation labels on the left to revisit the section or sections you want to change.
-    <br>
-    <br>
-    When you are ready, click "next" to add your signature.
-    
-    % else:
-    The next step is to sign the documents. Before the tenant signs, you can <strong>preview</strong> what the documents will look like by opening the document below in a new browser tab.
-    <br>
-    <br>
-    If you need to make any changes, select the navigation labels on the left to revisit the section or sections you want to change.
-    <br>
-    <br>
-    When you are ready, click "next" to add the tenant's signature.
-    
-    % endif
-    </p>
-  </div>
-  
-  % if screen_ll_knows_problem:
-  ${ everything_for_emailing_bundle.as_pdf(key='preview') }
-
-  % else:
-  ${ tenant_repair_letter_bundle.as_pdf(key='preview') }
-  
-  % endif
 ---
 id: download_conditions_checklist_docs
 event: download_conditions_checklist_docs
@@ -2105,14 +2075,14 @@ subquestion: |
 
   % if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0 and person_answering == "tenant":
   <h2 class="h4">Documents for you to <strong>print</strong> and deliver or keep for your records</h2>
-  ${ housing_code_bundle.download_list_html(format="docx") }
+  ${ housing_code_bundle.download_list_html(format="docx", use_previously_cached_files=True) }
   
   % elif screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
   <h2 class="h4">Documents for the tenant to <strong>print</strong> and deliver or keep for their records</h2>
-  ${ housing_code_bundle.download_list_html(format="docx") }
+  ${ housing_code_bundle.download_list_html(format="docx", use_previously_cached_files=True) }
   
   % elif len(tenant_repair_letter_bundle.enabled_documents()) > 0: 
-  ${ tenant_repair_letter_bundle.download_list_html(format="docx") }
+  ${ tenant_repair_letter_bundle.download_list_html(format="docx", use_previously_cached_files=True) }
   
   % endif  
   % if screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"]:
@@ -2123,7 +2093,7 @@ subquestion: |
   <h2 class="h4">Documents for the tenant to <strong>print</strong> and file in court</h2>
   % endif
   
-  ${ affirmative_complaint_bundle.download_list_html(format="docx") }
+  ${ affirmative_complaint_bundle.download_list_html(format="docx", use_previously_cached_files=True) }
   % endif
   
   ${ everything_for_emailing_bundle.send_button_html() }

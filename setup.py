@@ -54,7 +54,7 @@ setup(name='docassemble.HousingCodeChecklist',
       url='https://getuptocode.org',
       packages=find_packages(),
       namespace_packages=['docassemble'],
-      install_requires=['docassemble.ALMassachusetts>=0.1.2', 'docassemble.AssemblyLine>=3.1.0', 'docassemble.MassAccess>=0.4.1'],
+      install_requires=['docassemble.ALMassachusetts>=0.1.2', 'docassemble.AssemblyLine>=3.2.0', 'docassemble.MassAccess>=0.4.1'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/HousingCodeChecklist/', package='docassemble.HousingCodeChecklist'),
      )
