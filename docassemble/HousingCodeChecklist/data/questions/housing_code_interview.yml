@@ -116,8 +116,6 @@ code: |
     interview_order_tenant_repair_request
     nav.set_section(sub_documents['organize_tenants'].get('section_link'))
     organizing_interstitial
-    nav.set_section("preview_and_sign")
-    basic_questions_signature_flow
   else:
     explain_documents
     update_sections_with_selected_documents  
@@ -162,18 +160,12 @@ code: |
       case_name
       docket_numbers
       ask_affidavit_questions
-    nav.set_section('preview_and_sign')
-    uptocode_review
-    basic_questions_signature_flow
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
-    nav.set_section('preview_and_sign')
-    uptocode_review
-    basic_questions_signature_flow
-  if screen_ll_knows_problem and {'get_inspection', 'tell_landlord'}.intersection(document_choice.true_values()):
-    nav.set_section('preview_and_sign')
-    uptocode_review
-    basic_questions_signature_flow
+  
+  nav.set_section('preview_and_sign')
+  uptocode_review
+  basic_questions_signature_flow
   
   reached_download_screen = True
   reconsider('snapshot_interview_state')
