@@ -2050,18 +2050,22 @@ subquestion: |
   % if person_answering == "tenant":
   The address you gave is in the City of Chelsea. Chelsea can receive inspection requests by email.
   
-  Would you like to send your inspection request directly to Chelsea Inspectional Services?
-  
   If you click yes, we will email your request to Chelsea Inspectional Services now.
   % else:
   The address the tenant provided is in the City of Chelsea. Chelsea can receive inspection requests by email.
   
-  Would you like to send the tenant's inspection request directly to Chelsea Inspectional Services?
-  
   If you click yes, we will email their request to Chelsea Inspectional Services now.
   % endif
-
-yesno: direct_inspection_email
+  
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Would you like to send your inspection request directly to Chelsea Inspectional Services?
+      % else:
+      Would you like to send the tenant's inspection request directly to Chelsea Inspectional Services?
+      % endif
+    field: direct_inspection_email
+    datatype: yesnoradio 
 ---
 id: direct_inspection_email_success
 code: |
