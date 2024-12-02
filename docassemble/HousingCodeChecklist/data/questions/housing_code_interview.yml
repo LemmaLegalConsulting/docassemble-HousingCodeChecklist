@@ -45,7 +45,7 @@ metadata:
     - Stavros Constantinou
     - Kelly McGuire
   title url: |
-    https://getuptocode.org
+    https://uptocode.org
   tags:
     - HO-00-00-00-00
 comment: |
@@ -247,7 +247,7 @@ id: landing-page
 question: |
   You deserve a safe and decent home
 subquestion: |
-  Need help to get repairs or stop your **Massachusetts** landlord from harassing you? Pick a task.
+  Need help to get repairs or enforce your rights as a **Massachusetts** tenant? Pick a task.
   
   
   % if device() and hasattr(device(), "is_mobile") and device().is_mobile:
@@ -2193,7 +2193,7 @@ content: |
   We are attaching a copy of the documents that you worked on. Keep this for
   your records.
 
-  Learn more at [getuptocode.org](https://getuptocode.org)
+  Learn more at [uptocode.org](https://uptocode.org)
 ---
 template: tenant_repair_letter_bundle.send_email_template
 subject: |
@@ -2209,7 +2209,7 @@ content: |
   We are attaching a copy of the documents that you worked on. Keep this for
   your records.
 
-  Learn more at [getuptocode.org](https://getuptocode.org)
+  Learn more at [uptocode.org](https://uptocode.org)
 ---
 template: affirmative_complaint_bundle.send_email_template
 subject: |
@@ -2229,7 +2229,7 @@ content: |
   and deliver a copy to your landlord. Read the attached documents for more
   instructions.
 
-  Learn more at [getuptocode.org](https://getuptocode.org)
+  Learn more at [uptocode.org](https://uptocode.org)
 ---
 id: details for this claim
 question: |
@@ -2526,7 +2526,7 @@ review:
         - **${ other_parties[0].name }**
         - **Person or Business:** ${other_parties[0].person_type}
         % if other_parties[0].phone_number:
-        - **Phone number:** ${users[0].phone_number}
+        - **Phone number:** ${other_parties[0].phone_number}
         % endif
         % if other_parties[0].email:
         - **Email:** ${other_parties[0].email}
