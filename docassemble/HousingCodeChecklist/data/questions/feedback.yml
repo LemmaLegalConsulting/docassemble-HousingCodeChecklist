@@ -389,7 +389,7 @@ subquestion: |
   about your personal civil legal problems. 
 buttons:
   - Exit: exit
-    url: https://getuptocode.org
+    url: https://uptocode.org
 ---
 id: end_results
 event: end_results
@@ -405,7 +405,7 @@ subquestion: |
   % endif
 buttons:
   - Exit: exit
-    url: https://getuptocode.org
+    url: https://uptocode.org
 ---
 template: bug_report
 subject: |
