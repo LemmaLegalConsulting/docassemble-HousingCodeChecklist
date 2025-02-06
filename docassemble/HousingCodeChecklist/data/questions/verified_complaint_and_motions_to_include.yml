@@ -179,7 +179,7 @@ subquestion: |
  
   % endif
   
-  The emergency order should last 10 days.
+  The emergency order should last 10 days, after which another hearing can be scheduled to order further relief if needed.
 fields:
   - label: | 
       % if person_answering == "tenant": 
