@@ -476,7 +476,7 @@ fields:
     datatype: checkboxes
     minlength: 1
     choices:
-      - I affirm that the answers I have given are true, under the pains and penalties of perjury: states_true
+      - I affirm that I have personal knowledge of all of the facts stated and hereby swear under the penalty of perjury that all of those facts are true.: states_true
     validation messages:
       minlength: |
         You cannot keep going unless you did your best to tell the truth.
