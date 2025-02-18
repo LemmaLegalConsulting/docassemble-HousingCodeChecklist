@@ -59,6 +59,8 @@ code: |
     verified_complaint_tenant_voucher_at_risk
   complaint_ask_for_tro
   complaint_ask_for_relocation
+  complaint_raft_or_other_assistance
+  complaint_retaliation
   trial_court
   other_parties[0].phone_number
   users[0].email
@@ -238,6 +240,38 @@ fields:
       % endif
     field: complaint_ask_for_relocation
     datatype: yesnoradio    
+---
+id: rental assistance
+question: |
+  RAFT or rental assistance
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Have you applied for or previously used {RAFT} or other rental assistance to help pay for this apartment?
+      % else:
+      Has the tenant applied for or previously used {RAFT} or other rental assistance to help pay for this apartment?
+      % endif
+    field: complaint_raft_or_other_assistance
+    datatype: yesnoradio
+    label above field: True
+---
+id: complaint retaliation
+question: |
+  % if person_answering == "tenant":
+  Previous actions against your landlord
+  % else:
+  Previous actions against the tenant's landlord
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Have you been involved in tenant organizing, reported your landlord to your city or town, or taken legal action before now against your landlord?
+      % else:
+      Has the tenant been involved in tenant organizing, reported their landlord to their city or town, or taken legal action before now against their landlord?
+      % endif
+    field: complaint_retaliation
+    datatype: yesnoradio
+    label above field: True
 ---
 id: getting money
 question: |
