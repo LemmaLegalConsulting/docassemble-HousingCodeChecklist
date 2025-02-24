@@ -68,9 +68,25 @@ code: |
   users[0].phone_number
   trial_court.address.address
   other_parties[0].address.address
+  if complaint_ask_for_damages:
+    interview_order_discovery
   signature_date
   verified_complaint_wants_fee_waiver
   interview_order_verified_complaint_and_motions = True
+---
+id: interview_order_discovery
+code: |
+  if wants_discovery:
+    document_choice["discovery"] = True
+    reconsider("update_sections_with_selected_documents")
+    nav.set_section(sub_documents['add_discovery'].get('section_link'))
+    interrogatories.precheck_items()
+    document_requests.precheck_items()
+    customize_discovery_choice
+    if customize_discovery_choice == "customize_discovery":
+      customize_discovery_requests
+  
+  interview_order_discovery = True
 ---
 code: |
   for claim in verified_complaint_claims_terms:
@@ -78,6 +94,9 @@ code: |
       verified_complaint_claims[claim].date
       verified_complaint_claims[claim].details
   verified_complaint_claims.gathered = True
+---
+code: |
+  discovery_attachment.enabled = wants_discovery and verified_complaint_and_motions_attachment.enabled
 ---
 code: |
   affidavitofindigency_attachment.enabled = document_choice['sue_landlord'] and verified_complaint_wants_fee_waiver and is_indigent
@@ -114,11 +133,19 @@ code: |
     fees['Service'].amount = 45
   set_fee_waiver_defaults = True
 ---
+id: review discovery
+continue button field: review_discovery
+continue button label: ${word("Resume")}
+question: |
+  Review your discovery
+subquestion: |
+  * [Edit your discovery request](${url_action("wants_discovery")})
+---
 id: review fee waiver
 continue button field: review_fee_waiver
 continue button label: ${word("Resume")}
 question: |
-  Review your fee wiver
+  Review your fee waiver
 subquestion: |
   * [Edit fees and costs](${url_action("fees['Filing fee'].waive")})
   * [Edit name](${url_action("users[0].name.first")})
@@ -1110,6 +1137,7 @@ code: |
 objects:
   - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions for your court documents", filename="next_steps_complaint.docx", has_addendum=False)
   - verified_complaint_and_motions_attachment: ALDocument.using(filename="verified_complaint_and_motions.docx", has_addendum=False)
+  - discovery_attachment: ALDocument.using(title="Discovery", filename="Discovery.docx", has_addendum=False)
 ---
 attachments:
   - name: verified complaint and motions post interview instructions
@@ -1124,6 +1152,13 @@ attachments:
     variable name: verified_complaint_and_motions_attachment[i]        
     skip undefined: True
     docx template file: verified_complaint_and_motions.docx
+---
+attachment:
+  - name: discovery
+    filename: Discovery.docx     
+    variable name: discovery_attachment[i]        
+    skip undefined: True
+    docx template file: discovery.docx
 ---
 code: |
   # This gets overridden inside UpToCode interview

@@ -17,6 +17,7 @@ include:
 #  - language.yml
   - simple_conditions.yml
   - orders_and_contempt_complaint.yml
+  - discovery.yml
   - autoterms.yml
 ---
 features:
@@ -602,6 +603,11 @@ data: !!omap
       section_label: Sue my landlord
       name: Sue my landlord in court
       count: 10
+  - add_discovery:
+      section_link: review_discovery
+      section_label: Discovery
+      name: Discovery
+      count: 0
   - fee_waiver:
       section_link: review_fee_waiver
       section_label: Fee waiver
@@ -1911,6 +1917,7 @@ data:
   demand_letter_93a: False
   sue_landlord: False
   contempt_complaint: False
+  discovery: False
   fee_waiver: False
 ---
 depends on:
@@ -1943,6 +1950,7 @@ code: |
   else:
     screen_contacted_housing_inspector = False
     document_choice["sue_landlord"] = True
+    document_choice["discovery"] = True
     document_choice["fee_waiver"] = True
   set_document_choice_by_lawsuit_kind = True
 ---
@@ -2942,6 +2950,7 @@ objects:
         order_of_notice,
         temporary_order,
         contempt_complaint,
+        discovery_attachment,
         affidavitofindigency_attachment,
       ], title="Documents to file in court and serve your landlord",
       filename="affirmative_complaint_documents",
@@ -2958,12 +2967,14 @@ objects:
         request_housing_inspection_instructions_attachment,
         request_housing_inspection_attachment,
         Repair_Demand_Letter_attachment,
+        discovery_attachment,
         affidavitofindigency_attachment,
       ], title="All documents for your records", filename="tenant_copy")
   - further_documents_bundle: ALDocumentBundle.using(elements=[
         temporary_order,
         order_of_notice,
         contempt_complaint,
+        discovery_attachment
       ], title="Documents for future case use",
       filename="further_documents",
       )
