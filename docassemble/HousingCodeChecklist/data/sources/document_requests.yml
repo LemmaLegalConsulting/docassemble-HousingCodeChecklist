@@ -1,0 +1,264 @@
+- name: rental_documents_general
+  description: Provide documents related to the rental of the apartment, including rental applications, credit checks, references, leases, and addenda.
+  category: Tenancy
+  default_check: True
+  priority: 800
+  conditions:
+
+- name: tenant_landlord_written_communications
+  description: Include letters, emails, texts, and notices exchanged between the Tenant and Landlord.
+  category: Tenancy
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: tenant_landlord_communications_others
+  description: Provide communications between the Landlord and others regarding the Tenant or tenancy.
+  category: Tenancy
+  default_check: True
+  priority: 700
+  conditions:
+
+- name: landlord_internal_communications
+  description: Provide internal communications among the Landlord and their staff or agents regarding the Tenant or tenancy.
+  category: Tenancy
+  default_check: True
+  priority: 600
+  conditions:
+
+- name: rent_payment_records_all
+  description: Provide all records related to rent or occupancy payments made by or on behalf of the Tenant.
+  category: Tenancy
+  default_check: True
+  priority: 800
+  conditions:
+
+- name: charges_other_than_rent
+  description: Provide all records concerning charges to the Tenant for items other than rent or occupancy.
+  category: Tenancy
+  default_check: True
+  priority: 650
+  conditions:
+
+- name: tenant_file_documents
+  description: Provide all documents maintained in the Tenant’s file by the owner or manager.
+  category: Tenancy
+  default_check: True
+  priority: 700
+  conditions:
+
+- name: rent_increase_documents
+  description: Provide all documents related to rent increases or requests for rent increases concerning the tenancy.
+  category: Tenancy
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: documents_from_previous_owners
+  description: Include all documents received from previous building owners regarding the property condition, tenancies, and security deposits and last months' rents.
+  category: Tenancy
+  default_check: True
+  priority: 700
+  conditions:
+
+- name: landlord_purchase_refinance_documents
+  description: Provide documents related to the building purchase or refinancing, including inspections, contracts, and appraisals.
+  category: Tenancy
+  default_check: True
+  priority: 550
+  conditions:
+
+- name: sale_related_documents
+  description: Include documents related to the anticipated or actual sale of the building, including inspections, appraisals, marketing, and purchase agreements.
+  category: Tenancy
+  default_check: True
+  priority: 600
+  conditions:
+
+- name: tenant_claim_related_documents
+  description: Include all documents related to the Tenant’s claims or the Landlord’s defenses or counterclaims.
+  category: Tenancy
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: documents_for_trial
+  description: Provide documents the Landlord plans to present at trial or hearing.
+  category: Tenancy
+  default_check: True
+  priority: 850
+  conditions:
+
+- name: subsidized_housing_documentation
+  description: Include documents related to the type or nature of any rental subsidy for the tenancy.
+  category: Subsidized Housing
+  default_check: False
+  priority: 800
+  conditions:
+    - tenant_gets_rent_subsidy
+    - tenant_subsidy_is_voucher
+    - verified_complaint_tenant_voucher_at_risk
+    - landlord_is_housing_authority
+    - landlord_is_government
+
+- name: contract_rent_increase_requests
+  description: Provide all documents related to the Landlord’s requests for an increase in contract rent and responses from the Tenant or subsidy-administering agency.
+  category: Subsidized Housing
+  default_check: False
+  priority: 750
+  conditions:
+    - tenant_gets_rent_subsidy
+    - tenant_subsidy_is_voucher
+    - verified_complaint_tenant_voucher_at_risk
+    - landlord_is_housing_authority
+    - landlord_is_government
+
+- name: conference_and_grievance_documents
+  description: Provide all documents related to any informal conferences or grievance hearings during the tenancy.
+  category: Subsidized Housing
+  default_check: False
+  priority: 700
+  conditions:
+    - tenant_gets_rent_subsidy
+    - tenant_subsidy_is_voucher
+    - verified_complaint_tenant_voucher_at_risk
+    - landlord_is_housing_authority
+    - landlord_is_government
+
+- name: agency_communications
+  description: Provide all written communications between the Landlord and any housing authority, EOHLC, MassHousing, HUD, or other agency regarding the Tenant or the apartment.
+  category: Subsidized Housing
+  default_check: False
+  priority: 800
+  conditions:
+    - tenant_gets_rent_subsidy
+    - tenant_subsidy_is_voucher
+    - verified_complaint_tenant_voucher_at_risk
+    - landlord_is_housing_authority
+    - landlord_is_government
+
+- name: rental_assistance_records
+  description: Provide all documents related to rental assistance applications, approvals, or denials.
+  category: Subsidized Housing
+  default_check: False
+  priority: 700
+  conditions:
+    - tenant_gets_rent_subsidy
+    - tenant_subsidy_is_voucher
+    - verified_complaint_tenant_voucher_at_risk
+    - landlord_is_housing_authority
+    - landlord_is_government
+
+- name: inspection_notices_and_reports
+  description: Include notices and reports related to inspections or repair notices for the apartment or building.
+  category: Problems with the Apartment/Building
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: photographic_evidence
+  description: Include all photographs, videos, or digital images related to the Tenant’s apartment or the building.
+  category: Problems with the Apartment/Building
+  default_check: True
+  priority: 700
+  conditions:
+
+- name: lead_paint_investigation
+  description: Provide documents related to lead paint inspections, reports, and verification of lead hazard removal.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 800
+  conditions:
+    - lead_paint_5_feet_from_floor
+    - lead_paint_anywhere
+    - lead_paint_child
+
+- name: condition_inspection_reports
+  description: Include inspection reports regarding the condition of the apartment and common areas.
+  category: Problems with the Apartment/Building
+  default_check: True
+  priority: 650
+  conditions:
+
+- name: repair_invoices_and_records
+  description: Include invoices, estimates, and work orders for repairs to the apartment or building.
+  category: Problems with the Apartment/Building
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: rental_value_assessments
+  description: Provide documents related to assessments of the fair market rental value of the apartment.
+  category: Problems with the Apartment/Building
+  default_check: True
+  priority: 600
+  conditions:
+
+- name: utility_payment_responsibility
+  description: Provide all documents identifying who was responsible for paying water, sewer, heat, hot water, electricity, or other utilities during the Tenant’s occupancy.
+  category: Other
+  default_check: True
+  priority: 750
+  conditions:
+  - utilities_no_agreement
+  - complaint_utility_not_paid
+
+- name: utility_termination_notices
+  description: Provide documents related to the threatened or actual termination and restoration of utilities.
+  category: Other
+  default_check: True
+  priority: 700
+  conditions:
+    - utility_shutoff
+    - incident_utility
+    - complaint_utility_shutoff
+
+- name: common_area_utility_accounts
+  description: Provide all documents related to the Landlord’s accounts for common area water and other utility usage in the building.
+  category: Other
+  default_check: True
+  priority: 700
+  conditions:
+    - utilities_no_agreement
+    - complaint_utility_not_paid
+
+- name: tenant_outside_utility_documents
+  description: Provide all documents related to the Tenant’s responsibility for paying any utility outside the apartment, including hallways, the basement, or the building exterior during occupancy.
+  category: Other
+  default_check: True
+  priority: 750
+  conditions:
+    - utilities_no_agreement
+    - complaint_utility_not_paid
+
+- name: property_insurance_policies
+  description: Include documents related to fire, property, or liability insurance for the property.
+  category: Other
+  default_check: True
+  priority: 550
+  conditions:
+
+- name: management_agreements
+  description: Provide management contracts and documents related to the management of the property.
+  category: Other
+  default_check: True
+  priority: 600
+  conditions:
+
+- name: maintenance_logs_and_records
+  description: Include logs and records of maintenance done at the property.
+  category: Problems with the Apartment/Building
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: legal_claims_documents
+  description: Include documents related to any lawsuits or legal claims involving the property, the Landlord, and the Tenant.
+  category: Other
+  default_check: True
+  priority: 700
+  conditions:
+    - screen_tenant_facing_eviction["notice only"]
+    - screen_tenant_facing_eviction["pending"]
+    - screen_tenant_facing_eviction["has case"]
+    - screen_tenant_facing_eviction["closed"]
