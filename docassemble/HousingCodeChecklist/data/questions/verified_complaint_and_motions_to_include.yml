@@ -78,8 +78,8 @@ id: interview_order_discovery
 code: |
   if wants_discovery:
     document_choice["discovery"] = True
-    reconsider("update_sections_with_selected_documents")
-    nav.set_section(sub_documents['add_discovery'].get('section_link'))
+    reconsider("al_nav_sections")
+    nav.set_section("review_discovery")
     interrogatories.precheck_items()
     document_requests.precheck_items()
     customize_discovery_choice
