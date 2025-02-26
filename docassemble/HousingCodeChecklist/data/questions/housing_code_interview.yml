@@ -119,29 +119,29 @@ code: |
     include_conditions_in_complaint # Evaluate so it is available in complaint template
   
   if not screen_ll_knows_problem:
-    update_sections_with_selected_documents
-    nav.set_section(sub_documents['tell_landlord'].get('section_link'))
+    reconsider("al_nav_sections")
+    nav.set_section("review_tenant_repair_request")
     interview_order_tenant_repair_request
-    nav.set_section(sub_documents['organize_tenants'].get('section_link'))
+    nav.set_section("organizing_interstitial")
     organizing_interstitial
   else:
     explain_documents
-    update_sections_with_selected_documents  
+    reconsider("al_nav_sections")
   if screen_ll_knows_problem and document_choice['get_report']:
-    nav.set_section(sub_documents['get_report'].get('section_link'))
+    nav.set_section("review_checklist")
     users[0].address.address
     users[0].mailing_address.address
     other_parties.gather()
     other_parties[0].address.address
   if screen_ll_knows_problem and document_choice['tell_landlord']:
-    nav.set_section(sub_documents['tell_landlord'].get('section_link'))
+    nav.set_section("review_tenant_repair_request")
     interview_order_tenant_repair_request
   #if screen_ll_knows_problem and document_choice['share_with_tenants']:
-  #  nav.set_section(sub_documents['share_with_tenants'].get('section_link'))
+  #  nav.set_section("share_with_tenants")
   #  explain_sharing
   #  store_for_tenant_sharing
   if screen_ll_knows_problem and document_choice['organize_tenants']:
-    nav.set_section(sub_documents['organize_tenants'].get('section_link'))
+    nav.set_section("organizing_interstitial")
     users[0].address.address
     users[0].mailing_address.address
     try:
@@ -150,20 +150,20 @@ code: |
       pass
     organizing_interstitial
   if screen_ll_knows_problem and document_choice['get_inspection']:
-    nav.set_section(sub_documents['get_inspection'].get('section_link'))
+    nav.set_section("review_request_housing_inspection")
     interview_order_request_housing_inspection
   if screen_ll_knows_problem and document_choice['demand_letter_93a']:
-    nav.set_section(sub_documents['demand_letter_93a'].get('section_link'))
+    nav.set_section("review_Repair_Demand_Letter")
     interview_order_Repair_Demand_Letter
   if screen_ll_knows_problem and document_choice['sue_landlord']:
-    nav.set_section(sub_documents['sue_landlord'].get('section_link'))
+    nav.set_section("review_verified_complaint_and_motions")
     if person_answering == "attorney" and representation_type == "entering_appearance":
       users[0].attorney.address.address
     interview_order_verified_complaint_and_motions
     if verified_complaint_wants_fee_waiver:
       document_choice["fee_waiver"] = True
-      reconsider("update_sections_with_selected_documents")
-      nav.set_section(sub_documents['fee_waiver'].get('section_link'))
+      reconsider("al_nav_sections")
+      nav.set_section("review_fee_waiver")
       set_fee_waiver_defaults
       case_name
       docket_numbers
@@ -557,110 +557,83 @@ code: |
   initial_action_selection = action_argument("selection")
   initial_action_display_cards = True
 ---
-language: en
-comment: |
-  Section labels for child interviews that have follow-up
-  questions
-variable name: sub_documents
-data: !!omap
-  - get_report:
-      section_link: review_checklist
-      section_label: My checklist
-      name: Housing Code Checklist and Condition Report
-      count: 2
-  - tell_landlord: 
-      section_link: review_tenant_repair_request
-      section_label: Tell my landlord
-      name: Letter to landlord to report bad conditions
-      count: 2
-  - demand_letter_93a:
-      section_link: review_Repair_Demand_Letter
-      section_label: Write a demand letter
-      name: Consumer protection demand letter
-      count: 2
-  #- share_with_tenants:
-  #    section_link: review_share_with_tenants
-  #    section_label: Tell other tenants
-  #    name: Share your information with other tenants
-  #    count: 0
-  - organize_tenants:
-      section_link: organizing_interstitial
-      section_label: Organize    
-      name: Organize with other tenants
-      count: 0
-  - get_inspection: 
-      section_link: review_request_housing_inspection
-      section_label: Get an inspection
-      name: Request a city inspection
-      count: 2
-  - fix_problems:
-      section_link: review_repair_and_deduct
-      section_label: Fix the problems myself
-      name: Make repairs and deduct the cost from my rent
-      count: 0
-  - sue_landlord:
-      section_link: review_verified_complaint_and_motions
-      section_label: Sue my landlord
-      name: Sue my landlord in court
-      count: 10
-  - add_discovery:
-      section_link: review_discovery
-      section_label: Discovery
-      name: Discovery
-      count: 0
-  - fee_waiver:
-      section_link: review_fee_waiver
-      section_label: Fee waiver
-      name: Fee waiver
-      count: 5      
-  - contempt_complaint:
-      section_link: review_Contempt_Complaint
-      section_label: Ask judge to enforce their own order
-      name: Ask judge to enforce their own order
-      count: 3
+code: |
+  enable_al_nav_sections = True
+  # See: https://assemblyline.suffolklitlab.org/docs/components/AssemblyLine/navigation
 ---
 language: en
-sections:
+variable name: al_nav_sections
+data:
   - section_getting_started: Getting started
   - review_conditions: List problems
   - main_triage_screen: Choose a solution
   - provide_details: Answer questions
+    subsections:
+      - review_checklist: My checklist
+        hidden: ${ not showifdef("document_choice['get_report']") }
+      - review_tenant_repair_request: Tell my landlord
+        hidden: ${ not (showifdef("document_choice['tell_landlord']") or showifdef("screen_ll_knows_problem")) }
+      - organizing_interstitial: Organize
+        hidden: ${ not showifdef("document_choice['organize_tenants']") }
+      - review_request_housing_inspection: Get an inspection
+        hidden: ${ not showifdef("document_choice['get_inspection']") }
+      - review_Repair_Demand_Letter: Write a demand letter
+        hidden: ${ not showifdef("document_choice['demand_letter_93a']") }
+      # Repair and deduct is unused!
+      - review_repair_and_deduct: Fix the problems myself
+        hidden: ${ not showifdef("document_choice['fix_problems']") }
+      - review_verified_complaint_and_motions: Sue my landlord
+        hidden: ${ not showifdef("document_choice['sue_landlord']") }
+      - review_discovery: Discovery
+        hidden: ${ not showifdef("document_choice['discovery']") }
+      - review_fee_waiver: Fee waiver
+        hidden: ${ not showifdef("document_choice['fee_waiver']") }
+      - review_Contempt_Complaint: Ask judge to enforce their own order
+        hidden: ${ not showifdef("document_choice['contempt_complaint']") }
   - review_and_sign: Review and sign
   - download_conditions_checklist_docs: Download
-auto open: True  
+---
+language: es
+variable name: al_nav_sections
+data:
+  - section_getting_started: Empezar
+  - review_conditions: Lista de problemas
+  - main_triage_screen: Elegir una solución
+  - provide_details: Responder preguntas
+    subsections:
+      - review_checklist: Mi lista de verificación
+        hidden: ${ not showifdef("document_choice['get_report']") }
+      - review_tenant_repair_request: Decirle a mi dueño
+        hidden: ${ not (showifdef("document_choice['tell_landlord']") or showifdef("screen_ll_knows_problem")) }
+      - organizing_interstitial: Organizar
+        hidden: ${ not showifdef("document_choice['organize_tenants']") }
+      - review_request_housing_inspection: Obtener una inspección
+        hidden: ${ not showifdef("document_choice['get_inspection']") }
+      - review_Repair_Demand_Letter: Escribir una carta de demanda
+        hidden: ${ not showifdef("document_choice['demand_letter_93a']") }
+      # Repair and deduct is unused!
+      - review_repair_and_deduct: Arreglar los problemas yo mismo
+        hidden: ${ not showifdef("document_choice['fix_problems']") }
+      - review_verified_complaint_and_motions: Demandar a mi dueño
+        hidden: ${ not showifdef("document_choice['sue_landlord']") }
+      - review_discovery: Descubrimiento
+        hidden: ${ not showifdef("document_choice['discovery']") }
+      - review_fee_waiver: Exención de tarifas
+        hidden: ${ not showifdef("document_choice['fee_waiver']") }
+      - review_Contempt_Complaint: Pedirle al juez que haga cumplir su propia orden
+        hidden: ${ not showifdef("document_choice['contempt_complaint']") }
+  - review_and_sign: Revisar y firmar
+  - download_conditions_checklist_docs: Descargar
+---
+# This is here to enable configuring choices like `auto open`
+# but it isn't used! al_nav_sections takes priority
+sections:
+  - section_getting_started: Getting started
+auto open: True
 ---
 modules:
   - .load_data
   - docassemble.ALToolbox.misc
----
-depends on:
-  - user_language
-  - screen_ll_knows_problem
-  - document_choice
-code: |
-  new_sections = []
-  if screen_ll_knows_problem:
-    for document in sub_documents:
-      if document in document_choice.true_values():
-        new_sections.append({
-          sub_documents[document].get('section_link'):  sub_documents[document].get('section_label')
-        })
-  else:
-    new_sections.append({sub_documents['tell_landlord'].get('section_link'): sub_documents['tell_landlord'].get('section_label')})
-    new_sections.append({sub_documents['organize_tenants'].get('section_link'): sub_documents['organize_tenants'].get('section_label')})
-  old_nav = nav.get_sections()
-  
-  position = 3 # ################ Current, hardcoded position in the list
-  position_label = 'Answer questions'
-  for index, item in enumerate(old_nav):
-    if next(iter(item)) == 'provide_details':
-      position = index
-      position_label = next(iter(item.values()))
-  old_nav[position] = {position_label: new_sections}
-
-  nav.set_sections(old_nav)
-
-  update_sections_with_selected_documents = True
 ---
 code: |
   stuff_to_snapshot = {
