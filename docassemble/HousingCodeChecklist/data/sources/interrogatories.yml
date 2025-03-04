@@ -71,6 +71,22 @@
     - landlord_is_housing_authority
     - landlord_is_government
 
+- name: rental_assistance_communications
+  description: Describe all communications with any agency regarding the Tenant’s RAFT or other rental assistance application, including dates, substance, persons involved, and whether each communication was verbal or in writing.
+  category: Subsidized Housing
+  default_check: False
+  priority: 750
+  conditions:
+    - complaint_raft_or_other_assistance
+
+- name: rental_assistance_refusal
+  description: Describe in detail the reasons for refusing or intending to refuse rental assistance from RAFT or any other subsidy program.
+  category: Subsidized Housing
+  default_check: False
+  priority: 800
+  conditions:
+    - complaint_raft_or_other_assistance
+
 - name: maintenance_and_repairs
   description: Describe all maintenance and repairs conducted during the tenancy, including responsible persons, reported issues, and actions taken.
   category: Problems with the Apartment/Building
@@ -223,22 +239,6 @@
   default_check: True
   priority: 750
   conditions:
-
-- name: rental_assistance_communications
-  description: Describe all communications with any agency regarding the Tenant’s RAFT or other rental assistance application, including dates, substance, persons involved, and whether each communication was verbal or in writing.
-  category: Rental Assistance
-  default_check: False
-  priority: 750
-  conditions:
-    - complaint_raft_or_other_assistance
-
-- name: rental_assistance_refusal
-  description: Describe in detail the reasons for refusing or intending to refuse rental assistance from RAFT or any other subsidy program.
-  category: Rental Assistance
-  default_check: False
-  priority: 800
-  conditions:
-    - complaint_raft_or_other_assistance
 
 - name: tenant_organization_involvement
   description: Describe any knowledge of the tenant’s involvement in tenant organizations or actions taken to assert tenant rights.

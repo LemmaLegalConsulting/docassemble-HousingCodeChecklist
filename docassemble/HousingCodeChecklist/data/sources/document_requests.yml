@@ -61,20 +61,6 @@
   priority: 700
   conditions:
 
-- name: landlord_purchase_refinance_documents
-  description: Provide documents related to the building purchase or refinancing, including inspections, contracts, and appraisals.
-  category: Tenancy
-  default_check: True
-  priority: 550
-  conditions:
-
-- name: sale_related_documents
-  description: Include documents related to the anticipated or actual sale of the building, including inspections, appraisals, marketing, and purchase agreements.
-  category: Tenancy
-  default_check: True
-  priority: 600
-  conditions:
-
 - name: tenant_claim_related_documents
   description: Include all documents related to the Tenant’s claims or the Landlord’s defenses or counterclaims.
   category: Tenancy
@@ -87,6 +73,34 @@
   category: Tenancy
   default_check: True
   priority: 850
+  conditions:
+
+- name: management_agreements
+  description: Provide management contracts and documents related to the management of the property.
+  category: Facts About the Landlord
+  default_check: True
+  priority: 600
+  conditions:
+
+- name: maintenance_logs_and_records
+  description: Include logs and records of maintenance done at the property.
+  category: Facts About the Landlord
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: landlord_purchase_refinance_documents
+  description: Provide documents related to the building purchase or refinancing, including inspections, contracts, and appraisals.
+  category: Facts About the Landlord
+  default_check: True
+  priority: 550
+  conditions:
+
+- name: sale_related_documents
+  description: Include documents related to the anticipated or actual sale of the building, including inspections, appraisals, marketing, and purchase agreements.
+  category: Facts About the Landlord
+  default_check: True
+  priority: 600
   conditions:
 
 - name: subsidized_housing_documentation
@@ -196,7 +210,7 @@
 
 - name: utility_payment_responsibility
   description: Provide all documents identifying who was responsible for paying water, sewer, heat, hot water, electricity, or other utilities during the Tenant’s occupancy.
-  category: Other
+  category: Utilities
   default_check: True
   priority: 750
   conditions:
@@ -205,7 +219,7 @@
 
 - name: utility_termination_notices
   description: Provide documents related to the threatened or actual termination and restoration of utilities.
-  category: Other
+  category: Utilities
   default_check: True
   priority: 700
   conditions:
@@ -215,7 +229,7 @@
 
 - name: common_area_utility_accounts
   description: Provide all documents related to the Landlord’s accounts for common area water and other utility usage in the building.
-  category: Other
+  category: Utilities
   default_check: True
   priority: 700
   conditions:
@@ -224,7 +238,7 @@
 
 - name: tenant_outside_utility_documents
   description: Provide all documents related to the Tenant’s responsibility for paying any utility outside the apartment, including hallways, the basement, or the building exterior during occupancy.
-  category: Other
+  category: Utilities
   default_check: True
   priority: 750
   conditions:
@@ -236,20 +250,6 @@
   category: Other
   default_check: True
   priority: 550
-  conditions:
-
-- name: management_agreements
-  description: Provide management contracts and documents related to the management of the property.
-  category: Other
-  default_check: True
-  priority: 600
-  conditions:
-
-- name: maintenance_logs_and_records
-  description: Include logs and records of maintenance done at the property.
-  category: Problems with the Apartment/Building
-  default_check: True
-  priority: 750
   conditions:
 
 - name: legal_claims_documents
