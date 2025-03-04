@@ -580,14 +580,14 @@ data:
       - review_Repair_Demand_Letter: Write a demand letter
         hidden: ${ not showifdef("document_choice['demand_letter_93a']") }
       # Repair and deduct is unused!
-      - review_repair_and_deduct: Fix the problems myself
-        hidden: ${ not showifdef("document_choice['fix_problems']") }
+      #- review_repair_and_deduct: Fix the problems myself
+      #  hidden: ${ not showifdef("document_choice['fix_problems']") }
       - review_verified_complaint_and_motions: Sue my landlord
         hidden: ${ not showifdef("document_choice['sue_landlord']") }
       - review_discovery: Discovery
-        hidden: ${ not showifdef("document_choice['discovery']") }
+        hidden: ${ not showifdef("wants_discovery") }
       - review_fee_waiver: Fee waiver
-        hidden: ${ not showifdef("document_choice['fee_waiver']") }
+        hidden: ${ not showifdef("verified_complaint_wants_fee_waiver") }
       - review_Contempt_Complaint: Ask judge to enforce their own order
         hidden: ${ not showifdef("document_choice['contempt_complaint']") }
   - review_and_sign: Review and sign
@@ -612,14 +612,14 @@ data:
       - review_Repair_Demand_Letter: Escribir una carta de demanda
         hidden: ${ not showifdef("document_choice['demand_letter_93a']") }
       # Repair and deduct is unused!
-      - review_repair_and_deduct: Arreglar los problemas yo mismo
-        hidden: ${ not showifdef("document_choice['fix_problems']") }
+      #- review_repair_and_deduct: Arreglar los problemas yo mismo
+      #  hidden: ${ not showifdef("document_choice['fix_problems']") }
       - review_verified_complaint_and_motions: Demandar a mi dueño
         hidden: ${ not showifdef("document_choice['sue_landlord']") }
       - review_discovery: Descubrimiento
-        hidden: ${ not showifdef("document_choice['discovery']") }
+        hidden: ${ not showifdef("wants_discovery") }
       - review_fee_waiver: Exención de tarifas
-        hidden: ${ not showifdef("document_choice['fee_waiver']") }
+        hidden: ${ not showifdef("verified_complaint_wants_fee_waiver") }
       - review_Contempt_Complaint: Pedirle al juez que haga cumplir su propia orden
         hidden: ${ not showifdef("document_choice['contempt_complaint']") }
   - review_and_sign: Revisar y firmar

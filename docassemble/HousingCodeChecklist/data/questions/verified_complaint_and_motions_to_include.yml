@@ -38,7 +38,6 @@ id: interview_order_verified_complaint_and_motions
 code: |
   # Set the allowed courts for this interview
   allowed_courts = interview_metadata["verified_complaint_and_motions"]["allowed courts"]
-  nav.set_section('review_verified_complaint_and_motions')
   user_role = 'plaintiff'
   user_ask_role = 'plaintiff'
   File_a_Verified_Complaint_Form

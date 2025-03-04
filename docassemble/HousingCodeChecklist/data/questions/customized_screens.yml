@@ -74,19 +74,23 @@ question: |
 subquestion: |
   % if person_answering == "tenant":
   First, you will be asked if your landlord is a business or an individual and then what your landlord's name is.
+
+  Your landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act). 
   
-  Write the name of your landlord, not your property manager. The landlord
-  is the person who owns the building. You can find out who owns the building
-  at [masslandrecords.com](https://www.masslandrecords.com/). The landlord is 
-  also usually the name you write on a rent check. 
+  To find out who the owner is, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
+  
+    - call your local Registry of Deeds for help finding the most recent deed for the property, or
+    - call your town/city tax assessor’s office to find out who is listed as owner for the property's tax and water bills. 
   
   % else: 
   First, you will be asked if the tenant's landlord is a business or an individual and then what the landlord's name is.
   
-  Write the name of tenant's landlord, not the tenant's property manager. The landlord
-  is the person who owns the building. The tenant can find out who owns the building
-  at [masslandrecords.com](https://www.masslandrecords.com/). The landlord is 
-  also usually the name the tenant writes on a rent check. 
+  The tenant's landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in the court complaint and any demand letter the tenant may want to send under the Consumer Protection Act). 
+  
+  To find out who the owner is, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
+  
+    - call the tenant's local Registry of Deeds for help finding the most recent deed for the property, or
+    - call the tenant's town/city tax assessor’s office to find out who is listed as owner for the property's tax and water bills. 
   
   % endif
 fields:
