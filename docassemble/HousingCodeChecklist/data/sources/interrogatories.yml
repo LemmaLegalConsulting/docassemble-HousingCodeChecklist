@@ -1,0 +1,268 @@
+- name: respondent_info
+  description: Provide the name, address, email, telephone number, occupation, and relationship to the Tenant’s apartment of the person answering these questions.
+  category: Tenancy
+  default_check: True
+  priority: 800
+  conditions:
+
+- name: apartment_ownership_details
+  description: List the name and address of each owner of the apartment and the date they purchased the building.
+  category: Tenancy
+  default_check: True
+  priority: 700
+  conditions:
+
+- name: tenancy_terms_description
+  description: Describe all terms of the tenancy, including rent amount, due dates, written/oral agreements, utility responsibilities, and changes to the terms.
+  category: Tenancy
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: management_information
+  description: Provide details about the management of the apartment or building, including the management company or individual’s name, address, duties, and duration of management.
+  category: Tenancy
+  default_check: True
+  priority: 650
+  conditions:
+
+- name: record_keeping_systems
+  description: Describe the record-keeping system used to document repair requests, work orders, and tenancy-related issues.
+  category: Tenancy
+  default_check: True
+  priority: 550
+  conditions:
+
+- name: persons_with_knowledge
+  description: List all individuals with knowledge of facts related to the tenant’s complaint or the landlord’s defense, including contact information and factual information they possess.
+  category: Tenant’s Claims
+  default_check: True
+  priority: 700
+  conditions:
+
+- name: trial_witnesses
+  description: List all individuals intended to testify at trial and/or hearing, including their contact information, anticipated testimony, and qualifications.
+  category: Tenant’s Claims
+  default_check: True
+  priority: 600
+  conditions:
+
+- name: subsidized_housing_facts
+  description: Describe the Tenant’s subsidy, including the program name, administering agency, full contract rent, and the Tenant’s portion with any changes.
+  category: Subsidized Housing
+  default_check: False
+  priority: 800
+  conditions:
+    - tenant_gets_rent_subsidy
+    - tenant_subsidy_is_voucher
+    - verified_complaint_tenant_voucher_at_risk
+    - landlord_is_housing_authority
+    - landlord_is_government
+
+- name: subsidy_communications
+  description: Describe communications between the Landlord and the housing authority, including dates, persons involved, reasons, actions taken, and subsidy payment changes.
+  category: Subsidized Housing
+  default_check: False
+  priority: 750
+  conditions:
+    - tenant_gets_rent_subsidy
+    - tenant_subsidy_is_voucher
+    - verified_complaint_tenant_voucher_at_risk
+    - landlord_is_housing_authority
+    - landlord_is_government
+
+- name: rental_assistance_communications
+  description: Describe all communications with any agency regarding the Tenant’s RAFT or other rental assistance application, including dates, substance, persons involved, and whether each communication was verbal or in writing.
+  category: Subsidized Housing
+  default_check: False
+  priority: 750
+  conditions:
+    - complaint_raft_or_other_assistance
+
+- name: rental_assistance_refusal
+  description: Describe in detail the reasons for refusing or intending to refuse rental assistance from RAFT or any other subsidy program.
+  category: Subsidized Housing
+  default_check: False
+  priority: 800
+  conditions:
+    - complaint_raft_or_other_assistance
+
+- name: maintenance_and_repairs
+  description: Describe all maintenance and repairs conducted during the tenancy, including responsible persons, reported issues, and actions taken.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 750
+  conditions:
+    - screen_ll_knows_problem
+
+- name: repair_issue_details
+  description: Describe how you became aware of each repair need or problem in the Tenant’s apartment or common areas in the past 6 years, including the problem’s nature, date, source, and steps taken in response.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 800
+  conditions:
+    - screen_ll_knows_problem
+
+- name: inspections_details
+  description: Provide details of inspections conducted by government agencies or third parties in the past 6 years, including dates, findings, and actions taken.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 700
+  conditions:
+    - screen_ll_knows_problem
+    - screen_contacted_housing_inspector
+
+- name: purchase_inspection_details
+  description: Provide details of any inspection or evaluation conducted before, during, or after the building’s purchase, including the date, inspector’s information, findings, and actions taken in response.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 500
+  conditions:
+    - screen_ll_knows_problem
+
+- name: inspection_repair_history
+  description: Describe inspections or repairs made in the past 6 years, including the type, notification to the Tenant, dates, responsible parties, costs, and how the issue was discovered.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 800
+  conditions:
+    - screen_ll_knows_problem
+    - screen_contacted_housing_inspector
+
+- name: lead_paint_information
+  description: Describe any investigation or knowledge regarding the presence of lead paint, including inspection dates, findings, and remediation steps.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 750
+  conditions:
+    - lead_paint_5_feet_from_floor
+    - lead_paint_anywhere
+    - lead_paint_child
+
+- name: tenant_damage_claims
+  description: If applicable, describe any damage caused by the tenant, including the nature of the damage, repairs made, associated costs, and contact information for any witnesses.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 700
+  conditions:
+    - screen_ll_knows_problem
+
+- name: tenant_interference_with_repairs
+  description: Describe instances where the Tenant allegedly interfered with inspections or repairs, including dates, notifications, actions taken, witnesses, rescheduling attempts, and any resulting losses.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 750
+  conditions:
+    - entered_without_permission
+    - insufficient_notice
+
+- name: landlord_access_to_apartment
+  description: Describe instances when the landlord or representatives entered the apartment, including dates, reasons, and whether the tenant was present.
+  category: Problems with the Apartment/Building
+  default_check: False
+  priority: 700
+  conditions:
+    - entered_without_permission
+    - insufficient_notice
+    - screen_ll_knows_problem
+
+- name: tenant_utility_billing
+  description: Describe how utilities are billed (to the Tenant or to the Landlord), including the type of utility and the applicable billing period.
+  category: Utilities
+  default_check: False
+  priority: 600
+  conditions:
+    - utilities_no_agreement
+    - complaint_utility_not_paid
+
+- name: utilities_and_billing
+  description: Describe the tenant’s responsibility for utility payments, including written agreements and billing periods.
+  category: Utilities
+  default_check: False
+  priority: 650
+  conditions:
+    - utilities_no_agreement
+    - complaint_utility_not_paid
+
+- name: utility_disconnection_details
+  description: Describe any utility disconnections or threats of disconnection, including dates, reasons, and when service was restored.
+  category: Utilities
+  default_check: False
+  priority: 650
+  conditions:
+    - utility_shutoff
+    - incident_utility
+    - complaint_utility_shutoff
+
+- name: common_area_utility_accounts
+  description: Provide details about accounts for common area utility usage, including the utility company name, account numbers, and areas covered.
+  category: Utilities
+  default_check: False
+  priority: 550
+  conditions:
+    - utilities_no_agreement
+    - complaint_utility_not_paid
+
+- name: tenant_outside_utility_responsibility
+  description: Describe any utility payments the Tenant was responsible for outside the apartment, including the type of utility, written agreements, and the start date of the arrangement.
+  category: Utilities
+  default_check: False
+  priority: 750
+  conditions:
+    - utilities_no_agreement
+    - complaint_utility_not_paid
+
+- name: rental_properties_owned
+  description: List all rental properties owned by the Landlord during the tenant’s tenancy, including addresses, number of apartments, and purchase dates.
+  category: Facts About the Landlord
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: ownership_entity_details
+  description: Describe the ownership entity if the Tenant’s apartment is owned by a trust or business entity, including the entity name and type, trustees or managers, beneficiaries, and relevant governing documents.
+  category: Facts About the Landlord
+  default_check: True
+  priority: 600
+  conditions:
+
+- name: landlord_sale_plan
+  description: If the landlord intends to sell the property, describe actions taken, including marketing, appraisals, and communications with brokers or buyers.
+  category: Facts About the Landlord
+  default_check: True
+  priority: 700
+  conditions:
+
+- name: fair_market_rental_value
+  description: State your opinion of the apartment’s fair market rental value for each month of the Tenant’s occupancy, including the factual basis for your opinion and compliance with applicable codes and regulations.
+  category: Facts About the Landlord
+  default_check: True
+  priority: 750
+  conditions:
+
+- name: tenant_organization_involvement
+  description: Describe any knowledge of the tenant’s involvement in tenant organizations or actions taken to assert tenant rights.
+  category: Other
+  default_check: False
+  priority: 450
+  conditions:
+    - complaint_retaliation
+
+- name: eviction_proceedings
+  description: List all eviction proceedings or lawsuits against the Tenant, including dates, reasons, and how each was resolved.
+  category: Other
+  default_check: False
+  priority: 550
+  conditions:
+    - screen_tenant_facing_eviction["notice only"]
+    - screen_tenant_facing_eviction["pending"]
+    - screen_tenant_facing_eviction["has case"]
+    - screen_tenant_facing_eviction["closed"]
+
+- name: lock_changes_and_exclusion
+  description: If the Landlord changed locks or took actions to exclude the Tenant from the apartment or any part of the building, provide details including dates, reasons, and notifications.
+  category: Other
+  default_check: False
+  priority: 850
+  conditions:
+    - illegal_lockout
