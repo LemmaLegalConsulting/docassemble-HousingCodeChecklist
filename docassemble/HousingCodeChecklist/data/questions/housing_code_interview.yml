@@ -89,9 +89,9 @@ code: |
   else:
     intro_and_terms_of_use
   person_answering
-  users[0].name.first
   if person_answering == "attorney" and representation_type == "entering_appearance":
     users[0].attorney.name.first
+  users[0].name.first
   intro_terms_of_use
   if initial_action_selection == "help_in_court":
     nav.set_section('review_conditions')
@@ -156,18 +156,10 @@ code: |
     nav.set_section("review_Repair_Demand_Letter")
     interview_order_Repair_Demand_Letter
   if screen_ll_knows_problem and document_choice['sue_landlord']:
-    nav.set_section("review_verified_complaint_and_motions")
+    nav.set_section("review_verified_complaint_and_motion")
     if person_answering == "attorney" and representation_type == "entering_appearance":
       users[0].attorney.address.address
     interview_order_verified_complaint_and_motions
-    if verified_complaint_wants_fee_waiver:
-      document_choice["fee_waiver"] = True
-      reconsider("al_nav_sections")
-      nav.set_section("review_fee_waiver")
-      set_fee_waiver_defaults
-      case_name
-      docket_numbers
-      ask_affidavit_questions
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     interview_order_contempt_complaint
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
@@ -582,7 +574,7 @@ data:
       # Repair and deduct is unused!
       #- review_repair_and_deduct: Fix the problems myself
       #  hidden: ${ not showifdef("document_choice['fix_problems']") }
-      - review_verified_complaint_and_motions: Sue my landlord
+      - review_verified_complaint_and_motion: Sue my landlord
         hidden: ${ not showifdef("document_choice['sue_landlord']") }
       - review_discovery: Discovery
         hidden: ${ not showifdef("wants_discovery") }
@@ -614,7 +606,7 @@ data:
       # Repair and deduct is unused!
       #- review_repair_and_deduct: Arreglar los problemas yo mismo
       #  hidden: ${ not showifdef("document_choice['fix_problems']") }
-      - review_verified_complaint_and_motions: Demandar a mi dueño
+      - review_verified_complaint_and_motion: Demandar a mi dueño
         hidden: ${ not showifdef("document_choice['sue_landlord']") }
       - review_discovery: Descubrimiento
         hidden: ${ not showifdef("wants_discovery") }
@@ -2339,13 +2331,9 @@ validation code: |
     except ValueError:
       validation_error(f"The date {bad_conditions[i].details[j].start_month or 1}/{bad_conditions[i].details[j].start_day or 1}/{bad_conditions[i].details[j].start_year} is not a valid date. Check the day of the month or leave it blank.", field="bad_conditions[i].details[j].start_day")
 ---
-id: your address
+id: landlord address
 question: |
-  % if person_answering == "tenant":
-  What is your landlord's address?
-  % else:
-  What is the tenant's landlord's address?
-  % endif
+  What is ${ other_parties[0].name }'s address?
 fields:
   - label: |
       % if person_answering == "tenant":
@@ -2844,19 +2832,19 @@ code: |
   Repair_Demand_Letter_attachment.enabled = screen_ll_knows_problem and document_choice['demand_letter_93a']
 ---
 code: |
-  verified_complaint_and_motions_attachment.enabled = document_choice["sue_landlord"]
+  verified_complaint_attachment.enabled = document_choice["sue_landlord"]
 ---
 code: |
   verified_complaint_and_motions_post_interview_instructions.enabled = document_choice['sue_landlord']
 ---
 code: |
-  verified_complaint_and_motions_attachment.enabled = screen_ll_knows_problem and document_choice['sue_landlord']
+  verified_complaint_attachment.enabled = screen_ll_knows_problem and document_choice['sue_landlord']
 ---
 code: |  
-  temporary_order.enabled = verified_complaint_and_motions_attachment.enabled
+  temporary_order.enabled = verified_complaint_attachment.enabled
 ---
 code: |
-  if verified_complaint_and_motions_attachment.enabled:
+  if verified_complaint_attachment.enabled:
     if trial_court.department != "Housing Court":
       order_of_notice.enabled = True
     else:
@@ -2919,7 +2907,8 @@ objects:
       )
   - affirmative_complaint_bundle: ALDocumentBundle.using(elements=[
         verified_complaint_and_motions_post_interview_instructions,
-        verified_complaint_and_motions_attachment,
+        verified_complaint_attachment,
+        motion_for_injunctive_relief_attachment,
         order_of_notice,
         temporary_order,
         contempt_complaint,
@@ -2929,7 +2918,9 @@ objects:
       filename="affirmative_complaint_documents",
       )
   - everything_for_emailing_bundle: ALDocumentBundle.using(elements=[
-        verified_complaint_and_motions_attachment,
+        verified_complaint_and_motions_post_interview_instructions,
+        verified_complaint_attachment,
+        motion_for_injunctive_relief_attachment,
         temporary_order,
         order_of_notice,
         contempt_complaint,
