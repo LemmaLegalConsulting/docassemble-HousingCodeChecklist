@@ -485,7 +485,14 @@ fields:
       minlength: |
         You cannot keep going unless you did your best to tell the truth.
     js show if: |
-      val("signature_choice") == "phone" || val("signature_choice") == "this_device" 
+      val("signature_choice") == "phone" || val("signature_choice") == "this_device"
+  - no label: users[0].states_above_true
+    datatype: checkboxes
+    minlength: 1
+    choices:
+      - "I certify that a true copy of this motion will be served upon the Landlord by ${ service_method } today, ${ today() }.": states_true
+    js show if: |
+      (val("signature_choice") == "phone" && ${ str(service_today).lower() }) || (val("signature_choice") == "this_device" && ${ str(service_today).lower() })
 continue button field: saw_signature_choice        
 ---
 id: signature choice no complaint

@@ -3,6 +3,7 @@
 include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAffidavitOfIndigency:affidavit_body.yml
+  - customized_screens.yml
 ---
 mandatory: True
 comment: |
@@ -71,6 +72,15 @@ code: |
     interview_order_discovery
   signature_date
   verified_complaint_wants_fee_waiver
+  if verified_complaint_wants_fee_waiver:
+      document_choice["fee_waiver"] = True
+      reconsider("al_nav_sections")
+      nav.set_section("review_fee_waiver")
+      set_fee_waiver_defaults
+      case_name
+      docket_numbers
+      ask_affidavit_questions
+  service_method
   interview_order_verified_complaint_and_motions = True
 ---
 id: interview_order_discovery
@@ -95,7 +105,10 @@ code: |
   verified_complaint_claims.gathered = True
 ---
 code: |
-  discovery_attachment.enabled = wants_discovery and verified_complaint_and_motions_attachment.enabled
+  discovery_attachment.enabled = wants_discovery and verified_complaint_attachment.enabled
+---
+code: |
+  motion_for_injunctive_relief_attachment.enabled = verified_complaint_attachment.enabled
 ---
 code: |
   affidavitofindigency_attachment.enabled = document_choice['sue_landlord'] and verified_complaint_wants_fee_waiver and is_indigent
@@ -273,9 +286,9 @@ question: |
 fields:
   - label: |
       % if person_answering == "tenant":
-      Have you applied for or previously used {RAFT} or other rental assistance to help pay for this apartment?
+      Have you applied for or previously used {RAFT}, HomeBase, or other rental assistance to help pay for this apartment?
       % else:
-      Has the tenant applied for or previously used {RAFT} or other rental assistance to help pay for this apartment?
+      Has the tenant applied for or previously used {RAFT}, HomeBase, or other rental assistance to help pay for this apartment?
       % endif
     field: complaint_raft_or_other_assistance
     datatype: yesnoradio
@@ -954,11 +967,11 @@ review:
       - ${ item }
       % endfor
   - Edit: |-
-      verified_complaint_and_motions_attachment.revisit
+      verified_complaint_attachment.revisit
     button: |-
       **Verified Complaint And Motions Attachment**
 
-      % for item in verified_complaint_and_motions_attachment:
+      % for item in verified_complaint_attachment:
       - ${ item }
       % endfor
   - Edit: |-
@@ -1107,13 +1120,13 @@ subquestion: |-
   ${ verified_complaint_and_motions_post_interview_instructions.table }
 ---
 event: |-
-  verified_complaint_and_motions_attachment.revisit
+  verified_complaint_attachment.revisit
 id: |-
-  revisit verified_complaint_and_motions_attachment
+  revisit verified_complaint_attachment
 question: |-
-  Edit your answers about Verified Complaint And Motions Attachment
+  Edit your answers about Verified Complaint Attachment
 subquestion: |-
-  ${ verified_complaint_and_motions_attachment.table }
+  ${ verified_complaint_attachment.table }
 ---
 columns:
   - 'When did this happen? State an exact date or the best date you can remember, such as "last summer". Include a year.': |-
@@ -1123,19 +1136,85 @@ rows: |-
 table: |-
   verified_complaint_claims.table
 ---
+id: service_method
+question: |
+  % if person_answering == "tenant":
+  You must serve your landlord with a copy of your motion for repairs and/or relief before filing it with the court.
+  % elif person_answering == "attorney" and representation_type == "entering_appearance":
+  You must serve the tenant's landlord with a copy of your motion for repairs and/or relief before filing it with the court.
+  % else:
+  The tenant must serve their landlord with a copy of their motion for repairs and/or relief before filing it with the court.
+  % endif
+  
+subquestion: |
+  % if person_answering == "tenant":
+  You can serve your landlord by sending it through email, by mail, or by hand-delivering it to them.
+  
+  Sending it to your landlord through email is the fastest way to serve this motion.
+  % elif person_answering == "attorney" and representation_type == "entering_appearance":
+  You can serve their landlord by sending it through email, by mail, or by hand-delivering it to them.
+  
+  Sending it to their landlord through email is the fastest way to serve this motion.
+  % else:
+  The tenant can serve their landlord by sending it through email, by mail, or by hand-delivering it to them.
+  
+  Sending it to their landlord through email is the fastest way to serve this motion.
+  % endif
+  
+fields:
+  - label: |
+      % if person_answering == "tenant":
+        How will you serve your landlord?
+      % elif person_answering == "attorney" and representation_type == "entering_appearance":
+        How will you serve the tenant's landlord?
+      % else:
+        How will the tenant serve their landlord?
+      % endif
+    field: service_method
+    input type: radio
+    choices:
+      - By email: email
+      - By mail: mail
+      - By hand: hand
+      - Decide later: decide_later
+  - label: |
+      % if person_answering == "tenant":
+        Will you serve your landlord today?
+      % elif person_answering == "attorney" and representation_type == "entering_appearance":
+        Will you serve the tenant's landlord today?
+      % else:
+        Will the tenant serve their landlord today?
+      % endif
+    field: service_today
+    datatype: yesnoradio
+    js show if: |
+      val("service_method") == "email" || val("service_method") == "mail" || val("service_method") == "hand"
+validation code: |
+  if service_method == "decide_later":
+    service_today = False
+---
 code: |
   if complaint_ask_for_tro and include_conditions_in_complaint:
-    verified_complaint_and_motions_attachment.title = "Complaint for emergency repairs"
+    verified_complaint_attachment.title = "Complaint for repairs and relief"
   elif not complaint_ask_for_tro and include_conditions_in_complaint:
-    verified_complaint_and_motions_attachment.title = "Complaint for repairs"
-  elif complaint_ask_for_tro and not include_conditions_in_complaint:
-    verified_complaint_and_motions_attachment.title = "Complaint for emergency relief"
+    verified_complaint_attachment.title = "Complaint for repairs"
   else:
-    verified_complaint_and_motions_attachment.title = "Complaint for relief"
+    verified_complaint_attachment.title = "Complaint for relief"
+---
+code: |
+  if complaint_ask_for_tro and include_conditions_in_complaint:
+    motion_for_injunctive_relief_attachment.title = "Emergency motion for repairs"
+  elif not complaint_ask_for_tro and include_conditions_in_complaint:
+    motion_for_injunctive_relief_attachment.title = "Motion for repairs"
+  elif complaint_ask_for_tro and not include_conditions_in_complaint:
+    motion_for_injunctive_relief_attachment.title = "Emergency motion for relief"
+  else:
+    motion_for_injunctive_relief_attachment.title = "Motion for relief"
 ---
 objects:
   - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions for your court documents", filename="next_steps_complaint.docx", has_addendum=False)
-  - verified_complaint_and_motions_attachment: ALDocument.using(filename="verified_complaint_and_motions.docx", has_addendum=False)
+  - verified_complaint_attachment: ALDocument.using(filename="verified_complaint.docx", has_addendum=False)
+  - motion_for_injunctive_relief_attachment: ALDocument.using(filename="motion_for_injunctive_relief.docx", has_addendum=False)
   - discovery_attachment: ALDocument.using(title="Discovery", filename="Discovery.docx", has_addendum=False)
 ---
 attachments:
@@ -1146,11 +1225,18 @@ attachments:
     docx template file: next_steps_complaint.docx
 ---
 attachments:    
-  - name: verified complaint and motions attachment
-    filename: verified_complaint_and_motions.docx     
-    variable name: verified_complaint_and_motions_attachment[i]        
+  - name: verified complaint attachment
+    filename: verified_complaint.docx     
+    variable name: verified_complaint_attachment[i]        
     skip undefined: True
-    docx template file: verified_complaint_and_motions.docx
+    docx template file: verified_complaint.docx
+---
+attachments:    
+  - name: motion_for_injunctive_relief
+    filename: motion_for_injunctive_relief.docx     
+    variable name: motion_for_injunctive_relief_attachment[i]        
+    skip undefined: True
+    docx template file: motion_for_injunctive_relief.docx
 ---
 attachment:
   - name: discovery
