@@ -108,6 +108,9 @@ code: |
   discovery_attachment.enabled = wants_discovery and verified_complaint_attachment.enabled
 ---
 code: |
+  motion_to_compel_discovery_attachment.enabled = discovery_attachment.enabled
+---
+code: |
   motion_for_injunctive_relief_attachment.enabled = verified_complaint_attachment.enabled
 ---
 code: |
@@ -1216,6 +1219,7 @@ objects:
   - verified_complaint_attachment: ALDocument.using(filename="verified_complaint.docx", has_addendum=False)
   - motion_for_injunctive_relief_attachment: ALDocument.using(filename="motion_for_injunctive_relief.docx", has_addendum=False)
   - discovery_attachment: ALDocument.using(title="Discovery", filename="Discovery.docx", has_addendum=False)
+  - motion_to_compel_discovery_attachment: ALDocument.using(title="Motion to Compel Discovery", filename="motion_to_compel_discovery.docx", has_addendum=False)
 ---
 attachments:
   - name: verified complaint and motions post interview instructions
@@ -1232,7 +1236,7 @@ attachments:
     docx template file: verified_complaint.docx
 ---
 attachments:    
-  - name: motion_for_injunctive_relief
+  - name: motion for injunctive relief
     filename: motion_for_injunctive_relief.docx     
     variable name: motion_for_injunctive_relief_attachment[i]        
     skip undefined: True
@@ -1244,6 +1248,13 @@ attachment:
     variable name: discovery_attachment[i]        
     skip undefined: True
     docx template file: discovery.docx
+---
+attachment:
+  - name: motion to compel discovery
+    filename: motion_to_compel_discovery.docx     
+    variable name: motion_to_compel_discovery_attachment[i]        
+    skip undefined: True
+    docx template file: motion_to_compel_discovery.docx
 ---
 code: |
   # This gets overridden inside UpToCode interview
