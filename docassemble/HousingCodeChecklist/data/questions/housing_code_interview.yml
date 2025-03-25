@@ -2913,6 +2913,7 @@ objects:
         temporary_order,
         contempt_complaint,
         discovery_attachment,
+        motion_to_compel_discovery_attachment,
         affidavitofindigency_attachment,
       ], title="Documents to file in court and serve your landlord",
       filename="affirmative_complaint_documents",
@@ -2932,13 +2933,15 @@ objects:
         request_housing_inspection_attachment,
         Repair_Demand_Letter_attachment,
         discovery_attachment,
+        motion_to_compel_discovery_attachment,
         affidavitofindigency_attachment,
       ], title="All documents for your records", filename="tenant_copy")
   - further_documents_bundle: ALDocumentBundle.using(elements=[
         temporary_order,
         order_of_notice,
         contempt_complaint,
-        discovery_attachment
+        discovery_attachment,
+        motion_to_compel_discovery_attachment
       ], title="Documents for future case use",
       filename="further_documents",
       )
