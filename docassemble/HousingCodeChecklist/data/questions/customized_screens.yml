@@ -66,16 +66,23 @@ if: |
   not landlord_name_is_optional
 id: names of opposing parties name required
 question: |
-  % if person_answering == "tenant":
+  % if len(other_parties.elements) > 1 and person_answering == "tenant":
+  Please answer some questions about your other landlord or property owner
+  % elif len(other_parties.elements) > 1:
+  Please answer some questions about the tenant's other landlord or property owner
+  % elif person_answering == "tenant":
   Please answer some questions about your landlord
   % else:
   Please answer some questions about the tenant's landlord
   % endif
 subquestion: |
-  % if person_answering == "tenant":
+  % if len(other_parties.elements) > 1:
+  You have already told us about ${comma_and_list(other_parties.complete_elements())}.
+  
+  % elif person_answering == "tenant":
   First, you will be asked if your landlord is a business or an individual and then what your landlord's name is.
 
-  Your landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act). 
+  Your landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
   
   To find out who the owner is, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
   
@@ -85,7 +92,7 @@ subquestion: |
   % else: 
   First, you will be asked if the tenant's landlord is a business or an individual and then what the landlord's name is.
   
-  The tenant's landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in the court complaint and any demand letter the tenant may want to send under the Consumer Protection Act). 
+  The tenant's landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in the court complaint and any demand letter the tenant may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
   
   To find out who the owner is, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
   
@@ -95,30 +102,32 @@ subquestion: |
   % endif
 fields:
   - label: |
-      % if person_answering == "tenant":
+      % if len(users.elements) > 1:
+      Is the other landlord or property owner an individual or a business?
+      % elif person_answering == "tenant":
       Is your home owned by an individual or a business?
       % else: 
       Is the tenant's home owned by an individual or a business?
       % endif
-    field: other_parties[0].person_type
+    field: other_parties[i].person_type
     input type: radio
     choices:
       - Business or organization: business
       - Individual: individual
-  - Landlord's full name: other_parties[0].name.first
+  - Landlord's full name: other_parties[i].name.first
     show if:
-      variable: other_parties[0].person_type
+      variable: other_parties[i].person_type
       is: "individual"
-  - Suffix: other_parties[0].name.suffix
+  - Suffix: other_parties[i].name.suffix
     code: |
       name_suffix()
     show if:
-      variable: other_parties[0].person_type      
+      variable: other_parties[i].person_type      
       is: "individual"
     required: False
-  - Landlord's business name: other_parties[0].name.first
+  - Landlord's business name: other_parties[i].name.first
     show if:
-      variable: other_parties[0].person_type
+      variable: other_parties[i].person_type
       is: business
 validation code: |
   ll_name_unknown = False
@@ -168,37 +177,97 @@ fields:
       % else:
       Is the tenant's landlord an individual or a business?
       %endif
-    field: other_parties[0].person_type
+    field: other_parties[i].person_type
     input type: radio
     choices:
       - Business or organization: business
       - Individual: individual
     hide if: ll_name_unknown      
-  - Landlord's full name: other_parties[0].name.first
+  - Landlord's full name: other_parties[i].name.first
     show if:
-      variable: other_parties[0].person_type
+      variable: other_parties[i].person_type
       is: "individual"
-  - Suffix: other_parties[0].name.suffix
+  - Suffix: other_parties[i].name.suffix
     code: |
       name_suffix()
     show if:
-      variable: other_parties[0].person_type      
+      variable: other_parties[i].person_type      
       is: "individual"
     required: False
-  - Landlord's business name: other_parties[0].name.first
+  - Landlord's business name: other_parties[i].name.first
     show if:
-      variable: other_parties[0].person_type
+      variable: other_parties[i].person_type
       is: business
 validation code: |
   if ll_name_unknown:
-    other_parties[0].name.first = "[ Landlord's Name ]"
+    other_parties[i].name.first = "[ Landlord's Name ]"
 ---
 id: tenant contact information
 question: |
   % if person_answering == "tenant":
-  What is your contact information?
+  ${ users[i].familiar() }, what is your contact information?
   % else:
-  What is the tenant's contact information
+  What is the ${ users[i].name }'s contact information?
+  % endif
+subquestion: |
+  % if person_answering == "tenant" and screen_ll_knows_problem and document_choice['sue_landlord']:
+  The court may need to call you to set up a hearing. If you
+  do not have your own phone number or email, consider using
+  a phone number that belongs to a trusted friend or family member.
+  % elif person_answering == "attorney" or person_answering == "tenant_helper" and screen_ll_knows_problem and document_choice['sue_landlord']:
+  The court may need to call the tenant to set up a hearing. If the tenant
+  does not have their own phone number or email, they can consider using
+  a phone number that belongs to a trusted friend or family member.
+  % elif person_answering == "tenant" and document_choice['get_inspection']:
+  The inspector may need to contact you to set up an inspection of your unit. If you
+  do not have your own phone number or email, consider using
+  a phone number or email that belongs to a trusted friend or family member.
+  % elif person_answering == "attorney" or person_answering == "tenant_helper" and document_choice['get_inspection']:
+  The inspector may need to contact the tenant to set up an inspection of their unit. If the tenant does not have their own phone number or email, they can consider using a phone number or email that belongs to a trusted friend or family member.
+  % elif person_answering == "tenant":
+  Your landlord may need to contact you to set up a time for repairs. If you
+  do not have your own phone number or email, consider using
+  a phone number or email that belongs to a trusted friend or family member.
+  % else:
+  The tenant's landlord may need to contact them to set up a time for repairs. If the tenant
+  does not have their own phone number or email, they can consider using
+  a phone number or email that belongs to a trusted friend or family member.
+  % endif
+fields:  
+  - Mobile number: users[i].mobile_number
+    required: False
+    datatype: al_international_phone
+  - Other phone number: users[i].phone_number
+    required: False
+    datatype: al_international_phone
+  - Email: users[i].email    
+    datatype: email
+    required: False
+  - label: |
+      % if person_answering == "tenant":
+      I do not have any of these
+      % else:
+      The tenant does not have any of these
+      % endif
+    field: users[i].no_contact_method
+    datatype: yesno
+    disable others: True
+validation code: |
+  if users[i].no_contact_method:
+    users[i].phone_number = users[i].mobile_number = users[i].email = ""    
+  if (not showifdef('users[i].phone_number') and \
+      (not showifdef('users[i].mobile_number')) and \
+      (not showifdef('users[i].email')) and \
+      (not users[i].no_contact_method)
+  ):
+    validation_error(word("You need to provide at least one contact method, or state that you do not have any."), field="users[i].mobile_number")
+---
+id: tenant contact information
+question: |
+  % if person_answering == "tenant":
+  ${ users[0].familiar() }, what is your contact information?
+  % else:
+  What is the ${ users[0].name }'s contact information?
   % endif
 subquestion: |
   % if person_answering == "tenant" and screen_ll_knows_problem and document_choice['sue_landlord']:
@@ -256,7 +325,7 @@ validation code: |
 id: landlord's contact information
 generic object: ALIndividual
 question: |
-  How can ${ other_parties } be contacted?
+  How can ${ other_parties[i] } be contacted?
 subquestion: |
   % if person_answering == "tenant":
   If you do not know, you can leave this screen blank.  
@@ -266,10 +335,10 @@ subquestion: |
 
   ${ collapse_template(why_need_ll_contact_information_template) }
 fields:
-  - ${ other_parties.familiar() }'s phone number: other_parties[0].phone_number
+  - ${ other_parties[i].familiar() }'s phone number: other_parties[i].phone_number
     datatype: al_international_phone
     required: False
-  - ${ other_parties.familiar() }'s email address: other_parties[0].email
+  - ${ other_parties[i].familiar() }'s email address: other_parties[i].email
     datatype: email
     required: False
 ---
@@ -312,22 +381,37 @@ fields:
       name_suffix()
     required: False
 ---
+id: additional tenant name
+question:  |
+  ${ ordinal(i).capitalize() } tenant's name
+fields:
+  - First: users[i].name.first
+  - Middle: users[i].name.middle
+    required: False
+  - Last: users[i].name.last
+  - Suffix: users[i].name.suffix
+    code: |
+      name_suffix()
+    required: False
+---
 id: any other users
 question: |
   % if person_answering == "tenant":
-  Did anyone else file with you?
+  Is there another adult that rents with you?
   % else:
-  Did anyone else file with the tenant?
+  Is there another adult that rents with the tenant?
   % endif
 subquestion: |
   % if len(users.elements) > 1:
   You have already told us about ${comma_and_list(users.complete_elements())}.
-  % else:
-  We need the name of each person who is part of this case so that
-  the court clerk can waive fees for the right file.
+  % elif person_answering == "tenant":
+  We need the name of each adult who is part of this case so that all tenants are included in the documents you send to your landlord, housing inspector, or the court.
   
-  We will ask for the name of each person on the "other side"
-  next.
+  We will ask for the name of each person on the "other side" next.
+  % else:
+  We need the name of each adult who is part of this case so that all tenants are included in the documents that the tenant sends to their landlord, housing inspector, or the court.
+  
+  We will ask for the name of each person on the "other side" next.
   % endif
 fields:
   - label: |
@@ -337,6 +421,21 @@ fields:
       Is anyone else on the tenant's side of the case?
       % endif
     field: users.there_is_another
+    datatype: yesnoradio
+---
+id: any other defendants
+question: |
+  Do you need to name another landlord or property owner?
+subquestion: |
+  % if len(other_parties.elements) > 1:
+  You have already told us about ${comma_and_list(other_parties.complete_elements())}.
+  % elif person_answering == "tenant":
+  Your landlord may not be the owner of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act).
+  % else:
+  The tenant's landlord may not be the owner of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in the court complaint and any demand letter you may want to send under the Consumer Protection Act).
+  % endif
+fields:
+  - Is anyone else on the landlord's side of the case?: other_parties.there_is_another
     datatype: yesnoradio
 ---
 id: persons address
@@ -440,11 +539,11 @@ fields:
 id: persons signature
 generic object: ALIndividual
 question: |
-  ${x}, please sign below or tap "next" to sign later
-signature: x.signature
+  ${ users[i] }, please sign below or tap "next" to sign later
+signature: users[i].signature
 required: False
 under: |
-  ${x}
+  ${ users[i] }
 progress: 99
 ---
 id: signature choice with complaint
@@ -476,7 +575,7 @@ fields:
           We can text or share a link with your phone on the next screen
       - On a computer with my mouse: this_device
       - On the paper with a pen after I print the documents: sign_after_printing
-  - no label: users[0].states_above_true
+  - no label: users[i].states_above_true
     datatype: checkboxes
     minlength: 1
     choices:
@@ -486,7 +585,7 @@ fields:
         You cannot keep going unless you did your best to tell the truth.
     js show if: |
       val("signature_choice") == "phone" || val("signature_choice") == "this_device"
-  - no label: users[0].states_above_true
+  - no label: users[i].states_above_true
     datatype: checkboxes
     minlength: 1
     choices:
@@ -977,11 +1076,7 @@ question: |
 subquestion: |
   % if len(all_matches) > 0:
   Select an option from the list of court(s) serving the address you gave us,
-  % if isinstance(addresses_to_search, Iterable):
-  ${comma_and_list([address.on_one_line() for address in addresses_to_search],comma_string='; ')}.
-  % else:
-  ${addresses_to_search.on_one_line()}
-  % endif
+  ${ users[0].address.on_one_line() }
   % endif
   
   Most tenants file in the Housing Court.
@@ -1015,7 +1110,9 @@ fields:
     show if:
       variable: trial_court
       is: None
-      
+---
+code: |
+  addresses_to_search = [users[0].address]
 ---
 template: housing_how_to_pick_court_help_template
 subject: |

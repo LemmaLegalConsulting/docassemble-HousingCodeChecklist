@@ -42,6 +42,7 @@ code: |
   user_role = 'plaintiff'
   user_ask_role = 'plaintiff'
   File_a_Verified_Complaint_Form
+  users[0].email
   users.gather()
   other_parties.gather()
   complaint_ask_for_damages
@@ -62,12 +63,7 @@ code: |
   complaint_raft_or_other_assistance
   complaint_retaliation
   trial_court
-  other_parties[0].phone_number
-  users[0].email
-  users[0].address.address
-  users[0].phone_number
   trial_court.address.address
-  other_parties[0].address.address
   if complaint_ask_for_damages:
     interview_order_discovery
   signature_date
@@ -439,18 +435,6 @@ content: |
 ---
 code: |
   landlord_subject_to_consumer_protection_law = is_landlord_subject_to_93a
----
-sets:
-  - other_parties[i].name.first
-  - other_parties[i].name.last
-  - other_parties[i].name.middle
-  - other_parties[i].name.suffix
-id: names of opposing parties
-question: |
-  What is the name of your ${ ordinal(i) } landlord?
-fields:
-  - code: |
-      other_parties[i].name_fields(person_or_business='unsure')
 ---
 variable name: verified_complaint_claims_terms
 use objects: True
