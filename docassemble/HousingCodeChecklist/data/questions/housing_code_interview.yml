@@ -208,7 +208,7 @@ code: |
   if person_answering == "attorney" and representation_type == "entering_appearance":
     signature_fields = ["users[0].attorney.signature"]
   else:
-    signature_fields = ["users.signature"]
+    signature_fields = [user.attr_name("signature") for user in users.complete_elements()]
 ---
 code: |
   nav.set_section('review_conditions')
@@ -2038,7 +2038,7 @@ template: chelsea_inspection_email_template
 subject: |
   Request for inspection through UpToCode
 content: |
-  % if users.length() > 1:
+  % if len(users) > 1:
   Hello Chelsea Inspectional Services,
   
   Attached is our request for an inspection of our rental unit.

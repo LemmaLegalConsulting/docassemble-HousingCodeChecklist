@@ -540,7 +540,7 @@ id: persons signature
 generic object: ALIndividual
 question: |
   ${ users[i] }, please sign below or tap "next" to sign later
-signature: users[i].signature
+signature: signature
 required: False
 under: |
   ${ users[i] }
@@ -552,15 +552,27 @@ if: |
 decoration: file-signature
 question: |
   % if person_answering == "tenant":
-  Your documents are almost ready to **print**
+  ${ users.familiar() }, your documents are almost ready to **print**
   % else:
-  The tenant's documents are almost ready to **print**
+  ${ users.familiar() }'s documents are almost ready to **print**
   % endif
 subquestion: |
-  % if person_answering == "tenant":
+  % if person_answering == "tenant" and len(users) > 1:
+  You can sign your documents before or after you **print** them.
+
+  Your answers and statements here will apply to all tenants you have named.
+
+  How do you want to sign them?
+  % elif person_answering == "tenant":
   You can sign your documents before or after you **print** them.
 
   How do you want to sign them?
+  % elif person_answering != "tenant" and len(users) > 1:
+  The tenants can sign their documents before or after they **print** them.
+  
+  The answers and statements here will apply to all tenants that have been named.
+
+  How do the tenants want to sign them?
   % else:
   The tenant can sign their documents before or after they **print** them.
 
@@ -575,24 +587,24 @@ fields:
           We can text or share a link with your phone on the next screen
       - On a computer with my mouse: this_device
       - On the paper with a pen after I print the documents: sign_after_printing
-  - no label: users[i].states_above_true
+  - no label: users[0].states_above_true
     datatype: checkboxes
     minlength: 1
-    choices:
+    choices: 
       - I affirm that I have personal knowledge of all of the facts stated and hereby swear under the penalty of perjury that all of those facts are true.: states_true
     validation messages:
       minlength: |
         You cannot keep going unless you did your best to tell the truth.
     js show if: |
       val("signature_choice") == "phone" || val("signature_choice") == "this_device"
-  - no label: users[i].states_above_true
+  - no label: users[0].states_above_true
     datatype: checkboxes
     minlength: 1
     choices:
       - "I certify that a true copy of this motion will be served upon the Landlord by ${ service_method } today, ${ today() }.": states_true
     js show if: |
       (val("signature_choice") == "phone" && ${ str(service_today).lower() }) || (val("signature_choice") == "this_device" && ${ str(service_today).lower() })
-continue button field: saw_signature_choice        
+continue button field: saw_signature_choice       
 ---
 id: signature choice no complaint
 if: |
@@ -600,9 +612,9 @@ if: |
 decoration: file-signature
 question: |
   % if person_answering == "tenant":
-  Your documents are almost ready to **print**
+  ${ users.familiar() }, your documents are almost ready to **print**
   % else:
-  The tenant's documents are almost ready to **print**
+  ${ users.familiar() }'s documents are almost ready to **print**
   % endif
 subquestion: |
   % if person_answering == "tenant":
