@@ -10,32 +10,53 @@ objects:
 ---
 id: wants discovery
 question: |
+  % if person_answering == "tenant":
   Proving your case
+  % else:
+  Proving the tenant's case
+  % endif
 subquestion: |
   % if person_answering == "tenant":
   You will need to prove your case with evidence.  
   
   Bring three copies of your evidence to court so you can give a copy to the judge and the landlord.
-  % else:
-  You will need to prove your case with evidence.  
-  
-  The tenant should bring three copies of your evidence to court so you can give a copy to the judge and the landlord.
-  % endif  
-  
+
   This website includes a list of common questions to ask and documents to ask your landlord for.
+  % else:
+  The tenant will need to prove their case with evidence.  
+  
+  The tenant should bring three copies of their evidence to court so they can give a copy to the judge and the landlord.
+  
+  This website includes a list of common questions to ask and documents to ask the tenant's landlord for.
+  % endif 
 fields:
-  - Do you want to request information or documents from your landlord?: wants_discovery
+  - label: |
+      % if person_answering == "tenant":
+      Do you want to request information or documents from your landlord?
+      % else:
+      Does the tenant want to request information or documents from their landlord?
+      % endif
+    field: wants_discovery
     datatype: yesnoradio
     default: True
 ---  
 id: customize discovery
 question: |
+  % if person_answering == "tenant":
   You can customize the questions and documents you request from your landlord
+  % else:
+  The tenant can customize the questions and documents they request from their landlord
+  % endif
 subquestion: |
-  Based on your answers, you would ask your landlord ${ interrogatories.count_checked() }
-  questions and for ${ document_requests.count_checked() } documents.
+  % if person_answering == "tenant":
+  Based on your answers, you would ask your landlord ${ interrogatories.count_checked() } questions and for ${ document_requests.count_checked() } documents.
   
   You can change the list of questions and documents if you want to.
+  % else:
+  Based on the tenant's answers, they would ask their landlord ${ interrogatories.count_checked() } questions and for ${ document_requests.count_checked() } documents.
+  
+  They can change the list of questions and documents if they want to.
+  % endif
 
   Most tenants use the default questions and documents.
 fields:

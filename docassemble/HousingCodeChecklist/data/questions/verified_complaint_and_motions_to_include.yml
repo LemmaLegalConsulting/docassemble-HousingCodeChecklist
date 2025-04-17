@@ -67,6 +67,7 @@ code: |
   if complaint_ask_for_damages:
     interview_order_discovery
   signature_date
+  claim_jurytrial
   verified_complaint_wants_fee_waiver
   if verified_complaint_wants_fee_waiver:
       document_choice["fee_waiver"] = True
@@ -256,28 +257,44 @@ fields:
 ---
 id: relocation expenses
 question: |
-  % if person_answering == "tenant":
-  Getting a new place to stay
-  % else:
-  Getting the tenant a new place to stay
-  % endif
+  Is it not safe to stay in the home until repairs are made?
 subquestion: |
   % if person_answering == "tenant":
-  If the problems are very serious, you may need to move out to allow
-  the landlord to fix them.
+  If the problems are very serious, you may want to stay somewhere else until the repairs are done.
   % else:
-  If the problems are very serious, the tenant may need to move out to allow
-  the landlord to fix them.
+  If the problems are very serious, the tenant may want to stay somewhere else until the repairs are done.
   % endif
+
+  ${ collapse_template(hotel_request_template)}
 fields:
   - label: |
       % if person_answering == "tenant":
-      Do you want the landlord to pay for a hotel or new apartment while they fix the problems?
+      Do you want the Landlord to have to provide comparable, suitable housing (a hotel or another unit) until the problems are fixed?
       % else:
-      Does the tenant want the landlord to pay for a hotel or new apartment while they fix the problems?
+      Does the tenant want the Landlord to have to provide comparable, suitable housing (a hotel or another unit) until the problems are fixed?
       % endif
     field: complaint_ask_for_relocation
-    datatype: yesnoradio    
+    datatype: yesnoradio
+    label above field: True
+---
+id: hotel request template
+template: hotel_request_template
+subject: |
+  % if person_answering == "tenant":
+  Where would I stay?
+  % else:
+  Where would the tenant stay?
+  % endif
+content: |
+  % if person_answering == "tenant":
+  A judge could order your landlord to provide you with a hotel or another unit if your home is unsafe, while the landlord completes repairs.
+
+  If your unit has actually been condemned as unlivable by the Town or City inspectors, then the Landlord is required to “provide comparable, suitable housing” under the State Sanitary Code, but only until the end of your lease term or until the unit is found to be livable by the local board of health (whichever is shorter). See 105 CMR 410.900.
+  % else:
+  A judge could order the tenant's landlord to provide them with a hotel or another unit if their home is unsafe, while the landlord completes repairs.
+
+  If the tenant's unit has actually been condemned as unlivable by the Town or City inspectors, then the Landlord is required to “provide comparable, suitable housing” under the State Sanitary Code, but only until the end of the lease term or until the unit is found to be livable by the local board of health (whichever is shorter). See 105 CMR 410.900.
+  % endif
 ---
 id: rental assistance
 question: |
@@ -888,6 +905,80 @@ code: |
 ---
 code: |
   addresses_to_search = [user.address for user in users]
+---
+id: jury trial
+decoration: users
+question: |
+  % if person_answering == "tenant":
+  Your right to a jury trial
+  % else:
+  Tenant's right to a jury trial
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  You have a right to a jury trial and you must ask for it now.
+
+  ### What is a jury trial? 
+
+  * In a jury trial the jury decides who wins the case.
+  * The other option is a trial with a judge and the judge decides who wins the case.
+  * A jury is made up of ordinary people, some of whom may be tenants like you.
+  * Jury trials are complicated and it helps to have a lawyer represent you in a jury trial.
+
+  ### Should I keep my right to a jury trial?
+  * You may have more time to find a lawyer if you ask for a jury trial.
+  * You can always give up your jury right later. But you can't ask for a jury trial after filing this paperwork.
+  * You can still reach an agreement with your landlord. Most cases end up with an agreement, whether the tenant keeps their right to a jury trial or not.
+  * Choosing a jury does not mean you will stop having to pay rent.
+  
+  % else:
+  The tenant has a right to a jury trial and must ask for it now.
+
+  ### What is a jury trial? 
+
+  * In a jury trial the jury decides who wins the case.
+  * The other option is a trial with a judge and the judge decides who wins the case.
+  * A jury is made up of ordinary people, some of whom may be tenants like ${ users.familiar() }.
+  * Jury trials are complicated and it helps to have a lawyer represent a tenant in a jury trial.
+
+  ### Should the tenant keep their right to a jury trial?
+  * The tenant may have more time to find a lawyer if they ask for a jury trial.
+  * The tenant can always give up their jury right later. But they can't ask for a jury trial after filing this paperwork.
+  * The tenant can still reach an agreement with their landlord. Most cases end up with an agreement, whether the tenant keeps their right to a jury trial or not.
+  * Choosing a jury does not mean the tenant will stop having to pay rent.
+  
+  % endif
+  ${ collapse_template(jury_trial_template) }
+
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Do you want a jury trial?
+      % else:
+      Does the tenant want a jury trial?
+      % endif
+    field: claim_jurytrial
+    datatype: yesnoradio
+---
+id: jury trial template
+template: jury_trial_template
+subject: How does a jury trial work?
+content: |
+  % if person_answering == "tenant":
+  Either the landlord or the tenant can choose a jury trial. You can use this interview to ask for your jury trial. If you do think you may want a jury, you should keep your right to a jury in this interview.
+  
+  A jury trial can be difficult for a tenant to do on their own. However, because most cases end in an agreement, asking for a jury trial now has very low risk.
+  
+  If you do end up having a jury trial, in Massachusetts evictions, a jury may be either 6 or 12 people. At least 5/6 jurors must agree to reach a decision in your case. They will reach a separate decision about each of your claims.
+  
+  % else:
+  Either the landlord or the tenant can choose a jury trial. The tenant can use this interview to ask for their jury trial. If the tenant does think they may want a jury, they should keep their right to a jury in this interview.
+  
+  A jury trial can be difficult for a tenant to do on their own. However, because most cases end in an agreement, asking for a jury trial now has very low risk.
+  
+  If the tenant does end up having a jury trial, in Massachusetts evictions, a jury may be either 6 or 12 people. At least 5/6 jurors must agree to reach a decision in the case. They will reach a separate decision about each of the tenant's claims.
+  
+  % endif
 ---
 id: verified complaint and motions review screen
 event: review_verified_complaint_and_motions
