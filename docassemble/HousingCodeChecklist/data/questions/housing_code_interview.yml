@@ -173,6 +173,7 @@ code: |
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
     for user in users.complete_elements():
       user.email
+    other_parties.gather()
     interview_order_contempt_complaint
   
   nav.set_section('review_and_sign')

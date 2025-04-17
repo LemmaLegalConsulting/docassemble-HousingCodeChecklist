@@ -407,11 +407,8 @@ subquestion: |
   % elif person_answering == "tenant":
   We need the name of each adult who is part of this case so that all tenants are included in the documents you send to your landlord, housing inspector, or the court.
   
-  We will ask for the name of each person on the "other side" next.
   % else:
   We need the name of each adult who is part of this case so that all tenants are included in the documents that the tenant sends to their landlord, housing inspector, or the court.
-  
-  We will ask for the name of each person on the "other side" next.
   % endif
 fields:
   - label: |

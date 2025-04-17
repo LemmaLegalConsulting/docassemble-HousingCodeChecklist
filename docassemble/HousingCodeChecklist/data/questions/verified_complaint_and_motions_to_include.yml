@@ -101,7 +101,7 @@ code: |
   verified_complaint_claims.gathered = True
 ---
 code: |
-  discovery_attachment.enabled = wants_discovery and verified_complaint_attachment.enabled
+  discovery_attachment.enabled = verified_complaint_attachment.enabled and wants_discovery
 ---
 code: |
   motion_to_compel_discovery_attachment.enabled = discovery_attachment.enabled
