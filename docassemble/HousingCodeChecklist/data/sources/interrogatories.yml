@@ -254,10 +254,10 @@
   default_check: False
   priority: 550
   conditions:
-    - screen_tenant_facing_eviction["notice only"]
-    - screen_tenant_facing_eviction["pending"]
-    - screen_tenant_facing_eviction["has case"]
-    - screen_tenant_facing_eviction["closed"]
+    - screen_tenant_facing_eviction_is_case
+    - screen_tenant_facing_eviction_is_notice
+    - screen_tenant_facing_eviction_is_pending
+    - screen_tenant_facing_eviction_is_closed
 
 - name: lock_changes_and_exclusion
   description: If the Landlord changed locks or took actions to exclude the Tenant from the apartment or any part of the building, provide details including dates, reasons, and notifications.

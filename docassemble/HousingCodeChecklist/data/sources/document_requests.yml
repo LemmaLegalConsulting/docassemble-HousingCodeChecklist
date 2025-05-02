@@ -258,7 +258,7 @@
   default_check: True
   priority: 700
   conditions:
-    - screen_tenant_facing_eviction["notice only"]
-    - screen_tenant_facing_eviction["pending"]
-    - screen_tenant_facing_eviction["has case"]
-    - screen_tenant_facing_eviction["closed"]
+    - screen_tenant_facing_eviction_is_case
+    - screen_tenant_facing_eviction_is_notice
+    - screen_tenant_facing_eviction_is_pending
+    - screen_tenant_facing_eviction_is_closed

@@ -105,3 +105,10 @@ subquestion: |
   % for key in document_requests.checked_values():
   1. ${ document_requests[key].description }
   % endfor
+---
+code: |
+  # Backport a few variables just to be used for discovery calculations
+  screen_tenant_facing_eviction_is_notice = screen_tenant_facing_eviction["notice only"]  
+  screen_tenant_facing_eviction_is_pending = screen_tenant_facing_eviction["pending"]
+  screen_tenant_facing_eviction_is_case = screen_tenant_facing_eviction["has case"]
+  screen_tenant_facing_eviction_is_closed = screen_tenant_facing_eviction["closed"]
