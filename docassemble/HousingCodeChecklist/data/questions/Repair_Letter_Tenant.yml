@@ -43,14 +43,10 @@ code: |
   # mailing_method  
   set_parts(subtitle=str(users))
   set_progress(12.5)
-  users[0].name.first
-  users[0].address
-  users[0].address.zip
-  users[0].phone_number
+  users[0].email
+  users.gather()
   set_progress(25.0)
-  other_parties[0].name.first
-  other_parties[0].address.address
-  other_parties[0].phone_number
+  other_parties.gather()
   tenant_repair_issue_date
   tenant_repair_issue_description
   tenant_repair_introduction
@@ -196,10 +192,6 @@ fields:
   - no label: tenant_repair_introduction
     datatype: area
     required: False
----
-objects:
-  - users: ALPeopleList.using(ask_number=True, target_number=1)
-  - other_parties: ALPeopleList.using(ask_number=True, target_number=1)  
 ---
 objects:
   - tenant_repair_request_attachment: ALDocument.using(title="Tenant Repair Letter", filename="tenant_repair_letter")

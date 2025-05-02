@@ -39,11 +39,10 @@ id: interview_order_Repair_Demand_Letter
 code: |
   nav.set_section('review_Repair_Demand_Letter')
   user_role = 'plaintiff'
+  users[0].email
   users.gather()
   set_parts(subtitle=str(users))
-  users[0].address.address
   other_parties.gather()
-  other_parties[0].address.address
   tenant_movein_date
   notification_date
   if written_notification == True:
@@ -93,19 +92,6 @@ content: |
   If | then the amount you would get is
   ---|-----------------------------------
   The jury decides that $500 would repay you | $1,500 instead
-
----
-sets:
-  - other_parties[i].name.first
-  - other_parties[i].name.last
-  - other_parties[i].name.middle
-  - other_parties[i].name.suffix
-id: names of opposing parties
-question: |
-  What is your landlord's name?
-fields:
-  - code: |
-      other_parties[i].name_fields(person_or_business='unsure')
 ---
 id: is_landlord_subject_to_93a
 question: |
@@ -233,14 +219,28 @@ subquestion: |
   other Massachusetts laws.
 ---
 sets: 
-  - other_parties[0].address.address
-  - other_parties[0].address.city
-id: What is the landlord s address
+  - other_parties[i].address.address
+  - other_parties[i].address.city
+id: What is the landlord's address
 question: |
-  What is your landlord's address?
+  What is ${ other_parties[i].name }'s address?
+subquestion: |
+  % if person_answering == "tenant":
+  To find out your landlord or property owner's address, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
+  
+    - call the tenant's local Registry of Deeds for help finding the most recent deed for the property, or
+    - call the tenant's town/city tax assessor’s office to find out what mailing address is listed for the property's tax and water bills.
+  
+  % else: 
+  To find out the landlord or property owner's address, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
+  
+    - call the tenant's local Registry of Deeds for help finding the most recent deed for the property, or
+    - call the tenant's town/city tax assessor’s office to find out what mailing address is listed for the property's tax and water bills. 
+  
+  % endif
 fields:
   - code: |
-      other_parties[0].address_fields(default_state="MA")
+      other_parties[i].address_fields(default_state="MA")
 ---
 id: How long have you lived at the address
 question: |

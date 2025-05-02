@@ -1,6 +1,7 @@
 ---
 translations:
   - housing_code_interview_es.xlsx
+  - affidavit_of_indigency_es.xlsx
   - housing_code_interview_pt.xlsx
   - housing_code_interview_ht.xlsx
 ---
@@ -89,9 +90,15 @@ code: |
   else:
     intro_and_terms_of_use
   person_answering
-  if person_answering == "attorney" and representation_type == "entering_appearance":
-    users[0].attorney.name.first
   users[0].name.first
+  users[0].address.address
+  if person_answering == "attorney" and representation_type == "entering_appearance":
+    users[0].attorney.target_number = 1
+    users[0].attorney.name.first
+    users[0].attorney.address.address
+  else:
+    users[0].attorney.target_number = 0
+  users.gather()
   intro_terms_of_use
   if initial_action_selection == "help_in_court":
     nav.set_section('review_conditions')
@@ -129,12 +136,13 @@ code: |
     reconsider("al_nav_sections")
   if screen_ll_knows_problem and document_choice['get_report']:
     nav.set_section("review_checklist")
-    users[0].address.address
-    users[0].mailing_address.address
+    for user in users.complete_elements():
+      user.email
     other_parties.gather()
-    other_parties[0].address.address
   if screen_ll_knows_problem and document_choice['tell_landlord']:
     nav.set_section("review_tenant_repair_request")
+    for user in users.complete_elements():
+      user.email
     interview_order_tenant_repair_request
   #if screen_ll_knows_problem and document_choice['share_with_tenants']:
   #  nav.set_section("share_with_tenants")
@@ -142,8 +150,6 @@ code: |
   #  store_for_tenant_sharing
   if screen_ll_knows_problem and document_choice['organize_tenants']:
     nav.set_section("organizing_interstitial")
-    users[0].address.address
-    users[0].mailing_address.address
     try:
       users[0].address.geocode()
     except:
@@ -151,18 +157,23 @@ code: |
     organizing_interstitial
   if screen_ll_knows_problem and document_choice['get_inspection']:
     nav.set_section("review_request_housing_inspection")
+    for user in users.complete_elements():
+      user.email
     interview_order_request_housing_inspection
   if screen_ll_knows_problem and document_choice['demand_letter_93a']:
     nav.set_section("review_Repair_Demand_Letter")
+    for user in users.complete_elements():
+      user.email
     interview_order_Repair_Demand_Letter
   if screen_ll_knows_problem and document_choice['sue_landlord']:
     nav.set_section("review_verified_complaint_and_motion")
-    if person_answering == "attorney" and representation_type == "entering_appearance":
-      users[0].attorney.address.address
+    for user in users.complete_elements():
+      user.email
     interview_order_verified_complaint_and_motions
   if screen_ll_knows_problem and document_choice["contempt_complaint"]:
-    interview_order_contempt_complaint
-  if screen_ll_knows_problem and document_choice["contempt_complaint"]:
+    for user in users.complete_elements():
+      user.email
+    other_parties.gather()
     interview_order_contempt_complaint
   
   nav.set_section('review_and_sign')
@@ -198,7 +209,7 @@ code: |
   if person_answering == "attorney" and representation_type == "entering_appearance":
     signature_fields = ["users[0].attorney.signature"]
   else:
-    signature_fields = ["users[0].signature"]
+    signature_fields = [user.attr_name("signature") for user in users.complete_elements()]
 ---
 code: |
   nav.set_section('review_conditions')
@@ -228,7 +239,9 @@ code: |
   include_conditions_in_complaint = bad_conditions.count_conditions() > 0
 ---
 objects:
-  - users[0].attorney: ALIndividual
+  - other_parties: ALPeopleList.using(there_are_any=True,complete_attribute="complete")
+  - users[0].attorney: ALPeopleList.using(ask_number=True)
+  - users: ALPeopleList.using(there_are_any=True, complete_attribute="complete")
 ---
 objects:
   #- document_problems_image: DAStaticFile.using(filename="dripping_faucet.jpg")
@@ -1924,11 +1937,19 @@ code: |
     # Don't use triage screen if initial action was suing LL
     screen_ll_knows_problem = True
 ---
+code: |
+  users[i].name.first
+  users[i].mailing_address.address
+  users[i].complete = True
+---
+code: |
+  other_parties[i].name.first
+  other_parties[i].address.address
+  other_parties[i].email
+  other_parties[i].complete = True
+---
 id: interview_order_request_housing_inspection
 code: |
-  users[0].name.first
-  users[0].address.address
-  users[0].mailing_address.address
   users[0].email
   try:
     users[0].address.geocode()
@@ -1936,9 +1957,6 @@ code: |
     pass
   inspector_information
   # display_inspector_information
-  other_parties[0].name.first
-  other_parties[0].address.address
-  other_parties[0].email
   condemn_warning
   interview_order_request_housing_inspection = True
 ---
@@ -2021,6 +2039,17 @@ template: chelsea_inspection_email_template
 subject: |
   Request for inspection through UpToCode
 content: |
+  % if len(users) > 1:
+  Hello Chelsea Inspectional Services,
+  
+  Attached is our request for an inspection of our rental unit.
+  
+  Sincerely,
+  
+  % for user in users:
+  ${ user.name }
+  % endfor
+  % else:
   Hello Chelsea Inspectional Services,
   
   Attached is my request for an inspection of my rental unit.
@@ -2028,6 +2057,7 @@ content: |
   Sincerely,
   
   ${ users[0].name }
+  % endif
 ---
 id: download_conditions_checklist_docs
 event: download_conditions_checklist_docs
@@ -2331,15 +2361,17 @@ validation code: |
     except ValueError:
       validation_error(f"The date {bad_conditions[i].details[j].start_month or 1}/{bad_conditions[i].details[j].start_day or 1}/{bad_conditions[i].details[j].start_year} is not a valid date. Check the day of the month or leave it blank.", field="bad_conditions[i].details[j].start_day")
 ---
+if: |
+  not document_choice['sue_landlord']
 id: landlord address
 question: |
-  What is ${ other_parties[0].name }'s address?
+  What is ${ other_parties[i].name }'s address?
 fields:
   - label: |
       % if person_answering == "tenant":
-      I do not know my landlord's address
+      I do not know their address
       % else:
-      The tenant does not know their landlord's address
+      The tenant does not know their address
       % endif
     field: ll_address_unknown
     datatype: yesno
@@ -2354,26 +2386,26 @@ fields:
       their landlord's address before the tenant delivers the form.
       % endif
     show if: ll_address_unknown       
-  - Street address: other_parties[0].address.address
+  - Street address: other_parties[i].address.address
     address autocomplete: True
     hide if: ll_address_unknown
-  - Unit: other_parties[0].address.unit
+  - Unit: other_parties[i].address.unit
     required: False
     hide if: ll_address_unknown    
-  - City: other_parties[0].address.city
+  - City: other_parties[i].address.city
     hide if: ll_address_unknown  
-  - State: other_parties[0].address.state
+  - State: other_parties[i].address.state
     hide if: ll_address_unknown  
     code: |
       states_list()
     default: MA      
-  - Zip: other_parties[0].address.zip
+  - Zip: other_parties[i].address.zip
     required: False
     hide if: ll_address_unknown
 validation code: |
   if ll_address_unknown:
-    other_parties[0].address.address = "[ Landlord's address ]"
-    other_parties[0].address.city = "[ Landlord's city ]"
+    other_parties[i].address.address = "[ Landlord's address ]"
+    other_parties[i].address.city = "[ Landlord's city ]"
 ---
 id: explain_documents
 continue button field: explain_documents
