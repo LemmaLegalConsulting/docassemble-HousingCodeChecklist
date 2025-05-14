@@ -50,6 +50,9 @@ fields:
 ---
 objects:
   - temporary_order: ALDocument.using(title="Temporary Order", filename="temporary_order", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - simple_temporary_order: ALDocument.using(title="Simple Temporary Order", filename="simple_temporary_order", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - preliminary_injunction: ALDocument.using(title="Preliminary Injunction", filename="preliminary_injunction", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - simple_preliminary_injunction: ALDocument.using(title="Simple Preliminary Injunction", filename="simple_preliminary_injunction", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - order_of_notice: ALDocument.using(title="Order of Notice", filename="order_of_notice", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
   - contempt_complaint: ALDocument.using(title="Contempt Complaint", filename="contempt_complaint", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
@@ -59,6 +62,27 @@ attachment:
     variable name: temporary_order[i]        
     skip undefined: True
     docx template file: temporary_order.docx
+---
+attachment:
+  - name: Simple Temporary Order
+    filename: Simple Temporary Order   
+    variable name: simple_temporary_order[i]        
+    skip undefined: True
+    docx template file: simple_temporary_order.docx
+---
+attachment:
+  - name: Preliminary Injunction
+    filename: Preliminary Injunction  
+    variable name: preliminary_injunction[i]        
+    skip undefined: True
+    docx template file: preliminary_injunction.docx
+---
+attachment:
+  - name: Simple Preliminary Injunction
+    filename: Simple Preliminary Injunction   
+    variable name: simple_preliminary_injunction[i]        
+    skip undefined: True
+    docx template file: simple_preliminary_injunction.docx
 ---
 attachment:
   - name: Order of Notice

@@ -90,15 +90,13 @@ code: |
   else:
     intro_and_terms_of_use
   person_answering
-  users[0].name.first
-  users[0].address.address
+  users.gather()
   if person_answering == "attorney" and representation_type == "entering_appearance":
     users[0].attorney.target_number = 1
     users[0].attorney.name.first
     users[0].attorney.address.address
   else:
     users[0].attorney.target_number = 0
-  users.gather()
   intro_terms_of_use
   if initial_action_selection == "help_in_court":
     nav.set_section('review_conditions')
@@ -465,10 +463,14 @@ subquestion: |
 
   -------
   <h2 class="h4 alert-heading">Tips for navigating UpToCode</h2>
+
+  It’s a good idea to save your work so you can finish it later if you need to. To save your work, you can sign in or sign up for an account. Go to **Menu** at the top of the screen and tap "Sign in or sign up to save answers".
   
   You can click <svg class="svg-inline--fa fa-circle-question" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle-question" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="#c7e6b0" d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM288 352c0 17.7-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32z"></path></svg> 
   question mark icons, {green words}, or underlined links with a triangle next to them to see more information.
   ${ collapse_template(collapsible_info_template) }
+
+  When you click a link, it will open in a new browser tab. To return to UpToCode, click on the original browser tab at the top of your screen.
   
   Fields that are required to be filled out before you progress will have a <span style="color: red">*</span> red asterisk next to them.
   
@@ -489,7 +491,6 @@ fields:
     validation messages:
       minlength: |
         You can only continue if you agree to the Terms of Use.
-
 ---
 id: How UpToCode works
 continue button field: intro_and_terms_of_use
@@ -525,10 +526,14 @@ subquestion: |
   
   -------
   <h2 class="h4 alert-heading">Tips for navigating UpToCode</h2>
+
+  It’s a good idea to save your work so you can finish it later if you need to. To save your work, you can sign in or sign up for an account. Go to **Menu** at the top of the screen and tap "Sign in or sign up to save answers".
   
   You can click <svg class="svg-inline--fa fa-circle-question" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle-question" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="#c7e6b0" d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM288 352c0 17.7-14.3 32-32 32s-32-14.3-32-32s14.3-32 32-32s32 14.3 32 32z"></path></svg> 
   question mark icons, {green words}, or underlined links with a triangle next to them to see more information.
   ${ collapse_template(collapsible_info_template) }
+
+  When you click a link, it will open in a new browser tab. To return to UpToCode, click on the original browser tab at the top of your screen.
   
   Fields that are required to be filled out before you progress will have a <span style="color: red">*</span> red asterisk next to them.
   
@@ -539,7 +544,7 @@ subquestion: |
   -------
   
   ${ display_template(about_page_contents, scrollable=True, collapse=True) }
-  
+
 fields:
   - To continue, you must accept the Terms of Use.: acknowledged_information_use
     datatype: checkboxes
@@ -1027,22 +1032,24 @@ subquestion: |
     <h2 class="h4 alert-heading"><i class="fa-solid fa-circle-info"></i> Did you know?</h2>
     <p class="h-100 overflow-visible mb-0">
     % if person_answering == "tenant":
-    "Retaliation" is illegal.
-    If you complain about problems in your home and your landlord tries to get back at you, they are breaking the law. It is against the law to 
+    “Retaliation” is against the law.
+    If your landlord tries to
     <ul>
     <li>evict you, <strong>or</strong></li>
-    <li>raise your rent, </li> 
+    <li>raise your rent, <strong>or</strong></li></li> 
+    <li>otherwise get back at you</li>
     </ul>
-     because you complained.
+    simply because you enforced your rights to live in a safe and habitable home that is up to code, that may be unlawful.
     </p>
     % else:
-    "Retaliation" is illegal. 
-    If the tenant complains about problems in their home and their landlord tries to get back at them, the landlord is breaking the law. It is against the law to 
+    “Retaliation” is against the law.
+    If a landlord tries to 
     <ul>
     <li>evict a tenant, <strong>or</strong></li>
-    <li>raise their rent, </li> 
+    <li>raise their rent, <strong>or</strong></li></li>
+    <li>otherwise get back at them</li>
     </ul>
-     because they complained.     
+    simply because they enforced their rights to live in a safe and habitable that is up to code, that may be unlawful.
     </p>
     % endif
     Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing-apartments-shelter/eviction/when-eviction-illegal" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link" href="https://www.masslegalhelp.org/housing-apartments-shelter/rent/illegal-retaliatory-rent-increases" target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
@@ -1219,13 +1226,13 @@ subject: |
   % endif
 content: |
   % if person_answering == "tenant":
-  You can list any problems in this apartment that:
+  You can list any problems in your home that:
   
   1. still need to be fixed and 
   2. you have had over the last 6 years (since ${ today().minus(years=6) }), even
   if they are fixed now.
   % else:
-  The tenant can list any problems in the apartment that:
+  The tenant can list any problems in their home that:
   
   1. still need to be fixed and 
   2. they have had over the last 6 years (since ${ today().minus(years=6) }), even
@@ -1666,9 +1673,9 @@ fields:
       - The eviction case is finished.: closed
   - note: |
       % if person_answering == "tenant":
-      **Make sure you respond to the eviction.** You can use [MADE](https://gbls.org/MADE) to stop the eviction case. Do not use UpToCode to start a new court case while you have an active eviction.
+      **Make sure you respond to the eviction.** You can use [MADE](https://gbls.org/MADE) to fight the eviction case. Do not use UpToCode to start a new court case if you have an active eviction for nonpayment of rent or for no fault.
       % else:
-      **Make sure the tenant responds to the eviction. **They can use [MADE](https://gbls.org/MADE) to stop the eviction case. The tenant should not use UpToCode to start a new court case while they have an active eviction.
+      **Make sure the tenant responds to the eviction. **They can use [MADE](https://gbls.org/MADE) to fight the eviction case. Do not use UpToCode to start a new court case if the tenant has an active eviction for nonpayment of rent or for no fault.
       % endif
     js show if:
       val("screen_tenant_facing_eviction") == 'has case' || val("screen_tenant_facing_eviction") =='pending'
@@ -1741,13 +1748,9 @@ fields:
     show if: screen_ll_knows_problem
   - note: |
       % if person_answering == "tenant":
-      **You may want to get an inspection.** You do not have to get a
-      housing inspection. But it can help a judge understand the problems
-      better. You do not need to wait for the inspection to ask for more help.
+      **You may want to get an inspection**, but you not have to. An inspection can help a judge understand the problem better or get your landlord to make repairs. You do not need to wait for the inspection to go to court. **WARNING:** If you think your unit may be illegal or could be condemned due to the problems, you may want to get legal advice before contacting the City or Town because you could end up being ordered to leave.
       % else:
-      **The tenant may want to get an inspection.** The tenant does not have to get a
-      housing inspection. But it can help a judge understand the problems
-      better. The tenant does not need to wait for the inspection to ask for more help.
+      **The tenant may want to get an inspection**, but it is not required. An inspection can help a judge to understand the problem better or get the landlord to make repairs. The tenant does not need to wait for the inspection to go to court. **WARNING:** If the unit may be illegal or could be condemned due to the problems, the tenant should think carefully before contacting the City or Town because they could end up being ordered to leave.
       % endif
     show if:
       variable: screen_contacted_housing_inspector
@@ -1829,7 +1832,7 @@ fields:
     none of the above: False
     default:
       code: |
-        ["get_report"] if kind_of_lawsuit.all_false() else ["get_report", "sue_landlord"]
+        ["get_report", "sue_landlord"] if kind_of_lawsuit.any_true() else ["get_report"]
   
   - no label: document_choice
     required: False
@@ -1877,7 +1880,7 @@ fields:
     none of the above: False
     default:
       code: |
-        ["get_report", "contempt_complaint"] if kind_of_lawsuit["file_contempt_complaint"] else ["get_report"] if kind_of_lawsuit.all_false() else ["get_report", "sue_landlord"]
+        ["get_report", "contempt_complaint"] if kind_of_lawsuit["file_contempt_complaint"] else ["get_report", "sue_landlord"] if kind_of_lawsuit.any_true() else ["get_report"]
 validation code: |
   if screen_ll_knows_problem and len(document_choice.true_values()) < 1:
     validation_error("Pick at least one.", field="document_choice")
@@ -1939,7 +1942,7 @@ code: |
 ---
 code: |
   users[i].name.first
-  users[i].mailing_address.address
+  users[i].address.address
   users[i].complete = True
 ---
 code: |
@@ -2415,9 +2418,7 @@ subquestion: |
   % if person_answering == "tenant":
   We need to ask you some more questions before we can finish creating the documents that you asked for.
   
-  Once the documents are finished you will need to **print** them. You will need to follow the instructions provided to you at the end which describe what to do with the documents you have asked for.
-  
-  A copy of all of the documents should be kept for your own records. Some of the documents may need to be sent to your landlord. Some of the documents may need to be sent to your city inspector. And you may need to send some of the documents to the court.
+  Once the documents are finished you will need to **print** them. Follow the **Next Steps** provided at the end which describe what to do with the documents you have made.
   
   At the end, you will have a chance to download and email the documents for
   yourself or to send them to someone else. You should download and email a copy of each document to yourself or a trusted friend or family member so that you always have a copy and can **print** them if you need to in the future.
@@ -2425,9 +2426,7 @@ subquestion: |
   % else:
   We need to ask you some more questions before we can finish creating the documents that the tenant has asked for.
   
-  Once the documents are finished the tenant will need to **print** them. The tenant will need to follow the instructions provided at the end which describe what to do with the documents they have asked for.
-  
-  A copy of all of the documents should be kept for the tenant's own records. Some of the documents may need to be sent to the tenant's landlord. Some of the documents may need to be sent to the tenant's city inspector. And the tenant may need to send some of the documents to the court.
+  Once the documents are finished the tenant will need to **print** them. Follow the Next Steps provided at the end which describe what to do with the documents you have made.
   
   At the end, the tenant will have a chance to download and email the documents for
   themself or to send them to someone else. The tenant should download and email a copy of each document to themself or a trusted friend or family member so that they always have a copy and can **print** them if they need to in the future.
@@ -2864,6 +2863,9 @@ code: |
   Repair_Demand_Letter_attachment.enabled = screen_ll_knows_problem and document_choice['demand_letter_93a']
 ---
 code: |
+  Repair_Demand_Letter_post_interview_instructions.enabled = screen_ll_knows_problem and document_choice['demand_letter_93a']
+---
+code: |
   verified_complaint_attachment.enabled = document_choice["sue_landlord"]
 ---
 code: |
@@ -2874,6 +2876,9 @@ code: |
 ---
 code: |  
   temporary_order.enabled = verified_complaint_attachment.enabled
+  simple_temporary_order.enabled = verified_complaint_attachment.enabled
+  preliminary_injunction.enabled = verified_complaint_attachment.enabled
+  simple_preliminary_injunction.enabled = verified_complaint_attachment.enabled
 ---
 code: |
   if verified_complaint_attachment.enabled:
@@ -2893,9 +2898,9 @@ objects:
   - organize_tenants_attachment: ALDocument.using(title="Organize!", filename="lt1-pullout-10-getting-organized")
   - sue_your_landlord_attachment: ALDocument.using(title="Sue your Landlord", filename="sue_your_landlord")
   - request_housing_inspection_attachment: ALDocument.using(title="Letter to Request Housing Inspection", filename="inspection_request")
-  - letter_to_notify_landlord_instructions_attachment: ALDocument.using(title="Instructions - Letter to tell landlord about housing problems", filename="instructions_notice_letter")
+  - letter_to_notify_landlord_instructions_attachment: ALDocument.using(title="Next Steps - Landlord Repair Letter", filename="next_steps_landlord_repair_letter")
   - conditions_report_attachment: ALDocument.using(title="Housing Conditions Report", filename="housing_conditions_report")
-  - request_housing_inspection_instructions_attachment: ALDocument.using(title="Instructions - Letter to Request Housing Inspection", filename="inspection_request_instructions")
+  - request_housing_inspection_instructions_attachment: ALDocument.using(title="Next Steps - Letter to Request Housing Inspection", filename="next_steps_inspection_request")
 ---
 attachment:
   variable name: conditions_report_attachment[i]
@@ -2926,7 +2931,8 @@ objects:
         tenant_repair_request_attachment,
         request_housing_inspection_instructions_attachment,
         request_housing_inspection_attachment,
-        Repair_Demand_Letter_attachment,
+        Repair_Demand_Letter_post_interview_instructions,
+        Repair_Demand_Letter_attachment
       ],
       title="Your housing conditions toolkit", filename="housing_conditions_documents",
       )
@@ -2943,6 +2949,9 @@ objects:
         motion_for_injunctive_relief_attachment,
         order_of_notice,
         temporary_order,
+        simple_temporary_order,
+        preliminary_injunction,
+        simple_preliminary_injunction,
         contempt_complaint,
         discovery_attachment,
         motion_to_compel_discovery_attachment,
@@ -2955,6 +2964,9 @@ objects:
         verified_complaint_attachment,
         motion_for_injunctive_relief_attachment,
         temporary_order,
+        simple_temporary_order,
+        preliminary_injunction,
+        simple_preliminary_injunction,
         order_of_notice,
         contempt_complaint,
         conditions_report_attachment,
@@ -2963,6 +2975,7 @@ objects:
         tenant_repair_request_attachment,
         request_housing_inspection_instructions_attachment,
         request_housing_inspection_attachment,
+        Repair_Demand_Letter_post_interview_instructions,
         Repair_Demand_Letter_attachment,
         discovery_attachment,
         motion_to_compel_discovery_attachment,
@@ -2970,6 +2983,9 @@ objects:
       ], title="All documents for your records", filename="tenant_copy")
   - further_documents_bundle: ALDocumentBundle.using(elements=[
         temporary_order,
+        simple_temporary_order,
+        preliminary_injunction,
+        simple_preliminary_injunction,
         order_of_notice,
         contempt_complaint,
         discovery_attachment,

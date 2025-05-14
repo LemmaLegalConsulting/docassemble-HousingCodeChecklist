@@ -17,15 +17,19 @@ question: |
   % endif
 subquestion: |
   % if person_answering == "tenant":
-  You will need to prove your case with evidence.  
-  
-  Bring three copies of your evidence to court so you can give a copy to the judge and the landlord.
+  You will need to prove your case with evidence. **Evidence** can include photos, videos, texts, emails, letters, city inspection reports, and your word (telling the court about the problems through testimony).
+
+  Bring three copies of your evidence to court if possible so you can give a copy to the judge and the landlord.
+
+  **DISCOVERY:** You have the right to get information from your landlord to help you prove your case. This includes written questions and requests for documents – UpToCode can help you create those. You also have the right to ask your landlord to make “admissions” and to “depose” your landlord orally. You will likely need a lawyer for those forms of discovery.
 
   This website includes a list of common questions to ask and documents to ask your landlord for.
   % else:
-  The tenant will need to prove their case with evidence.  
-  
-  The tenant should bring three copies of their evidence to court so they can give a copy to the judge and the landlord.
+  The tenant will need to prove their case with evidence. Evidence can include photos, videos, texts, emails, letters, city inspection reports, and their word (telling the court about the problems through testimony).
+
+  The tenant should bring three copies of their evidence to court if possible so they can give a copy to the judge and the landlord.
+
+  **DISCOVERY:** The tenant has the right to get information from the landlord to help them prove your case. This includes written questions and requests for documents – UpToCode can help the tenant create those. The tenant also has the right to ask the landlord to make “admissions” and to “depose” the landlord orally. The tenant will likely need a lawyer for those forms of discovery.
   
   This website includes a list of common questions to ask and documents to ask the tenant's landlord for.
   % endif 

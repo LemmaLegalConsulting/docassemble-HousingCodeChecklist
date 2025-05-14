@@ -102,7 +102,7 @@ question: |
   % endif
 subquestion: |
   The [consumer protection
-  law](https://www.mass.gov/info-details/the-massachusetts-consumer-protection-law)
+  law](https://www.masslegalhelp.org/housing-apartments-shelter/taking-your-landlord-court/common-legal-grounds-filing-civil-case )
   only protects tenants from landlords acting as a **business**.
   
   % if person_answering == "tenant":
@@ -877,15 +877,16 @@ edit:
 confirm: True
 ---
 objects:
-  - Repair_Demand_Letter_post_interview_instructions: ALDocument.using(title="Instructions", filename="Repair_Demand_Letter_next_steps", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - Repair_Demand_Letter_attachment: ALDocument.using(title="Repair Demand Letter", filename="Repair_Demand_Letter", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - Repair_Demand_Letter_post_interview_instructions: ALDocument.using(title="Next Steps - 93A Demand Letter", filename="next_steps_demand_letter", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - Repair_Demand_Letter_attachment: ALDocument.using(title="93A Demand Letter", filename="Repair_Demand_Letter", has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachments:
   - name: Repair Demand Letter post interview instructions
     filename: Post-interview-instructions     
     variable name: Repair_Demand_Letter_post_interview_instructions[i]        
     skip undefined: True
-    docx template file: Repair_Demand_Letter_next_steps.docx
+    docx template file: next_steps_demand_letter.docx
+    
   - name: Repair Demand Letter attachment
     filename: Repair_Demand_Letter.docx     
     variable name: Repair_Demand_Letter_attachment[i]
