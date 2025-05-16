@@ -26,6 +26,8 @@ features:
 ---
 metadata:
   title: |-
+    UpToCode: Get repairs
+  short title: |
     UpToCode
   authors:
     - Quinten Steenhuis
@@ -51,6 +53,51 @@ metadata:
     https://uptocode.org
   tags:
     - HO-00-00-00-00
+  LIST_tags:
+    - HO-00-00-00-00
+  description: |
+    UpToCode is a free online tool that helps tenants in Massachusetts get repairs and enforce their rights.
+
+    It is available in English and Spanish.
+
+    UpToCode uses the Massachusetts State Sanitary Code and other laws to help tenants understand their rights and get repairs.
+    You can take photos of problems and link them to specific rooms in your home and tell the landlord the specific
+    law that requires their repair.
+
+    The kind of help you can get ranges from a gentle reminder to your landlord, to calling in the city for
+    an official record and order to repair, to asking a judge for an emergency order or to sue your landlord for money.
+
+    You decide what action to take. UpToCode will give you information about your options.
+
+    The tasks you can do with UpToCode include:
+
+    * Make a list of problems in your home
+    * Write a letter to your landlord
+    * Ask the city for an inspection
+    * Ask a judge to order your landlord to fix the problem
+    * Get a report from a housing inspector
+    * Get a demand letter to send to your landlord
+    * Get a verified complaint and motion to file in court
+    * Get a contempt complaint and motion to file in court
+    * Get a checklist of housing code violations
+    * Get a list of common housing problems
+  can_I_use_this_form: |
+    Any tenant in Massachusetts can use UpToCode to get repairs and enforce their rights.
+
+    A landlord can use UpToCode to better understand their legal obligations and to document the current condition
+    of their apartment.
+  before_you_start: |
+    UpToCode can help you best if you are physically in the apartment or building you are having problems with.
+
+    It will help you walk through the apartment, room by room, and identify problems that need repair.
+  jurisdiction: NAM-US-US+MA
+  help_page_url: https://uptocode.org
+  help_page_title: "UpToCode"
+  review_date: 2025-05-16
+  update_notes: |
+  languages:
+    - en
+    - es
 comment: |
   Some of the documents that this interview assembles
   use work done as part of the Assembly Line project.
@@ -238,7 +285,7 @@ code: |
 ---
 objects:
   - other_parties: ALPeopleList.using(there_are_any=True,complete_attribute="complete")
-  - users[0].attorney: ALPeopleList.using(ask_number=True)
+  - users[0].attorney: ALIndividual
   - users: ALPeopleList.using(there_are_any=True, complete_attribute="complete")
 ---
 objects:
