@@ -69,7 +69,7 @@ code: |
   signature_date
   claim_jurytrial
   verified_complaint_wants_fee_waiver
-  if verified_complaint_wants_fee_waiver:
+  if verified_complaint_wants_fee_waiver == "wants_fee_waiver":
       document_choice["fee_waiver"] = True
       reconsider("al_nav_sections")
       nav.set_section("review_fee_waiver")
@@ -111,7 +111,7 @@ code: |
   motion_for_injunctive_relief_attachment.enabled = verified_complaint_attachment.enabled
 ---
 code: |
-  affidavitofindigency_attachment.enabled = document_choice['sue_landlord'] and verified_complaint_wants_fee_waiver and is_indigent
+  affidavitofindigency_attachment.enabled = document_choice['sue_landlord'] and verified_complaint_wants_fee_waiver == "wants_fee_waiver" and is_indigent
 ---
 comment: |
   This question is used to introduce your interview. Please customize
@@ -733,19 +733,19 @@ fields:
 id: Did you send the landlord a demand letter?
 question: |
   % if person_answering == "tenant":
-  Did you send the landlord a demand letter?
+  Did you send your landlord a 93A demand letter?
   % else:
-  Did the tenant send the landlord a demand letter?
+  Did the tenant send their landlord a 93A demand letter?
   % endif
 subquestion: |
   % if person_answering == "tenant":
-  A **demand letter** is a special letter that counts as a legal request for money. This is sometimes called a 93A demand letter, a 30-day demand letter, or a request for settlement. 
-  
-  You need to send the demand letter at least **30 days** before you file any papers with the court. You should also send it by certified mail so that you have a record of it being recieved your landlord.
+  A **Chapter 93A demand letter** is a letter that is required by law to be sent to your landlord before bringing affirmative claims in court under **Chapter 93A, the consumer protection law**. The letter must be sent at least **30 days** before you file your 93A claims in court. The letter includes a brief summary of the facts and a request for a settlement.
+
+  You should send the demand letter both by certified mail and first-class mail with a receipt **and** by email so that you have a record of it being sent to your landlord **30 days before** you file your 93A claims in court. 
   % else:
-  A **demand letter** is a special letter that counts as a legal request for money. This is sometimes called a 93A demand letter, a 30-day demand letter, or a request for settlement. 
-  
-  The tenant needs to send the demand letter at least **30 days** before they file any papers with the court. A tenant should also send it by certified mail so that they have a record of it being recieved by their landlord.
+  A **Chapter 93A demand letter** is a letter that is required by law to be sent to the landlord before bringing affirmative claims in court under **Chapter 93A, the consumer protection law**. The letter must be sent at least **30 days** before the tenant files 93A claims in court. The letter includes a brief summary of the facts and a request for a settlement.
+
+  You should send the demand letter both by certified mail and first-class mail with a receipt **and** by email so that you have a record of it being sent to the landlord **30 days before** 93A claims are filed in court either for the first time, or the complaint is amended to add 93A claims.
   % endif
 fields: 
   - label: |
@@ -791,20 +791,23 @@ question: |
   You said the tenant did not send a demand letter yet
   % endif
 subquestion: |
-  Most tenants send their landlord a demand letter
-  before they sue their landlord for money.
+  Most tenants send their landlord a demand letter before they sue their landlord for money if Chapter 93A applies to their landlord.
 
   % if person_answering == "tenant":
-  Sending your landlord a demand letter means:
+  Sending your landlord a 93A demand letter means:
 
   - Your landlord may need to pay for your attorney if you win
   - You may get up to 3 times the total amount of money
+
+  But you can go to court for repairs, and sue your landlord for money under other laws, **now**. If your landlord does not respond to your demand with a reasonable offer of settlement, UpToCode will help you update (“amend”) your complaint. **Next Steps: Chapter 93A** will explain what to do. 
   
   % else:
-  Sending the tenant's landlord a demand letter means:
+  Sending the tenant's landlord a 93A demand letter means:
 
   - The tenant's landlord may need to pay for their attorney if the tenant wins
   - The tenant may get up to 3 times the total amount of money
+
+  But the tenant can go to court for repairs, and sue their landlord for money under other laws, **now**. If the landlord does not respond to the demand with a reasonable offer of settlement, UpToCode will help you update (“amend”) the tenant’s complaint. **Next Steps: Chapter 93A** will explain what to do. 
   % endif
 fields:
   - label: |
@@ -825,9 +828,9 @@ fields:
         value: postpone_damages
       - label: |
           % if person_answering == "tenant":
-          Ask for both repairs and money now. I understand I may get less total money.
+          Ask for both repairs and money now. I understand I may get less total money unless I amend my complaint to add Chapter 93A claims later.
           % else:
-          Ask for both repairs and money now. The tenant understands they may get less total money.
+          Ask for both repairs and money now. The tenant understands they may get less total money unless their complaint is amended to add Chapter 93A claims later.
           % endif
         value: keep_on_suing
   - note: |
@@ -857,7 +860,7 @@ fields:
 ---
 id: wants fee waiver
 question: |
-  Filing for free
+  Filing for free or for two dollars
 subquestion: |
   % if person_answering == "tenant":
   The court may charge you a fee to file these forms.
@@ -871,30 +874,81 @@ subquestion: |
   - ${ currency(verified_complaint_entry_of_action_Fee) } to file the case in court.
   
   % if person_answering == "tenant":
-  But most tenants do not pay anything. You can file for free if:
+  But most tenants do not pay anything. You can file for free, and also get your documents served on your landlord by the Sheriff for free, if:
   
   1. You get certain benefits, like Mass Health, or
   1. You earn less than 125% of the Federal Poverty Level for Massachusetts, or
   1. You cannot afford to pay the fee.
+
+  Under G.L. c. 111 §§127C & 127D, one of the laws which allow tenants to file petitions for violations of the Sanitary Code, **the filing fee is only $2.00** (no matter how much your income is). To file specifically under this law, the City or Town must have inspected your apartment and found violations, or you must have requested an inspection. 
   
   % else:
-  But most tenants do not pay anything. The tenant can file for free if:
+  But most tenants do not pay anything. The Tenant can file for free and also get their documents served on the landlord by the Sheriff for free, if:
   
   1. They get certain benefits, like Mass Health, or
   1. They earn less than 125% of the Federal Poverty Level for Massachusetts, or
   1. They cannot afford to pay the fee.
+
+  Under G.L. c. 111 §§127C & 127D, one of the laws which allow tenants to file petitions for violations of the Sanitary Code, **the filing fee is only $2.00** (no matter how much the tenant’s income is). To file specifically under this law, the City or Town must have inspected the apartment and found violations, or the tenant must have requested an inspection.
   
   % endif
 
 fields:
   - label: |
       % if person_answering == "tenant":
-      Would you like to find out if you qualify to file for free?
+      Would you like to find out if you qualify to file and serve your documents for free or for $2.00?
       % else:
-      Would the tenant like to find out if they qualify to file for free?
+      Would you like to find out if the tenant qualifies to file and serve their documents for free or for $2.00?
       % endif
     field: verified_complaint_wants_fee_waiver
-    datatype: yesnoradio
+    datatype: radio
+    choices:
+      - label: |
+          % if person_answering == "tenant":
+          Find out if I qualify to file for free.
+          % else:
+          Find out if the tenant qualifies to file for free.
+          % endif
+        value: wants_fee_waiver
+      - label: |
+          File for only $2.00.
+        value: two_dollar_fee
+      - label: |
+          % if person_answering == "tenant":
+          I do not want to file for $2.00 or find out if I qualify to file for free.
+          % else:
+          The tenant does not want to file for $2.00 or find out if they qualify to file for free.
+          % endif
+        value: False
+  - label: |
+      % if person_answering == "tenant":
+      You must state that the following are both true to file for only $2.00:
+      % else:
+      The tenant must state that the following are both true to file for only $2.00:
+      % endif
+    field: two_dollar_eligibility
+    datatype: checkboxes
+    show if:
+      variable: verified_complaint_wants_fee_waiver
+      is: two_dollar_fee
+    minlength: 2
+    choices:
+      - label: |
+          % if person_answering == "tenant":
+          My apartment has been inspected by the City or Town (or I will have requested an inspection at least 24 hours before going to court) and the conditions violate the State Sanitary Code and may endanger health or well-being.
+          % else:
+          The apartment has been inspected by the City or Town (or the tenant will have requested an inspection at least 24 hours before going to court) and the conditions violate the State Sanitary Code and may endanger health or well-being.
+          % endif
+        value: inspection_true
+      - label: |
+          % if person_answering == "tenant":
+          The problems needing to be fixed in my apartment “were not substantially caused” by me or anyone acting under my control.
+          % else:
+          The problems needing to be fixed in the tenant's apartment “were not substantially caused” by the tenant or anyone acting under their control.
+          % endif
+        value: not_tenants_fault
+    validation messages:
+      minlength: You cannot continue unless you check both boxes.
 ---
 only sets:
   - update_ask_for_damages
@@ -920,32 +974,32 @@ subquestion: |
 
   ### What is a jury trial? 
 
-  * In a jury trial the jury decides who wins the case.
-  * The other option is a trial with a judge and the judge decides who wins the case.
-  * A jury is made up of ordinary people, some of whom may be tenants like you.
-  * Jury trials are complicated and it helps to have a lawyer represent you in a jury trial.
+  * If you are only asking for repairs to be ordered, that is for the **judge** to decide, not a jury.
+  * If you are asking for money damages from your landlord, however, a **jury** can decide what compensation is fair.
+  * A jury is made up of ordinary people, some of whom may be tenants like you. 
+  * Jury trials are complicated, so it helps to have a lawyer represent you in a jury trial.
 
-  ### Should I keep my right to a jury trial?
-  * You may have more time to find a lawyer if you ask for a jury trial.
-  * You can always give up your jury right later. But you can't ask for a jury trial after filing this paperwork.
-  * You can still reach an agreement with your landlord. Most cases end up with an agreement, whether the tenant keeps their right to a jury trial or not.
-  * Choosing a jury does not mean you will stop having to pay rent.
+  ### Should I ask for a jury trial?
+  
+  * It is safest to ask for a jury now, in your complaint, so you don’t give up that right.
+  * There may be another chance later (see Mass. Rule of Civil Procedure 38), but that isn’t guaranteed.
+  * After a jury is requested, both sides need to agree in order to have the judge decide money damages instead.
   
   % else:
   The tenant has a right to a jury trial and must ask for it now.
 
   ### What is a jury trial? 
 
-  * In a jury trial the jury decides who wins the case.
-  * The other option is a trial with a judge and the judge decides who wins the case.
-  * A jury is made up of ordinary people, some of whom may be tenants like ${ users.familiar() }.
-  * Jury trials are complicated and it helps to have a lawyer represent a tenant in a jury trial.
+  * If the tenant is only asking for repairs to be ordered, that is for the **judge** to decide, not a jury.
+  * If the tenant is asking for money damages from their landlord, however, a **jury** can decide what compensation is fair.
+  * A jury is made up of ordinary people, some of whom may be tenants like ${ users.familiar() }. 
+  * Jury trials are complicated, so it helps to have a lawyer represent the tenant in a jury trial.
 
-  ### Should the tenant keep their right to a jury trial?
-  * The tenant may have more time to find a lawyer if they ask for a jury trial.
-  * The tenant can always give up their jury right later. But they can't ask for a jury trial after filing this paperwork.
-  * The tenant can still reach an agreement with their landlord. Most cases end up with an agreement, whether the tenant keeps their right to a jury trial or not.
-  * Choosing a jury does not mean the tenant will stop having to pay rent.
+  ### Should I ask for a jury trial?
+  
+  * It is safest to ask for a jury now, in the tenant's complaint, so they don’t give up that right.
+  * There may be another chance later (see Mass. Rule of Civil Procedure 38), but that isn’t guaranteed.
+  * After a jury is requested, both sides need to agree in order to have the judge decide money damages instead.
   
   % endif
   ${ collapse_template(jury_trial_template) }
@@ -965,18 +1019,14 @@ template: jury_trial_template
 subject: How does a jury trial work?
 content: |
   % if person_answering == "tenant":
-  Either the landlord or the tenant can choose a jury trial. You can use this interview to ask for your jury trial. If you do think you may want a jury, you should keep your right to a jury in this interview.
+  Either the landlord or the tenant can choose to have a jury decide claims for money damages. You can use this interview to ask for a jury trial so that you don’t lose that right.
   
-  A jury trial can be difficult for a tenant to do on their own. However, because most cases end in an agreement, asking for a jury trial now has very low risk.
-  
-  If you do end up having a jury trial, in Massachusetts evictions, a jury may be either 6 or 12 people. At least 5/6 jurors must agree to reach a decision in your case. They will reach a separate decision about each of your claims.
+  If you do end up having a jury trial, in Massachusetts, a jury has 12 people (plus 2 alternates) in Housing Court and in Superior Court, and 6 people (plus 1 alternate) in District Court. The parties can agree to a fewer number of jurors.  At least 5/6 jurors must agree to reach a decision in your case. They will reach a separate decision about each of your claims.
   
   % else:
-  Either the landlord or the tenant can choose a jury trial. The tenant can use this interview to ask for their jury trial. If the tenant does think they may want a jury, they should keep their right to a jury in this interview.
+  Either the landlord or the tenant can choose to have a jury decide claims for money damages. The tenant can use this interview to ask for a jury trial so that they don’t lose that right.
   
-  A jury trial can be difficult for a tenant to do on their own. However, because most cases end in an agreement, asking for a jury trial now has very low risk.
-  
-  If the tenant does end up having a jury trial, in Massachusetts evictions, a jury may be either 6 or 12 people. At least 5/6 jurors must agree to reach a decision in the case. They will reach a separate decision about each of the tenant's claims.
+  If you do end up having a jury trial, in Massachusetts, a jury has 12 people (plus 2 alternates) in Housing Court and in Superior Court, and 6 people (plus 1 alternate) in District Court. The parties can agree to a fewer number of jurors.  At least 5/6 jurors must agree to reach a decision in your case. They will reach a separate decision about each of your claims.
   
   % endif
 ---
@@ -1217,26 +1267,22 @@ table: |-
 id: service_method
 question: |
   % if person_answering == "tenant":
-  You must serve your landlord with a copy of your motion for repairs and/or relief before filing it with the court.
+  It’s best to give your landlord notice by providing them with a copy of your motion for repairs and/or relief (and your complaint) before filing it with the court. 
   % elif person_answering == "attorney" and representation_type == "entering_appearance":
-  You must serve the tenant's landlord with a copy of your motion for repairs and/or relief before filing it with the court.
+  It’s best to give the landlord notice by providing them with a copy of your motion for repairs and/or relief (and your complaint) before filing it with the court.
   % else:
-  The tenant must serve their landlord with a copy of their motion for repairs and/or relief before filing it with the court.
+  It’s best to give the landlord notice by providing them with a copy of the tenant’s motion for repairs and/or relief (and the complaint) before filing it with the court. 
   % endif
   
 subquestion: |
   % if person_answering == "tenant":
-  You can serve your landlord by sending it through email, by mail, or by hand-delivering it to them.
+  The complaint will still have to be served by the Sheriff or a constable after filing. In an emergency, the Court can hear your motion without notice to the landlord, but typically your landlord will be contacted.
   
-  Sending it to your landlord through email is the fastest way to serve this motion.
-  % elif person_answering == "attorney" and representation_type == "entering_appearance":
-  You can serve their landlord by sending it through email, by mail, or by hand-delivering it to them.
-  
-  Sending it to their landlord through email is the fastest way to serve this motion.
+  You can serve your landlord by sending your motion through email and by mail, or by hand-delivering it to them. Sending it to your landlord through email is the fastest way to serve this motion, but you should also send a copy by first class mail under the rules.
   % else:
-  The tenant can serve their landlord by sending it through email, by mail, or by hand-delivering it to them.
+  The complaint will still have to be served by the Sheriff or a constable after filing. In an emergency, the Court can hear the tenant’s motion without notice to the landlord, but typically the landlord will be contacted. 
   
-  Sending it to their landlord through email is the fastest way to serve this motion.
+  You can serve the landlord by sending the tenant’s motion through email and by mail, or by hand-delivering it to them. Emailing the landlord the motion is fastest, but you should also send a copy by first class mail under the rules unless the landlord already has an attorney.
   % endif
   
 fields:
@@ -1251,9 +1297,10 @@ fields:
     field: service_method
     input type: radio
     choices:
-      - By email: email
-      - By mail: mail
-      - By hand: hand
+      - email and mail
+      - mail
+      - email and hand delivery
+      - hand delivery
       - Decide later: decide_later
   - label: |
       % if person_answering == "tenant":
@@ -1266,7 +1313,7 @@ fields:
     field: service_today
     datatype: yesnoradio
     js show if: |
-      val("service_method") == "email" || val("service_method") == "mail" || val("service_method") == "hand"
+      val("service_method") == "email and mail" || val("service_method") == "mail" || val("service_method") == "email and hand delivery" || val("service_method") == "hand delivery"
 validation code: |
   if service_method == "decide_later":
     service_today = False
@@ -1290,7 +1337,7 @@ code: |
     motion_for_injunctive_relief_attachment.title = "Motion for relief"
 ---
 objects:
-  - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Instructions for your court documents", filename="next_steps_complaint.docx", has_addendum=False)
+  - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Next Steps - Court Documents", filename="next_steps_for_court.docx", has_addendum=False)
   - verified_complaint_attachment: ALDocument.using(filename="verified_complaint.docx", has_addendum=False)
   - motion_for_injunctive_relief_attachment: ALDocument.using(filename="motion_for_injunctive_relief.docx", has_addendum=False)
   - discovery_attachment: ALDocument.using(title="Discovery", filename="Discovery.docx", has_addendum=False)
@@ -1301,7 +1348,7 @@ attachments:
     filename: Post-interview-instructions     
     variable name: verified_complaint_and_motions_post_interview_instructions[i]        
     skip undefined: True
-    docx template file: next_steps_complaint.docx
+    docx template file: next_steps_for_court.docx
 ---
 attachments:    
   - name: verified complaint attachment

@@ -194,7 +194,7 @@ fields:
     required: False
 ---
 objects:
-  - tenant_repair_request_attachment: ALDocument.using(title="Tenant Repair Letter", filename="tenant_repair_letter")
+  - tenant_repair_request_attachment: ALDocument.using(title="Landlord Repair Letter", filename="landlord_repair_letter")
 ---
 code: |
   tenant_repair_request_attachment.enabled = True

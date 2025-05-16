@@ -498,6 +498,83 @@ fields:
     code: countries_list()
     default: ${ AL_DEFAULT_COUNTRY }
 ---
+id: additional persons address
+generic object: Individual
+question: |
+  What is ${ users[i].familiar() }'s address?
+subquestion: |
+  % if person_answering == "tenant":
+  Write the address where you are having the problems you want to report.
+  % else:
+  Write the address where the tenant is having the problems you want to report.
+  % endif
+fields:
+  - label: |
+      % if person_answering == "tenant":
+      Same as your address
+      % else:
+      Same as ${ users[0] }'s address
+      % endif
+    field: users[i].address
+    datatype: object_radio
+    choices:
+      - users[0].address if defined("users[0].address.address") else None
+    object labeler: |
+      lambda y: y.on_one_line()      
+    none of the above: |
+      Somewhere else
+    disable others: True
+    show if:
+      code: |
+        defined("users[0].address.address")
+  - Street Address: users[i].address.address
+    address autocomplete: True
+  - Unit: users[i].address.unit
+    required: False
+  - City: users[i].address.city
+  - State: users[i].address.state
+    default: MA   
+    code: |
+      states_list()
+    validate: |
+      lambda y: y == "MA" or validation_error("Write an address in Massachusetts")    
+  - Zip Code: users[i].address.zip
+    required: False
+  - label: |
+      % if person_answering == "tenant":
+      ${ users[i].familiar() } has another address where they get mail
+      % else:
+      The tenant has a separate mailing address
+      % endif
+    field: users[i].has_separate_mailing_address
+    datatype: yesno
+validation code: |
+  if not defined("users[i].has_separate_mailing_address"):
+    users[i].mailing_address = users[i].address
+---
+id: additional tenant mailing address
+question: |
+  % if person_answering == "tenant":
+  What is your mailing address?
+  % else:
+  What is ${ users[i].familiar() }'s mailing address?
+  % endif
+fields:
+  - ${ users[i].address.address_label}: users[i].mailing_address.address
+    address autocomplete: True
+  - ${ users[i].address.unit_label}: users[i].mailing_address.unit
+    required: False
+  - ${ users[i].address.city_label}: users[i].mailing_address.city
+  - ${ users[i].address.state_label}: users[i].mailing_address.state
+    code: |
+      states_list(country_code=AL_DEFAULT_COUNTRY)
+    default: ${ AL_DEFAULT_STATE }
+  - ${ users[i].address.zip_label}: users[i].mailing_address.zip
+    required: False      
+  - ${ users[i].address.country_label}: users[i].mailing_address.country
+    code: countries_list()
+    default: ${ AL_DEFAULT_COUNTRY }
+---
 id: attorneys name
 question: |
   % if person_answering == "attorney":
@@ -1093,7 +1170,7 @@ subquestion: |
   ${ collapse_template(housing_how_to_pick_court_help_template) }
   
 under: |    
-  Below is a map of the court(s) that serve the address you gave us.
+  Below is a map of the court(s) that serve the address you gave us. Double click on the map to zoom in on the court location.
   ${map_of(combined_locations(all_matches))}
   
 fields:
@@ -1342,26 +1419,20 @@ data:
 template: about_page_contents
 subject: Terms of Use and Privacy Policy
 content: |
-  This website is free to use. Greater Boston Legal Services (“GBLS”), a nonprofit legal aid program, hosts the site.
-
-  And we include information from:
-
-  * Northeast Legal Aid
-  * Massachusetts Law Reform Institute
-  * Massachusetts Legal Assistance Corporation
+  UpToCode is a free website supported with funding from the national Legal Services Corporation and developed by Northeast Legal Aid and Lemma Legal with input from partner legal services organizations. It is hosted, together with MADE, by Greater Boston Legal Services. UpToCode was originally authored by Quinten Steenhuis in 2021 in partnership with Massachusetts Law Reform Institute as part of the COVID Eviction Legal Help Project, which was administered by the Massachusetts Legal Assistance Corporation and funded through the Department of Housing and Community Development. Community organizations La Colaborativa and Lynn United for Change played a special role in co-design of this website. 
 
   <h3 class="h5">You need to know</h3>
 
   * **UpToCode does not provide legal advice**. If you need legal advice, you can use the [Massachusetts Legal Resource Finder](https://masslrf.org) to find a lawyer.
   * The information and documents on UpToCode have no warranty. We provide the information “as-is.” By using UpToCode, you agree not to hold GBLS or the information providers on UpToCode liable.
-  * We work hard to keep the information on UpToCode up to date. Lawyers drafted and reviewed the documents UpToCode uses. But laws and local rules change over time. These changes can make a document unenforceable when you use it.
+  * We work hard to keep the information on UpToCode up to date. Lawyers drafted and reviewed the documents UpToCode uses. But laws and local rules change over time. These changes can make a document out of date when you use it.
   * We do our best to keep UpToCode working! To do that, we allow you to submit feedback so we can track problems on UpToCode. But we cannot provide individual technical support.
 
   <h3 class="h5">To use this site</h3>
 
   * You need to be at least 13
   * This site is for **everyone.** For example: you can be the person who needs the help, a lawyer, or a social worker.
-  * You may not sell the information or the contents of this site. But you can charge for your own time.
+  * You may not sell the information or the contents of this site.
   * Please keep your use fair. Do not use this site in a way that is illegal or that makes it harder for other people to use.
 
   <h3 class="h5">Information we and others collect</h3>
@@ -1398,14 +1469,6 @@ content: |
   <h3 class="h5">The laws of Massachusetts apply to these Terms of Use</h3>
 
   If a judge decides that one of the terms in this Terms of Use is unenforceable, it will not change the terms that remain.
-
-  <h3 class="h5">If you still have questions</h3>
-
-  Write to:
-
-  Greater Boston Legal Services  
-  197 Friend Street  
-  Boston, MA 02114
 ---
 ####################################
 ### FEE WAIVER CUSTOM QUESTIONS
