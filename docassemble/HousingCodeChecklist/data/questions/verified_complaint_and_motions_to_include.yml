@@ -944,7 +944,7 @@ fields:
           % if person_answering == "tenant":
           The problems needing to be fixed in my apartment “were not substantially caused” by me or anyone acting under my control.
           % else:
-          The problems needing to be fixed in my apartment “were not substantially caused” by the tenant or anyone acting under their control.
+          The problems needing to be fixed in the tenant's apartment “were not substantially caused” by the tenant or anyone acting under their control.
           % endif
         value: not_tenants_fault
     validation messages:
