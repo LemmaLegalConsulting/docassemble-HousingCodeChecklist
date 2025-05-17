@@ -7,6 +7,7 @@ from docassemble.base.util import (
     DAObject,
     path_and_mimetype,
     today,
+    log,
 )
 import pandas as pd
 import os
@@ -77,14 +78,16 @@ class BaseDataLoader(DAObject):
     def load_rows(self, loci: List[Union[int, str]]) -> pd.DataFrame:
         """
         Retrieve a slice of the dataframe, using the provided loci (indexes) as the basis for
-        retrieval.
+        retrieval. Any locus not found in the index will be skipped (and logged).
         """
         df = self._load_data()
-        try:
-            rows = df.loc[loci]
-            return rows
-        except:
-            return pd.DataFrame()
+        existing = [l for l in loci if l in df.index]
+        missing  = [l for l in loci if l not in df.index]
+
+        for locus in missing:
+            log(f"Locus {locus!r} not found in data; skipping.")
+
+        return df.loc[existing]
 
     def get_rows(self, allowed_types: list = None, filter_column=None) -> pd.DataFrame:
         """
