@@ -821,6 +821,8 @@ fields:
      % else:
      **Respond with the tenant's Answer to the eviction.** Use [MADE](https://gbls.org/MADE) to help the tenant build their Answer. Do not start a new court case with UpToCode.
      % endif
+    js show if: |
+      val("initial_screen_tenant_facing_eviction") == "pending" || val("initial_screen_tenant_facing_eviction") == "has case"
   - label: |
       % if person_answering == "tenant":
       Does your landlord already know about the problems in your home?
@@ -1092,6 +1094,7 @@ subquestion: |
   problem.
 
   ${ collapse_template(how_far_back_should_i_go_template) }
+
 fields:
   - label: |
       % if person_answering == "tenant":
