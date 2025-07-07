@@ -2919,7 +2919,7 @@ code: |
   verified_complaint_attachment.enabled = document_choice["sue_landlord"]
 ---
 code: |
-  verified_complaint_and_motions_post_interview_instructions.enabled = document_choice['sue_landlord']
+  next_steps_for_court_attachment.enabled = document_choice['sue_landlord']
 ---
 code: |
   verified_complaint_attachment.enabled = screen_ll_knows_problem and document_choice['sue_landlord']
@@ -2994,7 +2994,7 @@ objects:
       filename="repair_request_letter",
       )
   - affirmative_complaint_bundle: ALDocumentBundle.using(elements=[
-        verified_complaint_and_motions_post_interview_instructions,
+        next_steps_for_court_attachment,
         verified_complaint_attachment,
         motion_for_injunctive_relief_attachment,
         order_of_notice,
@@ -3010,7 +3010,7 @@ objects:
       filename="affirmative_complaint_documents",
       )
   - everything_for_emailing_bundle: ALDocumentBundle.using(elements=[
-        verified_complaint_and_motions_post_interview_instructions,
+        next_steps_for_court_attachment,
         verified_complaint_attachment,
         motion_for_injunctive_relief_attachment,
         temporary_order,

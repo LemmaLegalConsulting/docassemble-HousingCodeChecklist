@@ -44,7 +44,7 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.HousingCodeChecklist',
-      version='1.29.0',
+      version='1.29.1',
       description=('Housing code checklist'),
       long_description='# docassemble.HousingCodeChecklist\r\n\r\nHousing code checklist\r\n\r\n## Author\r\n\r\nQuinten Steenhuis, with draft work completed as part of the Assembly Line project\r\nby students and volunteers.\r\n',
       long_description_content_type='text/markdown',
@@ -53,7 +53,7 @@ setup(name='docassemble.HousingCodeChecklist',
       license='The MIT License',
       url='https://getuptocode.org',
       packages=find_namespace_packages(),
-      install_requires=['docassemble.ALAffidavitOfIndigency>=2.1.6', 'docassemble.ALMassachusetts>=0.1.2', 'docassemble.ALToolbox>=0.11.1', 'docassemble.AssemblyLine>=3.4.0', 'docassemble.GithubFeedbackForm>=0.4.1.1', 'docassemble.MassAccess>=0.4.1'],
+      install_requires=['docassemble.ALAffidavitOfIndigency @ git+https://github.com/SuffolkLITLab/docassemble-ALAffidavitOfIndigency.git@main', 'docassemble.ALMassachusetts @ git+https://github.com/SuffolkLITLab/docassemble-ALMassachusetts.git@main', 'docassemble.ALToolbox @ git+https://github.com/suffolklitlab/docassemble-ALToolbox.git@main', 'docassemble.AssemblyLine @ git+https://github.com/suffolklitlab/docassemble-AssemblyLine.git@main', 'docassemble.GithubFeedbackForm>=0.5.1', 'docassemble.MassAccess @ git+https://github.com/SuffolkLITLab/docassemble-MassAccess.git@main'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/HousingCodeChecklist/', package='docassemble.HousingCodeChecklist'),
      )

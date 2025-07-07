@@ -1087,11 +1087,11 @@ review:
       - ${ item }
       % endfor
   - Edit: |-
-      verified_complaint_and_motions_post_interview_instructions.revisit
+      next_steps_for_court_attachment.revisit
     button: |-
       **Verified Complaint And Motions Post Interview Instructions**
 
-      % for item in verified_complaint_and_motions_post_interview_instructions:
+      % for item in next_steps_for_court_attachment:
       - ${ item }
       % endfor
   - Edit: |-
@@ -1239,13 +1239,13 @@ subquestion: |-
   ${ docket_numbers.table }
 ---
 event: |-
-  verified_complaint_and_motions_post_interview_instructions.revisit
+  next_steps_for_court_attachment.revisit
 id: |-
-  revisit verified_complaint_and_motions_post_interview_instructions
+  revisit next_steps_for_court_attachment
 question: |-
   Edit your answers about Verified Complaint And Motions Post Interview Instructions
 subquestion: |-
-  ${ verified_complaint_and_motions_post_interview_instructions.table }
+  ${ next_steps_for_court_attachment.table }
 ---
 event: |-
   verified_complaint_attachment.revisit
@@ -1337,16 +1337,16 @@ code: |
     motion_for_injunctive_relief_attachment.title = "Motion for relief"
 ---
 objects:
-  - verified_complaint_and_motions_post_interview_instructions: ALDocument.using(title="Next Steps - Court Documents", filename="next_steps_for_court.docx", has_addendum=False)
+  - next_steps_for_court_attachment: ALDocument.using(title="Next Steps - Court Documents", filename="next_steps_for_court.docx", has_addendum=False)
   - verified_complaint_attachment: ALDocument.using(filename="verified_complaint.docx", has_addendum=False)
   - motion_for_injunctive_relief_attachment: ALDocument.using(filename="motion_for_injunctive_relief.docx", has_addendum=False)
   - discovery_attachment: ALDocument.using(title="Discovery", filename="Discovery.docx", has_addendum=False)
   - motion_to_compel_discovery_attachment: ALDocument.using(title="Motion to Compel Discovery", filename="motion_to_compel_discovery.docx", has_addendum=False)
 ---
 attachments:
-  - name: verified complaint and motions post interview instructions
-    filename: Post-interview-instructions     
-    variable name: verified_complaint_and_motions_post_interview_instructions[i]        
+  - name: Next Steps - Court Documents
+    filename: next_steps_for_court   
+    variable name: next_steps_for_court_attachment[i]        
     skip undefined: True
     docx template file: next_steps_for_court.docx
 ---
