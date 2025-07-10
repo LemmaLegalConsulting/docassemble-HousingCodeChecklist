@@ -3,44 +3,50 @@
 # Language support
 ############################################
 ---
-modules:
-  - .language
+code: |
+  enable_al_language = True
+---
+code: |
+  al_interview_languages = ["en", "es"]
+---
+# modules:
+#   - .language
 ---
 code: |
   metadata_title = "UpToCode"
----
-initial: True
-code: |
-  process_action()
----
-initial: True
-code: |
-  set_language(user_language)
----
-code: |
-  if url_args.get('lang'):
-    user_language = url_args.get('lang')
-  else:
-    user_language= 'en'
----
-event: change_language
-code: |
-  if 'lang' in action_arguments():
-    user_language = action_argument('lang')
-    set_language(user_language)
----
-#comment: |
-#    % if get_config('debug'):
-#    `id: ${ user_info().question_id }`  
-#    `Package: ${ user_info().package } ${ package_version_number }; ${ al_version }`
-#    <div data-variable="${ encode_name(str( user_info().variable )) }" id="sought_variable" aria-hidden="true" style="display: none;"></div>
-#    % endif  
----
-  default screen parts:
-      pre: |
-       % if not defined('acknowledged_information_use'):
-       ${ docassemble.AssemblyLine.language.get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
-       % endif
+# ---
+# initial: True
+# code: |
+#   process_action()
+# ---
+# initial: True
+# code: |
+#   set_language(user_language)
+# ---
+# code: |
+#   if url_args.get('lang'):
+#     user_language = url_args.get('lang')
+#   else:
+#     user_language= 'en'
+# ---
+# event: change_language
+# code: |
+#   if 'lang' in action_arguments():
+#     user_language = action_argument('lang')
+#     set_language(user_language)
+# ---
+# #comment: |
+# #    % if get_config('debug'):
+# #    `id: ${ user_info().question_id }`  
+# #    `Package: ${ user_info().package } ${ package_version_number }; ${ al_version }`
+# #    <div data-variable="${ encode_name(str( user_info().variable )) }" id="sought_variable" aria-hidden="true" style="display: none;"></div>
+# #    % endif  
+# ---
+#   default screen parts:
+#       pre: |
+#        % if not defined('acknowledged_information_use'):
+#        ${ docassemble.AssemblyLine.language.get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
+#        % endif
 ---
 depends on:
   - user_language

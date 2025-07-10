@@ -14,8 +14,7 @@ include:
   - verified_complaint_and_motions_to_include.yml
   - Repair_Letter_Tenant.yml
   - customized_screens.yml
-# commenting out until we have translations
-#  - language.yml
+  - language.yml
   - simple_conditions.yml
   - orders_and_contempt_complaint.yml
   - discovery.yml
