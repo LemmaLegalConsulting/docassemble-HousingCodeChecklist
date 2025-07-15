@@ -1153,7 +1153,7 @@ fields:
     field: bad_conditions["common problems"].claims
     datatype: checkboxes
     code: |
-      conditions_from_list(dataloader, simple_conditions_list, language=user_language)
+      conditions_from_list(dataloader, simple_conditions_list, language=al_user_language)
   - note: |
       % if person_answering == "tenant":
       <h2 class="h4">Did you have any of these other problems?<h2>
@@ -1426,7 +1426,7 @@ under: |
   to start working on a solution.
   
   % if len(bad_conditions.elements):
-  ${ action_button_html(url_ask('set_gathered'), label="Skip and continue", color="primary", size="md") }
+  ${ action_button_html(url_ask('set_gathered'), label=word("Skip and continue"), color="primary", size="md") }
   % endif
 ---
 code: |
@@ -1495,7 +1495,7 @@ fields:
     datatype: checkboxes
     required: False
     code: |
-      conditions_with_help(dataloader, "24 hours", search_column="Deadline", language=user_language)
+      conditions_with_help(dataloader, "24 hours", search_column="Deadline", language=al_user_language)
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else [] + bad_conditions["common problems"].claims.true_values()
@@ -1531,7 +1531,7 @@ fields:
     datatype: checkboxes
     required: False
     code: |
-      conditions_with_help(dataloader, i, language=user_language)
+      conditions_with_help(dataloader, i, language=al_user_language)
     default:
       code: |
         bad_conditions[i].claims.true_values() if defined('bad_conditions[i].claims') else []  + bad_conditions["common problems"].claims.true_values()
@@ -2975,13 +2975,6 @@ code: |
   request_housing_inspection_instructions_attachment.enabled = request_housing_inspection_attachment.enabled
 ---
 objects:
-  - next_steps_for_court_attachment_es: ALDocument.using(title="Tus próximos pasos en corte", filename="next_steps_for_court.docx", has_addendum=False)
-  - verified_complaint_attachment_es: ALDocument.using(title="Demanda verificada", filename="verified_complaint.docx", has_addendum=False)
-  - motion_for_injunctive_relief_attachment_es: ALDocument.using(title="Moción para alivio cautelar", filename="motion_for_injunctive_relief.docx", has_addendum=False)
-  - Repair_Demand_Letter_post_interview_instructions_es: ALDocument.using(title="Instrucciones posteriores a la entrevista de la carta de demanda de reparación", filename="Post-interview-instructions.docx", has_addendum=False)
-  - request_housing_inspection_instructions_attachment_es: ALDocument.using(title="Instrucciones para solicitar inspección de vivienda", filename="next_steps_inspection_request_letter.docx", has_addendum=False)
-  - letter_to_notify_landlord_instructions_attachment_es: ALDocument.using(title="Instrucciones para notificar al arrendador", filename="next_steps_request_for_repairs_letter.docx", has_addendum=False)
-  - sue_landlord_instructions_attachment_es: ALDocument.using(title="Instrucciones para demandar a su arrendador", filename="next_steps_sue_landlord.docx", has_addendum=False)
   - housing_code_bundle: ALDocumentBundle.using(elements=[
         conditions_report_attachment,
         organize_tenants_attachment,
@@ -3008,7 +3001,6 @@ objects:
   - affirmative_complaint_bundle: ALDocumentBundle.using(elements=[
         next_steps_for_court_attachment,
         next_steps_for_court_attachment_es,
-        sue_landlord_instructions_attachment_es,
         verified_complaint_attachment,
         verified_complaint_attachment_es,
         motion_for_injunctive_relief_attachment,
@@ -3028,7 +3020,6 @@ objects:
   - everything_for_emailing_bundle: ALDocumentBundle.using(elements=[
         next_steps_for_court_attachment,
         next_steps_for_court_attachment_es,
-        sue_landlord_instructions_attachment_es,
         verified_complaint_attachment,
         verified_complaint_attachment_es,
         motion_for_injunctive_relief_attachment,

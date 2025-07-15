@@ -115,20 +115,17 @@ fields:
       - Business or organization: business
       - Individual: individual
   - Landlord's full name: other_parties[i].name.first
-    show if:
-      variable: other_parties[i].person_type
-      is: "individual"
-  - Suffix: other_parties[i].name.suffix
-    code: |
-      name_suffix()
-    show if:
-      variable: other_parties[i].person_type      
-      is: "individual"
-    required: False
+    js show if: |
+      val("other_parties[i].person_type") == "individual"
+  # - Suffix: other_parties[i].name.suffix
+  #   code: |
+  #     name_suffix()
+  #   js show if: |
+  #     val("other_parties[i].person_type") == "individual"
+  #   required: False
   - Landlord's business name: other_parties[i].name.first
-    show if:
-      variable: other_parties[i].person_type
-      is: business
+    js show if: |
+      val("other_parties[i].person_type") == "business"
 validation code: |
   ll_name_unknown = False
 ---
@@ -184,20 +181,11 @@ fields:
       - Individual: individual
     hide if: ll_name_unknown      
   - Landlord's full name: other_parties[i].name.first
-    show if:
-      variable: other_parties[i].person_type
-      is: "individual"
-  - Suffix: other_parties[i].name.suffix
-    code: |
-      name_suffix()
-    show if:
-      variable: other_parties[i].person_type      
-      is: "individual"
-    required: False
+    js show if: |
+      val("other_parties[i].person_type") == "individual"
   - Landlord's business name: other_parties[i].name.first
-    show if:
-      variable: other_parties[i].person_type
-      is: business
+    js show if: |
+      val("other_parties[i].person_type") == "business"
 validation code: |
   if ll_name_unknown:
     other_parties[i].name.first = "[ Landlord's Name ]"
