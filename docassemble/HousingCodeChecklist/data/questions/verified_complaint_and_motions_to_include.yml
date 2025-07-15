@@ -1297,10 +1297,10 @@ fields:
     field: service_method
     input type: radio
     choices:
-      - email and mail
-      - mail
-      - email and hand delivery
-      - hand delivery
+      - email and mail: email and mail
+      - mail: mail
+      - email and hand delivery: email and hand delivery
+      - hand delivery: hand delivery
       - Decide later: decide_later
   - label: |
       % if person_answering == "tenant":
