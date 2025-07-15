@@ -53,7 +53,7 @@ setup(name='docassemble.HousingCodeChecklist',
       license='The MIT License',
       url='https://getuptocode.org',
       packages=find_namespace_packages(),
-      install_requires=['docassemble.ALAffidavitOfIndigency @ git+https://github.com/SuffolkLITLab/docassemble-ALAffidavitOfIndigency.git@main', 'docassemble.ALMassachusetts @ git+https://github.com/SuffolkLITLab/docassemble-ALMassachusetts.git@main', 'docassemble.ALToolbox @ git+https://github.com/suffolklitlab/docassemble-ALToolbox.git@main', 'docassemble.AssemblyLine @ git+https://github.com/suffolklitlab/docassemble-AssemblyLine.git@main', 'docassemble.GithubFeedbackForm @ git+https://github.com/SuffolkLITLab/docassemble-GithubFeedbackForm.git@user-feedback-label', 'docassemble.MassAccess @ git+https://github.com/SuffolkLITLab/docassemble-MassAccess.git@main'],
+      install_requires=['docassemble.ALAffidavitOfIndigency @ git+https://github.com/SuffolkLITLab/docassemble-ALAffidavitOfIndigency.git@main', 'docassemble.ALMassachusetts @ git+https://github.com/SuffolkLITLab/docassemble-ALMassachusetts.git@main', 'docassemble.ALToolbox @ git+https://github.com/suffolklitlab/docassemble-ALToolbox.git@main', 'docassemble.AssemblyLine @ git+https://github.com/suffolklitlab/docassemble-AssemblyLine.git@main', 'docassemble.GithubFeedbackForm @ git+https://github.com/SuffolkLITLab/docassemble-GithubFeedbackForm.git@main', 'docassemble.MassAccess @ git+https://github.com/SuffolkLITLab/docassemble-MassAccess.git@main'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/HousingCodeChecklist/', package='docassemble.HousingCodeChecklist'),
      )
