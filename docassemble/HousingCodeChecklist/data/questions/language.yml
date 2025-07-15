@@ -9,47 +9,11 @@ code: |
 code: |
   al_interview_languages = ["en", "es"]
 ---
-# modules:
-#   - .language
----
 code: |
   metadata_title = "UpToCode"
-# ---
-# initial: True
-# code: |
-#   process_action()
-# ---
-# initial: True
-# code: |
-#   set_language(user_language)
-# ---
-# code: |
-#   if url_args.get('lang'):
-#     user_language = url_args.get('lang')
-#   else:
-#     user_language= 'en'
-# ---
-# event: change_language
-# code: |
-#   if 'lang' in action_arguments():
-#     user_language = action_argument('lang')
-#     set_language(user_language)
-# ---
-# #comment: |
-# #    % if get_config('debug'):
-# #    `id: ${ user_info().question_id }`  
-# #    `Package: ${ user_info().package } ${ package_version_number }; ${ al_version }`
-# #    <div data-variable="${ encode_name(str( user_info().variable )) }" id="sought_variable" aria-hidden="true" style="display: none;"></div>
-# #    % endif  
-# ---
-#   default screen parts:
-#       pre: |
-#        % if not defined('acknowledged_information_use'):
-#        ${ docassemble.AssemblyLine.language.get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
-#        % endif
 ---
 depends on:
-  - user_language
+  - al_user_language
 language: es
 variable name: available_buttons
 data:
@@ -106,7 +70,7 @@ data:
     image: tools
 ---
 depends on:
-  - user_language
+  - al_user_language
 language: ht
 variable name: available_buttons
 data:
@@ -163,7 +127,7 @@ data:
     image: tools
 ---
 depends on:
-  - user_language
+  - al_user_language
 language: pt
 variable name: available_buttons
 data:
@@ -219,6 +183,7 @@ data:
     label: Manutenção geral
     image: tools
 ---
+depends on: al_user_language
 language: pt
 sections:
   - section_getting_started: Começando
@@ -229,6 +194,7 @@ sections:
   - download_conditions_checklist_docs: Download
 auto open: True  
 ---
+depends on: al_user_language
 language: ht
 sections:
   - section_getting_started: Kòmanse
@@ -239,6 +205,7 @@ sections:
   - download_conditions_checklist_docs: Telechaje
 auto open: True  
 ---
+depends on: al_user_language
 language: ht
 comment: |
   Section labels for child interviews that have follow-up
@@ -301,6 +268,7 @@ data: !!omap
       name: Mande jij pou fè respekte lòd pa yo
       count: 3  
 ---
+depends on: al_user_language
 language: pt
 comment: |
   Section labels for child interviews that have follow-up
@@ -357,3 +325,84 @@ data: !!omap
       section_label: Peça ao juiz para fazer valer sua própria ordem
       name: Peça ao juiz para fazer valer sua própria ordem
       count: 3
+---
+#### Spanish documents ####
+---
+objects:
+  - next_steps_for_court_attachment_es: ALDocument.using(title="Tus próximos pasos en corte", filename="next_steps_for_court.docx", has_addendum=False)
+  - verified_complaint_attachment_es: ALDocument.using(title="Demanda verificada", filename="verified_complaint.docx", has_addendum=False)
+  - motion_for_injunctive_relief_attachment_es: ALDocument.using(title="Moción para alivio cautelar", filename="motion_for_injunctive_relief.docx", has_addendum=False)
+  - Repair_Demand_Letter_post_interview_instructions_es: ALDocument.using(title="Instrucciones posteriores a la entrevista de la carta de demanda de reparación", filename="Post-interview-instructions.docx", has_addendum=False)
+  - request_housing_inspection_instructions_attachment_es: ALDocument.using(title="Instrucciones para solicitar inspección de vivienda", filename="next_steps_inspection_request_letter.docx", has_addendum=False)
+  - letter_to_notify_landlord_instructions_attachment_es: ALDocument.using(title="Instrucciones para notificar al arrendador", filename="next_steps_request_for_repairs_letter.docx", has_addendum=False)
+  - sue_landlord_instructions_attachment_es: ALDocument.using(title="Instrucciones para demandar a su arrendador", filename="next_steps_sue_landlord.docx", has_addendum=False)
+---
+code: |
+  next_steps_for_court_attachment_es.enabled = (al_user_language == "es") and next_steps_for_court_attachment.enabled
+---
+attachments:
+  - name: Tus próximos pasos en corte
+    filename: next_steps_for_court
+    variable name: next_steps_for_court_attachment_es[i]
+    skip undefined: True
+    docx template file: next_steps_for_courtes-419.docx
+---
+code: |
+  verified_complaint_attachment_es.enabled = (al_user_language == "es") and verified_complaint_attachment.enabled
+---
+attachments:
+  - name: Demanda verificada
+    filename: verified_complaint
+    variable name: verified_complaint_attachment_es[i]
+    skip undefined: True
+    docx template file: verified_complaintes-419.docx
+---
+code: |
+  motion_for_injunctive_relief_attachment_es.enabled = (al_user_language == "es") and motion_for_injunctive_relief_attachment.enabled
+---
+attachments:
+  - name: Moción para alivio cautelar
+    filename: motion_for_injunctive_relief
+    variable name: motion_for_injunctive_relief_attachment_es[i]
+    skip undefined: True
+    docx template file: motion_for_injunctive_reliefes-419.docx
+---
+code: |
+  Repair_Demand_Letter_post_interview_instructions_es.enabled = (al_user_language == "es") and Repair_Demand_Letter_post_interview_instructions.enabled
+---
+attachments:
+  - name: Instrucciones posteriores a la entrevista de la carta de demanda de reparación
+    filename: Post-interview-instructions
+    variable name: Repair_Demand_Letter_post_interview_instructions_es[i]
+    skip undefined: True
+    docx template file: next_steps_demand_letteres-419.docx
+---
+code: |
+  request_housing_inspection_instructions_attachment_es.enabled = (al_user_language == "es") and request_housing_inspection_instructions_attachment.enabled
+---
+attachments:
+  - name: Instrucciones para solicitar inspección de vivienda
+    filename: next_steps_inspection_request_letter
+    variable name: request_housing_inspection_instructions_attachment_es[i]
+    skip undefined: True
+    docx template file: next_steps_inspection_request_letteres-419.docx
+---
+code: |
+  letter_to_notify_landlord_instructions_attachment_es.enabled = (al_user_language == "es") and letter_to_notify_landlord_instructions_attachment.enabled
+---
+attachments:
+  - name: Instrucciones para notificar al arrendador
+    filename: next_steps_request_for_repairs_letter
+    variable name: letter_to_notify_landlord_instructions_attachment_es[i]
+    skip undefined: True
+    docx template file: next_steps_request_for_repairs_letteres-419.docx
+---
+code: |
+  sue_landlord_instructions_attachment_es.enabled = (al_user_language == "es") and sue_landlord_instructions_attachment.enabled
+---
+attachments:
+  - name: Instrucciones para demandar a su arrendador
+    filename: next_steps_sue_landlord
+    variable name: sue_landlord_instructions_attachment_es[i]
+    skip undefined: True
+    docx template file: next_steps_sue_landlordes-419.docx

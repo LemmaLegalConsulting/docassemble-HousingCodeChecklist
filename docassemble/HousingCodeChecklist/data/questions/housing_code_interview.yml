@@ -617,6 +617,7 @@ code: |
   enable_al_nav_sections = True
   # See: https://assemblyline.suffolklitlab.org/docs/components/AssemblyLine/navigation
 ---
+depends on: al_user_language
 language: en
 variable name: al_nav_sections
 data:
@@ -649,6 +650,7 @@ data:
   - review_and_sign: Review and sign
   - download_conditions_checklist_docs: Download
 ---
+depends on: al_user_language
 language: es
 variable name: al_nav_sections
 data:
@@ -2973,20 +2975,31 @@ code: |
   request_housing_inspection_instructions_attachment.enabled = request_housing_inspection_attachment.enabled
 ---
 objects:
+  - next_steps_for_court_attachment_es: ALDocument.using(title="Tus próximos pasos en corte", filename="next_steps_for_court.docx", has_addendum=False)
+  - verified_complaint_attachment_es: ALDocument.using(title="Demanda verificada", filename="verified_complaint.docx", has_addendum=False)
+  - motion_for_injunctive_relief_attachment_es: ALDocument.using(title="Moción para alivio cautelar", filename="motion_for_injunctive_relief.docx", has_addendum=False)
+  - Repair_Demand_Letter_post_interview_instructions_es: ALDocument.using(title="Instrucciones posteriores a la entrevista de la carta de demanda de reparación", filename="Post-interview-instructions.docx", has_addendum=False)
+  - request_housing_inspection_instructions_attachment_es: ALDocument.using(title="Instrucciones para solicitar inspección de vivienda", filename="next_steps_inspection_request_letter.docx", has_addendum=False)
+  - letter_to_notify_landlord_instructions_attachment_es: ALDocument.using(title="Instrucciones para notificar al arrendador", filename="next_steps_request_for_repairs_letter.docx", has_addendum=False)
+  - sue_landlord_instructions_attachment_es: ALDocument.using(title="Instrucciones para demandar a su arrendador", filename="next_steps_sue_landlord.docx", has_addendum=False)
   - housing_code_bundle: ALDocumentBundle.using(elements=[
         conditions_report_attachment,
         organize_tenants_attachment,
         letter_to_notify_landlord_instructions_attachment,
+        letter_to_notify_landlord_instructions_attachment_es,
         tenant_repair_request_attachment,
         request_housing_inspection_instructions_attachment,
+        request_housing_inspection_instructions_attachment_es,
         request_housing_inspection_attachment,
         Repair_Demand_Letter_post_interview_instructions,
+        Repair_Demand_Letter_post_interview_instructions_es,
         Repair_Demand_Letter_attachment
       ],
       title="Your housing conditions toolkit", filename="housing_conditions_documents",
       )
   - tenant_repair_letter_bundle: ALDocumentBundle.using(elements=[
         letter_to_notify_landlord_instructions_attachment,
+        letter_to_notify_landlord_instructions_attachment_es,
         tenant_repair_request_attachment
       ],
       title="Your repair request letter",
@@ -2994,8 +3007,12 @@ objects:
       )
   - affirmative_complaint_bundle: ALDocumentBundle.using(elements=[
         next_steps_for_court_attachment,
+        next_steps_for_court_attachment_es,
+        sue_landlord_instructions_attachment_es,
         verified_complaint_attachment,
+        verified_complaint_attachment_es,
         motion_for_injunctive_relief_attachment,
+        motion_for_injunctive_relief_attachment_es,
         order_of_notice,
         temporary_order,
         simple_temporary_order,
@@ -3010,8 +3027,12 @@ objects:
       )
   - everything_for_emailing_bundle: ALDocumentBundle.using(elements=[
         next_steps_for_court_attachment,
+        next_steps_for_court_attachment_es,
+        sue_landlord_instructions_attachment_es,
         verified_complaint_attachment,
+        verified_complaint_attachment_es,
         motion_for_injunctive_relief_attachment,
+        motion_for_injunctive_relief_attachment_es,
         temporary_order,
         simple_temporary_order,
         preliminary_injunction,
@@ -3021,10 +3042,13 @@ objects:
         conditions_report_attachment,
         organize_tenants_attachment,
         letter_to_notify_landlord_instructions_attachment,
+        letter_to_notify_landlord_instructions_attachment_es,
         tenant_repair_request_attachment,
         request_housing_inspection_instructions_attachment,
+        request_housing_inspection_instructions_attachment_es,
         request_housing_inspection_attachment,
         Repair_Demand_Letter_post_interview_instructions,
+        Repair_Demand_Letter_post_interview_instructions_es,
         Repair_Demand_Letter_attachment,
         discovery_attachment,
         motion_to_compel_discovery_attachment,
