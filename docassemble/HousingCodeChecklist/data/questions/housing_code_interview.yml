@@ -2087,7 +2087,9 @@ fields:
 id: direct_inspection_email_success
 code: |
   if direct_inspection_email == True:
-      direct_inspection_email_success = send_email(to="housingcomplaints@chelseama.gov", template=chelsea_inspection_email_template, attachments=request_housing_inspection_attachment.as_pdf())
+      chelsea_email = "housingcomplaints@chelseama.gov"
+      # chelsea_email = "quinten@lemmalegal.com"
+      direct_inspection_email_success = inspector_bundle.send_email(to=chelsea_email, template=chelsea_inspection_email_template)
 ---
 template: chelsea_inspection_email_template
 subject: |
@@ -2899,10 +2901,14 @@ code: |
   organize_tenants_attachment.enabled = screen_ll_knows_problem and document_choice['organize_tenants'] 
 ---
 code: |
-  conditions_report_attachment.enabled = action_argument('enabled') or (screen_ll_knows_problem and document_choice['get_report'] and include_conditions_in_complaint)
+  conditions_report_attachment.enabled = (
+    action_argument('enabled')
+    or (screen_ll_knows_problem and document_choice['get_report'] and include_conditions_in_complaint)
+    or direct_inspection_email
+  )
 ---
 code: |
-  request_housing_inspection_attachment.enabled = screen_ll_knows_problem and document_choice['get_inspection']
+  request_housing_inspection_attachment.enabled = screen_ll_knows_problem and document_choice['get_inspection'] or direct_inspection_email
 ---
 code: |
   tenant_repair_request_attachment.enabled = not screen_ll_knows_problem or document_choice['tell_landlord']
@@ -2942,6 +2948,14 @@ code: |
 ---
 code: |
   contempt_complaint.enabled = screen_ll_knows_problem and document_choice['contempt_complaint']
+---
+objects:
+  - inspector_bundle: ALDocumentBundle.using(elements=[
+        request_housing_inspection_attachment,
+        conditions_report_attachment,
+      ],
+      title="Your housing inspection toolkit", filename="inspection_documents",
+      )
 ---
 objects:
   - organize_tenants_attachment: ALStaticDocument.using(title="Organize tenants", filename="lt1-pullout-10-getting-organized.pdf")
