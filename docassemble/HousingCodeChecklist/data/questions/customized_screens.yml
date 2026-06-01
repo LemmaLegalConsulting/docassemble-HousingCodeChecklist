@@ -415,9 +415,13 @@ subquestion: |
   % if len(other_parties.elements) > 1:
   You have already told us about ${comma_and_list(other_parties.complete_elements())}.
   % elif person_answering == "tenant":
-  Your landlord may not be the owner of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act).
+  Your landlord may not be the owner of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act).
+
+  ${ collapse_template(property_lookup_template) }
   % else:
-  The tenant's landlord may not be the owner of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in the court complaint and any demand letter you may want to send under the Consumer Protection Act).
+  The tenant's landlord may not be the owner of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in the court complaint and any demand letter you may want to send under the Consumer Protection Act).
+
+  ${ collapse_template(property_lookup_template) }
   % endif
 fields:
   - Is anyone else on the landlord's side of the case?: other_parties.there_is_another
