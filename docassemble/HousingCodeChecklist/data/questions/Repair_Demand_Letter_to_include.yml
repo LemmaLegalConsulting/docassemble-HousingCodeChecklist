@@ -244,19 +244,17 @@ subject: |
 content: | 
   % if person_answering == "tenant":
   Para averiguar la dirección de su arrendador o dueño de la propiedad, intente usar la herramienta de búsqueda en línea en [Massachusetts Land Records](https://www.masslandrecords.com/), o si tiene dificultades:
-  
+
     - Llame a su Registro de Escrituras local para obtener ayuda para encontrar la escritura más reciente de la propiedad.
     - Llame a la oficina del asesor de impuestos de su pueblo/ciudad para averiguar quién está registrado como propietario en los impuestos de la propiedad y las facturas de agua.
-  
+
   % else: 
   Para averiguar la dirección del arrendador o dueño de la propiedad, intente usar la herramienta de búsqueda en línea en [Massachusetts Land Records](https://www.masslandrecords.com/), o si tiene dificultades:
-  
+
     - Llame al Registro de Escrituras local para obtener ayuda para encontrar la escritura más reciente de la propiedad.
     - Llame a la oficina del asesor de impuestos del pueblo/ciudad para averiguar quién está registrado como propietario en los impuestos de la propiedad y las facturas de agua. 
-  
+
   % endif
-
-
 ---
 sets: 
   - other_parties[i].address.address
