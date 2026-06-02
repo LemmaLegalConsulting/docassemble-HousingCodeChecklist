@@ -83,13 +83,13 @@ subquestion: |
   First, you will be asked if your landlord is a business or an individual and then what your landlord's name is.
 
   Your landlord **may not be the owner** of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
-
-  ${ collapse_template(property_lookup_template) }
   % else:
   First, you will be asked if the tenant's landlord is a business or an individual and then what the landlord's name is.
   
   The tenant's landlord **may not be the owner** of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in the court complaint and any demand letter the tenant may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
+  % endif
 
+  % if len(other_parties.elements) == 1:
   ${ collapse_template(property_lookup_template) }
   % endif
 fields:
@@ -408,11 +408,11 @@ subquestion: |
   You have already told us about ${comma_and_list(other_parties.complete_elements())}.
   % elif person_answering == "tenant":
   Your landlord may not be the owner of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act).
-
-  ${ collapse_template(property_lookup_template) }
   % else:
   The tenant's landlord may not be the owner of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in the court complaint and any demand letter you may want to send under the Consumer Protection Act).
+  % endif
 
+  % if len(other_parties.elements) == 1:
   ${ collapse_template(property_lookup_template) }
   % endif
 fields:
