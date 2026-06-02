@@ -40,6 +40,13 @@ fields:
     show if:
       variable: representation_type
       is: ghostwriting
+---
+if: |
+  customize_footer
+id: footer organization name
+question: |
+  What organization name should appear in the footer?
+fields:
   - Organization name: org_name
     input type: combobox
     choices: 
@@ -48,12 +55,15 @@ fields:
       - Community Legal Aid
       - Metro West Legal Services
       - South Coastal Counties Legal Services
-    show if: customize_footer
-  - note: |
-      **Okay. The court documents will state "Prepared with assistance of counsel" in the footer.**
-    show if:
-      variable: customize_footer
-      is: False
+---
+if: |
+  representation_type == "ghostwriting" and customize_footer == False
+id: footer not customized
+continue button field: footer_not_customized
+question: |
+  Footer text confirmed
+subquestion: |
+  **Okay. The court documents will state "Prepared with assistance of counsel" in the footer.**
 ---
 depends on:
   - document_choice["sue_landlord"]
@@ -1408,7 +1418,7 @@ content: |
   <h3 class="h5">You need to know</h3>
 
   * **UpToCode does not provide legal advice**. If you need legal advice, you can use the [Massachusetts Legal Resource Finder](https://masslrf.org) to find a lawyer.
-  * The information and documents on UpToCode have no warranty. We provide the information “as-is.” By using UpToCode, you agree not to hold GBLS or the information providers on UpToCode liable.
+  * The information and documents on UpToCode have no warranty. We provide the information "as-is." By using UpToCode, you agree not to hold GBLS or the information providers on UpToCode liable.
   * We work hard to keep the information on UpToCode up to date. Lawyers drafted and reviewed the documents UpToCode uses. But laws and local rules change over time. These changes can make a document out of date when you use it.
   * We do our best to keep UpToCode working! To do that, we allow you to submit feedback so we can track problems on UpToCode. But we cannot provide individual technical support.
 

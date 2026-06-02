@@ -148,6 +148,17 @@ fields:
     show if:
       variable: landlord_is_housing_authority
       is: False          
+---
+if: |
+  landlord_is_housing_authority == False and landlord_is_government == False
+id: landlord lives in building
+question: |
+  % if person_answering == "tenant":
+  Does your landlord live in an apartment or room in your building?
+  % else:
+  Does the tenant's landlord live in an apartment or room in the tenant's building?
+  % endif
+fields:
   - label: |
       % if person_answering == "tenant":
       Does your landlord live in an apartment or room in your building?
@@ -156,9 +167,6 @@ fields:
       % endif
     field: landlord_lives_in_building
     datatype: yesnoradio
-    show if:
-      variable: landlord_is_government
-      is: False
   - label: |
       % if person_answering == "tenant":
       Does the building your landlord owns have at least 5 apartments?
@@ -168,26 +176,27 @@ fields:
     field: building_larger_than_4_units
     datatype: yesnoradio
     show if: landlord_lives_in_building
-  - label: |
-      % if person_answering == "tenant":
-      Does your landlord own any other rental property?
-      % else:
-      Does the tenant's landlord own any other rental property?
-      % endif
-    field: landlord_rents_other_property
+---
+if: |
+  landlord_is_housing_authority == False and landlord_is_government == False and landlord_lives_in_building == False
+id: landlord owns other property
+question: |
+  % if person_answering == "tenant":
+  Does your landlord own any other rental property?
+  % else:
+  Does the tenant's landlord own any other rental property?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  Find out if your landlord owns any other rental property in your district and then searching your landlord's name.
+  % else:
+  Find out if the tenant's landlord owns any other rental property in the tenant's district and then searching the landlord's name.
+  % endif
+
+  ${ collapse_template(property_lookup_template) }
+fields:
+  - no label: landlord_rents_other_property
     datatype: yesnoradio
-    show if: 
-      variable: building_larger_than_4_units
-      is: False
-  - note: |
-      % if person_answering == "tenant":
-      Find out if your landlord owns any other rental property at [masslandrecords.com](https://www.masslandrecords.com) by selecting your district and then searching your landlord's name.
-      % else:
-      Find out if the tenant's landlord owns any other rental property at [masslandrecords.com](https://www.masslandrecords.com) by selecting the tenant's district and then searching the landlord's name.
-      % endif
-    show if: 
-      variable: building_larger_than_4_units
-      is: False
   - note: |
       % if person_answering == "tenant":
       **Good news**. It looks like your landlord is **in the business** of being
@@ -196,8 +205,7 @@ fields:
       **Good news**. It looks like the tenant's landlord is **in the business** of being
       a landlord. That means that they need to follow the consumer protection law.
       % endif
-    js show if: |
-      val("landlord_is_housing_authority") === false && val("landlord_is_government") === false && (val("landlord_lives_in_building") === false || (val("building_larger_than_4_units") || val("landlord_rents_other_property")) )
+    show if: landlord_rents_other_property
 ---
 code: |
   is_landlord_subject_to_93a = not landlord_is_housing_authority and not landlord_is_government and (not landlord_lives_in_building or (building_larger_than_4_units or landlord_rents_other_property))
@@ -222,10 +230,17 @@ template: property_lookup_template
 subject: |
   **How do I find out who the owner of my property is?**
 content: | 
-  To find out ${ "your" if person_answering == "tenant" else "the" } landlord or property owner's address, try using the online lookup tool at [Massachusetts Land Records](https://www.masslandrecords.com/), or if you are having trouble:
+  % if person_answering == "tenant":
+  To find out your landlord or property owner's address, try using the online lookup tool at [Massachusetts Land Records](https://www.masslandrecords.com/), or if you are having trouble:
 
-  - Call ${ "your" if person_answering == "tenant" else "the" } local Registry of Deeds for help finding the most recent deed for the property.
-  - Call ${ "your" if person_answering == "tenant" else "the" } town/city tax assessor's office to find out who is listed as owner for the property's tax and water bills.
+  - Call your local Registry of Deeds for help finding the most recent deed for the property.
+  - Call your town/city tax assessor's office to find out who is listed as owner for the property's tax and water bills.
+  % else: 
+  To find out the landlord or property owner's address, try using the online lookup tool at [Massachusetts Land Records](https://www.masslandrecords.com/), or if you are having trouble:
+
+  - Call the local Registry of Deeds for help finding the most recent deed for the property.
+  - Call the town/city tax assessor's office to find out who is listed as owner for the property's tax and water bills. 
+  % endif
 ---
 sets: 
   - other_parties[i].address.address
