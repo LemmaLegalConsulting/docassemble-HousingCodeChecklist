@@ -85,20 +85,18 @@ subquestion: |
   Your landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
   
   To find out who the owner is, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
-  
-    - call your local Registry of Deeds for help finding the most recent deed for the property, or
-    - call your town/city tax assessor’s office to find out who is listed as owner for the property's tax and water bills. 
-  
+
+  - call your local Registry of Deeds for help finding the most recent deed for the property, or
+  - call your town/city tax assessor’s office to find out who is listed as owner for the property's tax and water bills. 
   % else: 
   First, you will be asked if the tenant's landlord is a business or an individual and then what the landlord's name is.
   
   The tenant's landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in the court complaint and any demand letter the tenant may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
   
   To find out who the owner is, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
-  
-    - call the tenant's local Registry of Deeds for help finding the most recent deed for the property, or
-    - call the tenant's town/city tax assessor’s office to find out who is listed as owner for the property's tax and water bills. 
-  
+
+  - call the tenant's local Registry of Deeds for help finding the most recent deed for the property, or
+  - call the tenant's town/city tax assessor’s office to find out who is listed as owner for the property's tax and water bills. 
   % endif
 fields:
   - label: |
