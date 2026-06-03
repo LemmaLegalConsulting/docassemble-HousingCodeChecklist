@@ -1,3 +1,28 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "docassemble.HousingCodeChecklist"
+version = "1.31.0"
+description = "Housing code checklist"
+readme = "README.md"
+authors = [
+    { name="Quinten Steenhuis", email="quinten@nonprofittechy.com" },
+]
+dependencies = [
+    "docassemble.ALAffidavitOfIndigency @ git+https://github.com/SuffolkLITLab/docassemble-ALAffidavitOfIndigency.git@main",
+    "docassemble.ALMassachusetts @ git+https://github.com/SuffolkLITLab/docassemble-ALMassachusetts.git@main",
+    "docassemble.ALToolbox @ git+https://github.com/suffolklitlab/docassemble-ALToolbox.git@main",
+    "docassemble.AssemblyLine @ git+https://github.com/suffolklitlab/docassemble-AssemblyLine.git@main",
+    "docassemble.GithubFeedbackForm @ git+https://github.com/SuffolkLITLab/docassemble-GithubFeedbackForm.git@main",
+    "docassemble.MassAccess @ git+https://github.com/SuffolkLITLab/docassemble-MassAccess.git@main",
+]
+license = { text = "The MIT License" }
+
+[project.urls]
+Homepage = "https://getuptocode.org"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
