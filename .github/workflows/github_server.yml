@@ -2,8 +2,9 @@ name: GitHub server installation
 
 on:
   push:
-  # Default opened, reopened, synchronize. "edited" is something else.
-  pull_request_target:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
     inputs:
       tags:
