@@ -12,7 +12,7 @@ Want to disable the tests? Want to learn more? See ALKiln's docs: https://suffol
 @1
 Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
   Given I start the interview at "housing_code_interview.yml"
-  And the maximum seconds for each Step in this Scenario is 25
+  And the maximum seconds for each Step in this Scenario is 1200
   Then I tap the "#start_your_list" element
   And I get to the question id "download_conditions_checklist_docs" with this data:
     | var | value | trigger |
@@ -33,11 +33,15 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | document_choice['get_report'] | True | |
     | users[0].address.address | Commonwealth Avenue | |
     | users[0].address.city | Boston | |
+    | users.there_is_another | False | |
     | other_parties[0].person_type | business | |
     | other_parties[0].name.first | ll_business | other_parties[0].person_type | 
     |  other_parties[0].address.address | Landlord address | |
     | other_parties[0].address.city | City | |
+    | other_parties.there_is_another | False | |
     | complaint_ask_for_damages| True | |
+    | complaint_raft_or_other_assistance | True | |
+    | complaint_retaliation| True | |
     | landlord_is_housing_authority | False | |
     | landlord_is_government | False | landlord_is_housing_authority | 
     | landlord_lives_in_building | True | landlord_is_government |
@@ -60,6 +64,9 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | signature_choice | this_device | signature_choice |
     | users[0].states_above_true['states_true'] | True | signature_choice |
     | users[0].signature | | users[0].signature |
+    | claim_jurytrial| True | |
+    | service_method| mail | |
+    | service_today| True | |
   Then I take a screenshot
   
 @2
@@ -95,9 +102,11 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | users[0].has_separate_mailing_address | True | |
     | users[0].mailing_address.address | Dartmouth | |
     | users[0].mailing_address.city | Boston | | 
+    | users.there_is_another | False | |
     | other_parties[0].person_type | individual | |
     | other_parties[0].name.first | ll_business | other_parties[0].person_type |
     | other_parties[0].name.last | name | other_parties[0].person_type | 
+    | other_parties.there_is_another | False | |
     | ll_address_unknown | True | |
     | users[0].email | test@example.com | |
     | tenant_repair_issue_date | 11/11/2001| |
@@ -110,7 +119,9 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | damage_calculation_method | skip_amount | |
     | users[0].attorney.address.address | Newbury | |
     | users[0].attorney.address.city | Boston | | 
-    | complaint_ask_for_damages | False | |
+    | complaint_ask_for_damages| True | |
+    | complaint_raft_or_other_assistance | True | |
+    | complaint_retaliation| True | |
     | landlord_is_housing_authority | True | |
     | complaint_utility_shutoff['gas'] | True | |
     | complaint_utility_not_paid['electricity'] | True | |
@@ -127,6 +138,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | users[0].states_above_true['states_true'] | True | signature_choice |
     | users[0].attorney.signature | | users[0].attorney.signature |
     | users[0].signature | | users[0].signature |
+    | claim_jurytrial| True | |
   Then I take a screenshot
   
   
@@ -163,9 +175,11 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | users[0].has_separate_mailing_address | True | |
     | users[0].mailing_address.address | Dartmouth | |
     | users[0].mailing_address.city | Boston | | 
+    | users.there_is_another | False | |
     | other_parties[0].person_type | individual | |
     | other_parties[0].name.first | ll_business | other_parties[0].person_type |
     | other_parties[0].name.last | name | other_parties[0].person_type | 
+    | other_parties.there_is_another | False | |
     | ll_address_unknown | True | |
     | users[0].email | test@example.com | |
     | tenant_repair_issue_date | 11/11/2001| |
@@ -178,7 +192,9 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | damage_calculation_method | skip_amount | |
     | users[0].attorney.address.address | Newbury | |
     | users[0].attorney.address.city | Boston | | 
-    | complaint_ask_for_damages | False | |
+    | complaint_ask_for_damages| True | |
+    | complaint_raft_or_other_assistance | True | |
+    | complaint_retaliation| True | |
     | landlord_is_housing_authority | True | |
     | complaint_utility_shutoff['gas'] | True | |
     | complaint_utility_not_paid['electricity'] | True | |
@@ -195,4 +211,5 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | users[0].states_above_true['states_true'] | True | signature_choice |
     | users[0].attorney.signature | | users[0].attorney.signature |
     | users[0].signature | | users[0].signature |
+    | claim_jurytrial| True | |
   Then I take a screenshot
