@@ -82,23 +82,21 @@ subquestion: |
   % elif person_answering == "tenant":
   First, you will be asked if your landlord is a business or an individual and then what your landlord's name is.
 
-  Your landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
+  Your landlord **may not be the owner** of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
   
   To find out who the owner is, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
-  
-    - call your local Registry of Deeds for help finding the most recent deed for the property, or
-    - call your town/city tax assessor’s office to find out who is listed as owner for the property's tax and water bills. 
-  
+
+  - call your local Registry of Deeds for help finding the most recent deed for the property, or
+  - call your town/city tax assessor's office to find out who is listed as owner for the property's tax and water bills. 
   % else: 
   First, you will be asked if the tenant's landlord is a business or an individual and then what the landlord's name is.
   
-  The tenant's landlord **may not be the owner** of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in the court complaint and any demand letter the tenant may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
+  The tenant's landlord **may not be the owner** of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name **both** the landlord and the owner in the court complaint and any demand letter the tenant may want to send under the Consumer Protection Act). You will be asked if you have another landlord or owner to enter after this.
   
   To find out who the owner is, try using [masslandrecords.com](https://www.masslandrecords.com/), or if you are having trouble:
   
-    - call the tenant's local Registry of Deeds for help finding the most recent deed for the property, or
-    - call the tenant's town/city tax assessor’s office to find out who is listed as owner for the property's tax and water bills. 
-  
+  - call the tenant's local Registry of Deeds for help finding the most recent deed for the property, or
+  - call the tenant's town/city tax assessor's office to find out who is listed as owner for the property's tax and water bills. 
   % endif
 fields:
   - label: |
@@ -415,9 +413,9 @@ subquestion: |
   % if len(other_parties.elements) > 1:
   You have already told us about ${comma_and_list(other_parties.complete_elements())}.
   % elif person_answering == "tenant":
-  Your landlord may not be the owner of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act).
+  Your landlord may not be the owner of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in your court complaint and any demand letter you may want to send under the Consumer Protection Act).
   % else:
-  The tenant's landlord may not be the owner of the property. It’s important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in the court complaint and any demand letter you may want to send under the Consumer Protection Act).
+  The tenant's landlord may not be the owner of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in the court complaint and any demand letter you may want to send under the Consumer Protection Act).
   % endif
 fields:
   - Is anyone else on the landlord's side of the case?: other_parties.there_is_another
@@ -1412,7 +1410,7 @@ content: |
   <h3 class="h5">You need to know</h3>
 
   * **UpToCode does not provide legal advice**. If you need legal advice, you can use the [Massachusetts Legal Resource Finder](https://masslrf.org) to find a lawyer.
-  * The information and documents on UpToCode have no warranty. We provide the information “as-is.” By using UpToCode, you agree not to hold GBLS or the information providers on UpToCode liable.
+  * The information and documents on UpToCode have no warranty. We provide the information "as-is." By using UpToCode, you agree not to hold GBLS or the information providers on UpToCode liable.
   * We work hard to keep the information on UpToCode up to date. Lawyers drafted and reviewed the documents UpToCode uses. But laws and local rules change over time. These changes can make a document out of date when you use it.
   * We do our best to keep UpToCode working! To do that, we allow you to submit feedback so we can track problems on UpToCode. But we cannot provide individual technical support.
 
