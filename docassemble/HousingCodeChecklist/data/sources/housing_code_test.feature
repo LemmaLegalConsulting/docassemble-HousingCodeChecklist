@@ -36,8 +36,12 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | users.there_is_another | False | |
     | other_parties[0].person_type | business | |
     | other_parties[0].name.first | ll_business | other_parties[0].person_type | 
-    |  other_parties[0].address.address | Landlord address | |
-    | other_parties[0].address.city | City | |
+    | other_parties[0].address.address | 123 Testing St |  |
+    | other_parties[0].address.city | Boston |  |
+    | other_parties[0].address.location.known | False |  |
+    | other_parties[0].address.state | MA |  |
+    | other_parties[0].address.unit |  |  |
+    | other_parties[0].address.zip | 02111 |  |
     | other_parties.there_is_another | False | |
     | complaint_ask_for_damages| True | |
     | complaint_raft_or_other_assistance | True | |
@@ -59,7 +63,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | complaint_ask_for_tro | False | |
     | complaint_ask_for_relocation | True | |
     | other_parties[0].email | test@example.com | |
-    | trial_court | Suffolk County Superior Court (Boston) | |
+    | trial_court | all_courts[154] |  |
     | users[0].email | test@example.com | | 
     | verified_complaint_wants_fee_waiver | False | |
     | signature_choice | this_device | signature_choice |
@@ -107,6 +111,12 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | other_parties[0].person_type | individual | |
     | other_parties[0].name.first | ll_business | other_parties[0].person_type |
     | other_parties[0].name.last | name | other_parties[0].person_type | 
+    | other_parties[0].address.address | 123 Testing St |  |
+    | other_parties[0].address.city | Boston |  |
+    | other_parties[0].address.location.known | False |  |
+    | other_parties[0].address.state | MA |  |
+    | other_parties[0].address.unit |  |  |
+    | other_parties[0].address.zip | 02111 |  |
     | other_parties.there_is_another | False | |
     | ll_address_unknown | True | |
     | users[0].email | test@example.com | |
@@ -133,7 +143,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | complaint_ask_for_tro | False | | 
     | complaint_ask_for_relocation | False | |
     | other_parties[0].email | test@example.com | |
-    | trial_court | Suffolk County Superior Court (Boston) | |
+    | trial_court | all_courts[154] |  |
     | verified_complaint_wants_fee_waiver | True | |
     | public_assistance_kinds['TAFDC'] | True | |
     | signature_choice | this_device | |
@@ -181,6 +191,12 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | other_parties[0].person_type | individual | |
     | other_parties[0].name.first | ll_business | other_parties[0].person_type |
     | other_parties[0].name.last | name | other_parties[0].person_type | 
+    | other_parties[0].address.address | 123 Testing St |  |
+    | other_parties[0].address.city | Boston |  |
+    | other_parties[0].address.location.known | False |  |
+    | other_parties[0].address.state | MA |  |
+    | other_parties[0].address.unit |  |  |
+    | other_parties[0].address.zip | 02111 |  |
     | other_parties.there_is_another | False | |
     | ll_address_unknown | True | |
     | users[0].email | test@example.com | |
@@ -207,7 +223,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | complaint_ask_for_tro | False | | 
     | complaint_ask_for_relocation | False | |
     | other_parties[0].email | test@example.com | |
-    | trial_court | Suffolk County Superior Court (Boston) | |
+    | trial_court | all_courts[154] |  |
     | verified_complaint_wants_fee_waiver | True | |
     | public_assistance_kinds['TAFDC'] | True | |
     | signature_choice | this_device | |
