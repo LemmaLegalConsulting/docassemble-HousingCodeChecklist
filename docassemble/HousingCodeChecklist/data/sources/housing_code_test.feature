@@ -59,6 +59,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | complaint_ask_for_tro | False | |
     | complaint_ask_for_relocation | True | |
     | other_parties[0].email | test@example.com | |
+    | trial_court | Suffolk County Superior Court (Boston) | |
     | users[0].email | test@example.com | | 
     | verified_complaint_wants_fee_waiver | False | |
     | signature_choice | this_device | signature_choice |
@@ -88,7 +89,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | kind_of_lawsuit['illegal_lockout'] | True | |
     | kind_of_lawsuit['entered_without_permission'] | True ||
     | bad_conditions[i].details[j].condition_existed_at_start | False | |
-    | bad_conditions[i].details[j].start_year | 2004 | |
+    | bad_conditions[i].details[j].start_year | 2024 | |
     | wants_detailed_conditions | False | |
     | screen_tenant_facing_eviction | has case | screen_tenant_facing_eviction |
     | screen_ll_knows_problem | True | |
@@ -132,6 +133,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | complaint_ask_for_tro | False | | 
     | complaint_ask_for_relocation | False | |
     | other_parties[0].email | test@example.com | |
+    | trial_court | Suffolk County Superior Court (Boston) | |
     | verified_complaint_wants_fee_waiver | True | |
     | public_assistance_kinds['TAFDC'] | True | |
     | signature_choice | this_device | |
@@ -161,7 +163,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | kind_of_lawsuit['illegal_lockout'] | True | |
     | kind_of_lawsuit['entered_without_permission'] | True ||
     | bad_conditions[i].details[j].condition_existed_at_start | False | |
-    | bad_conditions[i].details[j].start_year | 2004 | |
+    | bad_conditions[i].details[j].start_year | 2024 | |
     | wants_detailed_conditions | False | |
     | screen_tenant_facing_eviction | pending | screen_tenant_facing_eviction |
     | screen_ll_knows_problem | True | |
@@ -205,6 +207,7 @@ Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
     | complaint_ask_for_tro | False | | 
     | complaint_ask_for_relocation | False | |
     | other_parties[0].email | test@example.com | |
+    | trial_court | Suffolk County Superior Court (Boston) | |
     | verified_complaint_wants_fee_waiver | True | |
     | public_assistance_kinds['TAFDC'] | True | |
     | signature_choice | this_device | |
