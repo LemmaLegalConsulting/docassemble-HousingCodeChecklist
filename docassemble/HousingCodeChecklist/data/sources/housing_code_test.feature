@@ -1,234 +1,77 @@
-@interviews_start
-Feature: The interviews run without erroring
+@interviews_start @generated
+Feature: Generated end-to-end housing code interview paths
 
-This file:
-[x] Test that each interview starts without an error.
-[x] Contains some additional example Steps. They use fake values and are commented out with a "#" so they won't run.
+These scenarios were generated from completed docassemble sessions with the
+ALDashboard ALKiln story generator, then trimmed to user-provided answers.
+They stop at the review screen so background document assembly does not make
+the browser test depend on the transient waiting screen.
 
-These tests are made to work with the ALKiln testing framework, an automated testing framework made under the Document Assembly Line Project.
-
-Want to disable the tests? Want to learn more? See ALKiln's docs: https://suffolklitlab.github.io/docassemble-AssemblyLine-documentation/docs/automated_integrated_testing
-
-@1
-Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
+@happy_path
+Scenario: A tenant completes a basic repair and report path
   Given I start the interview at "housing_code_interview.yml"
-  And the maximum seconds for each Step in this Scenario is 1200
+  And the maximum seconds for each Step in this Scenario is 120
   Then I tap the "#start_your_list" element
-  And I get to the question id "download_conditions_checklist_docs" with this data:
-    | var | value | trigger |
-    | acknowledged_information_use['I accept the Terms of Use.'] | True | acknowledged_information_use |
-    | person_answering | tenant | |
-    | users[0].name.first | Joe | |
-    | users[0].name.last | Carpenter | |
-    | bad_conditions["common problems"].claims['heat_not_working'] | True | |
-    | kind_of_lawsuit['illegal_lockout'] | True | |
-    | bad_conditions[i].details[j].condition_existed_at_start | True | |
-    | wants_detailed_conditions | False | |
-    | screen_tenant_facing_eviction | notice only | screen_tenant_facing_eviction |
-    | screen_ll_knows_problem | True | |
-    | screen_ll_already_fixing | False | screen_ll_knows_problem | 
-    | screen_other_tenants_with_problem | False | screen_ll_knows_problem |
-    | screen_contacted_housing_inspector | True | screen_ll_knows_problem |
-    | has_tro | False | screen_ll_knows_problem |
-    | document_choice['get_report'] | True | |
-    | users[0].address.address | Commonwealth Avenue | |
-    | users[0].address.city | Boston | |
-    | users.there_is_another | False | |
-    | other_parties[0].person_type | business | |
-    | other_parties[0].name.first | ll_business | other_parties[0].person_type | 
-    | other_parties[0].address.address | 123 Testing St |  |
-    | other_parties[0].address.city | Boston |  |
-    | other_parties[0].address.location.known | False |  |
-    | other_parties[0].address.state | MA |  |
-    | other_parties[0].address.unit |  |  |
-    | other_parties[0].address.zip | 02111 |  |
-    | other_parties.there_is_another | False | |
-    | complaint_ask_for_damages| True | |
-    | complaint_raft_or_other_assistance | True | |
-    | complaint_retaliation| True | |
-    | landlord_is_housing_authority | False | |
-    | landlord_is_government | False | landlord_is_housing_authority | 
-    | landlord_lives_in_building | True | landlord_is_government |
-    | building_larger_than_4_units | True | landlord_lives_in_building | 
-    | demand_letter_sent | True | |
-    | date_of_93A_notice | 11/11/2000 | demand_letter_sent |
-    | got_93a_settlement_offer | True | |
-    | verified_complaint_claims[i].details | something| |
-    | verified_complaint_claims[i].date | 2023 | |
-    | tenant_gets_rent_subsidy | True | |
-    | tenant_rent_share | 500 | |
-    | tenant_unit_rent | 750 | |
-    | tenant_subsidy_is_voucher | True | |
-    | verified_complaint_tenant_voucher_at_risk | True | tenant_subsidy_is_voucher |
-    | complaint_ask_for_tro | False | |
-    | complaint_ask_for_relocation | True | |
-    | other_parties[0].email | test@example.com | |
-    | trial_court | all_courts[154] |  |
-    | users[0].email | test@example.com | | 
-    | verified_complaint_wants_fee_waiver | False | |
-    | signature_choice | this_device | signature_choice |
-    | users[0].states_above_true['states_true'] | True | signature_choice |
-    | users[0].signature | | users[0].signature |
-    | claim_jurytrial| True | |
-    | service_method| mail | |
-    | service_today| True | |
-  Then I take a screenshot
-  
-@2
-Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
+  And the user gets to "review-screen" with this data:
+    | var | value |
+    | acknowledged_information_use['I accept the Terms of Use.'] | True |
+    | person_answering | tenant |
+    | users.target_number | 1 |
+    | users[0].name.first | Jane |
+    | users[0].name.last | Tenant |
+    | users[0].address.address | 123 Main Street |
+    | users[0].address.city | Boston |
+    | users[0].address.state | MA |
+    | users[0].address.zip | 02111 |
+    | users[0].email | tenant@example.com |
+    | bad_conditions["common problems"].claims['heat_not_working'] | True |
+    | bad_conditions["common problems"].claims['mouse_rats'] | True |
+    | kind_of_lawsuit['None'] | True |
+    | bad_conditions[common problems].details[heat_not_working].condition_existed_at_start | True |
+    | bad_conditions[common problems].details[mouse_rats].condition_existed_at_start | True |
+    | wants_detailed_conditions | False |
+    | screen_tenant_facing_eviction | no case |
+    | screen_ll_knows_problem | True |
+    | screen_ll_already_fixing | False |
+    | screen_other_tenants_with_problem | False |
+    | screen_contacted_housing_inspector | False |
+    | has_tro | False |
+    | other_parties.target_number | 1 |
+    | other_parties[0].person_type | individual |
+    | other_parties[0].name.first | Landlord |
+    | ll_address_unknown | True |
+
+@complex_path
+Scenario: A tenant completes a detailed conditions path with an uploaded photo
   Given I start the interview at "housing_code_interview.yml"
-  And the maximum seconds for each Step in this Scenario is 80
+  And the maximum seconds for each Step in this Scenario is 120
   Then I tap the "#start_your_list" element
-  And I get to the question id "download_conditions_checklist_docs" with this data:
-    | var | value | trigger |
-    | acknowledged_information_use['I accept the Terms of Use.'] | True | |
-    | person_answering | attorney | |
-    | representation_type| entering_appearance | person_answering |
-    | users[0].name.first | Joe | |
-    | users[0].name.last | Carpenter | |
-    | users[0].attorney.organization | law_firm | |
-    | users[0].attorney.name.first | Lawyer | |
-    | users[0].attorney.name.last | Name | |
-    | bad_conditions["common problems"].claims['heat_not_working'] | True | |
-    | kind_of_lawsuit['illegal_lockout'] | True | |
-    | kind_of_lawsuit['entered_without_permission'] | True ||
-    | bad_conditions[i].details[j].condition_existed_at_start | False | |
-    | bad_conditions[i].details[j].start_year | 2024 | |
-    | wants_detailed_conditions | False | |
-    | screen_tenant_facing_eviction | has case | screen_tenant_facing_eviction |
-    | screen_ll_knows_problem | True | |
-    | screen_ll_already_fixing | True | screen_ll_knows_problem | 
-    | screen_other_tenants_with_problem | True | screen_ll_knows_problem |
-    | screen_contacted_housing_inspector | True | screen_ll_knows_problem |
-    | has_tro | False | screen_ll_knows_problem |
-    | document_choice['tell_landlord'] | True | |
-    | users[0].address.address | Commonwealth Avenue | |
-    | users[0].address.city | Boston | |
-    | users[0].has_separate_mailing_address | True | |
-    | users[0].mailing_address.address | Dartmouth | |
-    | users[0].mailing_address.city | Boston | | 
-    | users.there_is_another | False | |
-    | other_parties[0].person_type | individual | |
-    | other_parties[0].name.first | ll_business | other_parties[0].person_type |
-    | other_parties[0].name.last | name | other_parties[0].person_type | 
-    | other_parties[0].address.address | 123 Testing St |  |
-    | other_parties[0].address.city | Boston |  |
-    | other_parties[0].address.location.known | False |  |
-    | other_parties[0].address.state | MA |  |
-    | other_parties[0].address.unit |  |  |
-    | other_parties[0].address.zip | 02111 |  |
-    | other_parties.there_is_another | False | |
-    | ll_address_unknown | True | |
-    | users[0].email | test@example.com | |
-    | tenant_repair_issue_date | 11/11/2001| |
-    | sanitary_code_citation_style | detailed_cites | sanitary_code_citation_style | 
-    | users[0].move_in_date | 11/11/2001 | | 
-    | notification_date | 2023 | |
-    | written_notification | True | |
-    | letter_date | 2021 | written_notification |
-    | effect_of_conditions | something | |
-    | damage_calculation_method | skip_amount | |
-    | users[0].attorney.address.address | Newbury | |
-    | users[0].attorney.address.city | Boston | | 
-    | complaint_ask_for_damages| True | |
-    | complaint_raft_or_other_assistance | True | |
-    | complaint_retaliation| True | |
-    | landlord_is_housing_authority | True | |
-    | complaint_utility_shutoff['gas'] | True | |
-    | complaint_utility_not_paid['electricity'] | True | |
-    | verified_complaint_claims[i].details | something | |
-    | verified_complaint_claims[i].date | 2023 | | 
-    | tenant_gets_rent_subsidy | True | |
-    | tenant_subsidy_is_voucher | False | |
-    | complaint_ask_for_tro | False | | 
-    | complaint_ask_for_relocation | False | |
-    | other_parties[0].email | test@example.com | |
-    | trial_court | all_courts[154] |  |
-    | verified_complaint_wants_fee_waiver | True | |
-    | public_assistance_kinds['TAFDC'] | True | |
-    | signature_choice | this_device | |
-    | users[0].states_above_true['states_true'] | True | signature_choice |
-    | users[0].attorney.signature | | users[0].attorney.signature |
-    | users[0].signature | | users[0].signature |
-    | claim_jurytrial| True | |
-  Then I take a screenshot
-  
-  
-@3  
-Scenario: housing_code_interview.yml tenant runs, one plantiff, rent subsidy
-  Given I start the interview at "housing_code_interview.yml"
-  And the maximum seconds for each Step in this Scenario is 80
-  Then I tap the "#start_your_list" element
-  And I get to the question id "download_conditions_checklist_docs" with this data:
-    | var | value | trigger |
-    | acknowledged_information_use['I accept the Terms of Use.'] | True | |
-    | person_answering | attorney | |
-    | representation_type| entering_appearance | person_answering |
-    | users[0].name.first | Joe | |
-    | users[0].name.last | Carpenter | |
-    | users[0].attorney.organization | law_firm | |
-    | users[0].attorney.name.first | Lawyer | |
-    | users[0].attorney.name.last | Name | |
-    | bad_conditions["common problems"].claims['heat_not_working'] | True | |
-    | kind_of_lawsuit['illegal_lockout'] | True | |
-    | kind_of_lawsuit['entered_without_permission'] | True ||
-    | bad_conditions[i].details[j].condition_existed_at_start | False | |
-    | bad_conditions[i].details[j].start_year | 2024 | |
-    | wants_detailed_conditions | False | |
-    | screen_tenant_facing_eviction | pending | screen_tenant_facing_eviction |
-    | screen_ll_knows_problem | True | |
-    | screen_ll_already_fixing | True | screen_ll_knows_problem | 
-    | screen_other_tenants_with_problem | True | screen_ll_knows_problem |
-    | screen_contacted_housing_inspector | True | screen_ll_knows_problem |
-    | has_tro | False | screen_ll_knows_problem |
-    | document_choice['get_report'] | True | |
-    | users[0].address.address | Commonwealth Avenue | |
-    | users[0].address.city | Boston | |
-    | users[0].has_separate_mailing_address | True | |
-    | users[0].mailing_address.address | Dartmouth | |
-    | users[0].mailing_address.city | Boston | | 
-    | users.there_is_another | False | |
-    | other_parties[0].person_type | individual | |
-    | other_parties[0].name.first | ll_business | other_parties[0].person_type |
-    | other_parties[0].name.last | name | other_parties[0].person_type | 
-    | other_parties[0].address.address | 123 Testing St |  |
-    | other_parties[0].address.city | Boston |  |
-    | other_parties[0].address.location.known | False |  |
-    | other_parties[0].address.state | MA |  |
-    | other_parties[0].address.unit |  |  |
-    | other_parties[0].address.zip | 02111 |  |
-    | other_parties.there_is_another | False | |
-    | ll_address_unknown | True | |
-    | users[0].email | test@example.com | |
-    | tenant_repair_issue_date | 11/11/2001| |
-    | sanitary_code_citation_style | detailed_cites | sanitary_code_citation_style | 
-    | users[0].move_in_date | 11/11/2001 | | 
-    | notification_date | 2023 | |
-    | written_notification | True | |
-    | letter_date | 2021 | written_notification |
-    | effect_of_conditions | something | |
-    | damage_calculation_method | skip_amount | |
-    | users[0].attorney.address.address | Newbury | |
-    | users[0].attorney.address.city | Boston | | 
-    | complaint_ask_for_damages| True | |
-    | complaint_raft_or_other_assistance | True | |
-    | complaint_retaliation| True | |
-    | landlord_is_housing_authority | True | |
-    | complaint_utility_shutoff['gas'] | True | |
-    | complaint_utility_not_paid['electricity'] | True | |
-    | verified_complaint_claims[i].details | something | |
-    | verified_complaint_claims[i].date | 2023 | | 
-    | tenant_gets_rent_subsidy | True | |
-    | tenant_subsidy_is_voucher | False | |
-    | complaint_ask_for_tro | False | | 
-    | complaint_ask_for_relocation | False | |
-    | other_parties[0].email | test@example.com | |
-    | trial_court | all_courts[154] |  |
-    | verified_complaint_wants_fee_waiver | True | |
-    | public_assistance_kinds['TAFDC'] | True | |
-    | signature_choice | this_device | |
-    | users[0].states_above_true['states_true'] | True | signature_choice |
-    | users[0].attorney.signature | | users[0].attorney.signature |
-    | users[0].signature | | users[0].signature |
-    | claim_jurytrial| True | |
-  Then I take a screenshot
+  And the user gets to "review-screen" with this data:
+    | var | value |
+    | acknowledged_information_use['I accept the Terms of Use.'] | True |
+    | person_answering | tenant |
+    | users.target_number | 1 |
+    | users[0].name.first | Alex |
+    | users[0].name.last | Tenant |
+    | users[0].address.address | 456 Washington Street |
+    | users[0].address.city | Boston |
+    | users[0].address.state | MA |
+    | users[0].address.zip | 02111 |
+    | users[0].email | alex@example.com |
+    | bad_conditions["common problems"].claims['heat_not_working'] | True |
+    | kind_of_lawsuit['None'] | True |
+    | bad_conditions[common problems].details[heat_not_working].condition_existed_at_start | True |
+    | bad_conditions[common problems].details[heat_not_working].has_file_to_upload | True |
+    | bad_conditions[common problems].details[heat_not_working].files | dummy_photo1.jpg |
+    | wants_detailed_conditions | False |
+    | screen_tenant_facing_eviction | no case |
+    | screen_ll_knows_problem | False |
+    | tenant_repair_issue_date | 01/01/2024 |
+    | tenant_repair_issue_description | My apartment has no heat and I uploaded a photo of the problem. |
+    | other_parties.target_number | 1 |
+    | other_parties[0].person_type | individual |
+    | other_parties[0].name.first | Landlord |
+    | other_parties[0].address.address | 789 State Street |
+    | other_parties[0].address.city | Boston |
+    | other_parties[0].address.state | MA |
+    | other_parties[0].address.zip | 02109 |
+    | ll_address_unknown | False |
