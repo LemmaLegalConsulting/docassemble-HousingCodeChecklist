@@ -3,6 +3,7 @@ Feature: Generated docassemble test
 Scenario: Maximalist Path generated from session
   Given I start the interview at "housing_code_interview.yml"
   And I tap the "text=Get help in court" element and go to the next page
+  And the maximum seconds for each Step is 300
   And the user gets to "download_conditions_checklist_docs" with this data:
     | var | value |
     | redis_panel_emails_key | docassemble-GithubFeedbackForm:panel_emails |
@@ -1210,6 +1211,7 @@ Scenario: Maximalist Path generated from session
     | sharing_choices[0]['tell_friend'] | Tell a friend about this website |
     | sharing_choices[1]['share_answers'] | Share my answers and progress with someone |
 
+  And the maximum seconds for each Step is 30
   And I download "housing_conditions_report.docx"
   And I download "next_steps_for_court.docx"
   And I download "verified_complaint.docx"
