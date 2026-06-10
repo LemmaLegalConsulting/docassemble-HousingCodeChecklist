@@ -12,21 +12,21 @@ code: |
   interview_metadata
   if not defined("interview_metadata['Repair_Demand_Letter']"):
     interview_metadata.initializeObject("Repair_Demand_Letter")
-    interview_metadata["Repair_Demand_Letter"].update({
-      "al_weaver_version": "1.6.2",
-      "generated on": "2022-03-31",
-      "title": "Repair Demand Letter",
-      "short title": "Repair Demand Letter",
-      "description": "A letter of demand for relief under the Consumer Protection Act, Chapter 93A",
-      "original_form": "https://www.masslegalhelp.org/sites/default/files/2024-01/lt1-form-10-repair-demand.pdf",
-      "allowed courts": [
-      ],
-      "categories": [
-      ],        
-      "logic block variable": "interview_order_Repair_Demand_Letter",
-      "attachment block variable": "Repair_Demand_Letter_attachment",
-      "typical role": "plaintiff",
-    })
+    interview_metadata["Repair_Demand_Letter"].update(
+      {
+        "al_weaver_version": "1.6.2",
+        "generated on": "2022-03-31",
+        "title": "Repair Demand Letter",
+        "short title": "Repair Demand Letter",
+        "description": "A letter of demand for relief under the Consumer Protection Act, Chapter 93A",
+        "original_form": "https://www.masslegalhelp.org/sites/default/files/2024-01/lt1-form-10-repair-demand.pdf",
+        "allowed courts": [],
+        "categories": [],
+        "logic block variable": "interview_order_Repair_Demand_Letter",
+        "attachment block variable": "Repair_Demand_Letter_attachment",
+        "typical role": "plaintiff",
+      }
+    )
 ---
 objects:
   - other_parties: ALPeopleList.using(ask_number=True,target_number=1)
@@ -37,8 +37,8 @@ comment: |
   Controls order and branching logic for questions specific to this form
 id: interview_order_Repair_Demand_Letter
 code: |
-  nav.set_section('review_Repair_Demand_Letter')
-  user_role = 'plaintiff'
+  nav.set_section("review_Repair_Demand_Letter")
+  user_role = "plaintiff"
   users[0].email
   users.gather()
   set_parts(subtitle=str(users))
@@ -46,7 +46,7 @@ code: |
   tenant_movein_date
   notification_date
   if written_notification == True:
-     letter_date
+    letter_date
   tenant_repair_issue_description
   effect_of_conditions
   if damage_calculation_method in ["tenant_calculation", "uptocode_calculation"]:
@@ -200,8 +200,16 @@ fields:
       val("landlord_is_housing_authority") === false && val("landlord_is_government") === false && (val("landlord_lives_in_building") === false || (val("building_larger_than_4_units") || val("landlord_rents_other_property")) )
 ---
 code: |
-  is_landlord_subject_to_93a = not landlord_is_housing_authority and not landlord_is_government and (not landlord_lives_in_building or (building_larger_than_4_units or landlord_rents_other_property))
+  is_landlord_subject_to_93a = (
+    not landlord_is_housing_authority
+    and not landlord_is_government
+    and (
+      not landlord_lives_in_building
+      or (building_larger_than_4_units or landlord_rents_other_property)
+    )
+  )
 ---
+id: landlord is not subject to 93a
 continue button field: landlord_is_not_subject_to_93a
 decoration: hand
 question: |
@@ -583,7 +591,10 @@ fields:
 validation code: |
   if damage_calculation_method == "uptocode_calculation":
     if tenant_percentage_estimate < 5:
-      validation_error("Select a percentage that is greater than 0", field="tenant_percentage_estimate")
+      validation_error(
+        "Select a percentage that is greater than 0",
+        field="tenant_percentage_estimate",
+      )
 ---
 template: what_if_problem_over_multiple_periods
 subject: |
@@ -738,9 +749,11 @@ depends on:
   - tenant_percentage_estimate  
 code: |
   tenant_warranty_estimate = (
-    tenant_unit_rent * 12 * (
-      min(tenant_time_estimate / tenant_time_estimate_denominator, 6)
-    ) * tenant_percentage_estimate / 100
+    tenant_unit_rent
+    * 12
+    * (min(tenant_time_estimate / tenant_time_estimate_denominator, 6))
+    * tenant_percentage_estimate
+    / 100
   )
 ---
 template: settlement_offer_93a_explanation
@@ -832,6 +845,7 @@ review:
         * ${ item }
       % endfor
 ---
+id: edit repair demand letter landlords
 continue button field: other_parties.revisit
 question: |
   Edit other_parties
@@ -853,6 +867,7 @@ edit:
 confirm: True
 
 ---
+id: edit repair demand letter tenants
 continue button field: users.revisit
 question: |
   Edit users

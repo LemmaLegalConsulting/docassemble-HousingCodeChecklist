@@ -82,7 +82,7 @@ class BaseDataLoader(DAObject):
         """
         df = self._load_data()
         existing = [l for l in loci if l in df.index]
-        missing  = [l for l in loci if l not in df.index]
+        missing = [l for l in loci if l not in df.index]
 
         for locus in missing:
             log(f"Locus {locus!r} not found in data; skipping.")
@@ -133,14 +133,13 @@ class DataLoader(BaseDataLoader):
         )  # Our XLSX file has a column 'ID' with a text invariant identifier
         return df
 
+
 class InspectorLoader(BaseDataLoader):
     def _load_data(self) -> pd.DataFrame:
         df = super()._load_data()
-        df.set_index(
-            "City", inplace=True
-        )
+        df.set_index("City", inplace=True)
         return df
-    
+
     def load_row(self, index: Union[int, str]) -> Union[pd.Series, pd.DataFrame]:
         """
         Retrieve all of the data in a single row of the DataFrame
@@ -151,6 +150,7 @@ class InspectorLoader(BaseDataLoader):
         except:
             return pd.DataFrame()
         return row
+
 
 class Condition(DAObject):
     def init(self, *pargs, **kwargs):
@@ -178,7 +178,7 @@ class ConditionsDict(DADict):
         """Merge condition details with original DF row"""
         results = pd.concat([self[c].df for c in self])
 
-    def as_list(self, language:str="en"):
+    def as_list(self, language: str = "en"):
         flattened = DAList(auto_gather=False, gathered=True)
         for category in self.elements:
             for index, row in self[category].df.iterrows():
@@ -191,9 +191,8 @@ class ConditionsDict(DADict):
                 the_condition.row = row
                 flattened.append(the_condition)
         return flattened
-    
-    
-    def has_condition(self, condition:Union[List[str], str]) -> bool:
+
+    def has_condition(self, condition: Union[List[str], str]) -> bool:
         """
         Return True if and only if the specified condition or list of conditions
         intersects with the conditions the user selected.
@@ -201,16 +200,20 @@ class ConditionsDict(DADict):
         for category in self.elements:
             if isinstance(condition, list):
                 if any(
-                    cond in self.elements[category].claims and self.elements[category].claims[cond]
+                    cond in self.elements[category].claims
+                    and self.elements[category].claims[cond]
                     for cond in condition
                 ):
                     return True
             else:
-                if condition in self.elements[category].claims and self.elements[category].claims[condition]:
+                if (
+                    condition in self.elements[category].claims
+                    and self.elements[category].claims[condition]
+                ):
                     return True
         return False
 
-    def active_conditions(self, language:str="en"):
+    def active_conditions(self, language: str = "en"):
         return DAList(
             auto_gather=False,
             gathered=True,
@@ -223,7 +226,7 @@ class ConditionsDict(DADict):
             ],
         )
 
-    def resolved_conditions(self, language:str="en"):
+    def resolved_conditions(self, language: str = "en"):
         return DAList(
             auto_gather=False,
             gathered=True,
@@ -234,18 +237,21 @@ class ConditionsDict(DADict):
             ],
         )
 
-    def emergency_conditions(self, condition_ended:bool=False, language:str="en"):
+    def emergency_conditions(self, condition_ended: bool = False, language: str = "en"):
         return DAList(
             auto_gather=False,
             gathered=True,
             elements=[
                 condition
                 for condition in self.as_list(language=language)
-                if condition.deadline == "24 hours" and condition.condition_ended == condition_ended
+                if condition.deadline == "24 hours"
+                and condition.condition_ended == condition_ended
             ],
         )
 
-    def conditions_start(self, default_date:Optional[Union[DADateTime,str]]=None) -> DADateTime:
+    def conditions_start(
+        self, default_date: Optional[Union[DADateTime, str]] = None
+    ) -> DADateTime:
         if not default_date:
             default_date = today()
         if not isinstance(default_date, DADateTime):
@@ -254,38 +260,55 @@ class ConditionsDict(DADict):
             except:
                 default_date = today()
         try:
-            return min([
-                condition.start_date
-                for condition
-                in self.as_list()
-                if hasattr(condition, "start_date") and condition.start_date
-            ], default=default_date) or default_date
+            return (
+                min(
+                    [
+                        condition.start_date
+                        for condition in self.as_list()
+                        if hasattr(condition, "start_date") and condition.start_date
+                    ],
+                    default=default_date,
+                )
+                or default_date
+            )
         except:
             return default_date
 
-    def conditions_end(self, default_date:Optional[Union[DADateTime,str]]=None) -> DADateTime:
+    def conditions_end(
+        self, default_date: Optional[Union[DADateTime, str]] = None
+    ) -> DADateTime:
         if not default_date:
             default_date = today()
         try:
-            return max([
-                condition.end_date
-                for condition
-                in self.as_list()
-                if hasattr(condition, "end_date") and condition.end_date
-            ], default=default_date) or default_date
+            return (
+                max(
+                    [
+                        condition.end_date
+                        for condition in self.as_list()
+                        if hasattr(condition, "end_date") and condition.end_date
+                    ],
+                    default=default_date,
+                )
+                or default_date
+            )
         except:
             return default_date
 
-    def conditions_days(self,default_date:Optional[Union[DADateTime,str]]=None) -> int:
-        return abs( (self.conditions_end(default_date) - self.conditions_start(default_date)).days )
-
+    def conditions_days(
+        self, default_date: Optional[Union[DADateTime, str]] = None
+    ) -> int:
+        return abs(
+            (
+                self.conditions_end(default_date) - self.conditions_start(default_date)
+            ).days
+        )
 
 
 def conditions_from_list(
     dataloader: DataLoader, loci: List[Union[int, str]], language: str = "en"
 ) -> List[Dict[str, str]]:
     df = dataloader.load_rows(loci=loci)
-    conditions:List[Dict[str, str]] = []
+    conditions: List[Dict[str, str]] = []
     for row in df.iterrows():
         if language == "es":
             conditions.append(
@@ -330,6 +353,3 @@ def tr_category(category, available_buttons):
         if category == cat.get("value"):
             return cat.get("label")
     return category
-  
-
-

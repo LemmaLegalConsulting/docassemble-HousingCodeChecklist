@@ -39,8 +39,8 @@ id: interview_order_verified_complaint_and_motions
 code: |
   # Set the allowed courts for this interview
   allowed_courts = interview_metadata["verified_complaint_and_motions"]["allowed courts"]
-  user_role = 'plaintiff'
-  user_ask_role = 'plaintiff'
+  user_role = "plaintiff"
+  user_ask_role = "plaintiff"
   File_a_Verified_Complaint_Form
   users[0].email
   users.gather()
@@ -53,7 +53,7 @@ code: |
       confirm_ask_for_damages
       update_ask_for_damages
   verified_complaint_claims.gathered
-  tenant_gets_rent_subsidy # from Repair_Demand_letter_to_include.yml
+  tenant_gets_rent_subsidy  # from Repair_Demand_letter_to_include.yml
   if complaint_ask_for_damages:
     tenant_unit_rent
   if tenant_gets_rent_subsidy and tenant_subsidy_is_voucher:
@@ -70,13 +70,13 @@ code: |
   claim_jurytrial
   verified_complaint_wants_fee_waiver
   if verified_complaint_wants_fee_waiver == "wants_fee_waiver":
-      document_choice["fee_waiver"] = True
-      reconsider("al_nav_sections")
-      nav.set_section("review_fee_waiver")
-      set_fee_waiver_defaults
-      case_name
-      docket_numbers
-      ask_affidavit_questions
+    document_choice["fee_waiver"] = True
+    reconsider("al_nav_sections")
+    nav.set_section("review_fee_waiver")
+    set_fee_waiver_defaults
+    case_name
+    docket_numbers
+    ask_affidavit_questions
   service_method
   interview_order_verified_complaint_and_motions = True
 ---
@@ -91,7 +91,7 @@ code: |
     customize_discovery_choice
     if customize_discovery_choice == "customize_discovery":
       customize_discovery_requests
-  
+
   interview_order_discovery = True
 ---
 code: |
@@ -111,7 +111,11 @@ code: |
   motion_for_injunctive_relief_attachment.enabled = verified_complaint_attachment.enabled
 ---
 code: |
-  affidavitofindigency_attachment.enabled = document_choice['sue_landlord'] and verified_complaint_wants_fee_waiver == "wants_fee_waiver" and is_indigent
+  affidavitofindigency_attachment.enabled = (
+    document_choice["sue_landlord"]
+    and verified_complaint_wants_fee_waiver == "wants_fee_waiver"
+    and is_indigent
+  )
 ---
 comment: |
   This question is used to introduce your interview. Please customize
@@ -131,18 +135,20 @@ code: |
   elif trial_court.department in ["District Court", "Boston Municipal Court"]:
     verified_complaint_tro_fee = 0
     verified_complaint_entry_of_action_Fee = 195
-  else: # Superior Court
+  else:  # Superior Court
     verified_complaint_tro_fee = 90
     verified_complaint_entry_of_action_Fee = 240
 ---
 code: |
-  fees['Filing fee'].waive = True
-  fees['Filing fee'].amount = verified_complaint_tro_fee + verified_complaint_entry_of_action_Fee
-  fees['Service'].waive = True
+  fees["Filing fee"].waive = True
+  fees["Filing fee"].amount = (
+    verified_complaint_tro_fee + verified_complaint_entry_of_action_Fee
+  )
+  fees["Service"].waive = True
   if trial_court.department in ["District Court", "Boston Municipal Court"]:
-    fees['Service'].amount = 60
+    fees["Service"].amount = 60
   else:
-    fees['Service'].amount = 45
+    fees["Service"].amount = 45
   set_fee_waiver_defaults = True
 ---
 id: review discovery
@@ -955,7 +961,7 @@ only sets:
 code: |
   if confirm_ask_for_damages == "postpone_damages":
     complaint_ask_for_damages = False
-  update_ask_for_damages = True      
+  update_ask_for_damages = True
 ---
 code: |
   addresses_to_search = [user.address for user in users]
@@ -1173,6 +1179,7 @@ review:
 
       Would you like to find out if you qualify to file for free?: ${ word(yesno(verified_complaint_wants_fee_waiver)) }
 ---
+id: edit verified complaint landlords
 continue button field: other_parties.revisit
 question: |
   Edit landlords
@@ -1195,6 +1202,7 @@ edit:
   - address.address
 confirm: True
 ---
+id: edit verified complaint tenants
 continue button field: users.revisit
 question: |
   Edit tenant information
@@ -1380,4 +1388,8 @@ attachment:
 ---
 code: |
   # This gets overridden inside UpToCode interview
-  tenant_repair_default_date = next(item.date for item in sorted(verified_complaint_claims.items(), key=lambda y: y.date) if item.has_claim)
+  tenant_repair_default_date = next(
+    item.date
+    for item in sorted(verified_complaint_claims.items(), key=lambda y: y.date)
+    if item.has_claim
+  )

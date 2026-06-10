@@ -26,8 +26,13 @@ code: |
   user_role = "plaintiff"
 ---
 code: |
-  allowed_courts = ["Boston Municipal Court","District Court","Housing Court","Superior Court"]
-  al_form_type = 'existing_case'
+  allowed_courts = [
+    "Boston Municipal Court",
+    "District Court",
+    "Housing Court",
+    "Superior Court",
+  ]
+  al_form_type = "existing_case"
 ---
 code: |
   landlord_name_is_optional = False
@@ -40,7 +45,7 @@ comment: |
   Controls order and branching logic for questions specific to this form
 id: interview_order_Contempt_Complaint
 code: |
-  nav.set_section('review_Contempt_Complaint')
+  nav.set_section("review_Contempt_Complaint")
   user_role = "plaintiff"
   users.gather()
   users.there_is_another
@@ -72,7 +77,7 @@ code: |
   interview_order_Contempt_Complaint
   signature_date
   # Save anonymized interview statistics (customize the saved data below)
-  store_variables_snapshot(data={'zip': users[0].address.zip})
+  store_variables_snapshot(data={"zip": users[0].address.zip})
   Contempt_Complaint_preview_question
   basic_questions_signature_flow
   users[0].signature
@@ -149,7 +154,7 @@ question: |
   % endif
 fields:
   - code: |
-      other_parties[i].name_fields(person_or_business='unsure')
+      other_parties[i].name_fields(person_or_business="unsure")
 ---
 id: information about the landlord
 question: |

@@ -337,7 +337,9 @@ objects:
   - letter_to_notify_landlord_instructions_attachment_es: ALDocument.using(title="Instrucciones para notificar al arrendador", filename="next_steps_request_for_repairs_letter.docx", has_addendum=False)
 ---
 code: |
-  next_steps_for_court_attachment_es.enabled = (al_user_language == "es") and next_steps_for_court_attachment.enabled
+  next_steps_for_court_attachment_es.enabled = (
+    al_user_language == "es"
+  ) and next_steps_for_court_attachment.enabled
 ---
 attachments:
   - name: Tus próximos pasos en corte
@@ -347,7 +349,9 @@ attachments:
     docx template file: next_steps_for_courtes-419.docx
 ---
 code: |
-  verified_complaint_attachment_es.enabled = (al_user_language == "es") and verified_complaint_attachment.enabled
+  verified_complaint_attachment_es.enabled = (
+    al_user_language == "es"
+  ) and verified_complaint_attachment.enabled
 ---
 attachments:
   - name: Demanda verificada
@@ -357,7 +361,9 @@ attachments:
     docx template file: verified_complaintes-419.docx
 ---
 code: |
-  motion_for_injunctive_relief_attachment_es.enabled = (al_user_language == "es") and motion_for_injunctive_relief_attachment.enabled
+  motion_for_injunctive_relief_attachment_es.enabled = (
+    al_user_language == "es"
+  ) and motion_for_injunctive_relief_attachment.enabled
 ---
 attachments:
   - name: Moción para alivio cautelar
@@ -367,7 +373,9 @@ attachments:
     docx template file: motion_for_injunctive_reliefes-419.docx
 ---
 code: |
-  Repair_Demand_Letter_post_interview_instructions_es.enabled = (al_user_language == "es") and Repair_Demand_Letter_post_interview_instructions.enabled
+  Repair_Demand_Letter_post_interview_instructions_es.enabled = (
+    al_user_language == "es"
+  ) and Repair_Demand_Letter_post_interview_instructions.enabled
 ---
 attachments:
   - name: Instrucciones posteriores a la entrevista de la carta de demanda de reparación
@@ -377,7 +385,9 @@ attachments:
     docx template file: next_steps_demand_letteres-419.docx
 ---
 code: |
-  request_housing_inspection_instructions_attachment_es.enabled = (al_user_language == "es") and request_housing_inspection_instructions_attachment.enabled
+  request_housing_inspection_instructions_attachment_es.enabled = (
+    al_user_language == "es"
+  ) and request_housing_inspection_instructions_attachment.enabled
 ---
 attachments:
   - name: Instrucciones para solicitar inspección de vivienda
@@ -387,7 +397,9 @@ attachments:
     docx template file: next_steps_inspection_request_letteres-419.docx
 ---
 code: |
-  letter_to_notify_landlord_instructions_attachment_es.enabled = (al_user_language == "es") and letter_to_notify_landlord_instructions_attachment.enabled
+  letter_to_notify_landlord_instructions_attachment_es.enabled = (
+    al_user_language == "es"
+  ) and letter_to_notify_landlord_instructions_attachment.enabled
 ---
 attachments:
   - name: Instrucciones para notificar al arrendador
