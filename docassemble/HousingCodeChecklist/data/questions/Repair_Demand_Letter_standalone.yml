@@ -13,7 +13,7 @@ metadata:
     - Sofija Belajcic
 ---
 code: |
-  interview_metadata['main_interview_key'] =  'Repair_Demand_Letter'
+  interview_metadata["main_interview_key"] = "Repair_Demand_Letter"
 ---
 code: |
   # This controls the default country and list of states in address field questions
@@ -24,13 +24,13 @@ code: |
   AL_DEFAULT_STATE = "MA"
 ---
 code: |
-  github_repo_name =  'docassemble-RepairDemandLetter'
+  github_repo_name = "docassemble-RepairDemandLetter"
 ---
 code: |
   interview_short_title = "Write a repair demand letter to your landlord"
 ---
 code: |
-  al_form_type = 'letter'
+  al_form_type = "letter"
 ---
 objects:
   - other_parties: ALPeopleList.using(ask_number=True,target_number=1)
@@ -44,8 +44,8 @@ comment: |
   Controls order and branching logic for questions specific to this form
 id: interview_order_Repair_Demand_Letter
 code: |
-  nav.set_section('review_Repair_Demand_Letter')
-  user_role = 'na'
+  nav.set_section("review_Repair_Demand_Letter")
+  user_role = "na"
   users.gather()
   set_parts(subtitle=str(users))
   users[0].address.address
@@ -56,7 +56,7 @@ code: |
   notification_date
   set_progress(40)
   if written_notification == True:
-     letter_date
+    letter_date
   tenant_repair_issue_description
   effect_of_conditions
   set_progress(60)
@@ -78,12 +78,13 @@ code: |
   interview_order_Repair_Demand_Letter
   signature_date
   # Save anonymized interview statistics (customize the saved data below)
-  store_variables_snapshot(data={'zip': users[0].address.zip})
+  store_variables_snapshot(data={"zip": users[0].address.zip})
   Repair_Demand_Letter_preview_question
   basic_questions_signature_flow
   users[0].signature
   Repair_Demand_Letter_download
 ---
+id: landlord is not subject to 93a standalone
 event: landlord_is_not_subject_to_93a
 decoration: hand
 question: |
