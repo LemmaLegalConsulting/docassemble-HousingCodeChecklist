@@ -1799,9 +1799,18 @@ fields:
     show if: screen_ll_knows_problem
   - note: |
       % if person_answering == "tenant":
-      **You may want to get an inspection**, but you not have to. An inspection can help a judge understand the problem better or get your landlord to make repairs. You do not need to wait for the inspection to go to court. **WARNING:** If you think your unit may be illegal or could be condemned due to the problems, you may want to get legal advice before contacting the City or Town because you could end up being ordered to leave.
+      **You may want to get an inspection**, but you do not have to. An inspection can help a judge understand the problem better or get your landlord to make repairs. You do not need to wait for the inspection to go to court. 
+      <BR>
+      <BR> 
+      **WARNING:** Depending on how serious the problems are, asking for an inspection might cause your unit to be {condemned} and **you may be ordered to move out**. You may want to get legal advice **before** contacting the City or Town to ask for an inspection.
+      <BR>
+      <BR>
+      ${ collapse_template(condemnation_info) }
       % else:
-      **The tenant may want to get an inspection**, but it is not required. An inspection can help a judge to understand the problem better or get the landlord to make repairs. The tenant does not need to wait for the inspection to go to court. **WARNING:** If the unit may be illegal or could be condemned due to the problems, the tenant should think carefully before contacting the City or Town because they could end up being ordered to leave.
+      **The tenant may want to get an inspection**, but it is not required. An inspection can help a judge to understand the problem better or get the landlord to make repairs. The tenant does not need to wait for the inspection to go to court. 
+      <BR>
+      <BR>
+      **WARNING:** Depending on how serious the problems are, asking for an inspection might cause the unit to be {condemned} and **the tenant may be ordered to move out**. The tenant should think carefully **before** contacting the City or Town to ask for an inspection because they could end up being ordered to leave.
       % endif
     show if:
       variable: screen_contacted_housing_inspector
@@ -1860,6 +1869,15 @@ fields:
           % endif
         value: organize_tenants
       - Get a city inspection: get_inspection
+        help: |
+          % if person_answering == "tenant":
+          Keep in mind that an inspection might cause your unit to be **condemned** by the City or Town. If your unit is condemned, **you may be ordered to move out**.
+          <br>
+          <br>
+          **Before asking for an inspection**, seek legal help if you think your unit could be condemned.
+          % else:
+          Keep in mind that an inspection might cause the unit to be **condemned** by the City or Town. If the unit is condemned, **the tenant may be ordered to move out**.
+          % endif
       - Ask for a fair settlement. Use a consumer protection demand letter or a settlement letter.: demand_letter_93a
         help: |
           % if person_answering == "tenant":
@@ -3143,26 +3161,103 @@ content: |
 id: condemn_warning
 continue button field: condemn_warning
 question: |
-  You may want to wait to submit a request to inspectional services
+  Warning: you may want to wait before asking for an inspection!
 subquestion: |
-  % if person_answering == "tenant":
-  A unit can be {condemned} in certain circumstances.
+  % if person_answering == "tenant": 
+  If a housing inspector finds that your unit is unfit for people to live in, it could be {condemned}.
+
+  Since it is **illegal for anyone to live in a condemened unit**, you may be ordered to move out.
+
+  ${ collapse_template(condemnation_info) }
   
-  **Before submitting your request to inspectional services, please seek legal help if you believe that:**
+  **Before asking for an inspection, seek legal help if you believe that:**
   
   1. You live in an {illegal unit}.
-  1. Your unit is {overcrowded}.
-  1. Your unit is {uninhabitable}.
+  2. Your unit is {overcrowded}.
+  3. Your unit is {uninhabitable}.
   
-  Find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+  You can find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+
+  ${ collapse_template(condemnation_tenant_rights) }
   % else:
-  A unit can be {condemned} in certain circumstances.
+  If a housing inspector finds that a unit is unfit for people to live in, it could be {condemned}.
+
+  Since it is **illegal for anyone to live in a condemened unit**, the tenant may be ordered to move out.
+
+  ${ collapse_template(condemnation_info) }
   
-  **Before submitting a request to inspectional services, please seek legal help if the tenant thinks that:**
+  **Before asking for an inspection, seek legal help if the tenant thinks that:**
   
   1. They live in an {illegal unit}.
-  1. Their unit is {overcrowded}.
-  1. Their unit is {uninhabitable}.
+  2. Their unit is {overcrowded}.
+  3. Their unit is {uninhabitable}.
   
-  Find legal aid organizations in the tenant's area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+  You can find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+
+  ${ collapse_template(condemnation_tenant_rights) }
+  % endif 
+---
+template: condemnation_info
+subject: |
+  % if person_answering == "tenant": 
+  How do I know if my unit might be condemned after an inspection?
+  % else:
+  How do I know if a unit might be condemned after an inspection?
   % endif
+content: |
+  % if person_answering == "tenant": 
+  Your unit could be condemned if an inspection finds it to be:
+  
+  * **An illegal unit** - Your unit has not been properaly registered with the City or Town. Illegal units are often converted attics or basements that do not meet basic safety or sanitary code rules.
+  <BR>
+  <BR>
+  * **Overcrowded** - There is not enough space for all the tenants inside your rental unit. Generally, there may be overcrowding if a bedroom is not large enough for the number of people using it, according to the MA State Sanitary Code (105 CMR 410.420(D)).
+  <BR>
+  <BR>
+  * **Uninhabitable** - Your unit is unsuitable to live in and/or repairs cannot be made while you are still living in the property.
+
+  **Before asking for an inspection**, seek legal help if you believe that any of these things might be true about your unit.
+  % else:
+  A unit could be condemned if an inspection finds it to be:
+  
+  * **An illegal unit** - The unit has not been properaly registered with the City or Town. Illegal units are often converted attics or basements that do not meet basic safety or sanitary code rules.
+  <BR>
+  <BR>
+  * **Overcrowded** - There is not enough space for all the tenants inside a rental unit. Generally, there may be overcrowding if a bedroom is not large enough for the number of people using it, according to the MA State Sanitary Code (105 CMR 410.420(D)).
+  <BR>
+  <BR>  
+  * **Uninhabitable** - The unit is unsuitable to live in and/or repairs cannot be made while the tenant is still living in the property.
+
+  **Before asking for an inspection**, seek legal help if you believe that any of these things might be true about the unit.
+  % endif
+
+  You can find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+---
+template: condemnation_tenant_rights
+subject: |
+  % if person_answering == "tenant": 
+  What can I do if my unit is condemned?
+  % else:
+  What can tenants do if their unit is condemned?
+  % endif
+content: |
+  % if person_answering == "tenant": 
+  There are still things you can do if your unit is condemned:
+  
+  * **Appear at the public hearing** - If the Board of Health wants to condemn your unit, it must first schedule a public hearing. The Board of Health must also send you a written notice with information about why the unit is being condemned and when the hearing will take place. At the hearing, you will have the chance to speak about why you oppose the condemnation. You may present witnesses and documents that show why the unit should not be condemned.
+  
+  * **Challenge the order in court** - After a public hearing, the Board of Health may decide to go ahead and issue a condemnation order. As a tenant, there may be ways you can challenge that order in court. If the conditions are not too severe, you can ask court to order the landlord to repair the unit. If the landlord does not have enough funds, you can ask the court to appoint a receiver to manage and repair the unit. 
+  
+  * **Get help with moving & other expenses** - If you need to leave your unit because it was condemned, your landlord has to provide you with another place to live. The landlord must do this for whichever is the shortest: 1. the remainder of your lease or rental period; 2. until the Board of Health finds that your unit is once again fit for people to live in; or 3. until you find another place to live permanently and voluntarily end your tenancy. <BR><BR>The City or Town must also help you pay for moving expenses. You may also be able to apply and get priority for emergency housing from your local housing authority.
+  % else:
+  There are still things tenants can do if their unit is condemned:
+  
+  * **Appear at the public hearing** - If the Board of Health wants to condemn a unit, it must first schedule a public hearing. The Board of Health must also send tenants a written notice with information about why the unit is being condemned and when the hearing will take place. At the hearing, tenants will have the chance to speak about why they oppose the condemnation. They may present witnesses and documents that show why the unit should not be condemned.
+  
+  * **Challenge the order in court** - After a public hearing, the Board of Health may decide to go ahead and issue a condemnation order. There may be ways tenants can challenge that order in court. If the conditions are not too severe, tenants can ask court to order the landlord to repair the unit. If the landlord does not have enough funds, tenants can ask the court to appoint a receiver to manage and repair the unit. 
+  
+  * **Get help with moving & other expenses** - If a tenant needs to leave their unit because it was condemned, the landlord has to provide them with another place to live. The landlord must do this for whichever is the shortest: 1. the remainder of the lease or rental period; 2. until the Board of Health finds that the unit is once again fit for people to live in; or 3. until the tenant finds another place to live permanently and voluntarily ends their tenancy. <BR><BR>The City or Town must also help tenants pay for moving expenses. Tenants may also be able to apply and get priority for emergency housing from their local housing authority.
+  % endif
+
+  For more help, you can find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+---
