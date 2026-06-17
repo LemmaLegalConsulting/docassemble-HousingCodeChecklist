@@ -9,27 +9,29 @@ comment: |
   This section is used by MAVirtualCourts to control how some of the questions work.
 mandatory: True
 code: |
-  interview_metadata # make sure we initialize the object
+  interview_metadata  # make sure we initialize the object
   if not defined("interview_metadata['tenant_repair_request']"):
-    interview_metadata.initializeObject('tenant_repair_request')
-  interview_metadata['tenant_repair_request'].update({
-    'title': 'Tenant Repair Request Letter',
-    'short title': 'Tenant Repair Request Letter',
-    'description': 'Tenant Repair Request Letter',
-    'original_form': '',
-    'allowed courts': [
-      'Boston Municipal Court',
-      'District Court',
-      'Housing Court',
-      'Superior Court',
-    ],
-    'categories': [
-      'Housing',
-    ],
-    'logic block variable': 'tenant_repair_request',
-    'attachment block variable': 'tenant_repair_request',
-    'typical role': 'plaintiff',
-  })
+    interview_metadata.initializeObject("tenant_repair_request")
+  interview_metadata["tenant_repair_request"].update(
+    {
+      "title": "Tenant Repair Request Letter",
+      "short title": "Tenant Repair Request Letter",
+      "description": "Tenant Repair Request Letter",
+      "original_form": "",
+      "allowed courts": [
+        "Boston Municipal Court",
+        "District Court",
+        "Housing Court",
+        "Superior Court",
+      ],
+      "categories": [
+        "Housing",
+      ],
+      "logic block variable": "tenant_repair_request",
+      "attachment block variable": "tenant_repair_request",
+      "typical role": "plaintiff",
+    }
+  )
 ---
 features:
   navigation: True
@@ -39,8 +41,8 @@ sections:
 ---
 id: interview_order_tenant_repair_request
 code: |
-  user_role = 'plaintiff'
-  # mailing_method  
+  user_role = "plaintiff"
+  # mailing_method
   set_parts(subtitle=str(users))
   set_progress(12.5)
   users[0].email
@@ -119,7 +121,7 @@ subquestion: |
   
   Before you start, you will need information about your landlord and their address.
   
-  *The [Court Forms Online](https://courtformsonline.org/housing/) project may be able to help with other housing problems.* 
+  *The [Court Forms Online](https://courtformsonline.org/ma/housing) project may be able to help with other housing problems.* 
   
 help:
   label: |

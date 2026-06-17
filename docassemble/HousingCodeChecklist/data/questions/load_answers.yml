@@ -45,14 +45,23 @@ objects:
   - uptocode_logo: DAStaticFile.using(filename="horiztonal-white1.5x_blue.svg")
 ---
 code: |
-  answers = get_saved_interview_list(filename=f"{user_info().package}:housing_code_interview.yml", exclude_newly_started_sessions=True)
+  answers = get_saved_interview_list(
+    filename=f"{user_info().package}:housing_code_interview.yml",
+    exclude_newly_started_sessions=True,
+  )
   first_answer = dict(next(iter(answers)))
 ---
 code: |
   if len(answers) == 1:
-    response(url=interview_url(i=f"{user_info().package}:housing_code_interview.yml", session=first_answer.get("key")))
+    response(
+      url=interview_url(
+        i=f"{user_info().package}:housing_code_interview.yml",
+        session=first_answer.get("key"),
+      )
+    )
   load_answers
 ---
+id: load saved UpToCode session
 mandatory: True
 event: load_answers
 question: |

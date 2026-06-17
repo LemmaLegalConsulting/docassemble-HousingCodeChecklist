@@ -18,7 +18,7 @@ metadata:
     - Sofija Belajcic
 ---
 code: |
-  interview_metadata['main_interview_key'] =  'verified_complaint_and_motions'
+  interview_metadata["main_interview_key"] = "verified_complaint_and_motions"
 ---
 code: |
   # This controls the default country and list of states in address field questions
@@ -29,13 +29,13 @@ code: |
   AL_DEFAULT_STATE = "MA"
 ---
 code: |
-  github_repo_name =  'docassemble-VerifiedComplaintAndMotions'
+  github_repo_name = "docassemble-VerifiedComplaintAndMotions"
 ---
 code: |
   interview_short_title = "File a Verified Complaint Form"
 ---
 code: |
-  al_form_type = 'starts_case'
+  al_form_type = "starts_case"
 ---
 code: |
   landlord_name_is_optional = False
@@ -58,7 +58,7 @@ code: |
   interview_order_verified_complaint_and_motions
   signature_date
   # Save anonymized interview statistics (customize the saved data below)
-  store_variables_snapshot(data={'zip': users[0].address.zip})
+  store_variables_snapshot(data={"zip": users[0].address.zip})
   verified_complaint_and_motions_preview_question
   basic_questions_signature_flow
   verified_complaint_and_motions_download
@@ -129,4 +129,6 @@ objects:
   - al_court_bundle: ALDocumentBundle.using(elements=[verified_complaint_and_motions_attachment], filename="verified_complaint_and_motions", title="All forms to download for your records", enabled=True)
 ---
 code: |
-  verified_complaint_and_motions_attachment.enabled = screen_ll_knows_problem and document_choice['sue_landlord']
+  verified_complaint_and_motions_attachment.enabled = (
+    screen_ll_knows_problem and document_choice["sue_landlord"]
+  )

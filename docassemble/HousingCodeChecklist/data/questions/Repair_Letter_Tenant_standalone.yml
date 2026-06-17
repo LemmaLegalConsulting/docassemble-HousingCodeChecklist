@@ -20,7 +20,7 @@ code: |
   interview_order_tenant_repair_request
   preview_screen
   users[i].signature
-  download_tenant_repair_request  
+  download_tenant_repair_request
 ---
 code: |
   al_form_type = "letter"
