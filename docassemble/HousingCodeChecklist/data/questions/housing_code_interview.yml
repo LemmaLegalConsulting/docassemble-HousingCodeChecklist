@@ -3274,7 +3274,7 @@ subquestion: |
   2. Your unit is {overcrowded}.
   3. Your unit is {uninhabitable}.
   
-  You can find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+  You can find legal aid organizations in your area by [answering a few questions](https://masslrf.org/en/triage/start/housing).
 
   ${ collapse_template(condemnation_tenant_rights) }
   % else:
@@ -3290,7 +3290,7 @@ subquestion: |
   2. Their unit is {overcrowded}.
   3. Their unit is {uninhabitable}.
   
-  You can find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+  You can find legal aid organizations in your area by [answering a few questions](https://masslrf.org/en/triage/start/housing).
 
   ${ collapse_template(condemnation_tenant_rights) }
   % endif 
@@ -3329,7 +3329,7 @@ content: |
   **Before asking for an inspection**, seek legal help if you believe that any of these things might be true about the unit.
   % endif
 
-  You can find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+  You can find legal aid organizations in your area by [answering a few questions](https://masslrf.org/en/triage/start/housing).
 ---
 template: condemnation_tenant_rights
 subject: |
@@ -3357,5 +3357,5 @@ content: |
   * **Get help with moving & other expenses** - If a tenant needs to leave their unit because it was condemned, the landlord has to provide them with another place to live. The landlord must do this for whichever is the shortest: 1. the remainder of the lease or rental period; 2. until the Board of Health finds that the unit is once again fit for people to live in; or 3. until the tenant finds another place to live permanently and voluntarily ends their tenancy. <BR><BR>The City or Town must also help tenants pay for moving expenses. Tenants may also be able to apply and get priority for emergency housing from their local housing authority.
   % endif
 
-  For more help, you can find legal aid organizations in your area by answering a few questions [here](https://masslrf.org/en/triage/start/housing).
+  For more help, you can find legal aid organizations in your area by [answering a few questions](https://masslrf.org/en/triage/start/housing).
 ---
