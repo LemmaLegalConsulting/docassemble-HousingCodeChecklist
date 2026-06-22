@@ -908,6 +908,24 @@ fields:
     show if:
       code: |
         kind_of_lawsuit.any_true("get_emergency_repairs", "past_repair_needs")
+  - note: |
+      % if person_answering == "tenant":
+      **You may want to get an inspection**, but you do not have to. An inspection can help a judge understand the problem better or get your landlord to make repairs. You do not need to wait for the inspection to go to court. 
+      <BR>
+      <BR> 
+      **WARNING:** Depending on how serious the problems are, asking for an inspection might cause your unit to be {condemned} and **you may be ordered to move out**. You may want to get legal advice **before** contacting the City or Town to ask for an inspection.
+      <BR>
+      <BR>
+      ${ collapse_template(condemnation_info) }
+      % else:
+      **The tenant may want to get an inspection**, but it is not required. An inspection can help a judge to understand the problem better or get the landlord to make repairs. The tenant does not need to wait for the inspection to go to court. 
+      <BR>
+      <BR>
+      **WARNING:** Depending on how serious the problems are, asking for an inspection might cause the unit to be {condemned} and **the tenant may be ordered to move out**. The tenant should think carefully **before** contacting the City or Town to ask for an inspection because they could end up being ordered to leave.
+      % endif
+    show if:
+      variable: tenant_called_inspector
+      is: False
 ---
 id: eviction warning
 question: |
