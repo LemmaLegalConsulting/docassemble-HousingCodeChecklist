@@ -1029,7 +1029,8 @@ subquestion: |
   get an inspection report before you file your papers at court.
 
   If it is an emergency you do not have to wait for an inspection report.
-  
+
+  **If you decide to add a letter asking for a housing inspection**, we will provide you with contact information for a housing inspector in your area at the **end of the interview**.
   % else:
   It is usually a good idea to call a housing inspector if a tenant sues their
   landlord. The court will pay attention to the problems the inspector
@@ -1039,6 +1040,8 @@ subquestion: |
   get an inspection report before they file their papers at court.
 
   If it is an emergency they do not have to wait for an inspection report.
+
+  **If the tenant wants to add a letter asking for a housing inspection**, we will provide you with contact information for a housing inspector in the tenant's area at the **end of the interview**.
   % endif
 fields:
   - label: |
@@ -1930,8 +1933,14 @@ fields:
           <br>
           <br>
           **Before asking for an inspection**, seek legal help if you think your unit could be condemned.
+          <br>
+          <br>
+          We will give you more information on how to contact a housing inspector in your area at the **end of the interview**.
           % else:
           Keep in mind that an inspection might cause the unit to be **condemned** by the City or Town. If the unit is condemned, **the tenant may be ordered to move out**.
+          <br>
+          <br>
+          We will give you more information on how to contact a housing inspector in the tenant's area at the **end of the interview**.
           % endif
       - Ask for a fair settlement. Use a consumer protection demand letter or a settlement letter.: demand_letter_93a
         help: |
@@ -3295,6 +3304,8 @@ subquestion: |
   You can find legal aid organizations in your area by [answering a few questions](https://masslrf.org/en/triage/start/housing).
 
   ${ collapse_template(condemnation_tenant_rights) }
+
+  **If you told us you want to ask for a housing inspection**, we will give you more information on how to contact a housing inspector in your area at the **end of the interview**.
   % else:
   If a housing inspector finds that a unit is unfit for people to live in, it could be {condemned}.
 
@@ -3311,6 +3322,8 @@ subquestion: |
   You can find legal aid organizations in your area by [answering a few questions](https://masslrf.org/en/triage/start/housing).
 
   ${ collapse_template(condemnation_tenant_rights) }
+
+  **If you told us the tenant wants to ask for a housing inspection**, we will give you more information on how to contact a housing inspector in the tenant's area at the **end of the interview**.
   % endif 
 ---
 template: condemnation_info
