@@ -3312,7 +3312,7 @@ content: |
   * **Overcrowded** - There is not enough space for all the tenants inside your rental unit. Generally, there may be overcrowding if a bedroom is not large enough for the number of people using it, according to the MA State Sanitary Code (105 CMR 410.420(D)).
   <BR>
   <BR>
-  * **Uninhabitable** - Your unit is unsuitable to live in and repairs cannot be made while you are still living in the property.
+  * **Uninhabitable** - Your unit is unsuitable to live in or repairs cannot be made while you are still living in the property.
 
   **Before asking for an inspection**, seek legal help if you believe that any of these things might be true about your unit.
   % else:
@@ -3324,7 +3324,7 @@ content: |
   * **Overcrowded** - There is not enough space for all the tenants inside a rental unit. Generally, there may be overcrowding if a bedroom is not large enough for the number of people using it, according to the MA State Sanitary Code (105 CMR 410.420(D)).
   <BR>
   <BR>  
-  * **Uninhabitable** - The unit is unsuitable to live in and repairs cannot be made while the tenant is still living in the property.
+  * **Uninhabitable** - The unit is unsuitable to live in or repairs cannot be made while the tenant is still living in the property.
 
   **Before asking for an inspection**, seek legal help if you believe that any of these things might be true about the unit.
   % endif
