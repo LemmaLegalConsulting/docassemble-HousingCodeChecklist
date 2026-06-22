@@ -1275,11 +1275,11 @@ table: |-
 id: service_method
 question: |
   % if person_answering == "tenant":
-  It’s best to give your landlord notice by providing them with a copy of your motion for repairs and/or relief (and your complaint) before filing it with the court. 
+  It’s best to give your landlord notice by providing them with a copy of your motion for repairs and relief (and your complaint) before filing it with the court. 
   % elif person_answering == "attorney" and representation_type == "entering_appearance":
-  It’s best to give the landlord notice by providing them with a copy of your motion for repairs and/or relief (and your complaint) before filing it with the court.
+  It’s best to give the landlord notice by providing them with a copy of your motion for repairs and relief (and your complaint) before filing it with the court.
   % else:
-  It’s best to give the landlord notice by providing them with a copy of the tenant’s motion for repairs and/or relief (and the complaint) before filing it with the court. 
+  It’s best to give the landlord notice by providing them with a copy of the tenant’s motion for repairs and relief (and the complaint) before filing it with the court. 
   % endif
   
 subquestion: |

@@ -41,7 +41,7 @@
   conditions:
 
 - name: trial_witnesses
-  description: List all individuals intended to testify at trial and/or hearing, including their contact information, anticipated testimony, and qualifications.
+  description: List all individuals intended to testify at trial or hearing, including their contact information, anticipated testimony, and qualifications.
   category: Tenant’s Claims
   default_check: True
   priority: 600
