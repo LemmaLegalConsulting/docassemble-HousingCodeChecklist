@@ -135,6 +135,7 @@ code: |
     intro_and_terms_of_use_in_court
   else:
     intro_and_terms_of_use
+  register_prompt
   person_answering
   users.gather()
   if person_answering == "attorney" and representation_type == "entering_appearance":
