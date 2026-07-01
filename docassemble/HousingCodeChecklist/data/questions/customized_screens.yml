@@ -431,9 +431,23 @@ subquestion: |
   % else:
   The tenant's landlord may not be the owner of the property. It's important to sue the owner, not just the landlord or property manager (in other words, name both the landlord and the owner in the court complaint and any demand letter you may want to send under the Consumer Protection Act).
   % endif
+
+  ${ collapse_template(property_ownership_guidance) }
 fields:
   - Is anyone else on the landlord's side of the case?: other_parties.there_is_another
     datatype: yesnoradio
+---
+id: property_ownership_guidance
+template: property_ownership_guidance
+subject: How can I find the property owner?
+content: |
+  Massachusetts is divided into **21 registry disctricts**. Each district has a **Register of Deeds** that records all documents about property ownership.
+
+  To find out who owns the property you live in, you can start by going to the [Massachusetts Land Records website](https://www.masslandrecords.com/)
+  and selecting the district where the property is located. You will then be able to search for the property using the district's registry website.
+  **Most registry sites should let you search for documents using the property's address**.
+
+  You may also find useful information on how to get property records from municipal assessors through the [Massachusetts government website](https://www.mass.gov/news/finding-your-property-records).
 ---
 id: persons address
 generic object: Individual
