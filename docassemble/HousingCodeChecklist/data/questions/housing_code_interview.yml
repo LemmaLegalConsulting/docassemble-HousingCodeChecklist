@@ -224,10 +224,7 @@ code: |
   uptocode_review
   basic_questions_signature_flow
 
-  if document_choice["get_inspection"] and users[0].address.city.lower() == "chelsea":
-    direct_inspection_email
-  else:
-    direct_inspection_email = False
+  direct_inspection_email = False
 
   reached_download_screen = True
   reconsider("snapshot_interview_state")
