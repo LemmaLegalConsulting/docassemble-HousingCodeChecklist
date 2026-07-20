@@ -47,8 +47,10 @@ jobs:
         #### suffolkLITLab/ALKiln/action_for_github_server@v5
         uses: suffolkLITLab/ALKiln/action_for_github_server@v5
         with:
-          # CONFIG_CONTENTS: "${{ secrets.CONFIG_CONTENTS }}"
-          SHOW_DOCKER_OUTPUT: "${{ github.event.inputs.show_docker_output }}"          
+          SHOW_DOCKER_OUTPUT: "${{ inputs.show_docker_output || false }}"
+          CONFIG_CONTENTS: "${{ secrets.CONFIG_CONTENTS }}"
+          DOCASSEMBLECLI_VERSION: "0.0.25"
+          DOCASSEMBLE_IMAGE: "ghcr.io/suffolklitlab/docassemble:latest"
           #### Developer note: Set this to True to show docker logs and
           #### allow ALKiln to create the docker logs output artifact.          
       - run: echo "ALKiln finished starting the isolated GitHub docassemble server"
@@ -128,6 +130,7 @@ jobs:
           SERVER_URL: "${{ steps.github_server.outputs.SERVER_URL }}"
           DOCASSEMBLE_DEVELOPER_API_KEY: "${{ steps.github_server.outputs.DOCASSEMBLE_DEVELOPER_API_KEY }}"
           INSTALL_METHOD: "server"
+          ALKILN_TAG_EXPRESSION: "${{ inputs.tags || '' }}"
           #### Developer note: Useful for temporarily shortening ALKiln tests
           #### to debug the docker install step
           #          ALKILN_TAG_EXPRESSION: "@1"
