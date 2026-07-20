@@ -1139,11 +1139,38 @@ subquestion: |
     simply because they enforced their rights to live in a safe and habitable that is up to code, that may be unlawful.
     </p>
     % endif
+    ${ collapse_template(non_retaliation_rent_raise) }
     Read more about illegal <a class="alert-link" href="https://www.masslegalhelp.org/housing-apartments-shelter/eviction/when-eviction-illegal" target="_blank" rel="noopener noreferrer">eviction</a> and <a class="alert-link" href="https://www.masslegalhelp.org/housing-apartments-shelter/rent/illegal-retaliatory-rent-increases" target="_blank" rel="noopener noreferrer">rent increases</a> on MassLegalHelp.
     </p>
   </div>
 continue button field: intro_terms_of_use  
 continue button label: Get started
+---
+template: non_retaliation_rent_raise
+subject: |
+  % if person_answering == "tenant":
+  Can my landlord still raise the rent after I try to enforce my tenant rights?
+  % else:
+  Can the landlord still raise the rent after the tenant tries to enforce their rights?
+  % endif
+content: |
+  % if person_answering == "tenant":
+  It is **not** considered retaliation if your landlord raises your rent for a reason **other** than you trying to enforce your rights.
+  
+  These reasons might include:
+  
+  * Getting a higher profit
+  * Matching their actual expenses
+  * Matching the current market rate
+  % else:
+  It is **not** considered retaliation if the landlord raises the tenant's rent for a reason **other** than the tenant trying to enforce their rights.
+  
+  These reasons might include:
+  
+  * Getting a higher profit
+  * Matching their actual expenses
+  * Matching the current market rate
+  % endif
 ---
 id: track conditions intro
 question: |
