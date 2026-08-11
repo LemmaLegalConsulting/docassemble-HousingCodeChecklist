@@ -1639,7 +1639,7 @@ subquestion: |
 fields:
   - label: <span class="visually-hidden">List problems in another room or category</span>
     field: bad_conditions.there_is_another
-    datatype: yesno
+    datatype: yesnoradio
 ---
 code: |
   # available buttons doesn't include the "short" list
