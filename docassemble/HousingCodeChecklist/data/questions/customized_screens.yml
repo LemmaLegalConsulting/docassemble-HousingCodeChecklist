@@ -454,7 +454,7 @@ question: |
   % if person_answering == "tenant":
   What is your address?
   % else:
-  What is ${ users.familiar() }'s address?
+  What is ${ users[0].name.first }'s address?
   % endif
 subquestion: |
   % if person_answering == "tenant":
@@ -514,7 +514,7 @@ fields:
 id: additional persons address
 generic object: Individual
 question: |
-  What is ${ users[i].familiar() }'s address?
+  What is ${ users[i].name.first }'s address?
 subquestion: |
   % if person_answering == "tenant":
   Write the address where you are having the problems you want to report.
@@ -2670,3 +2670,4 @@ question: |
   % endif
 fields:
   code: household[i].name_fields()
+---
