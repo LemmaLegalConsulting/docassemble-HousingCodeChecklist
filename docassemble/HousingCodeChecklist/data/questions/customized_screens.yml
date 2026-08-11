@@ -10,6 +10,19 @@ include:
 # Used in multiple templates
 ###############
 ---
+id: register prompt
+question: |
+  Remember to sign in to save your progress!
+subquestion: |
+  **Before going any further**, we strongly encourage you to **create an account** and **sign in**.
+  This will let you save your answers and return to where you left off in the interview.
+  
+  You may continue without signing in, but **you will risk losing all your progress** if you exit before finishing the interview.
+
+  **To sign in or create a new account**, open the menu in the top right corner of your screen and click **Sign in or sign up to save answers**. 
+
+continue button field: register_prompt
+---
 id: who is using this interview
 question: |
   Who are you?
