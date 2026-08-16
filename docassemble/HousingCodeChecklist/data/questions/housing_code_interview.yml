@@ -237,25 +237,37 @@ code: |
   reconsider("snapshot_interview_state")
   nav.set_section("download_conditions_checklist_docs")
 
-  # Kick off the background assembly tasks
-  tasks_to_monitor = []
+  bundles_to_assemble = []
   if screen_ll_knows_problem and len(housing_code_bundle.enabled_documents()) > 0:
-    housing_code_bundle.generate_downloads_with_docx_task
-    tasks_to_monitor.append(housing_code_bundle.generate_downloads_with_docx_task)
-  tenant_repair_letter_bundle.generate_downloads_with_docx_task
-  tasks_to_monitor.append(tenant_repair_letter_bundle.generate_downloads_with_docx_task)
+    bundles_to_assemble.append(housing_code_bundle)
+  bundles_to_assemble.append(tenant_repair_letter_bundle)
   if (
     screen_ll_knows_problem
     and document_choice["sue_landlord"]
     or document_choice["contempt_complaint"]
   ):
-    affirmative_complaint_bundle.generate_downloads_with_docx_task
-    tasks_to_monitor.append(
-      affirmative_complaint_bundle.generate_downloads_with_docx_task
-    )
+    bundles_to_assemble.append(affirmative_complaint_bundle)
 
-  if not all(task.ready() for task in tasks_to_monitor):
-    al_download_waiting_screen
+  # Assemble one bundle at a time. Starting every task in the same request
+  # makes the celery workers fight over the database connection, and a task
+  # that dies leaves no cached files behind, so the download screen rebuilds
+  # every document from scratch on every single page view.
+  for bundle in bundles_to_assemble:
+    if hasattr(bundle, "_downloadable_files"):
+      continue
+    bundle.generate_downloads_with_docx_task
+    if not bundle.generate_downloads_with_docx_task.ready():
+      al_download_waiting_screen
+    if not hasattr(bundle, "_downloadable_files"):
+      # The background task finished without handing any files back. Build
+      # them here so the tenant pays that cost once rather than on every
+      # render of the download screen.
+      log(
+        f"Background assembly of {bundle.instanceName} produced no files; assembling in the foreground"
+      )
+      bundle._downloadable_files = bundle.get_cacheable_documents(
+        key="final", pdf=True, docx=True, include_full_pdf=True
+      )
 
   download_conditions_checklist_docs
 ---
