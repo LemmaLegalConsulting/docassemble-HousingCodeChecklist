@@ -106,15 +106,8 @@ default screen parts:
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
   short logo: |
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
-  # commenting out until we have translations
-  #navigation bar html: |
-    #% if defined('acknowledged_information_use'):
-    #${ get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
-    #% endif
----
-# setting user language to English until we have translations
-code: |
-  user_language = "en"
+  # The language switcher comes from AssemblyLine's al_language.yml, driven by
+  # al_interview_languages in language.yml. Do not add one here.
 ---
 code: |
   # Allow downloads on the custom error screen
@@ -713,7 +706,7 @@ code: |
     "start_time": str(start_time().format("yyyy-MM-dd")),
     "address_city": showifdef("users[0].address.city"),
     "zip": showifdef("users[0].address.zip"),
-    "language": user_language,
+    "language": al_user_language,
   }
   try:
     stuff_to_snapshot["document_choice"] = comma_list(document_choice.true_values())
@@ -1499,7 +1492,7 @@ code: |
   set_gathered = True
 ---
 depends on:
-  - user_language
+  - al_user_language
 language: en
 variable name: available_buttons
 data:
