@@ -138,6 +138,12 @@ code: |
   register_prompt
   person_answering
   users.gather()
+  # The address screen only offers a "separate mailing address" checkbox.
+  # Nothing else asks for the mailing address itself, so ask for it here.
+  # Otherwise it stays undefined until a template needs it, which is during
+  # background assembly, where the question cannot be asked.
+  for user in users.complete_elements():
+    user.mailing_address.address
   if person_answering == "attorney" and representation_type == "entering_appearance":
     users[0].attorney.target_number = 1
     users[0].attorney.name.first

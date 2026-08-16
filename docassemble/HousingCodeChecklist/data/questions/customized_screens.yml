@@ -576,7 +576,7 @@ fields:
     field: users[i].has_separate_mailing_address
     datatype: yesno
 validation code: |
-  if not defined("users[i].has_separate_mailing_address"):
+  if not users[i].has_separate_mailing_address:
     users[i].mailing_address = users[i].address
 ---
 id: additional tenant mailing address
