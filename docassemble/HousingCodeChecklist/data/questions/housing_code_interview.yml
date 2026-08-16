@@ -258,6 +258,11 @@ code: |
   ):
     bundles_to_assemble.append(affirmative_complaint_bundle)
 
+  # Let the tenant drop documents they do not want before we spend time
+  # assembling them.
+  if len(selectable_documents) > 1:
+    document_selection_applied
+
   assembly_started_at
 
   # Assemble one bundle at a time. Starting every task in the same request
@@ -3076,7 +3081,9 @@ code: |
 ---
 code: |
   organize_tenants_attachment.enabled = (
-    screen_ll_knows_problem and document_choice["organize_tenants"]
+    screen_ll_knows_problem
+    and document_choice["organize_tenants"]
+    and include_document.get("organize_tenants_attachment", True)
   )
 ---
 code: |
@@ -3086,6 +3093,7 @@ code: |
       screen_ll_knows_problem
       and document_choice["get_report"]
       and include_conditions_in_complaint
+      and include_document.get("conditions_report_attachment", True)
     )
     or direct_inspection_email
   )
@@ -3094,38 +3102,49 @@ code: |
   request_housing_inspection_attachment.enabled = (
     screen_ll_knows_problem
     and document_choice["get_inspection"]
+    and include_document.get("request_housing_inspection_attachment", True)
     or direct_inspection_email
   )
 ---
 code: |
   tenant_repair_request_attachment.enabled = (
     not screen_ll_knows_problem or document_choice["tell_landlord"]
-  )
+  ) and include_document.get("tenant_repair_request_attachment", True)
 ---
 code: |
   letter_to_notify_landlord_instructions_attachment.enabled = (
     not screen_ll_knows_problem or document_choice["tell_landlord"]
-  )
+  ) and include_document.get("letter_to_notify_landlord_instructions_attachment", True)
 ---
 code: |  
   Repair_Demand_Letter_attachment.enabled = (
-    screen_ll_knows_problem and document_choice["demand_letter_93a"]
+    screen_ll_knows_problem
+    and document_choice["demand_letter_93a"]
+    and include_document.get("Repair_Demand_Letter_attachment", True)
   )
 ---
 code: |
   Repair_Demand_Letter_post_interview_instructions.enabled = (
-    screen_ll_knows_problem and document_choice["demand_letter_93a"]
+    screen_ll_knows_problem
+    and document_choice["demand_letter_93a"]
+    and include_document.get("Repair_Demand_Letter_post_interview_instructions", True)
   )
 ---
 code: |
-  verified_complaint_attachment.enabled = document_choice["sue_landlord"]
+  verified_complaint_attachment.enabled = document_choice[
+    "sue_landlord"
+  ] and include_document.get("verified_complaint_attachment", True)
 ---
 code: |
-  next_steps_for_court_attachment.enabled = document_choice["sue_landlord"]
+  next_steps_for_court_attachment.enabled = document_choice[
+    "sue_landlord"
+  ] and include_document.get("next_steps_for_court_attachment", True)
 ---
 code: |
   verified_complaint_attachment.enabled = (
-    screen_ll_knows_problem and document_choice["sue_landlord"]
+    screen_ll_knows_problem
+    and document_choice["sue_landlord"]
+    and include_document.get("verified_complaint_attachment", True)
   )
 ---
 code: |  
@@ -3145,7 +3164,9 @@ code: |
 ---
 code: |
   contempt_complaint.enabled = (
-    screen_ll_knows_problem and document_choice["contempt_complaint"]
+    screen_ll_knows_problem
+    and document_choice["contempt_complaint"]
+    and include_document.get("contempt_complaint", True)
   )
 ---
 objects:
@@ -3272,6 +3293,89 @@ objects:
       ], title="Documents for future case use",
       filename="further_documents",
       )
+---
+############### Letting the tenant pick documents ###############
+---
+objects:
+  # Keyed by document instanceName. Every `.enabled` block consults this with
+  # a default of True, so an empty dict means "make everything", and the
+  # bundles behave exactly as they did before the tenant reaches the picker.
+  - include_document: DADict.using(auto_gather=False, gathered=True)
+---
+code: |
+  # The documents a tenant can turn off. Companion documents follow their main
+  # document instead of appearing separately: the proposed orders and the
+  # motion for injunctive relief go with the verified complaint, the motion to
+  # compel goes with discovery, and each Spanish translation goes with its
+  # English original.
+  selectable_documents = [
+    document
+    for document in [
+      conditions_report_attachment,
+      tenant_repair_request_attachment,
+      letter_to_notify_landlord_instructions_attachment,
+      request_housing_inspection_attachment,
+      Repair_Demand_Letter_attachment,
+      Repair_Demand_Letter_post_interview_instructions,
+      verified_complaint_attachment,
+      next_steps_for_court_attachment,
+      contempt_complaint,
+      discovery_attachment,
+      organize_tenants_attachment,
+    ]
+    if document.enabled
+  ]
+---
+code: |
+  selectable_document_choices = [
+    {document.instanceName: str(document.title)} for document in selectable_documents
+  ]
+---
+code: |
+  for document in selectable_documents:
+    include_document[document.instanceName] = documents_to_include[
+      document.instanceName
+    ]
+    # Building the list of choices already evaluated `enabled`, back when the
+    # gate was empty and everything looked enabled. ALDocument.is_enabled()
+    # reuses that stored value rather than recomputing, so throw it away and
+    # let the gate we just set decide.
+    undefine(document.instanceName + ".enabled")
+  document_selection_applied = True
+---
+id: choose documents
+question: |
+  % if person_answering == "tenant":
+  Which documents do you want?
+  % else:
+  Which documents does the tenant want?
+  % endif
+subquestion: |
+  % if person_answering == "tenant":
+  We can make all of these for you. Uncheck anything you do not need, and we
+  will leave it out of your downloads and out of the email we send you.
+  % else:
+  We can make all of these. Uncheck anything the tenant does not need, and we
+  will leave it out of the downloads and out of the email.
+  % endif
+fields:
+  # This has to be a variable of its own. If the question set
+  # include_document directly, then asking it would be one of the ways
+  # docassemble could define include_document, and working out the choices
+  # reads every document's `enabled`, which reads include_document: an
+  # infinite loop.
+  - no label: documents_to_include
+    datatype: checkboxes
+    code: |
+      selectable_document_choices
+    default:
+      code: |
+        [document.instanceName for document in selectable_documents]
+    none of the above: False
+    minlength: 1
+    validation messages:
+      minlength: |
+        Keep at least one document.
 ---
 objects:
   - lsc_logo: DAStaticFile.using(filename="lsc_logo_horizontal.jpg")
