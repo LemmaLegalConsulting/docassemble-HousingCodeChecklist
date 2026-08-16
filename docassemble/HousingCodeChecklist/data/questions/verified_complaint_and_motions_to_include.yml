@@ -66,6 +66,10 @@ code: |
   trial_court.address.address
   if complaint_ask_for_damages:
     interview_order_discovery
+  else:
+    # discovery_attachment.enabled reads wants_discovery unconditionally, so
+    # it has to be defined even on the branches that never offer discovery.
+    wants_discovery = False
   signature_date
   claim_jurytrial
   verified_complaint_wants_fee_waiver
