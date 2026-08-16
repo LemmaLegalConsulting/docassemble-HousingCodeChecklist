@@ -120,6 +120,16 @@ code: |
   # Allow downloads on the custom error screen
   al_enable_incomplete_downloads = True
 ---
+code: |
+  # How long the "please wait while we make your documents" screen may spin
+  # before we give up on the background workers and assemble in the foreground.
+  ASSEMBLY_TIMEOUT_SECONDS = 300
+---
+code: |
+  # Set once, the first time the interview reaches the assembly stage, so the
+  # waiting screen has a deadline it cannot reset by reloading itself.
+  assembly_started_at = current_datetime()
+---
 variable name: allowed_courts
 data:
   - Boston Municipal Court
@@ -248,6 +258,8 @@ code: |
   ):
     bundles_to_assemble.append(affirmative_complaint_bundle)
 
+  assembly_started_at
+
   # Assemble one bundle at a time. Starting every task in the same request
   # makes the celery workers fight over the database connection, and a task
   # that dies leaves no cached files behind, so the download screen rebuilds
@@ -256,7 +268,10 @@ code: |
     if hasattr(bundle, "_downloadable_files"):
       continue
     bundle.generate_downloads_with_docx_task
-    if not bundle.generate_downloads_with_docx_task.ready():
+    if not bundle.generate_downloads_with_docx_task.ready() and (
+      date_difference(starting=assembly_started_at, ending=current_datetime()).seconds
+      < ASSEMBLY_TIMEOUT_SECONDS
+    ):
       al_download_waiting_screen
     if not hasattr(bundle, "_downloadable_files"):
       # The background task finished without handing any files back. Build
