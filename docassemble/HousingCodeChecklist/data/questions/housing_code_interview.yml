@@ -3372,10 +3372,16 @@ fields:
       code: |
         [document.instanceName for document in selectable_documents]
     none of the above: False
-    minlength: 1
-    validation messages:
-      minlength: |
-        Keep at least one document.
+    # Not `required` / `minlength`, which draw a red asterisk beside the first
+    # checkbox: testers read that as "the first document is mandatory" and then
+    # found they could uncheck it anyway. The rule is about the list as a
+    # whole, so it belongs in the validation code.
+    required: False
+validation code: |
+  if not any(documents_to_include.values()):
+    validation_error(
+      "Keep at least one document.", field="documents_to_include"
+    )
 ---
 objects:
   - lsc_logo: DAStaticFile.using(filename="lsc_logo_horizontal.jpg")
