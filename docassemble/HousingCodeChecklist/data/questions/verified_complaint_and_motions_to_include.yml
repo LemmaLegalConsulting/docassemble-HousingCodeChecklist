@@ -106,7 +106,11 @@ code: |
   verified_complaint_claims.gathered = True
 ---
 code: |
-  discovery_attachment.enabled = verified_complaint_attachment.enabled and wants_discovery
+  discovery_attachment.enabled = (
+    verified_complaint_attachment.enabled
+    and wants_discovery
+    and include_document.get("discovery_attachment", True)
+  )
 ---
 code: |
   motion_to_compel_discovery_attachment.enabled = discovery_attachment.enabled
@@ -116,7 +120,9 @@ code: |
 ---
 code: |
   affidavitofindigency_attachment.enabled = (
-    document_choice["sue_landlord"]
+    # The affidavit is filed with the complaint, so it follows the complaint
+    # rather than document_choice["sue_landlord"] on its own.
+    verified_complaint_attachment.enabled
     and verified_complaint_wants_fee_waiver == "wants_fee_waiver"
     and is_indigent
   )
