@@ -106,8 +106,21 @@ default screen parts:
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
   short logo: |
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
-  # The language switcher comes from AssemblyLine's al_language.yml, driven by
-  # al_interview_languages in language.yml. Do not add one here.
+  # AssemblyLine's own switcher (al_language.yml) fires `al_change_language`,
+  # which records the choice in `session_local` and leaves `al_user_language`
+  # alone. Everything in this interview that varies by language reads
+  # `al_user_language`: the housing code condition lists, the Spanish
+  # documents, the room buttons, and the analytics snapshot. Worse,
+  # `session_local` does not exist in the celery workers that assemble the
+  # documents. So use the event that sets the interview variable instead.
+  navigation bar html: |
+    % if enable_al_language and len(al_interview_languages) > 1:
+    ${ get_language_list_dropdown(
+         al_interview_languages,
+         current=al_user_language,
+         event_name="al_get_language_list_change_language",
+       ) }
+    % endif
 ---
 code: |
   # Allow downloads on the custom error screen
