@@ -45,18 +45,30 @@ objects:
   - uptocode_logo: DAStaticFile.using(filename="horiztonal-white1.5x_blue.svg")
 ---
 code: |
+  # Sessions are stored under the interview's full path. `package:file.yml`
+  # works in a URL because docassemble expands it, but the session table is
+  # matched on the stored string, so the short form never found anything and
+  # this screen always came up empty.
+  main_interview_filename = (
+    f"{user_info().package}:data/questions/housing_code_interview.yml"
+  )
+---
+code: |
   answers = get_saved_interview_list(
-    filename=f"{user_info().package}:housing_code_interview.yml",
+    filename=main_interview_filename,
     exclude_newly_started_sessions=True,
   )
-  first_answer = dict(next(iter(answers)))
 ---
+# Mandatory, because the question below is mandatory too: without this, the
+# question fired first and nothing ever ran the "only one session, go straight
+# to it" shortcut.
+mandatory: True
 code: |
   if len(answers) == 1:
     response(
       url=interview_url(
-        i=f"{user_info().package}:housing_code_interview.yml",
-        session=first_answer.get("key"),
+        i=main_interview_filename,
+        session=dict(next(iter(answers))).get("key"),
       )
     )
   load_answers
@@ -65,8 +77,30 @@ id: load saved UpToCode session
 mandatory: True
 event: load_answers
 question: |
+  % if len(answers):
   Keep working on an UpToCode session
+  % elif not user_logged_in():
+  Sign in to pick up where you left off
+  % else:
+  We could not find any saved answers
+  % endif
 subquestion: |
+  % if len(answers):
   Choose a session to keep working on below.
 
-  ${ session_list_html(filename=f"{user_info().package}:housing_code_interview.yml", show_title=False, exclude_newly_started_sessions=True)}
+  ${ session_list_html(filename=main_interview_filename, show_title=False, exclude_newly_started_sessions=True)}
+  % elif not user_logged_in():
+  We can only find your earlier answers once you are signed in.
+
+  [Sign in or create an account](${ url_of('login', next=interview_url()) }), then
+  come back to this page.
+
+  If you never signed in, your earlier answers were not saved and you will need
+  to start again.
+  % else:
+  There are no saved UpToCode sessions on your account.
+  % endif
+buttons:
+  - Start a new UpToCode session: exit
+    url: |
+      ${ interview_url(i=main_interview_filename, reset=1) }
