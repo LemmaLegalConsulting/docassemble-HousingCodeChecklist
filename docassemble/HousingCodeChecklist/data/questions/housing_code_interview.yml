@@ -106,15 +106,21 @@ default screen parts:
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
   short logo: |
     <img src="${ uptocode_logo.url_for() }"><div class="title"></div>
-  # commenting out until we have translations
-  #navigation bar html: |
-    #% if defined('acknowledged_information_use'):
-    #${ get_language_list(get_tuples(['en','es','pt','ht']),current=user_language) }
-    #% endif
----
-# setting user language to English until we have translations
-code: |
-  user_language = "en"
+  # AssemblyLine's own switcher (al_language.yml) fires `al_change_language`,
+  # which records the choice in `session_local` and leaves `al_user_language`
+  # alone. Everything in this interview that varies by language reads
+  # `al_user_language`: the housing code condition lists, the Spanish
+  # documents, the room buttons, and the analytics snapshot. Worse,
+  # `session_local` does not exist in the celery workers that assemble the
+  # documents. So use the event that sets the interview variable instead.
+  navigation bar html: |
+    % if enable_al_language and len(al_interview_languages) > 1:
+    ${ get_language_list_dropdown(
+         al_interview_languages,
+         current=al_user_language,
+         event_name="al_get_language_list_change_language",
+       ) }
+    % endif
 ---
 code: |
   # Allow downloads on the custom error screen
@@ -713,7 +719,7 @@ code: |
     "start_time": str(start_time().format("yyyy-MM-dd")),
     "address_city": showifdef("users[0].address.city"),
     "zip": showifdef("users[0].address.zip"),
-    "language": user_language,
+    "language": al_user_language,
   }
   try:
     stuff_to_snapshot["document_choice"] = comma_list(document_choice.true_values())
@@ -1499,7 +1505,7 @@ code: |
   set_gathered = True
 ---
 depends on:
-  - user_language
+  - al_user_language
 language: en
 variable name: available_buttons
 data:
