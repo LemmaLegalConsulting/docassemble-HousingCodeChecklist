@@ -1,0 +1,36 @@
+name: ALKiln end-to-end interviews
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: Optional Cucumber tag expression
+        required: false
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: alkiln-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  interviews:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Make room for docassemble
+        run: sudo rm -rf /usr/local/lib/android /opt/ghc /usr/share/dotnet /opt/hostedtoolcache/CodeQL
+      - name: Start an isolated temporary docassemble server
+        id: server
+        uses: SuffolkLITLab/ALKiln/action_for_github_server@7b399f7138a06cb411cb93bda4d2015cea9216c5 # v5
+        with:
+          DOCASSEMBLE_IMAGE: jhpyle/docassemble:1.10.7@sha256:c0b0a707a6cd2149d5777ee83af1ea1de544210e597371eac93e67a1503c395c
+      - name: Run interview tests and upload reports
+        uses: SuffolkLITLab/ALKiln@7b399f7138a06cb411cb93bda4d2015cea9216c5 # v5
+        with:
+          SERVER_URL: ${{ steps.server.outputs.SERVER_URL }}
+          DOCASSEMBLE_DEVELOPER_API_KEY: ${{ steps.server.outputs.DOCASSEMBLE_DEVELOPER_API_KEY }}
+          INSTALL_METHOD: server
+          ALKILN_VERSION: 5.17.1
+          ALKILN_TAG_EXPRESSION: ${{ inputs.tags }}
