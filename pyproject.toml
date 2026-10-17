@@ -11,6 +11,7 @@ authors = [
     { name="Quinten Steenhuis", email="quinten@nonprofittechy.com" },
 ]
 dependencies = [
+    "setuptools==80.9.0",
     "docassemble.ALAffidavitOfIndigency @ git+https://github.com/SuffolkLITLab/docassemble-ALAffidavitOfIndigency.git@main",
     "docassemble.ALMassachusetts @ git+https://github.com/SuffolkLITLab/docassemble-ALMassachusetts.git@main",
     "docassemble.ALToolbox @ git+https://github.com/suffolklitlab/docassemble-ALToolbox.git@main",
