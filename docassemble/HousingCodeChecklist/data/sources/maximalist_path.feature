@@ -573,6 +573,8 @@ Scenario: Maximalist Path generated from session
     | sharing_choices[0]['tell_friend'] | Tell a friend about this website |
     | sharing_choices[1]['share_answers'] | Share my answers and progress with someone |
 
+  # Document assembly continues in the background after the waiting screen.
+  And I wait 600 seconds
   And the question id should be "download_conditions_checklist_docs"
   And the maximum seconds for each Step is 30
   And I download "housing_conditions_report.docx"
