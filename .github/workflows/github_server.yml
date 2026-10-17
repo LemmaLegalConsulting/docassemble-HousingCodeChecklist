@@ -25,7 +25,7 @@ jobs:
         id: server
         uses: SuffolkLITLab/ALKiln/action_for_github_server@7b399f7138a06cb411cb93bda4d2015cea9216c5 # v5
         with:
-          DOCASSEMBLE_IMAGE: jhpyle/docassemble:1.10.7@sha256:c0b0a707a6cd2149d5777ee83af1ea1de544210e597371eac93e67a1503c395c
+          DOCASSEMBLE_IMAGE: jhpyle/docassemble:1.10.12@sha256:9fcee6675c24a1c89f20bf7789ba9ba412585ac5ccfda5eacac71fbfe9301929
       - name: Run interview tests and upload reports
         uses: SuffolkLITLab/ALKiln@7b399f7138a06cb411cb93bda4d2015cea9216c5 # v5
         with:
@@ -36,4 +36,4 @@ jobs:
           ALKILN_TAG_EXPRESSION: ${{ inputs.tags }}
       - name: Show isolated server errors
         if: failure()
-        run: docker exec docassemble_container tail -n 120 /usr/share/docassemble/log/docassemble.log || true
+        run: docker exec docassemble_container tail -n 120 /usr/share/docassemble/log/docassemble.log /usr/share/docassemble/log/worker.log || true
