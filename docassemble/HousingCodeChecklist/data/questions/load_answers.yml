@@ -101,4 +101,4 @@ subquestion: |
 buttons:
   - Start a new UpToCode session: exit
     url: |
-      ${ interview_url(i=main_interview_filename, reset=1) }
+      ${ interview_url(i=main_interview_filename, new_session=1) }
