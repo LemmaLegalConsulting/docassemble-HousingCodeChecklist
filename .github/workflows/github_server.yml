@@ -150,3 +150,23 @@ jobs:
             docker exec "$container_id" sh -c 'for py in /usr/share/docassemble/local*/bin/python; do "$py" -m pip list --format=freeze | grep -Ei "^(docassemble|nameparser)"; done' || true
             docker logs "$container_id" 2>&1 | grep -E -A 35 -B 3 'Traceback|ModuleNotFoundError|ImportError|FileNotFoundError|Exception' | tail -400 || true
           fi
+
+      - name: Collect isolated server logs
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          mkdir -p /tmp/uptocode-ci-logs
+          container_id=$(docker ps -q | head -n 1)
+          if [ -n "$container_id" ]; then
+            docker cp "$container_id:/usr/share/docassemble/log/." /tmp/uptocode-ci-logs/ || true
+            docker exec "$container_id" sh -c 'for py in /usr/share/docassemble/local*/bin/python; do "$py" -m pip list --format=freeze; done' > /tmp/uptocode-ci-logs/python-packages.txt || true
+            docker logs "$container_id" > /tmp/uptocode-ci-logs/container.log 2>&1 || true
+          fi
+
+      - name: Upload isolated server logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: isolated-docassemble-logs
+          path: /tmp/uptocode-ci-logs
+          retention-days: 3
