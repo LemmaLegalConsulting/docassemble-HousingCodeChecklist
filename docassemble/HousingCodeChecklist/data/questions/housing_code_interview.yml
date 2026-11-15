@@ -52,10 +52,22 @@ metadata:
     https://uptocode.org
   tags:
     - HO-00-00-00-00
-  LIST_tags:
-    - HO-00-00-00-00
+  LIST_topics:
+    - HO-00-00-00-00 # Housing
+    - HO-05-00-00-00 # Problems with living conditions
+    - HO-05-01-00-00 # Poor living conditions in a rented home
+    - HO-05-01-04-00 # Housing code compliance
+    - HO-05-01-05-00 # Disruptions to 'quiet enjoyment' of a rental
+    - HO-02-08-00-00 # Landlord locking-out or shutting off utilities
+    - HO-06-04-00-00 # Landlord access to a rental
+    - HO-07-00-00-00 # Utilities, Energy, and Heating at home
   description: |
     UpToCode is a free online tool that helps tenants in Massachusetts get repairs and enforce their rights.
+
+    Use it for unsafe or unhealthy rental housing, housing code violations, problems with heat
+    or utilities, or a landlord who changes your locks, shuts off utilities, or enters your home
+    without permission. It can help you ask for emergency court orders and enforce your right
+    to use and enjoy your home, as well as ask for repairs.
 
     It is available in English and Spanish.
 
@@ -76,6 +88,8 @@ metadata:
     * Ask a judge to order your landlord to fix the problem
     * Get a report from a housing inspector
     * Get a demand letter to send to your landlord
+    * Ask for emergency help with a lockout or utility shutoff
+    * Ask for help when your landlord enters without permission or interferes with your use of your home
     * Get a verified complaint and motion to file in court
     * Get a contempt complaint and motion to file in court
     * Get a checklist of housing code violations
