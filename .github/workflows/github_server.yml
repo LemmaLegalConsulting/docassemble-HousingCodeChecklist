@@ -50,7 +50,7 @@ jobs:
           SHOW_DOCKER_OUTPUT: "${{ inputs.show_docker_output || false }}"
           CONFIG_CONTENTS: "${{ secrets.CONFIG_CONTENTS }}"
           DOCASSEMBLECLI_VERSION: "0.0.25"
-          DOCASSEMBLE_IMAGE: "ghcr.io/suffolklitlab/docassemble:latest"
+          DOCASSEMBLE_IMAGE: "jhpyle/docassemble:1.10.15"
           #### Developer note: Set this to True to show docker logs and
           #### allow ALKiln to create the docker logs output artifact.          
       - run: echo "ALKiln finished starting the isolated GitHub docassemble server"
