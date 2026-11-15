@@ -141,7 +141,9 @@ jobs:
         run: |
           container_id=$(docker ps -q | head -n 1)
           if [ -n "$container_id" ]; then
-            docker exec "$container_id" sh -c 'find /var/log -type f \( -iname "*uwsgi*" -o -iname "*docassemble*" -o -iname "*supervisor*" \) -print' || true
-            docker logs "$container_id" 2>&1 | grep -E -A 25 -B 2 'Traceback \(most recent call last\)|ModuleNotFoundError|ImportError|FileNotFoundError' | tail -500 || true
-            docker exec "$container_id" sh -c 'grep -E -A 35 -B 3 "Traceback|ModuleNotFoundError|ImportError|FileNotFoundError|Error during interview" /usr/share/docassemble/log/docassemble.log | tail -500' || true
+            docker exec "$container_id" sh -c 'supervisorctl status' || true
+            docker exec "$container_id" sh -c 'find /usr/share/docassemble/log /var/log /tmp -type f \( -name "*.log" -o -name "*.log.*" \) -print | head -250' || true
+            docker exec "$container_id" sh -c 'for f in /usr/share/docassemble/log/docassemble.log /usr/share/docassemble/log/error.log /usr/share/docassemble/log/uwsgi.log /var/log/nginx/error.log /var/log/apache2/error.log; do if [ -f "$f" ]; then echo "--- $f errors ---"; grep -E -A 35 -B 3 "Traceback|ModuleNotFoundError|ImportError|FileNotFoundError|Error during interview|Exception" "$f" | tail -400 || true; fi; done' || true
+            docker exec "$container_id" sh -c 'pip list --format=freeze | grep -Ei "^(docassemble|nameparser|pandas|openpyxl|pyyaml)"' || true
+            docker logs "$container_id" 2>&1 | grep -E -A 35 -B 3 'Traceback|ModuleNotFoundError|ImportError|FileNotFoundError|Exception' | tail -400 || true
           fi
