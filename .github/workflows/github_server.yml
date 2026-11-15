@@ -134,3 +134,14 @@ jobs:
           #### Developer note: Useful for temporarily shortening ALKiln tests
           #### to debug the docker install step
           #          ALKILN_TAG_EXPRESSION: "@1"
+
+      - name: Diagnose interview startup error
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          container_id=$(docker ps -q | head -n 1)
+          if [ -n "$container_id" ]; then
+            docker exec "$container_id" sh -c 'find /var/log -type f \( -iname "*uwsgi*" -o -iname "*docassemble*" -o -iname "*supervisor*" \) -print' || true
+            docker logs "$container_id" 2>&1 | grep -E -A 25 -B 2 'Traceback \(most recent call last\)|ModuleNotFoundError|ImportError|FileNotFoundError' | tail -500 || true
+            docker exec "$container_id" sh -c 'find /var/log -type f \( -iname "*uwsgi*" -o -iname "*docassemble*" \) -exec grep -H -E -A 25 -B 2 "Traceback \\(most recent call last\\)|ModuleNotFoundError|ImportError|FileNotFoundError" {} + | tail -500' || true
+          fi
