@@ -3400,8 +3400,14 @@ fields:
 validation code: |
   if not any(documents_to_include.values()):
     validation_error(
-      "Keep at least one document.", field="documents_to_include"
+      keep_at_least_one_document_message.content, field="documents_to_include"
     )
+---
+# A template rather than a Python string, so the translation file can
+# translate it.
+id: keep at least one document
+template: keep_at_least_one_document_message
+content: Keep at least one document.
 ---
 objects:
   - lsc_logo: DAStaticFile.using(filename="lsc_logo_horizontal.jpg")
