@@ -3364,6 +3364,10 @@ code: |
   document_selection_applied = True
 ---
 id: choose documents
+# Validation code cannot ask docassemble to define a missing variable, so the
+# error message has to exist as a plain string before the screen is shown.
+need:
+  - keep_at_least_one_document_text
 question: |
   % if person_answering == "tenant":
   Which documents do you want?
@@ -3400,7 +3404,7 @@ fields:
 validation code: |
   if not any(documents_to_include.values()):
     validation_error(
-      keep_at_least_one_document_message.content, field="documents_to_include"
+      keep_at_least_one_document_text, field="documents_to_include"
     )
 ---
 # A template rather than a Python string, so the translation file can
@@ -3408,6 +3412,9 @@ validation code: |
 id: keep at least one document
 template: keep_at_least_one_document_message
 content: Keep at least one document.
+---
+code: |
+  keep_at_least_one_document_text = str(keep_at_least_one_document_message)
 ---
 objects:
   - lsc_logo: DAStaticFile.using(filename="lsc_logo_horizontal.jpg")
