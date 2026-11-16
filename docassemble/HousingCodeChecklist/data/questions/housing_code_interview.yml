@@ -2390,7 +2390,7 @@ subquestion: |
   ${ tenant_repair_letter_bundle.download_list_html(format="docx", use_previously_cached_files=True) }
   
   % endif  
-  % if screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"]:
+  % if (screen_ll_knows_problem and document_choice['sue_landlord'] or document_choice["contempt_complaint"]) and len(affirmative_complaint_bundle.enabled_documents()) > 0:
   [BR]
   % if person_answering == "tenant":
   <h2 class="h4">Documents for you to <strong>print</strong> and file in court</h2>
