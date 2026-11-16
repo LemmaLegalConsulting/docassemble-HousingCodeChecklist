@@ -3,6 +3,10 @@ include:
   - docassemble.AssemblyLine:assembly_line.yml
   - language.yml
 ---
+# language.yml offers a Spanish switcher, so load the Spanish phrases too.
+translations:
+  - housing_code_interview_es.xlsx
+---
 features:
   bootstrap theme: bootstrap.min.css
 ---
